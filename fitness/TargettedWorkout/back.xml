@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Back Exercises[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLwzLTbSftQ4ayeE5_jxLCxZbL2B7xvJOF/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Back Workout Videos for Men[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLLALQuK1NDrgbrHnrWt_TaQK1sSraAQ1U/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Back Workout Videos for Women[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLLXmeIOBkPXTkvEbMvjmjKep0xNtMViqz/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Best Back Exercises[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLpBQy2MBM7U-q9U4zMomynKnbXmEDG8AK/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>

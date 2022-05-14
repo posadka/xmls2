@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Building Muscle Mass[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLRiBFsLyF9QK8NKhuS8jznENLjZley5nx/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Which Supplements[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLRiBFsLyF9QKAyq4s0eL-d5kLcKQ8owKN/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Ketogenic Diet[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLRiBFsLyF9QKzRy2_P4rdVaxbsLmTzkzj/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Fat Burning[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLRiBFsLyF9QIPrEGtkcifbEWquUFiGhue/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Intermittent Fasting[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLRiBFsLyF9QI0KHX7EqTRj3MeAjcNrBMN/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Fat Loss[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLRiBFsLyF9QLflNuEZX6829P85-IS83nX/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Meal Plans[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLRiBFsLyF9QKA7LvnLIFNm6L5OGnnV97I/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>

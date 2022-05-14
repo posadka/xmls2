@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Stretching[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/Stretching/main_Stretching.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Targetted Workouts[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/TargettedWorkout/main_TargettedWorkout.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Fitness Channels[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/FitnessChannels/main_FitnessChannels.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Yoga Channels[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/YogaChannels/main_YogaChannels.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Anabolic DOC[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/AnabolicDoc/main_anabolicdoc.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Men's Health[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/MensHealth/main_menshealth.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Gravity Transformation[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/Gravity/main_gravity.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Spartan[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/Spartan/main_spartan.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Motivational[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/Motivational/main_motivation.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://gitlab.com/thecrewwh/xmls/-/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+
+  

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBC[/COLOR] [COLOR orchid]BAY AREA[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>http://tvecsnbayarea-i.akamaihd.net/hls/live/219791/CSNbayareax/2596k/prog.m3u8</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbc_cali.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nbc_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBC[/COLOR] [COLOR orchid]CALIFORNIA[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>http://tvecsncalifornia-i.akamaihd.net/hls/live/219792/CSNcaliforniax/4296k/prog.m3u8</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbc_cali.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nbc_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBC[/COLOR] [COLOR orchid]BOSTON[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://tvecsnnewengland-i.akamaihd.net/hls/live/219795/CSNnewenglandx/4296k/prog.m3u8</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbc_boston.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nbc_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBC[/COLOR] [COLOR orchid]CHICAGO[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>http://gatoriptv.co:80/918535952912/YFERU1zgCMZIxHG/43559</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbc_chicago.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nbc_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBC[/COLOR] [COLOR orchid]PHILADELPHIA[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://77.81.247.122:3000/group/3062018943/90</sublink>
+        <sublink>http://tvecsnphiladelph-i.akamaihd.net/hls/live/219794/CSNphiladelphiax/2596k/prog.m3u8</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbc_philly.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nbc_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBC[/COLOR] [COLOR orchid]WASHINGTON[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://tvecsnnorthwest-i.akamaihd.net/hls/live/221535/CSNnorthwestx/351XCSN4200.m3u8</sublink>
+        <sublink>http://77.81.247.122:3000/group/3062018943/89</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbc_nw.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nbc_fanart.jpg</fanart>
+</item>

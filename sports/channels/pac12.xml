@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+	<title>PAC-12 National</title>
+	<link>
+		<sublink>https://pvxumpmf2yepr6qzx1pu.s4ap.com/temp/pac/bitrate.m3u8?u=p12n.pac-12.com/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12n-2019-01/e71bebcd-6c1e-4166-8a27-7da29f390ce5/0.m3u8</sublink>
+		<sublink>https://p12n.pac-12.com/v1/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12n-2019-01/8a9a01fc-b30e-4555-8907-8a4f9ca3c338/0.m3u8|Cookie=GA1.2.283994456.1566369602; _gid=GA1.2.734033800.1566369602; _vwo_uuid_v2=D1ED6D5B380D0D68EFAA23D76DB9BCF02|b0bc3f36ca15d6965493da0cd450eecf; __gads=ID=7229023e27a4342d:T=1566369601:S=ALNI_MY3ZCgYl8nVBf0NJdWmXGH3wkaK_g; _vis_opt_s=1%7C; _vis_opt_test_cookie=1; _vwo_uuid=D1ED6D5B380D0D68EFAA23D76DB9BCF02; _vwo_ds=3%241566369602%3A43.151393%3A%3A; liveFilter=; ca=eyJhbGciOiJIUzI1NiJ9.eyJNVlBEIjoiVGVtcFBhc3MtTG9uZ1RUTCIsInN1YiI6IlBhYzEyU3RyZWFtIiwiaXNzIjoiUEFDMTIiLCJpYXQiOjE1NjYzNjk2OTUsImp0aSI6IjNmZWFlNWRiNTE4OWQyYmM2YjkzNzQ5MWQ5NGE2NzU1IiwiZXhwIjoxNTY2Nzg5Njk1fQ.xYq9ffW_iPxRhWK_CPqSPmqx6xKeF3lOQFp6utfy5iQ; _vis_opt_exp_32_combi=1; s_cc=true; s_sq=pac12-prod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dhttps%25253A%25252F%25252Fpac-12.com%25252Flive%2526link%253DNETWORKS%2526region%253Dpac12_react_live_widget%2526.activitymap%2526.a%2526.c</sublink>
+	</link>
+	<thumbnail>https://snworksceo.imgix.net/asp/b09a0ac3-975f-479f-b6a6-3a5c2794b826.sized-1000x1000.png?w=1000</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>PAC-12 Arizona</title>
+	<link>
+		<sublink>https://p12a.pac-12.com/v1/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12a-2019-01/c463d13c-02bc-4a62-8106-10dfed52540c/0.m3u8|Cookie=GA1.2.283994456.1566369602; _gid=GA1.2.734033800.1566369602; _vwo_uuid_v2=D1ED6D5B380D0D68EFAA23D76DB9BCF02|b0bc3f36ca15d6965493da0cd450eecf; __gads=ID=7229023e27a4342d:T=1566369601:S=ALNI_MY3ZCgYl8nVBf0NJdWmXGH3wkaK_g; _vis_opt_s=1%7C; _vis_opt_test_cookie=1; _vwo_uuid=D1ED6D5B380D0D68EFAA23D76DB9BCF02; _vwo_ds=3%241566369602%3A43.151393%3A%3A; liveFilter=; ca=eyJhbGciOiJIUzI1NiJ9.eyJNVlBEIjoiVGVtcFBhc3MtTG9uZ1RUTCIsInN1YiI6IlBhYzEyU3RyZWFtIiwiaXNzIjoiUEFDMTIiLCJpYXQiOjE1NjYzNjk2OTUsImp0aSI6IjNmZWFlNWRiNTE4OWQyYmM2YjkzNzQ5MWQ5NGE2NzU1IiwiZXhwIjoxNTY2Nzg5Njk1fQ.xYq9ffW_iPxRhWK_CPqSPmqx6xKeF3lOQFp6utfy5iQ; _vis_opt_exp_32_combi=1; s_cc=true; s_sq=pac12-prod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dhttps%25253A%25252F%25252Fpac-12.com%25252Flive%2526link%253DNETWORKS%2526region%253Dpac12_react_live_widget%2526.activitymap%2526.a%2526.c</sublink>
+	</link>
+	<thumbnail>https://snworksceo.imgix.net/asp/b09a0ac3-975f-479f-b6a6-3a5c2794b826.sized-1000x1000.png?w=1000</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>PAC-12 Mountain</title>
+	<link>
+		<sublink>http://qqtv.nl:8080/live/RB2XM5Nvcu/U6BbntTJ31/7978.m3u8</sublink>
+		<sublink>https://p12m.pac-12.com/v1/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12m-2019-01/a445707c-b103-4492-b5c0-b5bcb8be157b/0.m3u8|Cookie=GA1.2.283994456.1566369602; _gid=GA1.2.734033800.1566369602; _vwo_uuid_v2=D1ED6D5B380D0D68EFAA23D76DB9BCF02|b0bc3f36ca15d6965493da0cd450eecf; __gads=ID=7229023e27a4342d:T=1566369601:S=ALNI_MY3ZCgYl8nVBf0NJdWmXGH3wkaK_g; _vis_opt_s=1%7C; _vis_opt_test_cookie=1; _vwo_uuid=D1ED6D5B380D0D68EFAA23D76DB9BCF02; _vwo_ds=3%241566369602%3A43.151393%3A%3A; liveFilter=; ca=eyJhbGciOiJIUzI1NiJ9.eyJNVlBEIjoiVGVtcFBhc3MtTG9uZ1RUTCIsInN1YiI6IlBhYzEyU3RyZWFtIiwiaXNzIjoiUEFDMTIiLCJpYXQiOjE1NjYzNjk2OTUsImp0aSI6IjNmZWFlNWRiNTE4OWQyYmM2YjkzNzQ5MWQ5NGE2NzU1IiwiZXhwIjoxNTY2Nzg5Njk1fQ.xYq9ffW_iPxRhWK_CPqSPmqx6xKeF3lOQFp6utfy5iQ; _vis_opt_exp_32_combi=1; s_cc=true; s_sq=pac12-prod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dhttps%25253A%25252F%25252Fpac-12.com%25252Flive%2526link%253DNETWORKS%2526region%253Dpac12_react_live_widget%2526.activitymap%2526.a%2526.c</sublink>
+	</link>
+	<thumbnail>https://static.pac-12.com/images/logos/pac-12-mountain-logo.png</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>PAC-12 Los Angeles</title>
+	<link>
+		<sublink>https://p12l.pac-12.com/v1/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12l-2019-01/5bec33dc-9fac-48b6-b9d2-2834bd20eed7/0.m3u8|Cookie=GA1.2.283994456.1566369602; _gid=GA1.2.734033800.1566369602; _vwo_uuid_v2=D1ED6D5B380D0D68EFAA23D76DB9BCF02|b0bc3f36ca15d6965493da0cd450eecf; __gads=ID=7229023e27a4342d:T=1566369601:S=ALNI_MY3ZCgYl8nVBf0NJdWmXGH3wkaK_g; _vis_opt_s=1%7C; _vis_opt_test_cookie=1; _vwo_uuid=D1ED6D5B380D0D68EFAA23D76DB9BCF02; _vwo_ds=3%241566369602%3A43.151393%3A%3A; liveFilter=; ca=eyJhbGciOiJIUzI1NiJ9.eyJNVlBEIjoiVGVtcFBhc3MtTG9uZ1RUTCIsInN1YiI6IlBhYzEyU3RyZWFtIiwiaXNzIjoiUEFDMTIiLCJpYXQiOjE1NjYzNjk2OTUsImp0aSI6IjNmZWFlNWRiNTE4OWQyYmM2YjkzNzQ5MWQ5NGE2NzU1IiwiZXhwIjoxNTY2Nzg5Njk1fQ.xYq9ffW_iPxRhWK_CPqSPmqx6xKeF3lOQFp6utfy5iQ; _vis_opt_exp_32_combi=1; s_cc=true; s_sq=pac12-prod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dhttps%25253A%25252F%25252Fpac-12.com%25252Flive%2526link%253DNETWORKS%2526region%253Dpac12_react_live_widget%2526.activitymap%2526.a%2526.c</sublink>
+	</link>
+	<thumbnail>https://snworksceo.imgix.net/asp/b09a0ac3-975f-479f-b6a6-3a5c2794b826.sized-1000x1000.png?w=1000</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>PAC-12 Oregon</title>
+	<link>
+		<sublink>https://p12o.pac-12.com/v1/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12o-2019-01/6e52c86f-1087-4d0d-bf4e-a30e7b095bb8/0.m3u8|Cookie=GA1.2.283994456.1566369602; _gid=GA1.2.734033800.1566369602; _vwo_uuid_v2=D1ED6D5B380D0D68EFAA23D76DB9BCF02|b0bc3f36ca15d6965493da0cd450eecf; __gads=ID=7229023e27a4342d:T=1566369601:S=ALNI_MY3ZCgYl8nVBf0NJdWmXGH3wkaK_g; _vis_opt_s=1%7C; _vis_opt_test_cookie=1; _vwo_uuid=D1ED6D5B380D0D68EFAA23D76DB9BCF02; _vwo_ds=3%241566369602%3A43.151393%3A%3A; liveFilter=; ca=eyJhbGciOiJIUzI1NiJ9.eyJNVlBEIjoiVGVtcFBhc3MtTG9uZ1RUTCIsInN1YiI6IlBhYzEyU3RyZWFtIiwiaXNzIjoiUEFDMTIiLCJpYXQiOjE1NjYzNjk2OTUsImp0aSI6IjNmZWFlNWRiNTE4OWQyYmM2YjkzNzQ5MWQ5NGE2NzU1IiwiZXhwIjoxNTY2Nzg5Njk1fQ.xYq9ffW_iPxRhWK_CPqSPmqx6xKeF3lOQFp6utfy5iQ; _vis_opt_exp_32_combi=1; s_cc=true; s_sq=pac12-prod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dhttps%25253A%25252F%25252Fpac-12.com%25252Flive%2526link%253DNETWORKS%2526region%253Dpac12_react_live_widget%2526.activitymap%2526.a%2526.c</sublink>
+	</link>
+	<thumbnail>https://snworksceo.imgix.net/asp/b09a0ac3-975f-479f-b6a6-3a5c2794b826.sized-1000x1000.png?w=1000</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>PAC-12 Washington</title>
+	<link>
+		<sublink>https://p12w.pac-12.com/v1/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12w-2019-01/1ca017c8-3628-479f-98d4-aeccb9d3f106/0.m3u8|Cookie=GA1.2.283994456.1566369602; _gid=GA1.2.734033800.1566369602; _vwo_uuid_v2=D1ED6D5B380D0D68EFAA23D76DB9BCF02|b0bc3f36ca15d6965493da0cd450eecf; __gads=ID=7229023e27a4342d:T=1566369601:S=ALNI_MY3ZCgYl8nVBf0NJdWmXGH3wkaK_g; _vis_opt_s=1%7C; _vis_opt_test_cookie=1; _vwo_uuid=D1ED6D5B380D0D68EFAA23D76DB9BCF02; _vwo_ds=3%241566369602%3A43.151393%3A%3A; liveFilter=; ca=eyJhbGciOiJIUzI1NiJ9.eyJNVlBEIjoiVGVtcFBhc3MtTG9uZ1RUTCIsInN1YiI6IlBhYzEyU3RyZWFtIiwiaXNzIjoiUEFDMTIiLCJpYXQiOjE1NjYzNjk2OTUsImp0aSI6IjNmZWFlNWRiNTE4OWQyYmM2YjkzNzQ5MWQ5NGE2NzU1IiwiZXhwIjoxNTY2Nzg5Njk1fQ.xYq9ffW_iPxRhWK_CPqSPmqx6xKeF3lOQFp6utfy5iQ; _vis_opt_exp_32_combi=1; s_cc=true; s_sq=pac12-prod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dhttps%25253A%25252F%25252Fpac-12.com%25252Flive%2526link%253DNETWORKS%2526region%253Dpac12_react_live_widget%2526.activitymap%2526.a%2526.c</sublink>
+	</link>
+	<thumbnail>https://snworksceo.imgix.net/asp/b09a0ac3-975f-479f-b6a6-3a5c2794b826.sized-1000x1000.png?w=1000</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>PAC-12 Bay Area</title>
+	<link>http://qqtv.nl:8080/live/RB2XM5Nvcu/U6BbntTJ31/7980.m3u8</link>
+	<link>https://p12b.pac-12.com/v1/manifest/b6988789cc420a523cc8393d9c7e629c76fece84/p12b-2019-01/fe13201b-8eac-4fcb-afd0-0ecae2ddff39/0.m3u8|Cookie=GA1.2.283994456.1566369602; _gid=GA1.2.734033800.1566369602; _vwo_uuid_v2=D1ED6D5B380D0D68EFAA23D76DB9BCF02|b0bc3f36ca15d6965493da0cd450eecf; __gads=ID=7229023e27a4342d:T=1566369601:S=ALNI_MY3ZCgYl8nVBf0NJdWmXGH3wkaK_g; _vis_opt_s=1%7C; _vis_opt_test_cookie=1; _vwo_uuid=D1ED6D5B380D0D68EFAA23D76DB9BCF02; _vwo_ds=3%241566369602%3A43.151393%3A%3A; liveFilter=; ca=eyJhbGciOiJIUzI1NiJ9.eyJNVlBEIjoiVGVtcFBhc3MtTG9uZ1RUTCIsInN1YiI6IlBhYzEyU3RyZWFtIiwiaXNzIjoiUEFDMTIiLCJpYXQiOjE1NjYzNjk2OTUsImp0aSI6IjNmZWFlNWRiNTE4OWQyYmM2YjkzNzQ5MWQ5NGE2NzU1IiwiZXhwIjoxNTY2Nzg5Njk1fQ.xYq9ffW_iPxRhWK_CPqSPmqx6xKeF3lOQFp6utfy5iQ; _vis_opt_exp_32_combi=1; s_cc=true; s_sq=pac12-prod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dhttps%25253A%25252F%25252Fpac-12.com%25252Flive%2526link%253DNETWORKS%2526region%253Dpac12_react_live_widget%2526.activitymap%2526.a%2526.c</link>
+	<thumbnail>https://snworksceo.imgix.net/asp/b09a0ac3-975f-479f-b6a6-3a5c2794b826.sized-1000x1000.png?w=1000</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>

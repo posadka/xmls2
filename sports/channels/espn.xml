@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]ESPN NEWS[/COLOR] [COLOR orchid]HD[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gma2.blab.email/espnews.m3u8</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/espn_news.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/espn_fanart.png</fanart>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]ESPN[/COLOR] [COLOR orchid]HD[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/espn.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/espn_fanart.png</fanart>
+    <link>https://gma2.blab.email/fs2.m3u8</link>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]ESPN 2[/COLOR] [COLOR orchid]HD[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/espn2.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/espn_fanart.png</fanart>
+    <link>https://gma2.blab.email/espn2.m3u8</link>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]ESPN U[/COLOR] [COLOR orchid]HD[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/espn_u.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/espn_fanart.png</fanart>
+    <link>https://gma2.blab.email/espnu.m3u8</link>
+</item>
+

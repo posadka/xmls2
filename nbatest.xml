@@ -1,0 +1,279 @@
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (ES)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param1] [makelist.param2] Vs [makelist.param3] [makelist.param4] [/COLOR] [COLOR dodgerblue][makelist.param5][/COLOR]</title>
+        <link>$doregex[lists]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    e = re.findall(r'(?s)style="position: relative;bottom: -5px;">([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^"]*)"([^"]*)', page_data)
+    return e
+]]></expres>
+<page>http://everysports.us/mlb</page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    import re
+    e = page_data.split('style="padding: 12px', 1)[-1]
+    e = re.findall(r'data-slug="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',e)
+    sort =[('http://everysports.us/view/'+i[0],i[1]) for i in e]
+    return sort
+]]></expres>
+<page>[makelist.param6]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re,base64,requests
+    token = client.request('http://continuum.watch/Crew/dummyToken.txt')
+    r = re.findall(r'atob\(\'([^\']*)', page_data)[0]; r = base64.b64decode(r).decode('utf-8')
+    r = r.replace('master_desktop_complete','5600K/5600_slide')
+    return r + '|Cookie=Authorization=' + token
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (S24)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param1][/COLOR]</title>
+    <link>$doregex[player]</link>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    site = client.request('https://vip.sports24.club/mlb//')
+    items = re.findall('(?s)float: right;">([^<]*)(?:.*?href)="([^"]*)', site)
+    sort = [(i[0].replace('\xc3\xa9s',''),'https://vip.sports24.club'+i[1].replace('\xc3\xa9s','')) for i in items]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re,base64
+    s = client.request('[makelist.param2]')
+    token = client.request('http://continuum.watch/Crew/dummyToken.txt')
+    u = re.findall('(?s)id="playframe">(?:.*?src)="([^"]*)', s)[0]
+    b = 'https://vip.sports24.club'+u
+    b = b.replace(' ', '%20')
+    x = client.request(b)
+    l = re.findall('(?s)xurl\s=\satob\(\'([^\']*)', x)[0]; l = base64.b64decode(l).decode('utf-8')
+    l = l.replace('https:','')
+    l = l.replace('//','https://')
+    l = l.replace('master_desktop_complete','5600K/5600_slide')
+    return l + '|Cookie=Authorization=' + token
+]]></expres>
+<page></page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (ES)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param1] [makelist.param2] Vs [makelist.param3] [makelist.param4] [/COLOR] [COLOR dodgerblue][makelist.param5][/COLOR]</title>
+        <link>$doregex[lists]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    e = re.findall(r'(?s)style="position: relative;bottom: -5px;">([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^"]*)"([^"]*)', page_data)
+    return e
+]]></expres>
+<page>http://everysports.us/mlb</page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m, url = ''):
+    import re
+    e = page_data.split('style="padding: 12px', 1)[-1]
+    e = re.findall(r'data-slug="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',e)
+    sort =[('http://everysports.us/view/'+i[0],i[1]) for i in e]
+    return sort
+]]></expres>
+<page>[makelist.param6]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][m3u.param1][/COLOR]</title>
+  <link>[m3u.param2]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re,base64,requests
+    token = client.request('http://continuum.watch/Crew/dummyToken.txt')
+    r = re.findall(r'(atob)\(\'([^\']*)', page_data)
+    r = [(i[0].replace('atob','Play Crew Stream'), base64.b64decode(i[1]).decode('utf-8').replace('master_desktop_complete','5600K/5600_slide') + '|Cookie=Authorization=' + token ) for i in r]
+    return r
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (IS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[crewschedule]</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
+<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
+<regex>
+<name>crewschedule</name>
+<listrepeat><![CDATA[
+<title>[COLOR dodgerblue][crewschedule.param3][/COLOR] [COLOR orange][crewschedule.param2][/COLOR]</title>
+<link>$doregex[play]</link>
+        <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    url = client.schedule('http://crackstreams.is/nbastreams/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>play</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[crewschedule.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (SO)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[crewschedule]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/fifa_fanart.jpg</fanart>
+<regex>
+<name>crewschedule</name>
+<listrepeat><![CDATA[
+<title>[COLOR dodgerblue][crewschedule.param1][/COLOR] [COLOR orange][crewschedule.param2][/COLOR]</title>
+<link>$doregex[play]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    e = re.findall('(?s)(\w+\:\w+)\s*([^|]*)\|(.*?php)', page_data)
+    sort = [(i[0],i[1],i[2].replace(' ','')) for i in e]
+    return sort
+]]></expres>
+<page>https://sportzonline.to/prog.txt</page>
+</regex>
+<regex>
+<name>play</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = '[crewschedule.param3]'):
+    from resources.lib.modules import jsunpack,client
+    import re,requests
+    src = re.findall('<iframe src="([^"]*)', page_data)[0]
+    src = 'http:' + src if src.startswith('//') else src
+    fu = requests.get(src, headers={'user-agent':'iPad','referer':url}).text
+    e = re.findall('(eval\(function[^\n]+)',fu)[0]
+    js = jsunpack.unpack(e).replace('\\','')
+    u = re.findall('source:\s*[\'"]([^\'"]*)', js)[0]
+    return u + '|user-agent=ipad&referer=' + url
+]]></expres>
+<page>[crewschedule.param3]</page>
+</regex>
+</item>
+
+<item>
+<name>Cliphunter - Latest</name>
+<link>$doregex[makelist]</link>
+<thumbnail></thumbnail>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import cache,client,workers
+    import re,urllib,xbmc,xbmcgui
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], client.request(i[1]))]       
+
+    url = 'https://www.cliphunter.com/categories/All/'
+    u = []
+    for i in range(1, 8): u += [url + str(i)]
+    u = cache.get(page().run, 24, u)
+    r = re.findall('(?s)<li mId="(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)(?:[^=]*)=(?:[^=]*)="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=.+?vttl(?:[^>]*)>([^<]*)', u)
+    r = [('https://www.cliphunter.com'+i[0],i[1],i[2]) for i in r]
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.xxx('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+

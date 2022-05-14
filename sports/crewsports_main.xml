@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]IPTV[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/iptv/iptv.xml</link>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/iptv.png</thumbnail>
+    <fanart></fanart>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NFL[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/nfl/nfl.xml</link>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/nfl_fanart.jpg</fanart>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NHL[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/nhl_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/nhl/nhl.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBA[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/nba.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/nba_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/nba/nba.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]MLB[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/mlb.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/mlb_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/mlb/mlb.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/ncaa.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/ncaa_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/ncaa/ncaa.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA BASKETBALL[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/ncaab_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/ncaa/ncaab.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]UFC / MMA[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/ufc.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/ufc_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/ufc_mma/ufc.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]WWE[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/wwe_raw.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/wwe_raw_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/wwe/wwe.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]BOXING[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/boxing.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/boxing_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/boxing/boxing.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]FIFA[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/fifa.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/fifa_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/fifa/fifa.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]TENNIS[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/tennis.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/tennis_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/tennis/tennis.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]MOTO-GP[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/motogp.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/motogp_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/motor/motogp.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]FORUMLA 1[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/f1_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/motor/f1.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]PGA[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/pga.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/pga_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/pga/pga.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]CRICKET[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/cricket.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/cricket_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/cricket/cricket.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NASCAR[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/nascar.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/nascar_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/nascar/nascar.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]LFL[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/lfl.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/lfl_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/lfl/lfl.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]MISC SPORTS[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/misc_sports.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/misc_sports_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/misc/misc_sports.xml</link>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]SPORTS REPLAYS[/COLOR]  [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>http://continuum.watch/Crew/resources/media/thecrew/sports_replays.png</thumbnail>
+    <fanart>http://continuum.watch/Crew/resources/fanart/sports_replays_fanart.jpg</fanart>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/sports/replays/replays.xml</link>
+</dir>
+
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]TESTING[/COLOR] [COLOR orchid]AREA[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://plugin.video.thecrew/?action=developer</link>
+</plugin>

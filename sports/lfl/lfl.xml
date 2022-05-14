@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [COLOR white]LFL[/COLOR] [COLOR orchid]LEAGUE[/COLOR] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/lfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/lfl_fanart.jpg</fanart>
+</item>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white]LFL[/COLOR] [COLOR orchid]NEW UPLOADS AND LIVE[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLfS4i_GXOfPxRFwON3hLqwBOoihg7eWqk</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/lfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/lfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white]LFL[/COLOR] [COLOR orchid]FULL GAME REPLAYS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLfS4i_GXOfPxBvUBhQ_SLTf_NwSCtyDpl</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/lfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/lfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white]LFL[/COLOR] [COLOR orchid]GREATEST MOMENTS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLfS4i_GXOfPySbkwjdxGEYAyYu5S_jT1L</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/lfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/lfl_fanart.jpg</fanart>
+</plugin>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Workouts[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLoA8R7df04hRA9928--yBDTXgOLdHM1cj/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Train Like a Celebrity[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLoA8R7df04hQ8qbEAGtMMLx-By3aDBHlt/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Gym & Fridge Tour[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLoA8R7df04hQXeGWljZXvLXokEs7sPtoF/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]NCAAB[/COLOR] [COLOR orchid]LIVE[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (NB)19 ONLY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR white] [makelist.param2][/COLOR] [COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue] [makelist.param4][/COLOR] VS [COLOR orange][makelist.param5][/COLOR] [COLOR dodgerblue] [makelist.param6][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    r = re.findall('(?s)<div class="col-md-6 col-sm-6">\s*<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?name">([^<]*).*?ore">([^<]*).*?name">([^<]*).*?ore">([^<]*)', page_data)
+    return r
+]]></expres>
+<page>https://reddit.nbabite.com/</page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re,requests
+    e = re.findall('var streamsMatchId\s*=\s*([^;]*)',page_data)[0]
+    r = re.findall('var streamsSport\s*=\s*"([^;"]*)',page_data)[0]
+    t = requests.get('https://sportscentral.io/streams-table/' + e + '/' + r + '?new-ui=1&origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
+    t = t.split('Fubo',1)[-1]
+    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    sort = [(client.tinyu(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'tinyurl' in i[0] if 'natharaky' not in i[1]]
+    sort1 = [(client.tinyu(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'tinyurl' in i[0] if 'KobeStreams' not in i[1]]
+    return sort + sort1
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param3][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://6streams.tv/ncaaf-streams/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB[/COLOR] [COLOR orchid] (W4)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR dodgerblue][makelist.param3] [/COLOR] [COLOR orange][makelist.param2][/COLOR] Vs [COLOR orange][makelist.param4][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'http://liveonscore.tv/category/ncaa/page/'
+    u = []
+    for i in range(1,3): u += [url + str(i)]
+    u = page().run(u)
+    e = re.findall('(?s)competition"><a href="([^"]*).*?e">([^<]*).*?s">([^<]*).*?e">([^<]*)', u)
+    return e
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param3][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://6stream.xyz/ncaaf-streams/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAAB[/COLOR] [COLOR orchid] (YSS) [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    page_data = client.request('http://yrsprts.stream/live?v=nba?g=knicks')
+    r = re.findall('<a href="([^"]*)" title="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+    sort = [(i[0],i[1],i[2]) for i in r if 'c=nba' in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    w = re.findall('(?s)<iframe frameborder=0 height=100% width=100% src="([^"]*)', page_data)[0]
+    h = client.request(w)
+    i = re.findall('player">\s*<iframe style="width:100%;height:100%;" src="([^"]*)', h)[0]
+    t = i.replace('ustv.php?ch=','srv/')
+    e = t + '.m3u8'
+    return e + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + i
+]]></expres>
+<page>[makelist.param1]</page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA LIVE[/COLOR] [COLOR orchid] (RD)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param2][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    import re
+    u = re.findall('<h2 class=\'post-title\'>\s*<a href=\'([^\']*)\'>([^<]*)', page_data)
+    return u
+]]></expres>
+<page>http://www.redsand.ga/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,jsunpack
+    import re
+    w = re.findall('source:\s"([^"]*)', page_data)[0]
+    return w
+]]></expres>
+<page>[makelist.param1]</page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA LIVE[/COLOR] [COLOR orchid] (WS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param2][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    import re
+    u = re.findall('(?s)<h2 class=\'post-title entry-title\'>\s*<a href=\'([^\']*)\'>\s*([^<]*)', page_data)
+    return u
+]]></expres>
+<page>http://www.wizistreams.club/search?&max-results=40</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    w = re.findall('<iframe src=\'([^\']*)', page_data)[0]
+    h = client.request(w)
+    i = re.findall('source:\s*\'([^\']*)', h)[0]
+    return i + '|user-agent=iPad&referer=' + w
+]]></expres>
+<page>[makelist.param1]</page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR] [COLOR orange][makelist.param4][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('https://www.streameast.live/college-basketball-streams/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA LIVE[/COLOR] [COLOR orchid] (YSS) [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    page_data = client.request('http://yoursports.stream')
+    r = re.findall('<a href="([^"]*)" title="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+    sort = [('http://yoursports.stream/'+i[0],i[1],i[2]) for i in r if 'c=nba' in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA LIVE[/COLOR] [COLOR orchid] (S24)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param1][/COLOR]</title>
+    <link>$doregex[player]</link>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    import re
+    items = re.findall('(?s)float: right;">([^<]*)(?:.*?f=")([^"]*)', page_data)
+    sort = [(i[0],'http://sports24.club'+i[1]) for i in items]
+    return sort
+]]></expres>
+<page>https://sports24.club/ncaab/</page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re,base64
+    l = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]; l = base64.b64decode(l)
+    l = l.replace('https:','')
+    l = l.replace('//','https://')
+    if l.startswith('/'): l = 'https://sports24.club' + l
+    return l + '|user-agent=iPad&referer=[makelist.param2]'
+]]></expres>
+<page>[makelist.param2]</page>
+</regex>
+</item>

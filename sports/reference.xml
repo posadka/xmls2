@@ -1,0 +1,168 @@
+
+----youtube mlb---
+
+<item>
+	<title>[COLOR dodgerblue]¤[/COLOR] [COLOR white]CARDNIALS vs. DIAMONDBACKS (YT)[/COLOR] [COLOR pink]  3:40 EST[/COLOR] [COLOR dodgerblue]¤[/COLOR]</title>
+	<link>https://www.youtube.com/api/stats/atr?ns=yt&el=embedded&cpn=WeydyPTwGyl7PlMn&docid=CrKTW3-irLM&ver=2&referrer=https%3A%2F%2Fwww.youtube.com%2Fembed%2FClD48BBUWck&cmt=1974.677&ei=zZtdXe6_KMGrDuSjveAJ&fmt=135&fs=0&rt=5.662&of=rZZcOsbnM_JhQE3tQXuF1A&euri=https%3A%2F%2Fbilasporttemporary.blogspot.com%2F2019%2F07%2Fblog-post_23.html&lact=736&live=dvr&cl=264462721&mos=0&vm=CAEQABgE&volume=100&c=WEB_EMBEDDED_PLAYER&cver=20190821&cplayer=UNIPLAYER&cbr=Chrome&cbrver=76.0.3809.100&cos=Windows&cosver=10.0&delay=5&hl=en_US&cr=US&fexp=23735227%2C23735272%2C23744176%2C23751767%2C23788875%2C23804281%2C23812644%2C23816900%2C23818122%2C23818585%2C23823671%2C23824204%2C23825926%2C23828084%2C23828244%2C23829115%2C23829444%2C23830438%2C23832308%2C23832543%2C23833164%2C23834051%2C23836872%2C23837125%2C23837142%2C23837418%2C23837867%2C23837867%2C23838317%2C3300014%2C3300116%2C3300131%2C3300161%2C3313321%2C3314088%2C3314786%2C3315351%2C3315405%2C3315531%2C3315658%2C9405963%2C9449243%2C9474357&afmt=140&lio=1566413825.912</link>
+	<thumbnail>http://the-crew.xyz/xmlhat/bg/mlb.png</thumbnail>
+	<fanart>https://media.graytvinc.com/images/810*455/MLB+MajorLeagueBaseball.jpg</fanart>
+</item>
+
+
+----live ------
+<item>
+	<title>[COLOR dodgerblue]¤¤¤¤¤[/COLOR] [COLOR white]BOXING[/COLOR] [COLOR pink]LIVE[/COLOR] [COLOR dodgerblue]¤¤¤¤¤[/COLOR]</title>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/boxing.png</thumbnail>
+	<fanart>https://wallpaperplay.com/walls/full/e/c/6/72000.jpg</fanart>
+</item>
+
+----direct----
+<item>
+	<title>[COLOR dodgerblue]¤[/COLOR] [COLOR white]BOXING LIVE[/COLOR] [COLOR pink]DIRECTS[/COLOR] [COLOR dodgerblue]¤[/COLOR]</title>
+	<link>
+		<sublink></sublink>
+	</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/boxing.png</thumbnail>
+	<fanart>https://wallpaperplay.com/walls/full/e/c/6/72000.jpg</fanart>
+</item>
+
+------channels-----
+<item>
+	<title>[COLOR dodgerblue]¤¤¤¤¤[/COLOR] [COLOR white]BOXING[/COLOR] [COLOR pink]CHANNELS[/COLOR] [COLOR dodgerblue]¤¤¤¤¤[/COLOR]</title>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/boxing.png</thumbnail>
+	<fanart>https://wallpaperplay.com/walls/full/e/c/6/72000.jpg</fanart>
+</item>
+
+----replays-----
+
+<item>
+	<title>[COLOR dodgerblue]¤¤¤¤¤[/COLOR] [COLOR white]NFL[/COLOR] [COLOR pink]REPLAYS[/COLOR] [COLOR dodgerblue]¤¤¤¤¤[/COLOR]</title>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/nfl.png</thumbnail>
+	<fanart>http://sportsmockery.com/wp-content/uploads/2016/06/nfl-field.jpg</fanart>
+</item>
+
+
+----specials----
+
+<item>
+	<title>[COLOR dodgerblue]¤¤¤¤¤[/COLOR] [COLOR white]BOXING[/COLOR] [COLOR pink]SPECIALS[/COLOR] [COLOR dodgerblue]¤¤¤¤¤[/COLOR]</title>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/boxing.png</thumbnail>
+	<fanart>https://wallpaperplay.com/walls/full/e/c/6/72000.jpg</fanart>
+</item>
+
+
+-------------nfl till we fix ------
+
+<plugin>
+	<title>[COLOR dodgerblue]¤[/COLOR] [COLOR white]NFL LIVE[/COLOR] [COLOR pink](YS)[/COLOR] [COLOR dodgerblue]¤[/COLOR]</title>
+	<link>plugin://script.crew.sports/?mode=30</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/nfl.png</thumbnail>
+	<fanart>http://sportsmockery.com/wp-content/uploads/2016/06/nfl-field.jpg</fanart>
+</plugin>
+<plugin>
+	<title>[COLOR dodgerblue]¤[/COLOR] [COLOR white]NFL LIVE[/COLOR] [COLOR pink](HS)[/COLOR] [COLOR dodgerblue]¤[/COLOR]</title>
+	<link>plugin://script.crew.sports/?mode=15</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/nfl.png</thumbnail>
+	<fanart>http://sportsmockery.com/wp-content/uploads/2016/06/nfl-field.jpg</fanart>
+</plugin>
+<plugin>
+	<title>[COLOR dodgerblue]¤[/COLOR] [COLOR white]NFL LIVE[/COLOR] [COLOR pink](VS)[/COLOR] [COLOR dodgerblue]¤[/COLOR]</title>
+	<link>plugin://script.crew.sports/?mode=48</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/nfl.png</thumbnail>
+	<fanart>http://sportsmockery.com/wp-content/uploads/2016/06/nfl-field.jpg</fanart>
+</plugin>
+
+
+------link formats------
+
+http://sv1.dailymotion.com.1cdn.host/live/nhltv/chunks.m3u8|Referer=http://123tvnow.com/watch/nhl-network
+
+http://cdn3.hdstreams.club/live/ch3/index.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36&Referer=http://hdstreams.club/page/ch3.php
+
+plugin://plugin.video.SportsDevil/?mode=1&amp;amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=15
+
+http://yrsprts.xyz/hls/yss.m3u8?ch=spn|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36
+
+http://e2.123tv-uk.host/live/fs2/chunks.m3u8|Referer=http://123tvgo.com/watch/
+
+http://weak_spell.carniferou.club/edge/ESPN/playlist.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0&Referer=http://h0stream.club/watch/bayern-munchen-vs-hertha-bsc/
+
+ <sublink>http://weak_spell.carniferou.club/edge/ESPN/chunks.m3u8|Referer=http://weakspell.com</sublink>
+ 
+ <sublink>http://weak_spell.carniferou.club/edge/Patriots/chunks.m3u8|Referer=http://weakspell.com</sublink> Use away team Cap first letter
+
+http://cdn.sportstream.to/live/g/index.m3u8|Referer=http://www.sportstream.to/c/g.php
+
+https://cdx.dailysport.pw/3/3.m3u8|User-Agent=Mozilla/5.0 (Windows 1N 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/T25l.TmF0aW9u Safari/537.36
+
+http://sports24.club/test/cv.m3u8?id=FS1&q=pkgFS1Mid.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer=http://sports24.club/tv/v?id=fs1
+
+https://e2.cdn4.us/ingest09/25533.m3u8?sf=MzNwczEwU2JE&token=8dzkpIPgVFmnAkUdZzOs8g&expires=1572811889&rnd=|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer=https://telerium.tv/embed/25533.html
+
+
+https://hlslinear-akc.clt2.media.foxsportsgo.com/hdnts=exp=1581443493~acl=/*~id=a5efb6ca-5247-46e7-af9e-a7242f7f2a88-52495-33e11bc453c4ffc29d659f1b9ae170149191d543~hmac=67ae7871bef920b65acf6d9c54aa35545d1bb54481430b86395e4ca0a13b2699/09676ed267889045e40230e6911aa287/ls01/foxsports/FOXSPORTS_LINEAR_501/live/2020/02/07/76226824/3500K/3500_slide_ads.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer=http://yoursports.stream/ing/nba?g=pistons
+
+
+-------------back up---------------
+
+-----NCAAB------
+FS2
+<sublink>https://e7.cdn4.us/ingest666/fstwo.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>https://e7.cdn4.us/ingest666/fstwo.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=https://sportsbay.org</sublink>
+
+Espn u
+<sublink>https://e7.cdn4.us/ingest666/espn_u.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>https://e7.cdn4.us/ingest666/espn_u.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=https://sportsbay.org</sublink>
+<sublink>http://cdn.yoursports.stream/espnu.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream/ing/espnu</sublink>
+
+
+Big ten network
+<sublink>https://e7.cdn4.us/ingest666/btn.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>https://e7.cdn4.us/ingest666/btn.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=https://sportsbay.org</sublink>
+<sublink>http://cdn.yoursports.stream/btn.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Refererhttp://yoursports.stream/ing/btn</sublink>
+
+ESPN
+<sublink>https://cvtv.cvalley.net/hls/ESPNHD/ESPNHD.m3u8</sublink>
+<sublink>https://e7.cdn4.us/ingest666/espn_usa.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>https://e7.cdn4.us/ingest666/espn_usa.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=https://sportsbay.org</sublink>
+<sublink>http://cdn.yoursports.stream/espn.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream/ing/espn</sublink>
+
+Espn 2 
+<sublink>https://cvtv.cvalley.net/hls/ESPN2HD/ESPN2HD.m3u8</sublink>
+<sublink>https://e7.cdn4.us/ingest666/espn2.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>http://cdn.yoursports.stream/espn2.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream/ing/espn2</sublink>
+
+FS1
+<sublink>https://cvtv.cvalley.net/hls/FS1/FS1.m3u8</sublink>
+<sublink>http://cdn.yoursports.stream/fs1.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream/ing/fs1</sublink>
+<sublink>https://e7.cdn4.us/ingest666/fs-one.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>https://e7.cdn4.us/ingest666/fs-one.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=https://sportsbay.org</sublink>
+
+
+acc network
+<sublink>https://e7.cdn4.us/ingest666/accn.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>https://e7.cdn4.us/ingest666/accn.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=https://sportsbay.org</sublink>
+<sublink>http://cdn.yoursports.stream/acc.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream/ing/acc</sublink>
+
+Sec network
+<sublink>http://cdn.yoursports.stream/sec.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream/ing/sec</sublink>
+<sublink>https://e7.cdn4.us/ingest666/sec-network.m3u8|Referer=https://box-live.stream</sublink>
+<sublink>https://e7.cdn4.us/ingest666/sec-network.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=https://sportsbay.org</sublink>
+
+TNT 
+<sublink>https://cvtv.cvalley.net/hls/TNTHD/TNTHD.m3u8</sublink>
+<sublink>http://peer2.savitar.tv/TNT/myStream/chunks.m3u8?nimblesessionid=70150549&wmsAuthSign=c2VydmVyX3RpbWU9MTEvMTEvMjAxOSAxMTo1ODo0MCBQTSZoYXNoX3ZhbHVlPWUwVlczMGdaYmVHRnZ1UnVJT3hIa0E9PSZ2YWxpZG1pbnV0ZXM9MzYwJmlkPTA=|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream</sublink>
+<sublink>http://sv3.dailymotion.com.1cdn.host/live/tnt/playlist.m3u8|Referer=http://123tvnow.com</sublink>
+
+LONGHORN
+<sublink>http://cdn.yoursports.stream/lhn.m3u8|User-Agent=Mozilla/5.0 Windows 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/T25l.TmF0aW9u Safari/537.36&Referer=http://yoursports.stream/ing/lhn</sublink>
+
+
+USA
+<sublink>https://cvtv.cvalley.net/hls/USAHD/USAHD.m3u8</sublink>
+<sublink>http://209.205.202.138:8000/live/chuck1/chuck2/111.m3u8?token=Q0BQVkQOGlsQAAQEWwsEUlRWBgJaVApWBQBUDlYHCANcBl1TVFAKU1YTSRNLTUQEAAw6CAcVAgUHBE4aRhFURWcLXBUNRAlQBgRXAxoVFBUIDABDWQcUFkZcBhoJQAgFClIaGxUDQBVXQwtQVGZSBBcIBgRBDVZBWllOGlwMblNdD1lZU0QCQwITSRNRSkZDWw8QDQ8bGlZfQRBZRwcTDRpWAQMARBRDUV4QX0xLT0NbQzcuQRsaUU5BB1ZAC15ZGlgaWgQTAEMeEwxCZ0tTEhUTAAAOUkoWDBdSGh9AXFZAPVtYWQhdAkZYCl9LGwxDU0NJQw5YVl1CWhBnQwtVFQJACgMCUwpDTw==</sublink>
+
+FOX
+<sublink>http://190.80.3.28/FOX/FOX.isml/index.m3u8</sublink>
+<sublink>http://api.new.livestream.com/accounts/57501/events/1146195/live.m3u8</sublink>
+ce87c6f594b5ff0349ee9d45697de04b

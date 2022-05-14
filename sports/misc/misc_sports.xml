@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]OLYMPICS LIVE[/COLOR] [COLOR orchid] (SRS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<thumbnail>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</thumbnail>
+<fanart>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue][makelist.param4][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control,cfscrape
+    import re
+    scraper = cfscrape.create_scraper()
+    page_data = scraper.get('https://api.sportsurge.net/events/list?group=81').text
+    r = re.findall('(?s)id":([^,]*).*?:"([^"]*).*?:.*?:.*?:"([^"]*).*?:"([^"]*)', page_data)
+    sort = [('https://api.sportsurge.net/streams/list?event='+i[0],i[1],'https://sportsurge.net'+i[2],i[3]) for i in r]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param1][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client,cfscrape
+    import re
+    scraper = cfscrape.create_scraper()
+    page_data = scraper.get('[makelist.param1]').text
+    r = re.findall('(?s)name":"([^,]*)".*?:".*?:"([^"]*)', page_data)
+    sort = [(i[0],i[1]) for i in r if 'Stream East' not in i[0] if 'dudestream' not in i[0] if 'chenstream' not in i[0] if 'NbaStreams' not in i[0] if 'Livefreegame' not in i[0] if 'tvsportslive' not in i[0] if 'bilasport' not in i[0] if 'Dubz Streams' not in i[0] if 'Freetvlive1' not in i[0] if 'NoDelayStream' not in i[0] if 'Sportinglivestreamz' not in i[0] if 'Icelz  ' not in i[0] if 'bestnhl.com' not in i[0] if 'papahd' not in i[0] if 'Sports News' not in i[0] if 'sportsio' not in i[0] if 'Streamos' not in i[0] if 'SoccerJumboTV' not in i[0] if 'streamhd247' not in i[0] if 'babysharkstream' not in i[0] if 'Icelz' not in i[0] if 'MyGoodStream' not in i[0] if 'Semensport' not in i[0] if 'Bilasport' not in i[0] if 'Sports24' not in i[0] if 'Yoursports Stream' not in i[0] if 'KobeStreams' not in i[0] if 'sportsway' not in i[0] if 'summerstream' not in i[0] if 'RoyStream' not in i[0] if 'BuffStreams' not in i[0] if 'Time4tv' not in i[0]]
+    return sort
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param2]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]TOKYO OLYMPICS LIVE[/COLOR] [COLOR orchid] (NB)19 ONLY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<thumbnail>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</thumbnail>
+<fanart>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param2][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    r = re.findall('(?s)<div class="col-md-12 col-sm-12">\s*<a href="([^"]*).*?name">([^<]*)', page_data)
+    return r
+]]></expres>
+<page>https://olympicstreams.net/</page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re,requests
+    e = re.findall('var streamsMatchId\s*=\s*([^;]*)',page_data)[0]
+    r = re.findall('var streamsSport\s*=\s*"([^;"]*)',page_data)[0]
+    t = requests.get('https://sportscentral.io/streams-table/' + e + '/' + r + '?new-ui=1&origin=olympicstreams.net', headers={'user-agent':'iPad','referer':'https://olympicstreams.net/'}).text
+    t = t.split('Fubo',1)[-1]
+    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    sort = [(client.tinyu(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
+    sort1 = [(client.tinyu(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1]]
+    return sort + sort1
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]DARTS SCRAPER[/COLOR] [COLOR orchid] (DL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>https://www.nintendo.com/content/dam/noa/en_US/games/switch/d/darts-switch/darts-switch-hero.jpg</thumbnail>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param1][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,control
+    import re,requests
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = requests.get('https://daddylive.me/').text
+    page_data = page_data.split('>Darts<',1)[-1]
+    page_data = page_data.split('>Ice Hockey<',1)[0]
+    e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
+    return e
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]DARTS [COLOR orchid] LIVE DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/darts.xml</link>
+    <thumbnail>https://www.nintendo.com/content/dam/noa/en_US/games/switch/d/darts-switch/darts-switch-hero.jpg</thumbnail>
+    <fanart></fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]AFL[/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/afl.xml</link>
+    <thumbnail>https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu-0VdS62qSK-UsaVpIg5OBXJSKZQgM_j-RgxOQ3Qh9-Y2rP3V</thumbnail>
+    <fanart></fanart>
+</dir>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NRL SCRAPER[/COLOR] [COLOR orchid] (DL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>https://i.guim.co.uk/img/media/bf0c095c20092815cb1c80f206c0debd193345db/0_69_3500_2101/master/3500.jpg?width=605&quality=45&auto=format&fit=max&dpr=2&s=e1c476b16c9795c53cd2728b87813ab1</thumbnail>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR white][makelist.param1][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = site.request('https://daddylive.vip/')
+    page_data = page_data.split('Rugby Union',1)[-1]
+    page_data = page_data.split('>Horse Racing<',1)[0]
+    e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
+    return e
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]RUGBY[/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/rugby.xml</link>
+    <thumbnail>https://i.guim.co.uk/img/media/bf0c095c20092815cb1c80f206c0debd193345db/0_69_3500_2101/master/3500.jpg?width=605&quality=45&auto=format&fit=max&dpr=2&s=e1c476b16c9795c53cd2728b87813ab1</thumbnail>
+    <fanart></fanart>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] TOUR DE FRANCE [/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/cycling.xml</link>
+    <thumbnail>https://en.wikipedia.org/wiki/Tour_de_France#/media/File:Tour_de_France_logo.svg</thumbnail>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] SNOOKER [/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/snooker.xml</link>
+    <thumbnail>https://en.wikipedia.org/wiki/Snooker#/media/File:Snooker_table_selby.JPG</thumbnail>
+</dir>
+
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white] DADDYLIVE FULL SITE [/COLOR] [COLOR orchid][/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<fanart>https://ohcbrands.com/wp-content/uploads/2018/05/black-background.jpg</fanart>
+<thumbnail>https://i.imgur.com/8EL6mr3.png</thumbnail>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+<title>[COLOR orange][makelist.param1][/COLOR] [COLOR dodgerblue][makelist.param2] [makelist.param3][/COLOR]</title>
+<link>$doregex[m5]</link>
+<fanart>https://ohcbrands.com/wp-content/uploads/2018/05/black-background.jpg</fanart>
+<thumbnail>https://i.imgur.com/8EL6mr3.png</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[alert">.*\n.*?0;">((?!Alt)[^<]+)|hr>(\d+:\d+)\s*([^<]+).*?href="([^"]+)]]></expres>
+<page>https://daddylive.click/</page>
+</regex>
+<regex>
+<name>m5</name>
+<expres><![CDATA[#$pyFunction
+import re,requests
+def GetLSProData(page_data,Cookie_Jar,m):
+    hat= re.findall('(?s)col-xs-12">\s*<iframe.*?src=.*?=([^"]*)',page_data)[0]
+    return 'https://uload.ru.com/cdn/premium' + hat + '/chunks.m3u8|referer=https://player.licenses4.me/'
+]]></expres>
+<page>[makelist.param4]</page>
+</regex>
+</item>

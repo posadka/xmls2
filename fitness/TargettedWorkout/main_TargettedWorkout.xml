@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Cardio Workout[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://bitbucket.org/threw/blackhat/raw/master/blackhat/TargettedWorkout/cardio.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Back Workout[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://bitbucket.org/threw/blackhat/raw/master/blackhat/TargettedWorkout//back.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Tricep Workout[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://bitbucket.org/threw/blackhat/raw/master/blackhat/TargettedWorkout/tricep.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>
+<dir>
+    <name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Bicep Workout[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+    <link>https://bitbucket.org/threw/blackhat/raw/master/blackhat/TargettedWorkout/bicep.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</dir>

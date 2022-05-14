@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid]LIVE[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (MK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param3][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://6streams.tv/f1-streams/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (OS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[crewschedule]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>crewschedule</name>
+<listrepeat><![CDATA[
+<title>[COLOR orange][crewschedule.param2][/COLOR]</title>
+<link>$doregex[play]</link>
+        <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://www.ovostreams.com/f1streams.php')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>play</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[crewschedule.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (SE)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param3][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = page_data.split('HD Streams',1)[-1]
+    page_data = page_data.split('SD Streams',1)[0]
+    e = re.findall('(?s)window.location=\'([^\']*).*?src="([^"]*).*?<p>.*?<p>([^<]*)', page_data)
+    sort = [(i[0],i[1],i[2]) for i in e if 'formula-1' in i[0]]
+    return sort
+]]></expres>
+<page>http://streameast.live</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+    h = client.request(w)
+    i = re.findall('(?s)<iframe.*?src="([^"]*)', h)[0]
+    t = client.request(i)
+    e = re.findall('\} var(?:[^"]*)"([^"]*)', t)[0]
+    return e + '|user-agent=Mozilla/5.0&referer=' + i 
+]]></expres>
+<page>[makelist.param1]</page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (GR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orchid]*[/COLOR] [COLOR white][makelist.param3][/COLOR] [COLOR orchid]*[/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    import re
+    u = client.request('http://givemereddit.stream/formula-1')
+    r = re.findall('(?s)<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)">(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>\s+([^\n]*)', u)
+    r = [(i[0],i[1],client.replaceHTMLCodes(i[2]), i[3]) for i in r if 'png' in i[1]]
+    r = [(i[0],i[1],i[2],i[3]) for i in r if 'All Games' not in i[2]]
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
+    from resources.lib.modules import client
+    import re
+    u = client.request(url) 
+    r = re.findall(' source: \'([^\']*)', u)[0]
+    return r
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (HELENA)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[crewschedule]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>crewschedule</name>
+<listrepeat><![CDATA[
+<title>[COLOR orange][crewschedule.param5][/COLOR] [COLOR dodgerblue][crewschedule.param3] [crewschedule.param2] [crewschedule.param1][/COLOR]</title>
+<link>$doregex[play]</link>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://hockeyweb.site/schedule/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>play</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[crewschedule.param4]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (HS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orchid]*[/COLOR] [COLOR white][makelist.param2][/COLOR] [COLOR orchid]*[/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://uhdstreams.club/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param3]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (SPT)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param3][/COLOR]</title>
+    <link>$doregex[player]</link>
+    <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://www.sportnews.to/schedule/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] (FP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR white][makelist.param2][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://allsportsmedia.live/click-here-for-daily-fixtures/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/f1.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+</dir>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/f1replays.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+</dir>
+
+<item>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid]CHANNELS[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+</item>

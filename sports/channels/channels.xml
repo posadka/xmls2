@@ -1,0 +1,119 @@
+Not used presently
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<dir>
+	<title>NBC SPORTS</title>
+	<link>https://bitbucket.org/threw/bluehat/raw/master/bluehat/nbc.xml</link>
+	<thumbnail>http://worldsoccertalk.com/wp-content/uploads/2013/04/nbc-sports-logo-600x450.png</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</dir>
+<item>
+	<title>Big 10 NETWORK</title>
+	<link>
+		<sublink>https://e7.cdn4.us/ingest666/btn.m3u8|Referer=http://ncaa-live.stream/stream/50223.html</sublink>
+		<sublink>http://cdn.youpit.site/live/btn/chunks.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36</sublink>
+	</link>
+	<thumbnail>https://pbs.twimg.com/profile_images/992425758940368901/_XC0bfRl_400x400.jpg</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<dir>
+	<title>ESPN SPORTS</title>
+	<link>https://bitbucket.org/threw/bluehat/raw/master/bluehat/espn.xml</link>
+	<thumbnail>https://secure.espncdn.com/combiner/i?img=/watchespn/images/channels/1x/espn1.png</thumbnail>
+	<fanart>https://secure.espncdn.com/combiner/i?img=/watchespn/images/channels/1x/espn1.png</fanart>
+</dir>
+<dir>
+	<title>SPORTS STREAM</title>
+	<link>https://bitbucket.org/threw/bluehat/raw/master/bluehat/sports-streams.xml</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</dir>
+<item>
+	<title>CBS Sports HQ</title>
+	<link>
+		<sublink>https://sportshq-mediapackage-cedexis.cbsaavideo.com/out/v1/be87d7783e5c4270a5830ea5d1164850/desktop_6.m3u8</sublink>
+		<sublink>https://sportshq-mediapackage-cedexis.cbsaavideo.com/out/v1/be87d7783e5c4270a5830ea5d1164850/desktop_7.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer=http://sports24.club/tv/v?id=cbsshq</sublink>
+	</link>
+	<thumbnail>https://is1-ssl.mzstatic.com/image/thumb/Purple123/v4/10/a0/0a/10a00ac0-59b5-9512-e0d6-a6782bda6084/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/246x0w.jpg</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>Fox Sports 1</title>
+	<link>
+		<sublink>http://cdn.sports24.win/fs1.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer=http://sports24.club/tv/v?id=fs1</sublink>
+		<sublink>http://stitcher.pluto.tv/stitch/hls/channel/5a74b8e1e22a61737979c6bf/master.m3u8?deviceType=&deviceMake=&deviceModel=&sid=2&deviceId=&deviceVersion=&appVersion=&deviceDNT=&userId=&advertisingId=&deviceLat=&deviceLon=-&app_name=&appName=&appStoreUrl=&profileLimit=high</sublink>
+	</link>
+	<thumbnail>https://foxsports-wordpress-www-prsupports-prod.s3.amazonaws.com/uploads/sites/2/2016/12/020114-13-FS1-FOX-SPORTS-1-LOGO-OB-PI.jpg</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>Fox Sports 2</title>
+	<link >
+		<sublink>http://cdn.sports24.win/fs2.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer=http://sports24.club/tv/v?id=fs2</sublink>
+	</link>
+	<thumbnail>https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/FS2_logo_2015.svg/1200px-FS2_logo_2015.svg.png</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>NBC Golf Channel</title>
+	<link>http://tvegolf-i.akamaihd.net/hls/live/218225/golfx/4296k/prog.m3u8</link>
+	<thumbnail>https://golfchannel-a.akamaihd.net/ramp/220/574/snaps-about-golf-channel-on-golf-channel-mco1_vl.jpg</thumbnail>
+	<fanart>https://www.thinkwy.org/wp-content/uploads/2017/10/hpfulq-1234.jpg</fanart>
+</item>
+<item>
+	<title>TSN 1 HD</title>
+	<link>http://185.246.209.109:8080/TSN1/tracks-v1a1/index.m3u8</link>
+	<thumbnail>https://cdn.tvpassport.com/image/station/240x135/tsn1-2018.png</thumbnail>
+	<fanart>https://www.tsn.ca/polopoly_fs/1.354057!/fileimage/httpImage/image.png_gen/derivatives/landscape_620/tsn.png</fanart>
+</item>
+<item>
+	<title>TSN 2 HD</title>
+	<link>http://185.246.209.109:8080/TSN2/tracks-v1a1/index.m3u8</link>
+	<thumbnail>https://cdn.tvpassport.com/image/station/240x135/tsn2-2018.png</thumbnail>
+	<fanart>https://www.tsn.ca/polopoly_fs/1.354057!/fileimage/httpImage/image.png_gen/derivatives/landscape_620/tsn.png</fanart>
+</item>
+<item>
+	<title>TSN 3 HD</title>
+	<link>http://185.246.209.109:8080/TSN3/tracks-v1a1/index.m3u8</link>
+	<thumbnail>https://cdn.tvpassport.com/image/station/240x135/tsn3-2018.png</thumbnail>
+	<fanart>https://www.tsn.ca/polopoly_fs/1.354057!/fileimage/httpImage/image.png_gen/derivatives/landscape_620/tsn.png</fanart>
+</item>
+<item>
+	<title>TSN 4 HD</title>
+	<link>http://185.246.209.109:8080/TSN4/tracks-v1a1/index.m3u8</link>
+	<thumbnail>https://cdn.tvpassport.com/image/station/240x135/tsn4-2018.png</thumbnail>
+	<fanart>https://www.tsn.ca/polopoly_fs/1.354057!/fileimage/httpImage/image.png_gen/derivatives/landscape_620/tsn.png</fanart>
+</item>
+<item>
+	<title>TSN 5 HD</title>
+	<link>http://185.246.209.109:8080/TSN5/tracks-v1a1/index.m3u8</link>
+	<thumbnail>https://cdn.tvpassport.com/image/station/240x135/tsn5-2018.png</thumbnail>
+	<fanart>https://www.tsn.ca/polopoly_fs/1.354057!/fileimage/httpImage/image.png_gen/derivatives/landscape_620/tsn.png</fanart>
+</item>
+<item>
+	<title>Red Bull TV</title>
+	<link>https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_6660.m3u8</link>
+	<thumbnail>https://image.redbull.com/rbcom/010/2016-10-01/1331821221085_2/0010/1/1050/656/1/red-bull-tv.png</thumbnail>
+	<fanart>https://www.tsn.ca/polopoly_fs/1.354057!/fileimage/httpImage/image.png_gen/derivatives/landscape_620/tsn.png</fanart>
+</item>
+<item>
+	<title>Combat GO</title>
+	<link>https://plutotv.vo.llnwd.net/c/combatgo/CombatGo/ngrp:Stream_all/chunklist_b4128000.m3u8</link>
+	<thumbnail>https://image.redbull.com/rbcom/010/2016-10-01/1331821221085_2/0010/1/1050/656/1/red-bull-tv.png</thumbnail>
+	<fanart>https://www.tsn.ca/polopoly_fs/1.354057!/fileimage/httpImage/image.png_gen/derivatives/landscape_620/tsn.png</fanart>
+</item>
+

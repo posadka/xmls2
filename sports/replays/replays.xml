@@ -1,0 +1,1315 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING REPLAYS[/COLOR] [COLOR orchid] (BR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+<title>[makelist.param2]</title>
+<link>$doregex[crewstreamer]</link>
+<thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import cache,client,workers,control
+    import re,xbmc,xbmcgui
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], client.request(i[1]))]
+    def dodgycodes(s):
+        return re.sub('&#(\d+);', '', s)
+    url = 'https://www.boxingfightsvideos.com/category/full-fight/page/'
+    u = []
+    for i in range(1,8): u += [url + str(i)]
+    u = page().run(u)
+    items = re.findall('(?s)<div class="post-des">\s*<h6>\s*<a href="([^"]*)">([^<]*)', u)
+    return items
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>crewstreamer</name>
+<listrepeat><![CDATA[
+<title>[crewstreamer.param2]</title>
+<link>[crewstreamer.param1]</link>
+<thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
+    from resources.lib.modules import client,control
+    import re
+    crewstreamer = control.cdnImport('https://bitbucket.org/threw/xmls2/raw/master/crewstreamer.xml', 'crewstreamer')
+    crewstreamer = crewstreamer.streamer()
+    url = crewstreamer.resolve(url)
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'http://watchprowrestling.live/category/boxing/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*\s*<a href="([^"]*)".*?c="([^"]*).*?">.*?">.*?">.*?">.*?">([^>]*)', u)
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    main = main.split('<b>Main Card Download Links HD<br',1)[-1]
+    main = main.split('<b>Main Card Download Links SD<br',1)[0]
+    regex = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    return regex
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL FULL GAME REPLAYS 2021-2022 Season[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[play]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://nflreplay.net/?cat=58&paged='
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('landscape">\s(?:.*?f=)"([^"]*)(?:.*?e=)"([^"]*)"(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)', u)
+    sort = [(i[0],i[1],i[2]) for i in r if '2021' in i[1]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>play</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    r = re.findall('(?s)<iframe(?:.*?c=)"([^"]*)',page_data)[0]
+    r = r.replace('//','https://')
+    return r
+]]></expres>
+<page>[makelist.param1]</page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL FULL GAME REPLAYS DATE GROUPING[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://nflreplay.net/?cat=58&paged='
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('landscape">\s(?:.*?f=)"([^"]*)(?:.*?e=)"([^"]*)"(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)', u)
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    import re
+    e = re.findall('(?s)<p><a href="([^"]*)(?:[^>]*)>([^<]*)',page_data)
+    sort = [(i[0],i[1]) for i in e]
+    return sort
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    r = re.findall('(?s)<iframe(?:.*?c=)"([^"]*)',page_data)[0]
+    r = r.replace('//','https://')
+    return r
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL FULL GAME REPLAYS[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://nflreplay.net/?cat=58&paged='
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('landscape">\s(?:.*?f=)"([^"]*)(?:.*?e=)"([^"]*)"(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)', u)
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    import re
+    page_data = page_data.split('<p>AMERICAN FOOTBALL',1)[-1]
+    page_data = page_data.split('Goul',1)[0]
+    e = re.findall('<a href="([^"]*).*?none">([^<]*)',page_data)
+    return e
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    r = re.findall('(?s)<iframe(?:.*?c=)"([^"]*)',page_data)[0]
+    r = r.replace('//','https://')
+    return r
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL CONDENSED GAME REPLAYS[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://nflreplay.net/?cat=93&paged='
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('landscape">\s(?:.*?f=)"([^"]*)(?:.*?e=)"([^"]*)"(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)', u)
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    import re
+    e = re.findall('<p><a\shref="([^"]*)(?:[^>]*)>([^<]*)',page_data)
+    return e
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    r = re.findall('(?s)<iframe(?:.*?c=)"([^"]*)',page_data)[0]
+    r = r.replace('//','https://')
+    return r
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://fullmatchtv.com/nba/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('(?s)<div class="td-module-thumb"><a href="([^"]*).*?le="([^"]*)', u)
+    sort = [(i[0],i[1].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r if 'nba' in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    s = re.findall('<p><iframe.*?src="([^"]*)', page_data)[0]
+    return s
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (NT)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param3][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://nbahdreplay.com/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('(?s)7" src="([^"]*)"(?:.*?href=)"([^"]*)(?:[^>]*)>([^<]*)', u)
+    sort = [(i[0],i[1],i[2].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    import re
+    r = page_data.split('<div class="entry-content">', 1)[-1]
+    f = re.findall('<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', r)
+    f =[(i[0],i[1]) for i in f if 'Watch' in i[1]]
+    return f
+]]></expres>
+<page>[makelist.param2]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    url = client.external('[lists.param1]')
+    return url
+]]></expres>
+<page></page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FULL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://nbareplay.net/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('(?s)<a href="([^"]*)"\s*title="([^"]*).*?src="([^"]*)', u)
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    import re
+    page_data = page_data.split('>#1 OK <', 1)[-1]
+    page_data = page_data.split('<div class=',1)[0]
+    f = re.findall('(?s)<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+    return f
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    s = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+    return s
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://fullmatchtv.com/mlb/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('(?s)<div class="td-module-thumb"><a href="([^"]*).*?le="([^"]*)', u)
+    sort = [(i[0],i[1].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r if 'mlb' in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    s = re.findall('iframe loading="lazy" width="640" height="360" src="([^"]*)', page_data)[0]
+    return s
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://fullmatchtv.com/nhl/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('(?s)<div class="td-module-thumb"><a href="([^"]*).*?le="([^"]*)', u)
+    sort = [(i[0],i[1].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r if 'nhl' in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    s = re.findall('iframe loading="lazy" width="640" height="360" src="([^"]*)', page_data)[0]
+    return s
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL REPLAYS[/COLOR] [COLOR orchid] (LSX)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR dodgerblue][makelist.param1][/COLOR] [COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue][makelist.param2][/COLOR]</title>
+    <link>$doregex[player]</link>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = page_data.split('<td style="color: #2862a8; font-size: 14px;">',1)[-1]
+    r = re.findall('(?s)date">([^<]*)(?:.*?b>)([^<]*)(?:.*?b>)(?:.*?b>)([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)', page_data)
+    sort = [(i[0],i[1],i[2].replace('ndash;',''),'http://livetv.sx'+i[3]) for i in r]
+    return sort
+]]></expres>
+<page>http://livetv.sx/enx/videotourney/2/</page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    l = re.findall('<iframe allowFullScreen.*?c="([^"]*)', page_data)[0]
+    return 'https:' + l  
+]]></expres>
+<page>[makelist.param4]</page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC/MMA HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,cache,workers ,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/ufc/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    main = main.split('<strong>Dailymotion<',1)[-1]
+    main = main.split('<strong>Download Links SD<',1)[0]
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,cache,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/wwe/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/aew.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/aew_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,cache,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/aew/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]IMPACT HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,cache,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/impact-wrestling/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]ROH HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,cache,workers,control 
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/roh/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]INDY SHOWS HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,cache,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/indy-shows/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NJPW HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,cache,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/njpw/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PPV HD REPLAYS SCRAPER[/COLOR] [COLOR orange]WWE/AEW/MMA/UFC/PPV/IMPACT/INDY/ROH/NJPW[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/pay-per-view/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]TRENDING WRESTLING SCRAPER[/COLOR] [COLOR orange]WWE/AEW/MMA/UFC/PPV/IMPACT/INDY/ROH/NJPW[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param3]</title>
+        <link>$doregex[playurl]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], str(client.request(i[1])))]
+    def unescape(s):
+        return re.sub('&#(\d+);', '', s)    
+        
+    u = []
+
+    for i in range(1, 10): u += ['http://watchprowrestling.live/category/trending/page/' + str(i)]
+    u = page().run(u)
+    u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    return u
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl</name>
+<listrepeat><![CDATA[
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site
+    import re
+    main = site.request('[makelist.param1]')
+    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]RUGBY REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>https://i.guim.co.uk/img/media/bf0c095c20092815cb1c80f206c0debd193345db/0_69_3500_2101/master/3500.jpg?width=605&quality=45&auto=format&fit=max&dpr=2&s=e1c476b16c9795c53cd2728b87813ab1</thumbnail>
+    <fanart></fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://fullmatchtv.com/other-sports/rugby/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('(?s)<div class="td-module-thumb"><a href="([^"]*).*?le="([^"]*)', u)
+    sort = [(i[0],i[1].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r if 'rugby' in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    s = re.findall('iframe width="640" height="360" src="([^"]*)', page_data)[0]
+    return s
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]F1 / MOTO GP / NASCAR REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,workers,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], site.request(i[1]))]
+
+    url = 'https://fullmatchtv.com/motorsports/page/'
+    u = []
+    for i in range(1,20): u += [url + str(i)]
+    u = page().run(u)
+    r = re.findall('(?s)<div class="td-module-thumb"><a href="([^"]*).*?le="([^"]*)', u)
+    sort = [(i[0],i[1].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r if 'motorsports' in i[0]]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    s = re.findall('iframe loading="lazy" width="640" height="360" src="([^"]*)', page_data)[0]
+    return s
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]OLYPMIC[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/olypmic.xml</link>
+<thumbnail>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</thumbnail>
+<fanart>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</fanart>
+</dir>

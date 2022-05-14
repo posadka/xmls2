@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [COLOR white]TENNIS[/COLOR] [COLOR orchid]LIVE[/COLOR] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/tennis.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/tennis_fanart.jpg</fanart>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [COLOR white]TENNIS LIVE[/COLOR] [COLOR orchid] (DL)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/tennis.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/tennis_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param1][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = site.request('https://daddylive.club/')
+    page_data = page_data.split('>Tennis<',1)[-1]
+    page_data = page_data.split('>Motorsport<',1)[0]
+    e = re.findall('(?s)>([^<]*)<a href="([^"]*)', page_data)
+    return e
+]]></expres>
+<page>https://daddylive.live/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [COLOR white]TENNIS LIVE[/COLOR] [COLOR orchid] (SPT)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/tennis.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/tennis_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param3][/COLOR]</title>
+    <link>$doregex[player]</link>
+    <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://www.sportnews.to/schedule/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]Tennis[/COLOR] [COLOR orchid] (DIRECTS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/tennis.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/iptv.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.png</fanart>
+</dir>
+
+
+
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]TENNIS[/COLOR] [COLOR orchid]CHANNELS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/tennis.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/tennis_fanart.jpg</fanart>
+</item>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]ESPN[/COLOR] [COLOR orchid]SPORTS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/threw/xmls2/raw/master/sports/channels/espn.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/espn.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/tennis_fanart.jpg</fanart>
+</dir>
+
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]TESTING[/COLOR] [COLOR orchid]AREA[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://plugin.video.thecrew/?action=developer</link>
+</plugin>
+
+

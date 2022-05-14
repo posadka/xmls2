@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<plugin>
+    <title>Radio</title>
+    <link>plugin://plugin.video.live.streamspro/?mode=1&url=https://gitlab.com/thecrewwh/xmls/-/raw/master/radio/Radio.m3u</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/radio.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.png</fanart>
+</plugin>

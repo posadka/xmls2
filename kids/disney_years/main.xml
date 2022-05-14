@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]2010s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/2010s.xml</link>
+</dir>
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]2000s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/2000s.xml</link>
+</dir>
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]1990s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/1990s.xml</link>
+</dir>
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]1980s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/1980s.xml</link>
+</dir>
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]1970s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/1970s.xml</link>
+</dir>
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]1960s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/1960s.xml</link>
+</dir>
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]1950s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/1950s.xml</link>
+</dir>
+<dir>
+	<name>[COLOR orchid]¤ [/COLOR] [COLOR white][B]1940s[/B][/COLOR]</name>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/walt_disney.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.jpg</fanart>
+	<link>https://bitbucket.org/threw/xmls2/raw/master/kids/disney_years/1940s.xml</link>
+</dir>

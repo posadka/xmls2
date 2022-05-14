@@ -1,0 +1,555 @@
+# -*- coding: utf-8 -*-
+
+
+import re,json,urllib,urlparse,string,random
+
+from resources.lib.modules import client
+
+class streamer:
+    def __init__(self):
+        self.parseDict()
+
+
+    def parseIFR(self, url, html):
+        try:
+            s = re.compile('(<!--.+?-->)', re.MULTILINE|re.DOTALL).findall(html)
+            for i in s: html = html.replace(i, '')
+
+            html = re.sub(r'[^\x00-\x7F]+', ' ', html)
+        except:
+            pass
+
+        try:
+            js = re.findall('<script(?: .+?|)>(.+?)</script><script.+?src\s*=\s*\"(.+?)\"(?: .+?|)></script>', html)
+            js += re.findall('<script(?: .+?|)>(.+?)</script><script.+?src\s*=\s*\'(.+?)\'(?: .+?|)></script>', html)
+            js = [i for i in js if ';' in i[0] and i[1].endswith('.js')]
+            js = [(i[0], i[1] if i[1].startswith('http') else urlparse.urljoin(url, i[1])) for i in js]
+            js = [(i[0], i[1], self.locParser(i[1])) for i in js]
+            js = [i for i in js if i[2] in self.locDict] + [i for i in js if 'id=' in i[0]] + [i for i in js if not i[2] in self.locDict]
+
+            r = client.request(js[0][1])
+            r = re.sub(r'[^\x00-\x7F]+', ' ', r)
+
+            var = [re.findall('(.+?)=(.+)', i) for i in re.split('(?:;|,)', js[0][0])]
+            var = [i[0] for i in var if i]
+            var += re.findall('var\s+(.+?)\s*=\s*(.+?);', r)
+            var = [(i[0].replace('\"', '\'').strip(), i[1].replace('\"', '\'').strip()) for i in var]
+
+            r = r.replace(" +", "+").replace("+ ", "+")
+
+            for i in range(100):
+                for v in var: r = r.replace("+%s+" % v[0], "+%s+" % v[1])
+                for v in var: r = r.replace("+%s" % v[0], "+%s" % v[1])
+                for v in var: r = r.replace("%s+'" % v[0], "%s+" % v[1])
+
+            r = r.replace("'+'", "").replace("'+", "").replace("+'", "")
+
+            ifr = client.parseDOM(r, 'iframe', ret='src')[-1]
+            ifr = ifr.replace("document.domain", self.locParser(url))
+            ifr = ifr if ifr.startswith('http') else urlparse.urljoin(url, ifr)
+            ifr = client.replaceHTMLCodes(ifr)
+
+            return ifr
+        except:
+            pass
+
+        try:
+            ifr = client.parseDOM(html, 'script', ret='src', attrs = {'type': 'text/javascript'})
+            ifr = [i for i in ifr if i.startswith('http') and not i.endswith('.js')]
+            ifr = [(self.locParser(i), i) for i in ifr]
+            ifr = [i[1] for i in ifr if i[0] in self.locDict][0]
+            ifr = client.replaceHTMLCodes(ifr)
+
+            return ifr
+        except:
+            pass
+
+        try:
+            ifr = client.parseDOM(html, 'iframe', ret='src')
+            ifr = [(i, re.findall('(http(?:s|)\://.+)', i)) for i in ifr]
+            ifr = [i[0] for i in ifr if i[1]]
+            ifr = [(i, self.locParser(i)) for i in ifr]
+            ifr = [i[0] for i in ifr if i[1] in self.locDict] + [i[0] for i in ifr if not i[1] in self.locDict]
+            if not ifr: ifr = client.parseDOM(html, 'iframe.+?', ret='src')
+            ifr = [(i, re.findall('(?:\'|\")\s*(\+)', i), re.findall('\s*(\+)(?:\'|\")', i)) for i in ifr]
+            ifr = [i[0] for i in ifr if not (i[1] or i[2])]
+            ifr = [i if i.startswith('http') else urlparse.urljoin(url, i) for i in ifr]
+            ifr = [(i, self.locParser(i)) for i in ifr]
+            ifr = [i[0] for i in ifr if not (i[1].startswith('ads.') or '/ads/' in i[0] or '/reclama/' in i[0] or re.findall('(/ad\d+\.php)', i[0]))]
+            ifr = ifr[0]
+            ifr = client.replaceHTMLCodes(ifr)
+
+            return ifr
+        except:
+            pass
+
+        try:
+            ifr = client.parseDOM(html, 'meta', ret='content')[0]
+            ifr = re.findall('url=(http.+)', ifr)[0]
+            ifr = client.replaceHTMLCodes(ifr)
+
+            return ifr
+        except:
+            pass
+
+        try:
+            ifr = re.findall('^http.+?=(http.+)', url)[0]
+            ifr = client.replaceHTMLCodes(ifr)
+            return ifr
+        except:
+            pass
+
+
+    def parseVAR(self, html):
+        try:
+            s = re.compile('(<!--.+?-->)', re.MULTILINE|re.DOTALL).findall(html)
+            for i in s: html = html.replace(i, '')
+
+            r = html.replace('\n', '#####PhoenixparseVAR#####')
+
+            r = r.replace(" +", "+").replace("+ ", "+").replace(" ,", ",").replace(", ", ",")
+
+            var = re.findall('var\s+(.+?)\s*=\s*(.+?);', r)
+            var = [i for i in var if len(i[0]) > 1]
+            for i in range(100):
+                for v in var: r = r.replace("+%s+" % v[0], "+%s+" % v[1])
+                for v in var: r = r.replace("+%s" % v[0], "+%s" % v[1])
+                for v in var: r = r.replace("%s+'" % v[0], "%s+" % v[1])
+
+            f = []
+            v = re.findall('\"\+(.+?)\+\"', r) + re.findall('\"\+(.+?)\"', r) + re.findall('\"(.+?)\+\"', r) + re.findall('\'\+(.+?)\+\'', r) + re.findall('\'\+(.+?)\'', r) + re.findall('\'(.+?)\+\'', r)
+            v = [i.strip() for i in v if not ('+' in i or "'" in i or '"' in i)]
+            fun = re.findall('function (.+?)\s*\(', r)
+            for a in fun:
+                b = zip(re.findall('function\s+%s\s*\((.+?)\)' % a, r), re.findall('<script>\s*%s\((.+?)\)' % a, r))
+                for c in b:
+                    d = zip(c[0].split(','), c[1].split(','))
+                    f += d
+            var = [i for i in f if i[0].strip() in v]
+            for i in range(100):
+                for v in var: r = r.replace("+%s+" % v[0], "+%s+" % v[1])
+                for v in var: r = r.replace("+%s" % v[0], "+%s" % v[1])
+                for v in var: r = r.replace("%s+'" % v[0], "%s+" % v[1])
+
+            r = r.replace("'+'", "").replace("\"+\"", "").replace("\"+'", "").replace("'+\"", "")
+            r = r.replace("'+", "").replace("+'", "").replace("\"+", "").replace("+\"", "")
+
+            var = re.findall('(\[.+?\]\.join\(\"\"\))', r)
+            for v in var:
+                r = r.replace(v, v.replace('.join("")', '').replace('"', '').replace(',', '').replace('[', '').replace(']', ''))
+
+            var = re.findall('document\.getElementById\("(.+?)"\)\.innerHTML', r)
+            for v in var:
+                i = re.findall('=%s>(.+?)<' % v, r)
+                if i: r = r.replace('+document.getElementById("%s").innerHTML' % v, i[0])
+
+            var = re.compile('(function\s+.+?\(\) \{.+?return\s*\(.+?\);)', re.MULTILINE|re.DOTALL).findall(r)
+            for v in var:
+                r = r.replace(v, '')
+                i = re.compile('function\s+(.+?\(\))\s+\{.+?return\s*\((.+?)\)', re.MULTILINE|re.DOTALL).findall(v)
+                if i: r = r.replace(i[0][0], '+\'%s\'+' % i[0][1])
+            var = re.findall('(\'\+.+?\+\')', r)
+            for v in var:
+                r = r.replace(v, v.replace("'+", "").replace("+'", ""))
+            r = r.replace('\\', '')
+
+            r = r.replace('#####PhoenixparseVAR#####', '\n')
+            return r
+        except:
+            return html
+
+
+    def parseWS(self, html):
+        def wsexec(s):
+            try: return __unwise(s.split(',')[0].strip('\''),s.split(',')[1].strip('\''),s.split(',')[2].strip('\''),s.split(',')[3].strip('\''))
+            except: return
+        def __unwise(w, i, s, e):
+            lIll = 0 ; ll1I = 0 ; Il1l = 0 ; ll1l = [] ; l1lI = []
+            while True:
+                if (lIll < 5): l1lI.append(w[lIll])
+                elif (lIll < len(w)): ll1l.append(w[lIll])
+                lIll+=1
+                if (ll1I < 5): l1lI.append(i[ll1I])
+                elif (ll1I < len(i)): ll1l.append(i[ll1I])
+                ll1I+=1
+                if (Il1l < 5): l1lI.append(s[Il1l])
+                elif (Il1l < len(s)): ll1l.append(s[Il1l])
+                Il1l+=1
+                if (len(w) + len(i) + len(s) + len(e) == len(ll1l) + len(l1lI) + len(e)): break    
+            lI1l = ''.join(ll1l) ; I1lI = ''.join(l1lI) ; ll1I = 0 ; l1ll = []
+            for lIll in range(0,len(ll1l),2):
+                ll11 = -1 ; ll11 = 1 if ( ord(I1lI[ll1I]) % 2) else ll11 ; l1ll.append(chr(int(lI1l[lIll: lIll+2], 36) - ll11)) ; ll1I+=1 ; ll1I = 0 if (ll1I >= len(l1lI)) else ll1I
+            ret=''.join(l1ll)
+            if 'eval(function(w,i,s,e)' in ret: return wsexec(re.compile('eval\(function\(w,i,s,e\).*}\((.*?)\)').findall(ret)[0])
+            else: return ret
+        if not 'function(w,i,s,e)' in html: return html
+        ws = re.compile("}[(]('.+?' *, *'.+?' *, *'.+?' *, *'.+?')[)]").findall(html)
+        for i in ws: 
+            try: html += str(wsexec(i))
+            except: pass
+        return html
+
+
+    def locParser(self, url):
+        try:
+            url = url.strip().lower()
+            url = urlparse.urlparse(url).netloc
+            url = re.sub('^www\.|^www\d+\.|^cdn\.|^emb\.|^emb.+?\.', '', url)
+            return url
+        except:
+            return url
+
+
+    def findParser(self, html, url):
+        try: return re.findall('(?:\'|\")%s(?:\'|\")\s*:\s*(?:\'|\")(.+?)(?:\'|\")' % url, html)[0]
+        except: pass
+        try: return re.findall('%s\s*=\s*(?:\'|\")(.+?)(?:\'|\")' % url, html)[0]
+        except: pass
+        try: return re.findall('%s\s*:\s*(?:\'|\")(.+?)(?:\'|\")' % url, html)[0]
+        except: pass
+
+
+    def parseDict(self):
+        self.locinfoDict = [{
+            'name': 'hls',
+            'netloc': ['aliez.tv', 'aliez.me', 'b-c-e.us', 'b-c-e.us', 'bcast.pw', 'bcast.site', 'bro.adca.st', 'cast4u.tv', 'castfree.me', 'cndhlsstream.pw', 'megadash.xyz', 'gibanica.club', 'janjuaplayer.com', 'jazztv.co', 'megadash.xyz', 'mybeststream.xyz', 'live247.online', 'livesport.pw', 'livestream.com', 'livetv.ninja', 'lshstreams.com', 'nowlive.club', 'nowlive.pw', 'nowlive.xyz', 'miplayer.net', 'onhockey.tv', 'p3g.tv', 'playlive.pw', 'potvod.com', 'rocktv.co', 'scity.tv', 'skstream.tv', 'sportsvideoline3.pw', 'streamm.eu', 'theactionlive.com', 'webtv.ws', 'widestream.io']
+        }, {
+            'name': 'youtube',
+            'netloc': ['youtube.com']
+        }, {
+            'name': 'filmon',
+            'netloc': ['filmon.com', 'filmon.tv']
+        }, {
+            'name': 'arconaitv',
+            'netloc': ['arconaitv.me']
+        }, {
+            'name': 'xeevo',
+            'netloc': ['xeevo.net']
+        }, {
+            'name': 'laola1',
+            'netloc': ['ehftv.com', 'laola1.tv']
+        }, {
+            'name': 'moeitv',
+            'netloc': ['moeitv.ru']
+        }, {
+            'name': 'hdcast',
+            'netloc': ['bigcast.us']
+        }, {
+            'name': 'sportstream365',
+            'netloc': ['sportstream365.com']
+        }, {
+            'name': 'privatestream',
+            'netloc': ['privatestream.tv']
+        }]
+
+        self.locDict = sum([i['netloc'] for i in self.locinfoDict], [])
+
+
+    def hls(self, url, ref):
+        try:
+            l = self.locParser(url)
+
+            a = client.randomagent() ; h = {'User-agent': a}
+
+            if l in ['lshstreams.com']:
+                r = client.request(url, referer=ref)
+                r = self.parseVAR(r) ; r = self.parseIFR(url, r)
+                if r == None:
+                    h = ['89.248.170.206', '94.102.50.103']
+                    r = urlparse.parse_qs(urlparse.urlparse(url).query)['u'][0]
+                    r = 'http://89.248.170.206:8081/player.php?ch=%s&width=640&height=360' % r
+                ref = url ; url = r
+
+            elif l in ['cndhlsstream.pw', 'potvod.com', 'theactionlive.com']:
+                r = client.request(url, referer=ref)
+                r = self.parseVAR(r) ; r = self.parseIFR(url, r)
+                ref = url ; url = r
+
+            elif l in ['live247.online']:
+                r = client.request(url, referer=ref)
+                r = re.findall('\'(.+?)\'', r) + re.findall('\"(.+?)\"', r)
+                r = [i for i in r if 'rtmp.php' in i][0]
+                r = client.request(r, referer=ref)
+                r = 'http://%s/player.php?ch=%s' % (self.findParser(r, 'rtmp'), self.findParser(r, 'streamname'))
+                ref = url ; url = r
+
+            elif l in ['castfree.me']:
+                url = re.sub('/[0-9a-zA-Z]+\.php', '/embed.php', url)
+
+            elif l in ['gibanica.club']:
+                if not '/ls/' in url: url = url.replace('gibanica.club/', 'gibanica.club/ls/')
+
+            elif l in ['miplayer.net']:
+                url = url.replace('embed.php', 'embedplayer.php')
+
+            elif l in ['cast4u.tv', 'janjuaplayer.com', 'p3g.tv']:
+                url = url.replace('/embed', '/membed')
+
+
+            r = client.request(url, headers=h, referer=ref, output='extended')
+
+            try:
+                c = r[2].get('Set-Cookie')
+                c = re.findall('\s*(.+?)\s*=\s*(.+?)(?:;|$)', c)
+                c = [(i[0].rsplit()[-1], i[1]) for i in c if not (' ' in i[1] or i[1] == '/')]
+                c = '; '.join(['='.join(x) for x in list(set(c))])
+            except:
+                pass
+
+            r = r[0]
+            r = self.parseWS(r)
+            r = self.parseVAR(r)
+
+            s = re.findall('\'(.+?)\'', r) + re.findall('\"(.+?)\"', r) + re.findall('\'(http.+?)\'', r) + re.findall('\"(http.+?)\"', r)
+
+            s2 = []
+            for i in s:
+                try: 
+                    if i.startswith('http'): raise Exception()
+                    i = i.decode('base64')
+                    s2 += [i]
+                except:
+                    pass
+            s += s2
+
+            s = [urllib.unquote(i) for i in s]
+
+            u = [i for i in s if i.startswith('http') and '.m3u8' in i]
+
+            if l in ['livestream.com']:
+                u = [i for i in u if '/broadcasts/' in i] + [i for i in u if not '/broadcasts/' in i]
+
+            if l in ['widestream.io'] and not u:
+                u = re.findall('\'(rtmp.+?)\'', r) + re.findall('\"(rtmp.+?)\"', r)
+                return u[0]
+
+            u = u[0]
+
+            h = {'User-agent': a, 'Referer': url, 'X-Requested-With': 'ShockwaveFlash/21.0.0.242'}
+
+            if not c == None:
+                h.update({'Cookie': c})
+
+            if l in ['webtv.ws', 'rocktv.co', 'jazztv.co']:
+                client.request(client.parseDOM(r, 'image', ret='src')[0], referer=url)
+
+            elif l in ['cast4u.tv', 'janjuaplayer.com', 'p3g.tv']:
+                loc = [i for i in s if 'loadbalancer' in i][0]
+                loc = client.request(loc, referer=url)
+                u = 'http://%s%s' % (loc.split('=')[-1], u.split('//')[-1])
+
+            elif l in ['bro.adca.st']:
+                u += 'w5TAkKdFnxIf3HAcUevXtQ'
+                try: f = re.findall('flashplayer\s*:\s*\s*["\']([^"\']+).*', r)[0]
+                except: f = 'http://cdn.allofme.site/jw/jwplayer.flash.swf'
+                h.update({'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0', 'Referer': f})
+
+            elif l in ['nowlive.club', 'nowlive.pw', 'nowlive.xyz']:
+                u += 'q2Zxs0TlNIoxH1e_cSLJcQ'
+                try: f = re.findall('flashplayer\s*:\s*\s*["\']([^"\']+).*', r)[0]
+                except: f = 'http://cdn.allofme.site/jw/jwplayer.flash.swf'
+                h.update({'User-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0', 'Referer': f})
+
+            elif l in ['onhockey.tv']:
+                h.update({'Cookie': 'PHPSESSID='})
+
+
+            r = '|%s' % urllib.urlencode(h)
+
+            x = client.request(u, headers=h)
+            y = [i for i in x.splitlines() if '.m3u8' in i]
+            if y:
+                u = urlparse.urljoin(u, y[0])
+                x = client.request(u, headers=h)
+            if not '#EXTINF' in x: return
+
+            u = client.request(u, headers=h, output='geturl')
+            u += r
+            return u
+        except:
+            pass
+
+
+    def youtube(self, url, ref):
+        try:
+            u = 'http://www.youtube.com/watch?v=%s' % re.findall('youtube.*?(?:channel=|v=|/embed/)(.+?)(?:\?|\&|$)', url)[-1]
+            u = client.request(u).replace('\n','')
+            u = re.findall('"hlsvp"\s*:\s*"(.+?)"', u)[0].replace('\\/', '/')
+            u = client.request(u).replace('\n','')
+            u = re.findall('RESOLUTION\s*=\s*(\d*)x\d{1}.+?(http.+?\.m3u8)', u)
+            u = [(int(i[0]), i[1]) for i in u] ; u.sort() ; u = u[-1][1]
+            u = client.request(u, output='geturl')
+            return u
+        except:
+            pass
+
+
+    def filmon(self, url, ref):
+        try:
+            if '/vod/' in url:
+                url = re.compile('/(\d+)').findall(url)[-1]
+                url = 'http://www.filmon.com/vod/info/%s' % url
+            elif '/export?' in url:
+                url = re.findall('channel_id=(.+?)&', url)[0]
+                url = 'http://www.filmon.com/channel/%s' % url
+            elif '/tv/' in url:
+                url = url.replace('/tv/', '/channel/')
+            elif not '/channel/' in url:
+                raise Exception()
+
+            headers = {'X-Requested-With': 'XMLHttpRequest'}
+            cookie = client.request(url, output='cookie')
+            cid = json.loads(client.request(url, headers=headers))['id']
+            headers = {'X-Requested-With': 'XMLHttpRequest', 'Referer': url}
+
+            url = 'http://www.filmon.com/ajax/getChannelInfo?channel_id=%s' % cid
+            r = client.request(url, cookie=cookie, headers=headers)
+
+            try: r = json.loads(r)['streams']
+            except: r = [i[1] for i in json.loads(r)['data']['streams'].items()]
+
+            url = [(i['url'], int(i['watch-timeout'])) for i in r]
+            url = [i for i in url if '.m3u8' in i[0]]
+            url = sorted(url, key=lambda x: x[0])[-1][0]
+            return url
+        except:
+            return
+
+
+    def arconaitv(self, url, ref):
+        try:
+            from resources.lib.modules import proxy
+            url = proxy.request(url, 'm3u8')
+            url = re.findall('src="(.+m3u8.+?)"', url)[-1].strip().split('"')[0]
+            try: url = urlparse.parse_qs(urlparse.urlparse(url).query)['u'][0]
+            except: pass
+            try: url = urlparse.parse_qs(urlparse.urlparse(url).query)['q'][0]
+            except: pass
+            url = client.request(url, output='geturl', referer='', mobile=True)
+            url += '|User-Agent=iPhone'
+            return url
+        except:
+            return
+
+
+    def xeevo(self, url, ref):
+        try:
+            a, b = re.findall('\#(.+?)\-(\d+)', url)[0]
+            t = client.request('http://www.xeevo.net/arse.js')
+            t = re.findall('\'(.+?)\'', t)[0]
+            u = 'http://www.xeevo.net/hls/%s/%s.m3u8?tok=%s' % (a, b, t)
+            u = client.request(u, output='geturl')
+            return u
+        except:
+            return
+
+
+    def laola1(self, url, ref):
+        try:
+            if not 'player' in url:
+                url = 'http://www.laola1.tv' + re.findall('(\/titanplayer.php\?videoid=[^\"\']+)', client.request(url))[0]
+
+            r = client.request(url)
+            ref = 'http://www.laola1.tv/server/hd_video.php?play=%s&partner=%s&portal=%s&v5ident=&lang=%s' % (re.findall('streamid\s*:\s*[\'|\"](.+?)[\'|\"]', r)[0], re.findall('partnerid\s*:\s*[\'|\"](.+?)[\'|\"]', r)[0], re.findall('portalid\s*:\s*[\'|\"](.+?)[\'|\"]', r)[0], re.findall('sprache\s*:\s*[\'|\"](.+?)[\'|\"]', r)[0])
+            url = client.request(ref)
+            url = re.findall('<url>([^<]+)</url>', url)[0]
+            url = client.replaceHTMLCodes(url)
+            url += '&timestamp=%s&auth=%s' % (''.join(re.findall('<!--.*?([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2}).*?-->', r)[0]), re.findall('auth\s*=\s*[\'|\"](.+?)[\'|\"]', r)[0])
+
+            r = client.request(url, referer=ref)
+            u = re.findall('url\s*=\s*[\'|\"](.+?)[\'|\"]', r)[0]
+            a = re.findall('auth\s*=\s*[\'|\"](.+?)[\'|\"]', r)[0]
+            r = ''.join(random.choice(string.ascii_uppercase) for x in range(12))
+            u = urlparse.urljoin(u.replace('/z/','/i/'), 'master.m3u8?hdnea=%s&g=%s&hdcore=3.8.0' % (a, r))
+            u = client.request(u, output='geturl')
+            return u
+        except:
+            return
+
+
+    def hdcast(self, url, ref):
+        try:
+            r = client.request(url, referer=ref)
+            r = self.parseVAR(r)
+            s = re.findall('\'(.+?)\'', r) + re.findall('\"(.+?)\"', r)
+            s = [i for i in s if 'rtmp://' in i or 'rtmpe://' in i][0]
+            s = s.replace('rtmpe', 'rtmp')
+            u = '%s token=%%XB00(nKH@#. pageUrl=%s swfUrl=http://www.hdcast.info/myplayer/jwplayer.flash.swf live=1' % (s, url)
+            return u
+        except:
+            pass
+
+
+    def privatestream(self, url, ref):
+        try:
+            r = client.request(url, referer=ref, mobile=True)
+            r = re.findall('\'(.+?)\'', r) + re.findall('\"(.+?)\"', r)
+            r = [i for i in r if '.m3u8' in i][0]
+            r = re.findall('(://.*)\/.+?\.m3u8(.+)', r)[0]
+            r = 'rtmp%s?%s swfUrl=http://privatestream.tv/js/jwplayer.flash.swf live=1' % r
+            return r
+        except:
+            pass
+
+
+    def sportstream365(self, url, ref):
+        try:
+            r = 'http://sportstream365.com/LiveFeed/GetGame?id=%s&lng=en&partner=24' % (urlparse.parse_qs(urlparse.urlparse(url).query)['game'][0])
+            r = client.request(r)
+            r = re.findall('.*?VI[\'"]*[:,]\s*[\'"]([^\'"]+)[\'"].*', r)[0]
+            r = 'rtmp://93.189.57.254/xlive app=xlive flashVer=WIN\23,0,0,166 conn=S:client conn=S:3.1.0.13 conn=S:en swfhash=e0611f09cdf1eb05dc8f6ba1ae985c58a9df0126ce9a2902d3ab6ec4c8ef397d swfsize=549555 live=true playpath=raw:%s' % r
+            return r
+        except:
+            pass
+
+
+    def moeitv(self, url, ref):
+        try:
+            r = client.request(url, referer=ref)
+            r = re.findall('channelid\s*=\s*(?:\'|\")(.+?)(?:\'|\")', r)[0]
+            r = client.request('http://moeitv.ru/php/getaddress_n.php', post='channelid1=%s' % r)
+            a = re.findall('address(?:\'|\")\s*:\s*(?:\'|\")(.+?)(?:\'|\")', r)[0]
+            s = re.findall('server(?:\'|\")\s*:\s*(?:\'|\")(.+?)(?:\'|\")', r)[0]
+            r = 'rtmp://%s:1935/live/%s' % (s, a)
+            return r
+        except:
+            pass
+
+
+    def redirect(self, url, limit=5):
+        ref = None
+
+        if self.locParser(url) in self.locDict: return (url, ref)
+
+        for i in range(0, limit):
+            try:
+                url = client.request(url, referer=ref, output='geturl')
+
+                r = client.request(url, headers = {'Host': self.locParser(url)}, referer=ref)
+                if r == None: r = client.request(url, referer=ref)
+                if r == None: raise Exception()
+
+                r = self.parseIFR(url, r)
+                if r == None: raise Exception()
+
+                ref = url ; url = r
+                if self.locParser(url) in self.locDict:
+                    return (url, ref)
+            except:
+                break
+
+    def resolve(self, url, ref=None):
+        try:
+            if ref == None:
+                try: url, ref = re.findall('(.+?)\|Referer=(.+)', url)[0]
+                except: ref = None
+
+            try: a = [i['name'] for i in self.locinfoDict if self.locParser(url) in i['netloc']][0]
+            except: a = 'hls'
+            url = getattr(self, a)(url, ref)
+
+            return url
+        except:
+            pass
+
+

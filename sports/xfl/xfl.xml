@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [COLOR white]XFL[/COLOR] [COLOR orchid]LIVE[/COLOR] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</item>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=160</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE[/COLOR] [COLOR orchid] (AS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=132</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE[/COLOR] [COLOR orchid] (CS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=124</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE[/COLOR] [COLOR orchid] (QA)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=148</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=120</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE[/COLOR] [COLOR orchid] (VK)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=76</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE[/COLOR] [COLOR orchid] (YSS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=96</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<plugin>
+<title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL TRENDING SPORTS LIVE[/COLOR] [COLOR orchid] (YSS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>plugin://script.crew.sports/?mode=94</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]LIVE CHANNELS[/COLOR] [COLOR orchid] (YSS) [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/iptv.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fanart.png</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param1][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    import re
+    e = page_data.split('scope.tv=', 1)[-1]
+    r = re.findall('chan:\'(.+?)\',url:\'(.+?)\'', e)
+    sort = [(i[0],'http://yoursports.stream/live?v='+i[1]) for i in r]
+    return sort
+]]></expres>
+<page>http://yoursports.stream/games.js?x=1578846031</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re,base64
+    w = re.findall('(?s)<iframe frameborder=0 height=100% width=100% src="([^"]*)', page_data)[0]
+    h = client.request(w)
+    i = re.findall('\}\s(?:.*?var)(?:[^\']*)\'([^\']*)', h)[0]
+    t = base64.b64decode(i)
+    return t + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + w
+]]></expres>
+<page>[makelist.param2]</page>
+</regex>
+</item>
+<plugin>
+<title>[COLOR orchid]¤[/COLOR] [COLOR white]LIVE TV CHANNELS[/COLOR] [COLOR orchid] (WS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>plugin://script.crew.sports/?mode=214</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</plugin>

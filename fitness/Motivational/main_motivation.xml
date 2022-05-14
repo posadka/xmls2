@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Inspiration & Motivation[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PL3D3E991F17F1E2EB/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Workout Motivation[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PL9XDPqN8lxBpKLhhaAx-mOzRFpYpMSlT0/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Gym Motivation[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PL7hDHJN6qeCDVZeso20mYoACi7IuTPYCk/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>

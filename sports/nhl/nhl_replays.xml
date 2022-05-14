@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NHL[/COLOR] [COLOR orchid]2019 FULL GAME REPLAYS [COLOR orchid]¤[/COLOR]</title>
+    <link>https://pastebin.com/raw/MLJuFmWr</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
+</dir>
+<plugin>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NHL[/COLOR] [COLOR orchid]REPLAYS 2018/2019 [COLOR orchid]¤[/COLOR]</title>
+    <link>plugin://script.crew.sports/?mode=26</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
+</plugin>

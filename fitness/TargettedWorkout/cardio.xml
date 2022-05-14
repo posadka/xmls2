@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]32 Minute Home Cardio Workout with No Equipment[/B][/COLOR]</title>
+    <link>https://www.youtube.com/watch?v=qWy_aOlB45Y</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]5 Minute Cardio Blast Fat Burning Workout All Levels No Equipment[/B][/COLOR]</title>
+    <link>https://www.youtube.com/watch?v=QywgZ3D7QiY</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]At Home Cardio and Core Workout[/B][/COLOR]</title>
+    <link>https://www.youtube.com/watch?v=11WLF24-5iM</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</item>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Club Fitz[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCJYqB9IxpJsQl9mFmJd28JQ/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<item>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Fitness Blender Fat Burning Cardio Workout[/B][/COLOR]</title>
+    <link>https://www.youtube.com/watch?v=fcN37TxBE_s</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Hot Summer POP Cardio Dance Workout[/B][/COLOR]</title>
+    <link>https://www.youtube.com/watch?v=a6Rj1OZiG-U</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Low Impact Cardio / Beginner Toning Workout[/B][/COLOR]</title>
+    <link>https://www.youtube.com/watch?v=GjAhM651ZPU</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Zumba Dance Workout for Beginners[/B][/COLOR]</title>
+    <link>https://www.youtube.com/watch?v=kDez5f4arcg</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</item>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Bicep & Dumbbells[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLklpC36ja8ZQvmj0cVOxwvoqFPZE9koys/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Bicep & Place of Worship[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLgVDpfQcfY7TVBwmAh-rScaCAoWTxCvZg/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Bicep Workout Videos[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLpBQy2MBM7U9nfPun_r7Vqp2WtmmyMK7A/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Biceps & Strength Training[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLqgY8UOKJ-djJAheB7jEjSmnF2NjnXa7R/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Bodyweight & Bicep Exercises[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLyifUaViHYhZCG3X9YPTwZU7_AjZsS-pZ/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Home Bicep Videos[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLAE99D5078C75964D/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>

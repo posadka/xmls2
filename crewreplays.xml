@@ -1,0 +1,291 @@
+# -*- coding: utf-8 -*-
+
+import re,json,base64,requests
+
+from resources.lib.modules import client
+from resources.lib.modules import site
+from resources.lib.modules import workers
+from resources.lib.modules import jsunpack
+
+class streamer:
+    def dodgycodes(s):
+        return re.sub('&#(\d+);', '', s)
+
+    def resolve(self, url):
+        try:
+            if 'everysports.us' in url: u = self.everysportmlb(url)
+
+            elif 'liveonscore.tv/nhl-streams' in url: u = self.weakspellnhl(url)
+
+            elif 'liveonscore.tv/mlb-streams' in url: u = self.weakspellmlb(url)
+
+            elif 'sporteks.net' in url: u = self.sporteks(url)
+
+            elif 'bestnhl.com' in url: u = self.bestnhl(url)
+
+            elif 'crackstreams.biz' in url: u = self.biznhl(url)
+
+            elif 'www.sportsnights.cc' in url: u = self.sportsnightsnhl(url)
+
+            elif 'worldcupfootball.me/mlb' in url: u = self.worldcupfootballmlb(url)
+
+            elif 'poscitech.com' in url: u = self.poscitech(url)
+
+            elif 'sportsstatsme.net/watch/MLB-streams' in url: u = self.ssmlb(url)
+
+            elif 'sportsrp.com/sechdules/MLB-streams/1/' in url: u = self.ssmlb(url)
+
+            elif 'sportsstats.xyz/www.sportsstats.me/mlb' in url: u = self.ssmlb(url)
+
+            elif 'sportsstats.xyz/www.sportsrp.com/mlb' in url: u = self.ssmlb(url)
+
+            elif 'sportsrp.com/www.sportsstats.me/mlb' in url: u = self.ssmlb(url)
+
+            elif 'retsports.com/mlb' in url: u = self.ssmlb(url)
+
+            elif 'acezports2' in url: u = self.ace(url)
+
+            elif 'mlb-live.stream' in url: u = self.sbmlb(url)
+
+            elif '6stream.xyz' in url: u = self.sixstreammlb(url)
+
+            elif 'markkystreams.com' in url: u = self.sixstreammlb(url)
+
+            elif '6streams.tv' in url: u = self.sixstreammlb(url)
+
+            elif 'bilasport.net' in url: u = self.bilasportmlb(url)
+
+            elif 'bestsolaris.com/mlbstreams' in url: u = self.tvmlb(url)
+
+            elif 'volokit' in url: u = self.volokit(url)
+
+
+            return u
+        except:
+            pass
+
+    def weakspellnhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            w = re.findall('url:\s*"([^"]*)', page_data)[0]
+            h = re.findall('data:\s\{"([^"]*)', page_data)[0]
+            i = re.findall('var vidgstream = "([^"]*)', page_data)[0]
+            t = re.findall('gethlsUrl\(vidgstream,\s([^,]*)', page_data)[0]
+            e = re.findall('gethlsUrl\(vidgstream,(?:[^,]*),\s([^\)]*)', page_data)[0]
+            hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+        except: pass
+        try:
+            s = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
+            p = client.request(s)
+            w = re.findall('url:\s*"([^"]*)', p)[0]
+            h = re.findall('data:\s\{"([^"]*)', p)[0]
+            i = re.findall('var vidgstream = "([^"]*)', p)[0]
+            hat = w + '?' + h + '=' + i
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+        except: pass
+        made = crew.replace('\\', '').replace('master_wired60','5600K/5600_slide')
+        return made + nhl_auth
+
+    def weakspellmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            w = re.findall('url:\s*"([^"]*)', page_data)[0]
+            h = re.findall('data:\s\{"([^"]*)', page_data)[0]
+            i = re.findall('var vidgstream = "([^"]*)', page_data)[0]
+            t = re.findall('gethlsUrl\(vidgstream,\s([^,]*)', page_data)[0]
+            e = re.findall('gethlsUrl\(vidgstream,(?:[^,]*),\s([^\)]*)', page_data)[0]
+            hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+        except: pass
+        try:
+            s = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
+            p = client.request(s)
+            w = re.findall('url:\s*"([^"]*)', p)[0]
+            h = re.findall('data:\s\{"([^"]*)', p)[0]
+            i = re.findall('var vidgstream = "([^"]*)', p)[0]
+            hat = w + '?' + h + '=' + i
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+        except: pass
+        made = crew.replace('\\', '').replace('master_desktop_complete','5600K/5600_slide')
+        return made + '|Cookie=Authorization=' + token
+
+    def bestnhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            r = re.findall('<iframe allowfullscreen.*?src="([^"]*)', page_data)[0]
+            hat = 'https://bestnhl.com' + r
+            u = client.request(hat)
+            items = re.findall('<script>var.*?=\s*(\[[^;]+)', u)[0]
+            items = re.findall('"(.+?)"', items)
+            subitem = int(re.findall('\(atob.+?-\s*(\d+)', u)[0])
+            srp = ''
+            for item in items:
+                srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+            link = re.findall('var.*?"([^"]*)', srp)[0]
+            link = link.replace('master_wired60','5600K/5600_slide').replace(' ','')
+            return link + nhl_auth
+        except:
+            return
+
+    def biznhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            h = re.findall('source:\s*"([^"]*)', page_data)[0]
+            h = h.replace('master_wired60','5600K/5600_slide').replace(' ','')
+            return h + nhl_auth
+        except:
+            return
+
+    def sportsnightsnhl(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('<iframe allowfullscreen="0" frameborder="0" height="400" scrolling="no" src="([^"]*)', page_data)[0]
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            u = client.request(s)
+            r = re.findall('source:"([^"]*)', u)[0]
+            r = r.replace('master_wired60','5600K/5600_slide')
+            return r + nhl_auth
+        except:
+            return
+
+    def worldcupfootballmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            h = re.findall(r'(?s)<div class="embed-responsive embed-responsive-16by9">(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)', page_data)[0]
+            h = h.replace('master_desktop_complete_gdfp','5600K/5600_slide')
+            return h + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def poscitech(self, url):
+        try:
+            page_data = client.request(url)
+            src= re.findall('<iframe loading.*?src="([^"]*)',page_data)[0]
+            fu = requests.get(src, headers={'user-agent':'iPad','referer':src}).text
+            hat= re.findall('<iframe.*?src="([^"]*)',fu)[0]
+            white = requests.get(hat, headers={'user-agent':'iPad','referer':src}).text
+            crew= re.findall('source\s*:\s*"([^"]*)',white)[0]
+            return crew + '|user-agent=ipad&referer=https://poscitech.com'
+        except:
+            return
+
+    def everysportmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            r = re.findall('(?s)<iframe.*?src=\'([^\']*)', page_data)[0]
+            t = client.request(r)
+            w = re.findall('var source = "([^"]*)', t)[0]
+            w = w.replace('master_desktop_complete','5600K/5600_slide')
+            return w + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def ssmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            white = re.findall('(?s)var sou.*?"([^"]*)', page_data)[0]
+            white = white.replace('master_desktop_complete_gdfp','5600K/5600_slide')
+            return white + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def ace(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            white = re.findall('source.*?src="([^"]*)', page_data)[0]
+            white = white.replace('master_desktop_complete_gdfp','5600K/5600_slide')
+            return white + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def sbmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            x = re.findall('(?s)<iframe(?:.*?c=)\'([^\']*)', page_data)[0]
+            w = client.request(x)
+            r = re.findall('var source = "([^"]*)', w)[0]
+            r = r.replace('master_desktop_complete','5600K/5600_slide')
+            return r + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def volokit(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            r = re.findall('source: "([^"]*)', page_data)[0]
+            r = r.replace('master_desktop_complete','5600K/5600_slide')
+            return r + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def sixstreammlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            r = re.findall('source: "([^"]*)', page_data)[0]
+            r = r.replace('master_wired60','5600K/5600_slide')
+            return r + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def bilasportmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            white = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            hat = client.request(white)
+            crew = re.findall('(?s)var sou = "([^"]*)', hat)[0]
+            crew = crew.replace('master_desktop_complete','5600K/5600_slide')
+            return crew + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def tvmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            r = re.findall('source:\s*"([^"]*)', page_data)[0]
+            r = r.replace('master_wired60','5600K/5600_slide')
+            return r + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def sporteks(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://aburr.org/Crew/dummyToken.txt')
+            s = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
+            p = client.request(s)
+            w = re.findall('url:\s*"([^"]*)', p)[0]
+            h = re.findall('data:\s\{"([^"]*)', p)[0]
+            i = re.findall('var vidgstream = "([^"]*)', p)[0]
+            hat = w + '?' + h + '=' + i
+            the = requests.get(hat).text
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+            made = crew.replace('\\', '')
+            return made + '|Cookie=Authorization=' + token
+        except:
+            return

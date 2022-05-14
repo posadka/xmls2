@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE 2/22/20[/COLOR] [COLOR orchid] DIRECTS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+	<link></link>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]ROUGHNECKS vs VIPERS[/COLOR] [COLOR orchid] 2:00 EST[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://nfl.yrsprts.xyz/hls/x.m3u8?ch=abc5|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/abc</sublink>
+        <sublink>https://e7.cdn4.us/ingest777/hls/cbs/ABC.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]RENEGADES vs DRAGONS[/COLOR] [COLOR orchid] 5:00 EST[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://cdn.yoursports.stream/wnyw.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/fox</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/wnyw.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+        <sublink>http://weak_spell.carniferou.club/edge/FOX/chunks.m3u8|Referer=http://weakspell.com/</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]XFL LIVE 2/23/20[/COLOR] [COLOR orchid] DIRECTS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+	<link></link>
+	<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+	<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]GUARDIANS vs BATTLEHAWKS[/COLOR] [COLOR orchid] 3:00 EST[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://fadev.club/live/espn1.m3u8|Referer=http://imkmedia.com/watch/espn/</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/espn_usa.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+        <sublink>http://cdn.yoursports.stream/nbaespn.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/espn</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]DEFENDERS vs WILDCATS[/COLOR] [COLOR orchid] 6:00 EST[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://live.fadev.club/live/FS1/chunks.m3u8|Referer=http://imkmedia.com/watch/fox-sports-1/</sublink>
+        <sublink>http://cdn.yoursports.stream/fs1.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/fs1</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/fs-one.m3u8|Referer=https://box-live.stream</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/fs-one.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/xfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/xfl_fanart.jpg</fanart>
+</item>
+
+
+#############
+ABC
+        <sublink>http://nfl.yrsprts.xyz/hls/x.m3u8?ch=abc5|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/abc</sublink>
+        <sublink>https://e7.cdn4.us/ingest777/hls/cbs/ABC.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+
+############
+FS1
+        <sublink>http://live.fadev.club/live/FS1/chunks.m3u8|Referer=http://imkmedia.com/watch/fox-sports-1/</sublink>
+        <sublink>http://cdn.yoursports.stream/fs1.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/fs1</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/fs-one.m3u8|Referer=https://box-live.stream</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/fs-one.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+
+##########
+FOX
+
+        <sublink>http://cdn.yoursports.stream/wnyw.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/fox</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/wnyw.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+        <sublink>http://weak_spell.carniferou.club/edge/FOX/chunks.m3u8|Referer=http://weakspell.com/</sublink>
+
+##########
+ESPN
+        <sublink>http://fadev.club/live/espn1.m3u8|Referer=http://imkmedia.com/watch/espn/</sublink>
+        <sublink>https://e7.cdn4.us/ingest666/espn_usa.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=https://sportsbay.org</sublink>
+        <sublink>http://cdn.yoursports.stream/nbaespn.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36&Referer=http://yoursports.stream/ing/espn</sublink>

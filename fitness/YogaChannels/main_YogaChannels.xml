@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Boho Beautiful Channel[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCWN2FPlvg9r-LnUyepH9IaQ/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Diamond Dallas Page[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCvmdgf06PhRoQ5VKh0eAzCA/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Fightmaster Yoga[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCcox27Gc-NGbb2-X9hdLaMw/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Good Health 24/7[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCbqgDzBvusOKtSWvoePrjLA/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]KinoYoga[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCH-81uaxCwAAaSgxRtxMkxg/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]SarahBethYoga[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UC-0CzRZeML8zw4pFTVDq65Q/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]TaraStiles Yoga[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCa5OCJkZgtbIkaB1sA86XVA/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Yoga by Candace[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCI9s9nFu2m3K2CvhO2QVfTg/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Yoga With Adriene[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCFKE7WVJfvaHW5q283SxchA/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Yoga With Tim[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/channel/UCo3GoRLFsOehQ4tIoKZHzNA/playlists/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]PURELY WRESTLING [/COLOR] [COLOR orchid][/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/purely/base.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+</dir>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE LIVE[/COLOR] [COLOR orchid] (FREEFEDS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param1] [COLOR orange][B][makelist.param2][/B] [/COLOR] [COLOR lime][B][makelist.param3][/B] [/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    page_data = page_data.split('WWE schedule',1)[-1]
+    page_data = page_data.split('<h3>MLB schedule</h3>',1)[0]
+    s = re.findall('<h3>([^<]*)|box">([^<]*)|(?s)URL.*?ue="([^"]*)', page_data)
+    return s
+]]></expres>
+<page>https://freefeds.com/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    import re,requests,time,json
+    try: from urllib import urlencode
+    except ImportError: from urllib.parse import urlencode
+    murl='[makelist.param3]';now=int((int(time.time()) + 86400) * 1000)
+    source=requests.get(murl,headers={'user-agent':'Mozilla/5.0','referer':'https://sportsbay.org/','accept':'*/*'}).text
+    if 'm3u8' in source:
+        strurl = re.findall('Clappr.Player[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)',source)[0]+'|user-agent=ipad&origin=https://freefeds.com&referer=https://freefeds.com/'
+        return strurl
+    else :     
+        teleID=re.findall('embed/(\d+)\.',source)[0]
+        r=requests.get('https://teleriumtv.com/streams/%s/%s.json'%(teleID,now),headers={'user-agent':'Mozilla/5.0','referer':'https://teleriumtv.com/embed/%s.html'%teleID,'accept':'*/*'},cookies={'volume':'0'}).json()
+        strurl=r.get('url');netloc='https://teleriumtv.com'
+        headers={'user-agent': 'Mozilla/5.0','origin':netloc,'referer':'https://teleriumtv.com/embed/%s.html'%teleID}
+        if r.get('tokenurl'):
+          strurl += requests.get(netloc+r.get('tokenurl'),headers=headers).json()[10][::-1]
+        strurl=strurl if strurl.startswith('http') else 'https:'+strurl
+        return strurl+'|{0}'.format(urlencode(headers))
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE LIVE[/COLOR] [COLOR orchid] (DL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param1][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import site,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = site.request('https://daddylive.live/')
+    page_data = page_data.split('>WWE<',1)[-1]
+    page_data = page_data.split('>MMA<',1)[0]
+    e = re.findall('(?s)>([^<]*)<a href="([^"]*)', page_data)
+    return e
+]]></expres>
+<page>https://daddylive.live/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE LIVE[/COLOR] [COLOR orchid] (TST)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param2][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    r = re.findall('post-title">\s*<a href="([^"]*).*?="([^"]*)',page_data)
+    return r
+]]></expres>
+<page>https://topstreams.tv/category/wwe-streams/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [COLOR white]WRESTLING LIVE DIRECTS[/COLOR] [COLOR orchid][/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/wwe.xml</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+</dir>
+

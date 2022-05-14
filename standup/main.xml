@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Bert Kreischer[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/bert.xml</link>
+	<thumbnail>https://image.tmdb.org/t/p/original/fHE0eH64mNqSHxMv2x6C3YKCy9X.jpg</thumbnail>
+	<fanart>https://image.tmdb.org/t/p/original/mkPTyHMVSaBICc5pR2GMYEuLW0N.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Eddie Murphy[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/eddie.xml</link>
+    <thumbnail>http://7wallpapers.net/wp-content/uploads/2_Eddie-Murphy.jpg</thumbnail>
+    <fanart>http://7wallpapers.net/wp-content/uploads/10_Eddie-Murphy.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Gary Owen[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/owen.xml</link>
+    <thumbnail>https://cdn.vox-cdn.com/thumbor/SyJp7jlHgiWN-0yoopY9nuNwSs0=/0x117:2847x2252/1400x1050/filters:focal(0x117:2847x2252):format(jpeg)/cdn.vox-cdn.com/uploads/chorus_image/image/47625173/Gary_Owen__1.0.0.jpg</thumbnail>
+    <fanart>https://2l7g9kgsh281akevs49v281d-wpengine.netdna-ssl.com/wp-content/uploads/2019/05/67402f8d-bc17-42d0-a1ac-031cbd08a738_278391_tablet_landscape_large_16_9.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Chris Rock[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/rock.xml</link>
+    <thumbnail>http://wallsdesk.com/wp-content/uploads/2016/11/chris-rock-High-Definition-Wallpapers-.jpg</thumbnail>
+    <fanart>https://cdn.hipwallpaper.com/i/16/97/M8Jnqo.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Kevin Hart[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/hart.xml</link>
+    <thumbnail>http://wallpaperzoom.net/wp-content/uploads/2017/06/Kevin-Hart-Photos.jpg</thumbnail>
+    <fanart>http://shiningstuff.com/wp-content/uploads/2014/08/kevin-hart.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Katt Williams[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/katt.xml</link>
+    <thumbnail>https://rollingout.com/wp-content/uploads/2018/01/Katt-Williams-shutterstock_111879011-e1538323517560.jpg</thumbnail>
+    <fanart>https://ultraimg.com/images/2018/06/03/MLi0.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Mike Epps[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/epps.xml</link>
+    <thumbnail>http://epmgaa.media.clients.ellingtoncms.com/img/photos/2016/01/29/Mike_Epps.jpg</thumbnail>
+    <fanart>https://www.bet.com/content/dam/betcom/images/2018/06/Shows/BREAKS-06-01-06-15/062018-shows-bet-breaks-mike-epps-breaks-mike-epps-2.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Sarah Silverman[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/comedy/sarah.xml</link>
+    <thumbnail>http://wallsdesk.com/wp-content/uploads/2016/10/Sarah-Silverman-High-Definition.jpg</thumbnail>
+    <fanart>http://7-themes.com/data_images/out/27/6860243-sarah-silverman-wallpaper.jpg</fanart>
+</dir>
+<dir>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Comedy Central Roast[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://gitlab.com/thecrewwh/xmls/-/raw/master/standup/roast.xml</link>
+    <thumbnail>https://www.underconsideration.com/brandnew/archives/comedy_central_2018_logo.png</thumbnail>
+    <fanart>https://www.underconsideration.com/brandnew/archives/comedy_central_2018_logo.png</fanart>
+</dir>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Robert Schimmel: Unprotected[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/7d1m2agy15yx2-6</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/nqrdXcyQDsiDNjmCC9OoC3RltE.jpg</thumbnail>
+    <fanart>https://ksr-ugc.imgix.net/assets/011/494/334/f896ceaae519f16ed6d3fa460beec784_original.jpg?ixlib=rb-2.1.0&crop=faces&w=1552&h=873&fit=crop&v=1463683553&auto=format&frame=1&q=92&s=32601adf29a44eccbf6311f8cb7fa569</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Richard Jeni: A Big Steaming Pile of Me[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/wg4r8tn8yw8px20</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/BfcmPOULAzLnSLUU3mOkJOQptt.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w500_and_h282_face/d1zWkgM3VwZKABYUHDIoTDKfxKk.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Jim Norton: Monster Rain[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/33npzfm4164pezz</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/wTUEAg67PIHaUVdHcnpkKxgSocK.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w500_and_h282_face/4IoaomeAoEItOJoKmgI2Wk93DnV.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Jim Jefferies: I Swear to God [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/qgw38tey7403lqy</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/tPHgalEeveKuYY9ARGtaEQyDpB.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w500_and_h282_face/fReLq7DonMeeKtne3GMy9MbMyIc.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Whitney Cummings: I'm Your Girlfriend[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/m-qg8a52g4263d4</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/cVvB4kf1Vemb1ryyjTXCwrv1fcK.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w500_and_h282_face/sXzmdhJYx3c6d6ayhYwXIzoXciW.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Jamie Foxx: I Might Need Security [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/44g2mbzlq25k226</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/h9LYhKd2AmC8EugPgVcnlv8WTEE.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w500_and_h282_face/zFgKerCj38xTWHEjDpSohD2Znu0.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Amy Schumer: Live at the Apollo[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/pgqw8tmx63edxdn</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/bZji0NPuue5QkO9K5ypvb4CoRnj.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w500_and_h282_face/lM18jc6gtgVbJT81KXTWjmFv0cS.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Dane Cook: Troublemaker[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/d57zmaxnzwn88y1</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/rXJHq7yQ92IuTAIxAYKUILvjVLU.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1280/wcsYNfanXS8w7pYLHtg6y761JAR.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]The Original Kings of Comedy[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/80gqef864-pz7dd</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/3WyU0n7ss8mT4b5YhPI8AfbN7XE.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1280/zp2N26mtnFCqFY8lcAsZikzlqup.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]I Ain't Scared of You: A Tribute to Bernie Mac[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/pgqw8tmx6d7m7m-</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/duymNHMJNHvIlIUg9mAOT0X6IrY.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1280/92ESueV13cZJyf3l1hPjte0UjLq.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Martin Lawrence Live: Runteldat[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/2xgrka2kmqkd5rz</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/80e0CCxhBOnN5OCY5k3COE3X27G.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1000_and_h563_face/yJHccOwsaNwenLmaEw5Ziv0fkKw.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Dave Chappelle: For What It's Worth[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/2xgrka2kmnmqdpx</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/lWkTkdA4atyfDZgZ6tiLoFOc0mk.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1000_and_h563_face/jwFiThmvyKoZnFsdOLHYNnH2H9W.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Chris Tucker Live[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/zg2k8tjnqmjpw-6</link>
+    <thumbnail>https://s1.ticketm.net/dam/a/d91/1a24d880-e202-4d65-94dc-6b812448cd91_235571_TABLET_LANDSCAPE_LARGE_16_9.jpg</thumbnail>
+    <fanart>https://i.iheart.com/v3/re/new_assets/5c352985ecd50d6dec2761b4</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Colin Quinn: Long Story Short[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/kg124t3-x6ggxq2</link>
+    <thumbnail>https://image.tmdb.org/t/p/w600_and_h900_bestv2/tGlxREfnnuRnDPzWkvFKXtLnBeH.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w500_and_h282_face/p0x2DdUjrvn4m5jIAEHaHrCFyNh.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]George Lopez: The Wall[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/zg03ptjnqxg703p</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/dti0cvp1tWoSOeHrlGSTVpLxesC.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1280/9KRH30sp2QdZf1KL7bBvmpa15MM.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Louis C.K.: Live at The Comedy Store[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/wg6mntn8ylgy1r0</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/msdRyy0oiHXCQ3ANfLYchhXyf3F.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1280/hDK6d3XZ0ZxOWSkVisC9gI7BhRd.jpg</fanart>
+</item>
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]Carlos Mencia: Not for the Easily Offended[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>https://www.fembed.com/v/1ydprtj67122jzy</link>
+    <thumbnail>https://image.tmdb.org/t/p/w1280/yFXGK6LNULTDEBkt6RsjNyCxlEE.jpg</thumbnail>
+    <fanart>https://image.tmdb.org/t/p/w1280/1cU6Me3pJtpyma8Ueo4XvBuPl5o.jpg</fanart>
+</item>
+

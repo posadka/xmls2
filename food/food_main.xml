@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+	<title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]FOOD[/COLOR] [COLOR orchid]RELATED[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+	<thumbnail>https://foodrevolution.org/wp-content/uploads/blog-featured_healthy_foods-20180306.jpg</thumbnail>
+	<fanart>https://michellebrink.com/wp-content/gallery/food-photography-garden-route/michelle-brink-garden-route-food-photographer-plettenberg-bay-photography-plett-its-a-feeling-knysna-wedding-restaurant-catering-3.jpg</fanart>
+</item>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Food Network[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubeChannel&url=UC8Y-jrV8oR3s2Ix4viDkZtA</link>
+	<thumbnail>https://akns-images.eonline.com/eol_images/Entire_Site/20181111/rs_600x600-181211125229-600-food-network-stars.jpg?fit=around|700:700&crop=700:700;center,top&output-quality=90</thumbnail>
+	<fanart>https://michellebrink.com/wp-content/gallery/food-photography-garden-route/michelle-brink-garden-route-food-photographer-plettenberg-bay-photography-plett-its-a-feeling-knysna-wedding-restaurant-catering-3.jpg</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Cooking Channel[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubeChannel&url=UC4gJntprzE2tf501BkxMMQA</link>
+	<thumbnail>https://yt3.ggpht.com/a/AGF-l7-vn1NIHq1qLk88wFQafniFiuFUtUxHNDqrgw=s288-c-k-c0xffffffff-no-rj-mo</thumbnail>
+	<fanart>https://michellebrink.com/wp-content/gallery/food-photography-garden-route/michelle-brink-garden-route-food-photographer-plettenberg-bay-photography-plett-its-a-feeling-knysna-wedding-restaurant-catering-3.jpg</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]The World's 50 Best Restaurants 2019[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLWcBHwPwtVykvOa5LyjJMEo63ULN6zdKL</link>
+	<thumbnail>https://i.ytimg.com/vi/HwjFanJSU6Y/hqdefault.jpg</thumbnail>
+	<fanart>https://michellebrink.com/wp-content/gallery/food-photography-garden-route/michelle-brink-garden-route-food-photographer-plettenberg-bay-photography-plett-its-a-feeling-knysna-wedding-restaurant-catering-3.jpg</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Expensive Eats[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLW1Mwtj8qAjnPSq_VPRf2BhVGlHG6gKLm</link>
+	<thumbnail>https://i.ytimg.com/vi/3iXDBBHm4-Q/hqdefault.jpg</thumbnail>
+	<fanart>https://michellebrink.com/wp-content/gallery/food-photography-garden-route/michelle-brink-garden-route-food-photographer-plettenberg-bay-photography-plett-its-a-feeling-knysna-wedding-restaurant-catering-3.jpg</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]1-5 Star Food Reviews of Yelp![/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLv9izMWriYq6RL8oRi1mKfd1WA14k0tJC</link>
+	<thumbnail>https://i.ytimg.com/vi/pPnBxkOWSjU/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBUisTv8GAz1YOIXDoReQF2XsUKjQ</thumbnail>
+	<fanart>https://michellebrink.com/wp-content/gallery/food-photography-garden-route/michelle-brink-garden-route-food-photographer-plettenberg-bay-photography-plett-its-a-feeling-knysna-wedding-restaurant-catering-3.jpg</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]How It's Made[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLW1Mwtj8qAjnGURRxUPewYjYYPZ2rYDej</link>
+	<thumbnail>https://i.ytimg.com/vi/2EA5BMGrWjI/hqdefault.jpg</thumbnail>
+	<fanart>https://michellebrink.com/wp-content/gallery/food-photography-garden-route/michelle-brink-garden-route-food-photographer-plettenberg-bay-photography-plett-its-a-feeling-knysna-wedding-restaurant-catering-3.jpg</fanart>
+</plugin>
+<item>
+	<title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]BEER[/COLOR] [COLOR orchid]RELATED[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+	<thumbnail>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</thumbnail>
+	<fanart>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</fanart>
+</item>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Craft Beer 101 - History, science and more![/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLgs_2zQfjuLIkl_uu_2XGk_L2u5Y0RIyT</link>
+	<thumbnail>https://i.ytimg.com/vi/ZOEb3Xvsy3M/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAYABAQ==&rs=AOn4CLC9xYB8wniQtk80Bs60MPpbZ20gtA</thumbnail>
+	<fanart>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Homebrews, Wines, Meads, & Ciders[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLJGQZwp3xofug9RShQnMZR74HDxpGWf1Z</link>
+	<thumbnail>https://i.ytimg.com/vi/sfTaQTRP6_c/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDKbLzVYnwAq7pxD_DPyP8xTNwWkw</thumbnail>
+	<fanart>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]805 Beer[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLUIzWpQVwJS80GWSUMoEH4HIU2So2TFfA</link>
+	<thumbnail>https://pbs.twimg.com/profile_images/509172546176958464/bo-fa98S.jpeg</thumbnail>
+	<fanart>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Brews Basic Beer[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLBURi5LOntoNm5HY2-7eXo9sy4Iryya6s</link>
+	<thumbnail>https://i.ytimg.com/vi/qCW-SVPCw4Y/hqdefault.jpg</thumbnail>
+	<fanart>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]The Craft Beer Channel[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubeChannel&url=UCXnyK-TfLyZ8O6aXXFk76jg</link>
+	<thumbnail>https://yt3.ggpht.com/a/AGF-l7_APIPIznbDnmrTBfDCcVZgvOCbvUtuRLeOJg=s288-c-k-c0xffffffff-no-rj-mo</thumbnail>
+	<fanart>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</fanart>
+</plugin>
+<plugin>
+	<name>[COLOR orchid]¤ [/COLOR] [B][COLOR white]Craft Beer Fridays[/COLOR][/B] [COLOR orchid] ¤[/COLOR]</name>
+	<link>plugin://plugin.video.thecrew/?action=youtubePlaylist&url=PLaukl2y_nA9gIyuQTHvUSRe-LCAzL6Aof</link>
+	<thumbnail>https://i.ytimg.com/vi/2_JGjljZKXY/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDgpfbbzSMqWawSkRglCV6PPVK3Aw</thumbnail>
+	<fanart>https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/08/02/10/beer-main-0.jpg?w968h681</fanart>
+</plugin>

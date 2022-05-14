@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Warm Up Stretches[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PL3nu2-xwAZhGjslf5yP2IVwkBQ2qlb_PK/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Flexibility, Warm Up, and Cool Down[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLFD9A7697E965FB1B/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>
+<plugin>
+    <title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Stretch Workout[/B][/COLOR]</title>
+    <link>plugin://plugin.video.youtube/playlist/PLBVK6-QShOldbo17I4xbx_LAb1mOFV8rR/</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+    <fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+</plugin>

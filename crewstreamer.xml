@@ -1,0 +1,1768 @@
+# -*- coding: utf-8 -*-
+
+import re,json,base64,requests,time
+try: from urllib import urlencode, quote_plus
+except ImportError: from urllib.parse import urlencode, quote_plus
+
+from resources.lib.modules import client
+from resources.lib.modules import site
+from resources.lib.modules import workers
+from resources.lib.modules import jsunpack
+
+class streamer:
+    def dodgycodes(s):
+        return re.sub('&#(\d+);', '', s)
+
+    def resolve(self, url):
+        try:
+            if 'elixx.xyz' in url: u = self.elixx(url)
+
+            elif 'daddylive' in url: u = self.daddylive(url)
+
+            elif 'eddensports.com' in url: u = self.solaris(url)
+
+            elif 'redsoccer.info' in url: u = self.solaris(url)
+
+            elif 'worldstreams.net' in url: u = self.worldstreams(url)
+
+            elif 'mazymedias.com' in url: u = self.mazy(url)
+
+            elif 'mazystreams.xyz' in url: u = self.mazy(url)
+
+            elif 'buffstream.live/nfl' in url: u = self.crackacnfl(url)
+
+            elif 'buffstream.live/nba' in url: u = self.bslivenba(url)
+
+            elif 'ufcstreams.net/nbastreams.php' in url: u = self.bslivenba(url)
+
+            elif 'nflup.live' in url: u = self.nflup(url)
+
+            elif 'papahd' in url: u = self.papahd(url)
+
+            elif 'bfst.xyz' in url: u = self.beast(url)
+
+            elif 'fightpass.site' in url: u = self.fightpass(url)
+
+            elif 'allsportsmedia.live' in url: u = self.fightpass(url)
+
+            elif 'icelz.newsrade.tk' in url: u = self.ice(url)
+
+            elif 'hockeynews.site' in url: u = self.helena(url)
+
+            elif 'nbaweb.site' in url: u = self.helena(url)
+
+            elif 'hockeyweb' in url: u = self.tvnba(url)
+
+            elif 'scoresunday.com' in url: u = self.tvnba(url)
+
+            elif 'nbaweb.xyz' in url: u = self.skuanet(url)
+
+            elif 'myustv.com' in url: u = self.myustv(url)
+
+            elif 'freesport.info' in url: u = self.myustv(url)
+
+            elif 'cricworld.club' in url: u = self.myustv(url)
+
+            elif 'thecyclingentertainment.com' in url: u = self.markky(url)
+
+            elif 'motornews.live' in url: u = self.markky(url)
+
+            elif 'markky88.com' in url: u = self.markky(url)
+
+            elif 'markkystreams.com' in url: u = self.markky(url)
+
+            elif '6stream.xyz' in url: u = self.markky(url)
+
+            elif '6streams.tv' in url: u = self.markky(url)
+
+            elif 'foxupdates.com' in url: u = self.markky(url)
+
+            elif 'successstudios.co' in url: u = self.markky(url)
+
+            elif 'sportsnest.co' in url: u = self.sportsnest(url)
+
+            elif 'dofusports' in url: u = self.sportsnest(url)
+
+            elif 'nbajunkie.xyz/' in url: u = self.sportsnest(url)
+
+            elif 'bestreamsports.org' in url: u = self.sportsnest(url)
+
+            elif 'sportsbuzz.co' in url: u = self.markky(url)
+
+            elif 'givemevibes.com' in url: u = self.markky(url)
+
+            elif 'techtricksng.com' in url: u = self.markky(url)
+
+            elif 'telechargementfilmhd.com' in url: u = self.nbahdreplay(url)
+
+            elif 'bestsolaris.com/nbastreams' in url: u = self.tvnba(url)
+
+            elif 'bestsolaris.com/category/nflstreams/' in url: u = self.tvnba(url)
+
+            elif 'bestsolaris.com/nflstreams' in url: u = self.tvnba(url)
+
+            elif 'bestsolaris.com/cfbstreams' in url: u = self.tvnba(url)
+
+            elif '123tvsports.com/nfl-streams/' in url: u = self.tvnfl(url)
+
+            elif '9live.club' in url: u = self.tvnfl(url)
+
+            elif '123tvsports.com/ncaaf-streams/' in url: u = self.tvncaaf(url)
+
+            elif 'bestsolaris.com/nhlstreams' in url: u = self.tvnhl(url)
+
+            elif '123tvsports.com/mma-streams/' in url: u = self.tvmma(url)
+
+            elif '123tvsports.com/boxing-streams/' in url: u = self.tvboxing(url)
+
+            elif '123tvsports.com/f1-streams/' in url: u = self.tvf1(url)
+
+            elif 'live-nhl.stream' in url: u = self.livenhl(url)
+
+            elif 'sportsbay.org' in url: u = self.sportsbay(url)
+
+            elif 'live-tennis.stream' in url: u = self.tennislive(url)
+
+            elif 'nascar-live.stream' in url: u = self.tennislive(url)
+
+            elif 'sports24.club/nhl' in url: u = self.sports24nhl(url)
+
+            elif 'sports24.site/nhl' in url: u = self.sports24nhl(url)
+
+            elif 'sports24.club/f1' in url: u = self.sports24f1(url)
+
+            elif 'sports24.club/nba' in url: u = self.sports24nba(url)
+
+            elif 'sports24.club/nfl' in url: u = self.sports24nfl(url)
+
+            elif 'sports24.club/ncaa' in url: u = self.sports24ncaa(url)
+
+            elif 'sports24.club/ncaab' in url: u = self.sports24ncaab(url)
+
+            elif 'sports24.club/ncaab' in url: u = self.sports24ufc(url)
+
+            elif 'everysports.us/watch/nhl/' in url: u = self.everysportsnhl(url)
+
+            elif 'everysports.us/view/mlb' in url: u = self.everysportsmlb(url)
+
+            elif 'everysports.us/view/nfl' in url: u = self.everysportsnfl(url)
+
+            elif 'volokit.com/all-games/nhl' in url: u = self.volokitnhl(url)
+
+            elif 'volokit.com/all-games/mlb' in url: u = self.volokitmlb(url)
+
+            elif 'volokit.com/volostream/nfl-games' in url: u = self.volokitnfl(url)
+
+            elif 'volokit2' in url: u = self.tvnba(url)
+
+            elif 'sportsstatsme.net/watch/NHL-streams' in url: u = self.ssnhl(url)
+
+            elif 'retsports.com' in url: u = self.ssnhl(url)
+
+            elif 'sportsstats.xyz/www.sportsstats.me' in url: u = self.ssnhl(url)
+
+            elif 'sportsstats.xyz/www.sportsstats.me/nhl2' in url: u = self.ssnhl(url)
+
+            elif 'sportsstats.xyz/www.sportsrp.com/nhl' in url: u = self.ssnhl(url)
+
+            elif 'sportsrp.com/www.sportsstats.me/nhl2' in url: u = self.ssnhl(url)
+
+            elif 'sportsrp.com/sechdules/NHL-streams/2/' in url: u = self.ssnhl(url)
+
+            elif 'www.sportsrp.com/watch/NHL-streams' in url: u = self.ssnhl(url)
+
+            elif 'sportsstats.xyz/www.sportsstats.me/nhl3' in url: u = self.ssnhl(url)
+
+            elif 'sportsstats.xyz/www.sportsstzts.me/nhl2' in url: u = self.ssnhl(url)
+
+            elif 'sportsstatsme.net/watch/NBA-streams' in url: u = self.ssnba(url)
+
+            elif 'sportsstatsme.net/watch/NFL-streams' in url: u = self.ssnba(url)
+
+            elif 'sportsstatsme.net/watch/MLS-streams' in url: u = self.ssnba(url)
+
+            elif 'playoffsstream.live/nhl' in url: u = self.playoffnhl(url)
+
+            elif 'yoursports.stream' in url: u = self.yss(url)
+
+            elif 'yrsprts.stream' in url: u = self.yss(url)
+
+            elif 'yoursports.to' in url: u = self.yss(url)
+
+            elif 'buffstream.io' in url: u = self.crackstreams(url)
+
+            elif 'methstreams.com' in url: u = self.csis(url)
+
+            elif 'hesgoal.com' in url: u = self.hesgoal(url)
+
+            elif 'thecrackstreams.net' in url: u = self.thecsnet(url)
+
+            elif 'crackstreams.net' in url: u = self.csnetmma(url)
+
+            elif 'mmastreams.site' in url: u = self.csnetmma(url)
+
+            elif 'nflstreams.link' in url: u = self.csnetnfl(url)
+
+            elif 'nbastreams.xyz' in url: u = self.crackstreams(url)
+
+            elif 'nbastreams123.xyz' in url: u = self.crackstreams(url)
+
+            elif 'givemereddit.stream' in url: u = self.givemereddit(url)
+
+            elif 'givemenflstreams.com' in url: u = self.givemereddit(url)
+
+            elif 'givemenbastreams.com' in url: u = self.givemereddit(url)
+
+            elif 'givemeredditstreams.com' in url: u = self.givemereddit(url)
+
+            elif 'givememmastreams.com' in url: u = self.givememma(url)
+
+            elif 'tezgoal.com' in url: u = self.hdstreams(url)
+
+            elif 'hhdstreams.club' in url: u = self.hdstreams(url)
+
+            elif 'hdstreamss.club' in url: u = self.hdstreams(url)
+
+            elif 'uhdstreams.club' in url: u = self.hdstreams(url)
+
+            elif 'bfstrms.xyz' in url: u = self.buff(url)
+
+            elif 'ntgdhsgfs.re/' in url: u = self.buff(url)
+
+            elif 'bfst.to' in url: u = self.buff(url)
+
+            elif 'bfstrs.xyz' in url: u = self.buff(url)
+
+            elif 'buffstreamz.com' in url: u = self.buff(url)
+
+            elif 'ripple.stream' in url: u = self.ripple(url)
+
+            elif 'nflsportz.com' in url: u = self.nflsportz(url)
+
+            elif 'topstreams.info/nba' in url: u = self.topstreams(url)
+
+            elif 'topstreams.info/nfl' in url: u = self.topstreamsnfl(url)
+
+            elif 'streameast' in url: u = self.streameastnba(url)
+
+            elif 'ertech.work' in url: u = self.skuanet(url)
+
+            elif 'chimxoan.net' in url: u = self.skuanet(url)
+
+            elif 'skuanet.us' in url: u = self.skuanet(url)
+
+            elif 'Skuanet.Us' in url: u = self.skuanet(url)
+
+            elif 'harumu.me/' in url: u = self.skuanet(url)
+
+            elif 'viafb.site/' in url: u = self.skuanet(url)
+
+            elif 'fnew.tech' in url: u = self.skuanet(url)
+
+            elif 'psm.wtf' in url: u = self.skuanet(url)
+
+            elif 'fabtech.work' in url: u = self.skuanet(url)
+
+            elif 'ruapa.com/' in url: u = self.skuanet(url)
+
+            elif 'gardener101.work' in url: u = self.skuanet(url)
+
+            elif 'jmutech.xyz' in url: u = self.skuanet(url)
+
+            elif 'aas.works' in url: u = self.skuanet(url)
+
+            elif 'kimta' in url: u = self.skuanet(url)
+
+            elif 'sagoad.com/' in url: u = self.skuanet(url)
+
+            elif 'anhdepmoingay.com/' in url: u = self.skuanet(url)
+
+            elif 'azulitostreams.com' in url: u = self.skuanet(url)
+
+            elif 'boxingfightsvideos' in url: u = self.boxingfightsvideos(url)
+
+            elif 'crichd' in url: u = self.cric(url)
+            
+            elif 'telehub.org' in url: u = self.tubby(url)
+
+            elif 'btstream.live' in url: u = self.btstream(url)
+            
+            elif 'soccerjumbotv1.me' in url: u = self.jumbo(url)
+
+            elif 'sportnews.to' in url: u = self.sportnews(url)
+
+            elif 'mysports.to' in url: u = self.sportnews(url)
+
+            elif 'footy.to' in url: u = self.sportnews(url)
+
+            elif 'blacktiesports.to' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/soccer' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/category/Soccer' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/nflstreams' in url: u = self.blacktienfl(url)
+
+            elif 'blacktiesports.net/nfl' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/nbastreams' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/category/NBA' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/nba' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/category/BoxingPPV' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/boxingstreams' in url: u = self.blacktienba(url)
+
+            elif 'blacktiesports.net/live/nba' in url: u = self.blacktienba(url)
+
+            elif 'wpstream.tv' in url: u = self.weakspell(url)
+
+            elif 'liveonscore.tv' in url: u = self.weakspell(url)
+
+            elif 'liveonscore.to' in url: u = self.weakspell(url)
+
+            elif 'weakstreams' in url: u = self.weakspell(url)
+
+            elif 'ufckhabib.com' in url: u = self.ufckhabib(url)
+
+            elif 'ovostreams.com' in url: u = self.ovostreams(url)
+
+            elif 'tv247.us' in url: u = self.tvtwofour(url)
+
+            elif 'myoplay.club' in url: u = self.myoplay(url)
+
+            elif 'crackstreams.biz' in url: u = self.csbiz(url)
+
+            elif 'crackstreams.is' in url: u = self.csis(url)
+
+            elif 'nbastreams.gg' in url: u = self.csis(url)
+
+            elif 'crackstreams.to' in url: u = self.csto(url)
+
+            elif 'sportsnews4u.net' in url: u = self.csto(url)
+
+            elif 'techoreels.com' in url: u = self.techno(url)
+
+            elif 'bdnewszh.com/ncaaf' in url: u = self.ranionfl(url)
+
+            elif 'bdnewszh.com/nba' in url: u = self.ranionfl(url)
+
+            elif 'bdnewszh.com/nfl' in url: u = self.ranionfl(url)
+
+            elif 'bdnewszh.com/nhl' in url: u = self.ranionfl(url)
+
+            elif 'bdnewszh.com/mma' in url: u = self.ranionfl(url)
+
+            elif 'streamspass.com' in url: u = self.ranionfl(url)
+
+            elif 'bdnewszh.com/soccer' in url: u = self.ranionfl(url)
+
+            elif 'recipemam.com' in url: u = self.recipemam(url)
+
+            elif 'catchystream.com' in url: u = self.catchy(url)
+
+            elif 'sportsurge.in' in url: u = self.sportsurge(url)
+
+            elif 'hdstreams.pw' in url: u = self.sportsurge(url)
+
+            elif 'ace' in url: u = self.ace(url)
+
+            elif 'nbatvsport.com' in url: u = self.nbatvsport(url)
+
+            elif 'changnews.co.uk' in url: u = self.nbatvsport(url)
+
+            elif 'geekingeek.com' in url: u = self.geekingeek(url)
+
+            elif 'rightcombat.com' in url: u = self.rightcombat(url)
+
+            elif 'poscitech.com' in url: u = self.poscitech(url)
+
+            elif 'iwizwig.online' in url: u = self.iwizwig(url)
+
+            elif 'torridplay.com' in url: u = self.skuanet(url)
+
+            elif 'sportinglive.co' in url: u = self.skuanet(url)
+
+            elif 'cricworld.club' in url: u = self.cricworld(url)
+
+            elif 'nflscoop.net' in url: u = self.capp(url)
+
+            elif 'nflbuzz.xyz' in url: u = self.capp(url)
+
+            elif 'techstribes.com' in url: u = self.capp(url)
+
+            elif 'grealish.net' in url: u = self.capp(url)
+
+            elif 'darwinstreams.com' in url: u = self.darwinstreams(url)
+
+            elif 'freetvsports.com' in url: u = self.freetvsports(url)
+
+            elif 'p2pstreams.com' in url: u = self.ptwopstreams(url)
+
+            elif 'p2pstreams.live' in url: u = self.ptwopstreams(url)
+
+            elif 'sportek.xyz' in url: u = self.sportek(url)
+
+            elif 'bongstreams.com' in url: u = self.bong(url)
+
+            elif 'sporteks.net' in url: u = self.sporteks(url)
+
+            elif 'pawastreams.live' in url: u = self.pawastreams(url)
+
+            elif 'supertipz.com' in url: u = self.supertipz(url)
+
+            elif 'dubsstreamz.com' in url: u = self.dubsstreamz(url)
+
+            elif 'dubzstreams.com' in url: u = self.dubsstreamz(url)
+
+            elif 'summerlivestream.com' in url: u = self.summerlivestream(url)
+
+            elif 'streaming4u.org/' in url: u = self.summerlivestream(url)
+
+            elif 'soccer24hd.com' in url: u = self.sstwentyfour(url)
+
+            elif 'crazystreams.ga' in url: u = self.crazystreams(url)
+
+            elif '1stream' in url: u = self.onestream(url)
+
+            elif 'topstreams.tv' in url: u = self.toptv(url)
+
+            elif 'dubznetwork' in url: u = self.dubznetwork(url)
+
+            elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
+
+            elif 'sportsio' in url: u = self.sportsio(url)
+
+            elif '60fps' in url: u = self.sixtyfps(url)
+
+            elif 'sportsguild.net' in url: u = self.sportsguild(url)
+
+            return u
+        except:
+            pass
+
+
+    def weakspell(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('url:\s*"([^"]*)', page_data)[0]
+            h = re.findall('data:\s\{"([^"]*)', page_data)[0]
+            i = re.findall('var vidgstream = "([^"]*)', page_data)[0]
+            t = re.findall('gethlsUrl\(vidgstream,\s([^,]*)', page_data)[0]
+            e = re.findall('gethlsUrl\(vidgstream,(?:[^,]*),\s([^\)]*)', page_data)[0]
+            hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+        except: pass
+        try:
+            s = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
+            p = client.request(s)
+            w = re.findall('url:\s*"([^"]*)', p)[0]
+            h = re.findall('data:\s\{"([^"]*)', p)[0]
+            i = re.findall('var vidgstream = "([^"]*)', p)[0]
+            hat = w + '?' + h + '=' + i
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+        except: pass
+        made = crew.replace('\\', '')
+        return made + '|Referer=' + url
+
+#link  
+    def crackstreams(self, url):
+        try:
+            page_data = client.request(url)
+            t = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
+            x = client.request(t)
+            w = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', x)[0]   
+            u = client.request(w)
+        except: pass
+        try:
+            s = re.findall('atob\(["|\']([^"|\']*)', u)[0]
+            s = base64.b64decode(s).decode('utf-8')
+        except: pass
+        try:
+            s = re.findall('(?s)Player.*?(?:source|src|file):\s*[\'"]([^\'"]+)', u)[0]
+        except: pass
+        return s + '|user-agent=iPad&referer=' + url
+
+    def csis(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            #h = url + w
+            i = client.request(w)
+        except: pass
+        try:
+            e = re.findall('atob\(["|\']([^"|\']*)', i)[0]; e = base64.b64decode(e).decode('utf-8')
+        except: pass
+        try:
+            e = re.findall('var PLAYBACK_URL = \'([^\']*)', i)[0]
+        except: pass
+        return e + '|User-Agent=Mozilla/5.0&Referer=' + w
+
+#link  
+    def hesgoal(self, url):
+        try:
+           page_data = client.request(url)
+           t = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
+           t = t.replace(' ', '%20')
+           t = 'http:' + t
+           u = requests.get(t).text
+           s = re.findall('atob\(["|\']([^"|\']*)', u)[0]
+           s = base64.b64decode(s).decode('utf-8')
+           if not s: s = re.findall('source: "([^"]*)', u)[0]
+           return s + '|user-agent=iPad&referer=' + url
+        except:
+            return
+#link
+    def givemereddit(self, url):
+        try:
+            u = client.request(url) 
+            #r = re.findall('(?s)iframe frameborder=0 height=100% width=100% src="([^"]*)', u)[0]
+            r = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
+            w = client.request(r)
+            x = re.findall('source:\s*\'([^\']*)', w)[0]
+            return x + '|Referer=' + r
+        except:
+            return   
+
+#link
+    def givememma(self, url):
+        try:
+            u = client.request(url) 
+            r = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
+            w = client.request(r)
+            x = re.findall(' source: \'([^\']*)', w)[0]
+            return x + '|Referer=' + r
+        except:
+            return
+#link
+    def buff(self, url):
+        try:
+            page_data = client.request(url, headers={'user-agent':'Mozilla/5.0'})
+            reg = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
+            page = client.request(reg, headers={'user-agent':'Mozilla/5.0','referer':url})
+            find = re.findall('source: atob\(\'([^\']*)', page)[0]
+            find = base64.b64decode(find).decode('utf-8')
+            return find + '|user-agent=Mozilla/5.0&referer=' + reg
+        except:
+            return
+
+#list:url and title
+    def boxingfightsvideos(self, url):
+        try:
+            u = client.request(url)
+            e = re.findall('(?s)<iframe(?:.*?src="([^"]*))', u)
+            e = [(i,i.split('//')[-1].split('/')[0]) for i in e]
+            e = [(i[0].replace('http:','').replace('https:','').replace('//','https://'),'[COLOR dodgerblue]Source: [/COLOR]'+i[1].replace('www.','').replace('.com','')) for i in e]
+            return e
+        except:
+            return
+
+    def topstreams(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('var hlsurl=\'([^\']*)', page_data)[0]
+            h = re.findall('var server=\'([^\']*)', page_data)[0]
+            i = re.findall('var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
+            t = re.findall('var key= \'([^\']*)', page_data)[0]
+            e = re.findall('var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
+            return w + h + i + t + e
+        except:
+            return
+
+    def topstreamsnfl(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('\}\s*var hlsurl=\'([^\']*)', page_data)[0]
+            h = re.findall('-1\';\s*var server=\'([^\']*)', page_data)[0]
+            i = re.findall('}\s*var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
+            t = re.findall('(?s)var safety=.*?y= \'([^\']*)', page_data)[0]
+            e = re.findall('\}\s*var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
+            return w + h + i + t + e
+        except:
+            return
+
+    def ripple(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)"><iframe.*?src="([^"]*)', page_data)[0]
+            t = requests.get(s).text
+            r = re.findall('source: \'([^\']*)', t)[0]
+            r = r.replace('png','m3u8')
+            if 'http' not in r:
+                r = 'http://cdn.runid.xyz/' + r
+            return r + '|Referer=' + s
+            #return 'http://cdn.runid.xyz/' + r + '|Referer=' + s
+        except:
+            return
+
+    def streameast(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe frameborder="0" scrolling="no" allowfullscreen="" src="([^"]*)', page_data)[0]
+            #w = re.findall('src=\&quot\;([^q]*)\&', page_data)[0]
+            i = client.request(w)
+            e = re.findall('BaglantiBilgisi = "([^"]*)', i)[0]
+            return e + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + w
+        except:
+            return
+
+    def streameastnfl(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('src=\&quot\;([^q]*)\&', page_data)[0]
+            i = client.request(w)
+            e = re.findall('BaglantiBilgisi = "([^"]*)', i)[0]
+            return e + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + w
+        except:
+            return
+
+    def streameastnba(self, url):
+        try:
+            page_data = client.request(url)
+            #w = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
+            #i = client.request(w)
+            e = re.findall('var BaglantiBilgisi =\s*"([^"]*)', page_data)[0]
+            return e + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url
+        except:
+            return
+
+    def skuanet(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('<source src="([^"]*)', page_data)[0]
+            return r + '|user-agent=iPad&referer=' + url
+        except:
+            return
+
+    def hdstreams(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            u = client.request(r)
+            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', u)[0]
+            return x + '|user-agent=iPad&referer=' + r
+        except:
+            return
+
+    def tvnba(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
+        except:
+            return
+
+    def tvnfl(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
+            r = base64.b64decode(r).decode('utf-8')
+            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url 
+        except:
+            return
+
+    def tvncaaf(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
+            r = base64.b64decode(r).decode('utf-8')
+            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/ncaaf-streams/' 
+        except:
+            return
+
+    def tvnhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            r = re.findall('source:\s*"([^"]*)', page_data)[0]
+            if 'master_wired60' not in r:
+                return r + '|Referer=http://bestsolaris.com/'
+            else :
+                 r = r.replace('master_wired60','5600K/5600_slide')
+                 return r + nhl_auth
+        except:
+            return
+
+    def tvmma(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
+            r = base64.b64decode(r).decode('utf-8')
+            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/mma-streams/' 
+        except:
+            return
+
+    def tvboxing(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
+            r = base64.b64decode(r).decode('utf-8')
+            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/boxing-streams/' 
+        except:
+            return
+
+    def tvf1(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
+            r = base64.b64decode(r).decode('utf-8')
+            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/f1-streams/' 
+        except:
+            return
+
+    def yss(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)<iframe frameborder=0 height=100% width=100% src="([^"]*)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('\}\s(?:.*?var)(?:[^\']*)\'([^\']*)', h)[0]
+            t = base64.b64decode(i).decode('utf-8')
+            if t.startswith('/'): t = 'http://yoursports.stream' + t
+            return t + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + w
+        except:
+            return
+
+    def ssnhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            #the = re.findall('<iframe sandbox.*?src="([^"]*)', page_data)[0]
+            #crew = client.request(the)
+            #white = re.findall('(?s)var sou.*?"([^"]*)', crew)[0]
+            white = re.findall('(?s)var sou.*?"([^"]*)', page_data)[0]
+            white = white.replace('master_wired60','5600K/5600_slide')
+            return white + nhl_auth
+        except:
+            return
+
+    def ssnba(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            s = client.request(r)
+            white = re.findall('(?s)source:\s\'([^\']*)', s)[0]
+            return white + '|user-agent=iPad&Referer=' + r
+        except:
+            return
+
+    def everysportsnhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            nhl_auth = "|Cookie=Authorization=" + token
+            r = re.findall('source: \'([^\']*)', page_data)[0]
+            r = r.replace('master_wired60','5600K/5600_slide')
+            return r + nhl_auth
+        except:
+            return
+
+    def everysportsmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://172.105.26.201/mlbs.txt')
+            r = re.findall('source: \'([^\']*)', page_data)[0]
+            r = r.replace('master_wired60','5600K/5600_slide')
+            return r + '|User-Agent=iPad&Authorization=' + token
+        except:
+            return
+
+    def volokitnhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            #nhl_auth = "|Cookie=Authorization=" + token
+            r = re.findall('{source:"([^"]*)', page_data)[0]
+            return r + nhl_auth
+        except:
+            return
+
+    def volokitmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://172.105.26.201/mlbs.txt')
+            r = re.findall('{source:"([^"]*)', page_data)[0]
+            r = r.replace('master_desktop_complete','5600K/5600_slide_gdfp')
+            return r + '|User-Agent=iPad&Authorization=' + token
+        except:
+            return
+
+    def volokitnfl(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('volokit-feed" src="([^"]*)', page_data)[0]
+            s = 'http://volokit.com' + s
+            u = client.request(s)
+            r = re.findall('{source:"([^"]*)', u)[0]
+            return r
+        except:
+            return
+
+    def playoffnhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            r = re.findall('(?s)= "https:\/\/([^"]*)', page_data)[0]
+            r = r.replace('hlslive','https://hlslive')
+            return r + nhl_auth
+        except:
+            return
+
+    def myustv(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]; r = base64.b64decode(r).decode('utf-8')
+            return r + '|user-agent=iPad&Referer=' + url
+        except:
+            return
+
+    def livenhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            x = re.findall('(?s)<iframe(?:.*?c=)\'([^\']*)', page_data)[0]
+            w = client.request(x)
+            r = re.findall('var source = "([^"]*)', w)[0]
+            r = r.replace('master_wired60','5600K/5600_slide')
+            return r + nhl_auth
+        except:
+            return
+
+    def sportsbay(self, url):
+        try:
+            page_data = client.request(url)
+            x = re.findall('(?s)<iframe(?:.*?c=)\'([^\']*)', page_data)[0]
+            w = client.request(x)
+            r = re.findall('var source = {   \'hls\':\'([^\']*)', w)[0]
+            return r + '|User-Agent=Mozilla/5.0&Referer=' + x
+        except:
+            return
+
+    def tennislive(self, url):
+        try:
+            page_data = client.request(url)
+            x = re.findall('(?s)<iframe.*?src=\'([^\']*)', page_data)[0]
+            w = client.request(x)
+            r = re.findall('Player\({\s*source:\s*\'([^\']*)', w)[0]
+            return r + '|User-Agent=Mozilla/5.0&Referer=' + x
+        except:
+            return
+
+    def sports24nhl(self, url):
+        try:
+            page_data = client.request(url)
+            #token = client.request('http://continuum.watch/Crew/nhl.txt')
+            #nhl_auth = "|Cookie=Authorization=" + token
+            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
+            u = re.findall('(?s)id="playframe">(?:.*?src)="([^"]*)', page_data)[0]
+            b = 'https:'+u
+            b = b.replace(' ', '%20')
+            x = client.request(b)
+            l = re.findall('(?s)xurl\s=\satob\(\'([^\']*)', x)[0]; l = base64.b64decode(l).decode('utf-8')
+            return l + nhl_auth
+        except:
+            return
+
+    def sports24nba(self, url):
+        try:
+            page_data = client.request(url)
+            l = re.findall('(?s)src = "(.*?)"', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
+            l = l.replace('https:','')
+            l = l.replace('//','https://')
+            if l.startswith('/'): l = 'https://sports24.club' + l
+            return l + '|user-agent=iPad&referer=https://sports24.club/nba'
+        except:
+            return
+
+    def sports24ncaab(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe id.*?src="([^"]*)', page_data)[0]
+            h = client.request(w)
+            l = re.findall('atob\(["|\']([^"|\']*)', h)[0]; l = base64.b64decode(l).decode('utf-8')
+            l = l.replace('https:','')
+            l = l.replace('//','https://')
+            if l.startswith('/'): l = 'https://sports24.club' + l
+            return l + '|user-agent=iPad&referer=' + w
+        except:
+            return
+
+    def sports24nfl(self, url):
+        try:
+            page_data = client.request(url)
+            l = re.findall('(?s)src = "(.*?)"', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
+            l = l.replace('https:','')
+            l = l.replace('//','https://')
+            if l.startswith('/'): l = 'https://sports24.club' + l
+            return l + '|user-agent=iPad&referer=https://sports24.club/nfl'
+        except:
+            return
+
+    def sports24f1(self, url):
+        try:
+            page_data = client.request(url)
+            l = re.findall('(?s)src = "(.*?)"', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
+            l = l.replace('https:','')
+            l = l.replace('//','https://')
+            if l.startswith('/'): l = 'https://sports24.club' + l
+            return l + '|user-agent=iPad&referer=https://sports24.club/fl'
+        except:
+            return
+
+    def sports24ncaa(self, url):
+        try:
+            page_data = client.request(url)
+            l = re.findall('var xurl = atob\(\'([^\']*)', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
+            l = l.replace('https:','')
+            l = l.replace('//','https://')
+            if l.startswith('/'): l = 'https://sports24.club' + l
+            return l + '|user-agent=iPad&referer=https://sports24.club/ncaa'
+        except:
+            return
+
+    def markky(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return r + '|User-Agent=iPad&Referer=' + url
+        except:
+            return
+
+    def nbahdreplay(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('iframe(?:.*?src=")([^"]*)',page_data)[0]
+            r = r.replace('//','https://')
+            return r
+        except:
+            return
+            
+    def cric(self, url):
+        try:
+            p = client.request(url)
+            r0 = re.findall('(?s)<tr><td>(?:[^<]*)<\/td><td><a href="([^"]*)',p)[0]
+            p1 = client.request(r0)
+            r1 = re.findall('<iframe src="([^"]*)',p1)[0];r1 = r1.replace('//','http://')
+            p2 = client.request(r1)
+            r2 = re.findall('fid="([^"]*)',p2)[0];r3 = re.findall('v_width=([^\;]*)',p2)[0];r4 = re.findall('v_height=([^\;]*)',p2)[0]
+            embed = 'http://www.freecast123.com/cricsp.php?player=desktop&live='+r2+'&vw='+r3+'&vh='+r4
+            u = client.request(embed, headers={'user-agent':'iPad','referer':r1})
+            u = u.replace('\/','/');u = u.replace('",','');u = u.replace('"','');u = u.replace('//','http://')
+            r = re.findall('return\(\[([^\]]*)',u)[0]; x = re.findall('\[(hlsendtime.*?)\]',u)[0]; z = re.findall('>(ash.*?)<',u)[0]
+            return r + x + z
+        except:
+            return
+
+    def tubby(self, url):
+        try:
+            u = client.request(url)
+            r = re.findall('<iframe src="([^"]*)',u)[0]
+            u2 = client.request(r)
+            r2 = re.findall('videoLink = \'([^\']*)',u2)[0]
+            return r2
+        except:
+            return
+
+    def btstream(self, url):
+        try:
+            u = client.request(url)
+            r = re.findall('(?s)<div class=\'player(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)', u)[0]
+            t = client.request(r)
+            s = re.findall('atob\(["|\']([^"|\']*)', t)[0]
+            s = base64.b64decode(s).decode('utf-8')
+            return s + '|referer=' + r
+        except:
+            return
+            
+    def jumbo(self, url):
+        try:
+            u = requests.get(url).content
+            r = re.findall('<iframe src="([^"]*)',u)[0]
+            u2 = requests.get(r).content
+            r2 = re.findall('<iframe src="([^"]*)',u2)[0]
+            page = requests.get(r2, headers={'user-agent':'iPad','referer':r}).content
+            find = re.findall('(?s)<script>eval(.+?)<\/sc', page)[0]
+            unpack = jsunpack.unpack(find)
+            r3 = re.findall('source:"([^"]*)',unpack)[0]
+            return r3
+        except:
+            return
+
+    def mazy(self, url):
+        try:
+            page_data = client.request(url)
+            i = re.findall('source = \'([^\']*)', page_data)[0]
+            return i + '|Referer=' + url
+        except:
+            return
+
+    def helena(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('source: "([^"]*)', page_data)[0]
+            return w + '|referer=' + url
+        except:
+            return
+
+    def ice(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('iframe src="([^"]*)', page_data)[0]
+            r = client.request(s)
+            t = re.findall('replace\("([^"]*)', r)[0]
+            w = re.findall('(?s)\)\;.*?var url = "([^"]*)', r)[0]
+            return t + w + '|user-agent=ipad&referer=' + s
+        except:
+            return
+
+    def papahd(self, url):
+        try:
+            page_data = client.request(url)
+            r1 = re.findall('(?s)<iframe src="([^"]*)',page_data)[0]
+            u2 = requests.get(r1).text
+            #r2 = re.findall('<iframe src="([^"]*)',u2)[0]
+            #page = requests.get(r2, headers={'user-agent':'iPad','referer':r1}).text
+            #find = re.findall('eval\(function(.+?m3u8.+)', page)[0]
+            #unpack = jsunpack.unpack(find)
+            result = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', u2)[0]
+            return result + '|user-agent=iPad&amp;referer=' + r1
+        except:
+            return
+
+    def fightpass(self, url):
+        try:
+            page_data = client.request(url)
+            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return x + '|user-agent=Mozilla/5.0&referer=' + url
+        except:
+            return
+
+    def solaris(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return r + '|user-agent=Mozilla/5.0&referer=' + url
+        except:
+            return
+
+    def sportnews(self, url):
+        try:
+            page_data = client.request(url)
+            l = re.findall('atob\(\'([^\']*)', page_data)[0]
+            l = base64.b64decode(l).decode('utf-8')
+            return l + '|user-agent=Mozilla/5.0&referer=' + url
+        except:
+            return
+
+    def beast(self, url):
+        try:
+            page_data = client.request(url)
+            white = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            hat = requests.get(white).text
+            items = re.findall('=\s*(\[[^;]+)', hat)[0]
+            items = re.findall('"(.+?)"', items)
+            subitem = int(re.findall('atob.+?-\s*(\d+)', hat)[0])
+            srp = ''
+            for item in items:
+                srp += chr(int(re.sub(r'[^\d]', '', item.decode('base64'))) - subitem)
+            link = re.findall('source: \'([^\']*)', srp)[0]
+            return link + '|user-agent=ipad&referer=' + url
+        except:
+            return
+
+    def elixx(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('p>\s*<iframe src="([^"]*)',page_data)[0]
+            h = 'http://elixx.xyz' + w
+            i = requests.get(h).text
+            t = re.findall('<iframe src="([^"]*)',i)[0]
+            white = 'https:' + t
+            e = requests.get(white).text
+            z = re.findall('(?s)<iframe.*?src="([^"]*)',e)[0]
+            hat = 'https:' + z
+            pink = requests.get(hat, headers={'user-agent':'iPad','referer':t}).text
+            find = re.findall('eval\(function(.+?m3u8.+)', pink)[0]
+            the = jsunpack.unpack(find)
+            crew= re.findall('src=\s*"([^"]*)',the)[0]
+            return crew + '|User-Agent=iPad&referer=' + h
+        except:
+            return
+
+    def worldstreams(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe.*?src="([^"]*)',page_data)[0]
+            h = requests.get(w).text
+            i = re.findall('<iframe src="([^"]*)',h)[0]
+            e = requests.get(i, headers={'user-agent':'iPad','referer':i}).text
+            crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', e)[0]
+            #hat = re.findall('eval\(function(.+?m3u8.+)', e)[0]
+            #the = jsunpack.unpack(hat)
+            #crew= re.findall('source\s*:\s*"([^"]*)',the)[0]
+            return crew + '|user-agent=ipad&referer=' + i
+        except:
+            return
+
+    def crackacnfl(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
+            h = client.request(w)
+            i = re.findall('(?s)<iframe.*?src="([^"]*)',h)[0]
+            t = client.request(i)
+            e = re.findall('source: "([^"]*)', t)[0]
+            return e + '|user-agent=ipad&referer=' + i
+        except:
+            return
+
+    def bslivenba(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)play">.*?src="([^"]*)',page_data)[0]
+            h = client.request(w)
+            i = re.findall('(?s)<iframe allowfullscreen.*?src="([^"]*)',h)[0]
+            t = client.request(i)
+            e = re.findall('atob\(\'([^\']*)', t)[0]
+            hat = base64.b64decode(e).decode('utf-8')
+            return hat + '|user-agent=ipad&referer=' + i
+        except:
+            return
+
+    def csnetmma(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('(?s)<iframe.*?src="([^"]*)', h)[0]
+            t = client.request(i)
+            e = re.findall('(?s)source:\s\'([^\']*)', t)[0]
+            return e + '|user-agent=ipad&referer=' + i
+        except:
+            return
+
+    def csnetnfl(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            s = client.request(r)
+            w = re.findall('(?s)source:\s"([^"]*)', s)[0]
+            return w + '|user-agent=ipad&referer=http://crackstreams.net/nflstreams.php'
+        except:
+            return
+
+    def nflup(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('var chunks_link = \'([^\']*)', page_data)[0]
+            s = re.findall('var channelName = "([^"]*)', page_data)[0]
+            return r + s + '_playlist.m3u8'
+        except:
+            return
+
+    def nflsportz(self, url):
+        try:
+            page_data = client.request(url)
+            #r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
+            #r = base64.b64decode(r).decode('utf-8')
+            #return r + '|user-agent=Mozilla/5.0&referer=' + url
+            src = re.findall('iframe.*?src="([^"]*)', page_data)[0]
+            src = 'http:' + src if src.startswith('//') else src
+            fu = requests.get(src, headers={'user-agent':'iPad','referer':url}).text
+            hat = re.findall('eval\(function(.+?m3u8.+)', fu)[0]
+            the = jsunpack.unpack(hat)
+            crew= re.findall('var\s*src="([^"]*)',the)[0]
+            return crew + '|user-agent=Mozilla/5.0&referer=' + url
+        except:
+            return
+
+    def blacktienfl(self, url):
+        try:
+            page_data = client.request(url)
+            #r = re.findall('<iframe src="([^"]*)', page_data)[0]
+            r = re.findall('<iframe id="stream.*?src="([^"]*)', page_data)[0]  
+            u = client.request(r)
+            q = re.findall('(?:source|src|file):\s*[\'"]([^\'"]*)',u)[0]
+            return q + '|user-agent=ipad&referer=' + r
+        except:
+            return
+
+    def blacktienba(self, url):
+        try:
+            page_data = client.request(url)
+            if 'm3u8' in page_data:
+                link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+                return link + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&Origin=http://blacktiesports.net&referer=' + r                  
+            elif 'php' in page_data:
+                r = re.findall('(?s)<iframe id="stream.*?src="([^"]*)', page_data)[0]
+                u = client.request(r)
+                items = re.findall('<script>var.*?=\s*(\[[^;]+)', u)[0]
+                items = re.findall('"(.+?)"', items)
+                subitem = int(re.findall('\(atob.+?-\s*(\d+)', u)[0])
+                srp = ''
+                for item in items:
+                    srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+                #link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', srp)[0]
+                link = re.findall('atob\(\'([^\']*)', srp)[0]
+                link = link.replace(' ','')
+                link = base64.b64decode(link).decode('utf-8')
+                return link + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&Origin=http://blacktiesports.net&referer=' + r
+            else:
+                items = re.findall('<script>var.*?=\s*(\[[^;]+)', page_data)[0]
+                items = re.findall('"(.+?)"', items)
+                subitem = int(re.findall('\(atob.+?-\s*(\d+)', page_data)[0])
+                srp = ''
+                for item in items:
+                    srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+                link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', srp)[0]
+                link = link.replace(' ','')
+                return link + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&Origin=http://blacktiesports.net&referer=' + url
+        except:
+            return
+
+    def ufckhabib(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('atob\(\'([^\']*)', page_data)[0]
+            s = base64.b64decode(w).decode('utf-8')
+            return s + '|user-agent=ipad&referer=' + url
+        except:
+            return
+
+    def daddylive(self, url):
+        try:
+            page_data = client.request(url)
+            hat= re.findall('(?s)col-xs-12">\s*<iframe.*?src=.*?=([^"]*)',page_data)[0]
+            #return 'https://i-am-so-cool.licenses4.me/cdn/premium' + hat + '/chunks.m3u8|referer=https://widevine.licenses4.me/'
+            return 'https://uload.ru.com/cdn/premium' + hat + '/chunks.m3u8|referer=https://player.licenses4.me/'    
+            #src= re.findall('<iframe class.*?src="([^"]*)',page_data)[0]
+            #fu = requests.get(src, headers={'user-agent':'iPad','referer':src}).text
+            #hat= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
+            #white = requests.get(hat, headers={'user-agent':'Mozilla/5.0','referer':'https://daddylive.co/','accept':'*/*'}).text
+            #if 'm3u8' in white:
+                #crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white)[0]
+                #return crew + '|user-agent=ipad&referer=' + hat
+           # else:
+                #find = re.findall('eval\(function(.+?m3u8.+)', white)[0]
+                #the = jsunpack.unpack(find)
+                #crew= re.findall('source\s*:\s*"([^"]*)',the)[0]
+                #return crew + '|user-agent=ipad&referer=' + hat
+        except:
+            return
+
+    def ovostreams(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe style="width: 100.*?src="([^"]*)', page_data)[0]
+            h = 'http://www.ovostreams.com/' + w
+            i = client.request(w)
+            a = re.findall('<a href="([^"]*)', i)[0]
+            d = 'http://www.ovostreams.com/' + a
+            t = re.findall('source: "([^"]*)', d)[0]
+            return t + '|user-agent=ipad&referer=' + url
+        except:
+            return
+
+    def tvtwofour(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)baseUrl(?:.*?l = )"([^"]*)', page_data)[0]
+            x = re.findall('(?s)channelName = "([^"]*)', page_data)[0]
+            s = re.findall('(?s)var link=(?:.*?")([^"]*)', page_data)[0]
+            return r + x + s + '|Referer=http://tv247.us/all-channels/'
+        except:
+            return
+
+    def csbiz(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return r + '|Referer=' + url
+        except:
+            return
+
+    def csto(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('source: "([^"]*)', h)[0]
+            return i + '|user-agent=Mozilla/5.0&referer=' + w
+        except:
+            return
+
+    def techno(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('iframe\ssrc="([^"]*)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('source:.*?\'.*?\'.*?\'([^\']*)', h)[0]
+            return 'https://reels2watch.com/hls/' + i + '|referer=' + url
+        except:
+            return
+
+    def ranionba(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            i = client.request(w)
+            t = re.findall('(?s)https:\/\/hls.([^\']*)', i)[0]
+            e = 'https://hls.' + t
+            return e + '|referer=' + w
+        except:
+            return
+
+    def ranionfl(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            w = 'http:' + w if w.startswith('//') else w
+            i = client.request(w)
+            t = re.findall('(?s)<iframe.*?src=\'([^\']*)', i)[0]
+            t = 'http:' + t if t.startswith('//') else t
+            e = client.request(t)
+            u = re.findall('(?s)<iframe.*?src=\'([^\']*)', e)[0]
+            u = 'http:' + u if u.startswith('//') else u
+            o = client.request(u)
+            z = re.findall('source:\s*"([^"]*)', o)[0]
+            z = 'http:' + z if z.startswith('//') else z
+            return z + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&orgin=http://bdnewszh.com&Referer=http://bdnewszh.com/'
+        except:
+            return
+
+    def raniofifa(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            w = 'https:' + w if w.startswith('//') else w
+            i = client.request(w)
+            this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', i)[0]
+            this = 'https:' + this if w.startswith('//') else this
+            return this + '|referer=' + w
+        except:
+            return
+
+    def recipemam(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('<source src=\s*[\'"]([^\'"]+)', page_data)[0]
+            return s
+        except:
+            return
+
+    def catchy(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('50><iframe src="([^"]*)', page_data)[0]
+            w = client.request(r)
+            x = re.findall('(?s)Setup the player.*?(?:source|src|file):\s*[\'"]([^\'"]+)', w)[0]
+            return x + '|User-agent=ipad&Referer=' + r
+        except:
+            return
+
+    def sportsurge(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('<iframe.*?src="([^"]*)', h)[0]
+            t = client.request(i)
+            e = re.findall('<iframe.*?src="([^"]*)', t)[0]
+            hat = client.request(e)
+            saysfuckoff = re.findall('source:\s*\'([^\']*)', hat)[0]
+            return saysfuckoff + '|Referer=' + e
+        except:
+            return
+
+    def ace(self, url):
+        try:
+            page_data = client.request(url)
+            #w = re.findall(' source: \'([^\']*)', page_data)[0]
+            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return w
+        except:
+            return
+
+    def nbatvsport(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('atob\(["|\']([^"|\']*)', h)[0]
+            t = base64.b64decode(i).decode('utf-8')
+            return t + '|User-agent=ipad&Referer=' + w
+        except:
+            return
+
+    def geekingeek(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            hat = 'http://www.geekingeek.com/' + w
+            h = client.request(hat)
+            i = re.findall('atob\(["|\']([^"|\']*)', h)[0]
+            t = base64.b64decode(i).decode('utf-8')
+            return t + '|User-agent=ipad&Referer=' + w
+        except:
+            return
+
+    def rightcombat(self, url):
+        try:
+            page_data = client.request(url)
+            if 'm3u8' in page_data:
+                s = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+                return s + '|user-agent=Mozilla/5.0&referer=' + url
+            else:
+                s = re.findall('iframe.*?src="([^"]*)', page_data)[0]
+                q = requests.get(s).text
+                src = re.findall('<iframe src="([^"]*)', q)[0]
+                src = 'http:' + src if src.startswith('//') else src
+                fu = requests.get(src, headers={'user-agent':'iPad','referer':url}).text
+                hat = re.findall('eval\(function(.+?m3u8.+)', fu)[0]
+                the = jsunpack.unpack(hat)
+                crew= re.findall('var\s*src="([^"]*)',the)[0]
+                return crew + '|user-agent=ipad&referer=' + url
+        except:
+            return
+
+    def poscitech(self, url):
+        try:
+            page_data = client.request(url)
+            #src= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
+            #fu = requests.get(src, headers={'user-agent':'iPad','referer':src}).text
+            #hat= re.findall('<iframe.*?src="([^"]*)',fu)[0]
+            #white = requests.get(hat, headers={'user-agent':'iPad','referer':src}).text
+            #crew= re.findall('source\s*:\s*"([^"]*)',white)[0]
+            #return crew + '|user-agent=ipad&referer=' + hat
+            src = re.findall('iframe.*?src="([^"]*)', page_data)[0]
+            src = 'http:' + src if src.startswith('//') else src
+            fu = requests.get(src, headers={'user-agent':'Mozilla/5.0','referer':url}).text
+            hat = re.findall('iframe.*?id=([^"]*)', fu)[0]
+            return 'https://uload.ru.com/cdn/premium' + hat + '/chunks.m3u8|referer=https://player.licenses4.me/'
+        except:
+            return
+
+    def iwizwig(self, url):
+        try:
+            page_data = client.request(url)
+            src= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
+            fu = requests.get(src, headers={'user-agent':'iPad','referer':src}).text
+            hat= re.findall('<iframe.*?src="([^"]*)',fu)[0]
+            white = requests.get(hat, headers={'user-agent':'iPad','referer':src}).text
+            #find = re.findall('eval\(function(.+?m3u8.+)', white)[0]
+            #the = jsunpack.unpack(find)
+            #crew= re.findall('source\s*:\s*"([^"]*)',the)[0]
+            crew= re.findall('source\s*:\s*"([^"]*)',white)[0]
+            return crew + '|user-agent=ipad&referer=http://iwizwig.online'
+        except:
+            return
+
+    def cricworld(self, url):
+        try:
+            page_data = client.request(url)
+            i = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
+            t = base64.b64decode(i).decode('utf-8')
+            return t + '|user-agent=ipad&referer=' + url
+        except:
+            return
+
+    def darwinstreams(self, url):
+        try:
+            page_data = client.request(url)
+            i = re.findall('source: \'([^\']*)', page_data)[0]
+            return i + '|user-agent=ipad&referer=' + url
+        except:
+            return
+
+    def freetvsports(self, url):
+        try:
+            page_data = client.request(url)
+            src= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
+            fu = requests.get(src, headers={'user-agent':'iPad','referer':src}).text
+            hat= re.findall('<iframe.*?src="([^"]*)',fu)[0]
+            white = requests.get(hat, headers={'user-agent':'iPad','referer':src}).text
+            crew= re.findall('source\s*:\s*"([^"]*)',white)[0]
+            return crew + '|user-agent=ipad&referer=' + src
+        except:
+            return
+
+    def capp(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return w + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + url
+        except:
+            return
+
+    def ptwopstreams(self, url):
+        try:
+            u = client.request(url)
+            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36','Orgin': 'http://xestreams.com', 'Referer': 'http://ftdryiwv.mmazones.com:8080/'}
+            r = re.findall('<iframe class.*?src="([^"]*)',u)[0]
+            page_data = requests.get(r, headers=headers).text
+            z = re.findall('window.atob\("([^"]*)',page_data)[0]
+            z = base64.b64decode(z).decode('utf-8')
+            return z + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&Referer=http://ftdryiwv.mmazones.com:8080/'
+            #if 'm3u8' in page_data:
+               # z = re.findall('source:\s*\'([^\']*)')
+               # return z + '|User-Agent=iPad&Referer=' + r
+            #else:
+               # pattern = r'''return\(\[([^\]]+).+?\+\s*([^\.]+).+?\+.+?"([^"]+)'''.format(page_data)
+              #  par1, par2, par3 = re.findall(pattern, page_data, re.DOTALL)[0]
+              #  part2 = re.findall(r'var\s*{0}\s*=\s*\["([^]]+)'.format(par2), page_data)[0].replace('","', '')[:-1]
+              #  part3 = re.findall('id={0}>([^<]+)'.format(par3), page_data)[0]
+              #  part1 = par1.replace('","','').replace('\\/', '/')[1:-1]
+              #  part1 = 'http:' + part1 if part1.startswith('//') else part1
+              #  return part1 + part2 + part3 + '|User-Agent=iPad&Referer=' + r
+           # if 'window.atob' in page_data:
+               # z = re.findall('window.atob\("([^"]*)',page_data)[0]
+               # z = base64.b64decode(z).decode('utf-8')
+                #return z + '|User-Agent=iPad&Referer=' + r
+        except:
+            return
+
+    def sportek(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('" src="([^"]*)', page_data)[0]
+            h = 'http://sportek.xyz' + w
+            i = client.request(h)
+            t = re.findall('src : "([^"]*)', i)[0]
+            return t + '|Referer=' + h
+        except:
+            return
+
+    def bong(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            h = 'http://bongstreams.com' + w
+            i = client.request(h)
+            t = re.findall('src : "([^"]*)', i)[0]
+            return t + '|Referer=' + h
+        except:
+            return
+
+    def sporteks(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
+            p = client.request(s)
+            w = re.findall('url:\s*"([^"]*)', p)[0]
+            h = re.findall('data:\s\{"([^"]*)', p)[0]
+            i = re.findall('var vidgstream = "([^"]*)', p)[0]
+            hat = w + '?' + h + '=' + i
+            the = requests.get(hat).text
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+            made = crew.replace('\\', '')
+            return made + '|Referer=http://wpstream.tv/'
+        except:
+            return
+
+    def pawastreams(self, url):
+        try:
+            page_data = client.request(url)
+            s =  re.findall('var servs = \["([^"]*)', page_data)[0] 
+            r =  re.findall('source: "" \+ serv \+ "([^"]*)', page_data)[0]
+            return s + r + '|user-agent=ipad&referer=https://www.pawastreams.live'
+        except:
+            return
+
+    def supertipz(self, url):
+        try:
+            page_data = client.request(url)
+            #src = re.findall('<iframe src="([^"]*)', page_data)[0]
+            #src = 'http:' + src if src.startswith('//') else src
+            #fu = requests.get(src, headers={'user-agent':'iPad','referer':url}).text
+            #hat = re.findall('eval\(function(.+?m3u8.+)', fu)[0]
+            #the = jsunpack.unpack(hat)
+            #crew= re.findall('var\s*src="([^"]*)',the)[0]
+            #return crew + '|user-agent=ipad&referer=' + url
+            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return w + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + url
+        except:
+            return
+
+    def dubsstreamz(self, url):
+        try:
+            page_data = client.request(url)
+            if 'm3u8' in page_data:
+                t = re.findall('var source = \'([^\']*)', page_data)[0]
+                return t + '|user-agent=iPad&referer=' + url
+            else :
+                r = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+                u = client.request(r, headers={'user-agent':'iPad','referer':'http://www.dubsstreamz.com'})
+                x = re.findall('atob\(\'([^\']*)', u)[0]
+                t = base64.b64decode(x).decode('utf-8')
+                return t + '|user-agent=iPad&referer=' + r
+        except:
+            return
+
+    def summerlivestream(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            murl=(r);now=int((int(time.time()) + 86400) * 1000)
+            source=requests.get(murl,headers={'user-agent':'Mozilla/5.0','referer':'https://sportsbay.org/','accept':'*/*'}).text
+            if 'm3u8' in source:
+                strurl = re.findall('Clappr.Player[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)',source)[0]+'|user-agent=ipad&origin=https://freefeds.com&referer=https://freefeds.com/'
+                return strurl
+            else :     
+                teleID=re.findall('embed/(\d+)\.',source)[0]
+                r=requests.get('https://teleriumtv.com/streams/%s/%s.json'%(teleID,now),headers={'user-agent':'Mozilla/5.0','referer':'https://teleriumtv.com/embed/%s.html'%teleID,'accept':'*/*'},cookies={'volume':'0'}).json()
+                strurl=r.get('url');netloc='https://teleriumtv.com'
+                headers={'user-agent': 'Mozilla/5.0','origin':netloc,'referer':'https://teleriumtv.com/embed/%s.html'%teleID}
+                if r.get('tokenurl'):
+                    strurl += requests.get(netloc+r.get('tokenurl'),headers=headers).json()[10][::-1]
+                strurl=strurl if strurl.startswith('http') else 'https:'+strurl
+                return strurl+'|{0}'.format(urlencode(headers))
+        except:
+            return
+                
+    def myoplay(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('sources[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)', page_data)[0]
+            return r + '|Referer=' + url
+        except:
+            return
+
+    def sstwentyfour(self, url):
+        try:
+            page_data = client.request(url)
+            headers={'user-agent':'Mozilla/5.0','referer':'https://ww.soccer24hd.com','accept':'*/*'}
+            r = re.findall('(?s)holder">\s*<iframe.*?src="([^"]*)',page_data)[0]
+            s = requests.get(r,headers=headers).text
+            t = re.findall('iframe.*?src="([^"]*)',s)[0]
+            a = requests.get(t,headers=headers).text
+            w = re.findall('iframe.*?src="([^"]*)',a)[0]
+            h = requests.get(w,headers=headers).text
+            l = re.findall('atob\(\'([^\']*)', h)[0]
+            l = base64.b64decode(l).decode('utf-8')
+            #q = re.findall('iframe.*?src="([^"]*)',h)[0]
+            #e = requests.get(q,headers=headers).text
+            #find = re.findall('eval\(function(.+?m3u8.+)', e)[0]
+            #unpack = jsunpack.unpack(find)
+            #i = re.findall('var (?:source|src|file)=\s*[\'"]([^\'"]+)',unpack)[0]
+            return l + '|User-Agent=Mozilla/5.0&Referer=' + w
+        except:
+            return
+
+    def thecsnet(self, url):
+        try:
+            page_data = requests.get(url).text
+            w = re.findall('url: \'([^\']*)', page_data)[0]
+            t = 'http://thecrackstreams.net' + w
+            e = requests.get(t).text
+            h = re.findall('e":"([^"]*)', e)[0]
+            a = base64.b64decode(h).decode('utf-8')
+            return a + '|user-agent=iPad&referer=http://thecrackstreams.net/'
+        except:
+            return
+
+    def crazystreams(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('<iframe allow=(?s).*?src=\'([^\']*)',page_data)[0]
+            q = client.request(r)
+            w = re.findall('url:\s*"([^"]*)', q)[0]
+            h = re.findall('data:\s\{"([^"]*)', q)[0]
+            i = re.findall('var vidgstream = "([^"]*)', q)[0]
+            t = re.findall('gethlsUrl\(vidgstream,\s([^,]*)', q)[0]
+            e = re.findall('gethlsUrl\(vidgstream,(?:[^,]*),\s([^\)]*)', q)[0]
+            hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+            made = crew.replace('\\', '')
+            return made + '|Referer=' + url
+        except:
+            return
+
+    def sportsnest(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return r + '|User-Agent=User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.14%3B%20rv%3A99.0)%20Gecko%2F20100101%20Firefox%2F99.0&Referer=' + url
+        except:
+            return
+
+    def onestream(self, url):
+        try:
+            page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
+            r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
+            s = re.findall('cdn\s*=\s*\["([^"]*)', page_data)[0]
+            x = base64.b64decode(r).decode("ascii")
+            x = x.replace(x[x.index("/") + 2:].split(".")[0], s)
+            return x +'|Referer=' + quote_plus(url)
+        except:
+            return
+
+    def toptv(self, url):
+        try:
+            page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
+            s = re.findall('iframe.*?src="([^"]*)', page_data)[0]
+            return s
+        except:
+            return
+
+    def dubznetwork(self, url):
+        try:
+            u = requests.get(url, headers={"User-Agent": 'ipad'}).text
+            s = re.findall('atob\(["|\']([^"|\']*)', u)[0]
+            s = base64.b64decode(s).decode('utf-8')
+            return s + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + url
+        except:
+            return
+
+    def tvsportslive(self, url):
+        try:
+            page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
+            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('<iframe.*?id=([^"]*)', h)[0]
+            return 'https://uload.ru.com/cdn/premium' + i + '/chunks.m3u8|referer=https://player.licenses4.me/'
+        except:     
+            return
+
+    def sportsio(self, url):
+        try:
+            page_data = client.request(url)
+            r1 = re.findall('(?s)<iframe src="([^"]*)',page_data)[0]
+            u2 = requests.get(r1).text
+            result = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', u2)[0]
+            return result + '|user-agent=iPad&amp;referer=' + r1
+        except:
+            return
+
+    def sixtyfps(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)<iframe src="([^"]*)',page_data)[0]
+            h = requests.get(w).text
+            i = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', h)[0]
+            return i + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + w
+        except:
+            return
+
+    def sportsguild(self, url):
+        try:
+            u = client.request(url)
+            r = re.findall('(?s)<iframe src="([^"]*)', u)[0]
+            t = client.request(r)
+            s = re.findall('atob\(["|\']([^"|\']*)', t)[0]
+            s = base64.b64decode(s).decode('utf-8')
+            return s + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + r
+        except:
+            return

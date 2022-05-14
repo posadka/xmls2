@@ -1,0 +1,290 @@
+
+not used presently
+
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+<item>
+	<title>[COLOR orchid]¤[/COLOR] [COLOR white]SPORTS-STREAMS[/COLOR] [COLOR pink]SPORTS DEVIL REQUIRED[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS MAIN EVENT</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/Sky-Sports-Main-Event.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSMAINEVENT.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSMAINEVENT.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS FOOTBALL</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/Sky-Sports-Football.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSFOOTBALL.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSFOOTBALL.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS ACTION</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/Sky-Sports-Action.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSACTION.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSACTION.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS ARENA</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/Sky-Sports-Arena.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSARENA.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSARENA.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS PREMIER LEAGUE</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/Sky-Sports-Premier-League.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSPL.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSPL.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS CRICKET</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/Sky-Sports-Cricket.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSCRICKET.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSCRICKET.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS GOLF</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/http://www.sports-stream.net/Sky-Sports-Golf.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSGOLF.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSGOLF.png</fanart>
+</item>
+<item>
+	<title>SKY SPORTS FORMULA 1</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/Sky-Sports-Formula-1.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSF1.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/SKYSPORTSF1.png</fanart>
+</item>
+<item>
+	<title>BT SPORT 1</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/BT-Sport-1.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BT1.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BT1.png</fanart>
+</item>
+<item>
+	<title>BT SPORT 2</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/BT-Sport-2.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BT2.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BT2.png</fanart>
+</item>
+<item>
+	<title>BT SPORT 3</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/BT-Sport-3.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BT3.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BT3.png</fanart>
+</item>
+<item>
+	<title>BT SPORT ESPN</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/BT-Sport-ESPN.html</link>
+	<thumbnail>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BTESPN.png</thumbnail>
+	<fanart>https://bitbucket.org/threw/bluehat/raw/master/bg/sportsstream/BTESPN.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=dolce1</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch/sps.php?ch=dolce1</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=dolce2</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch/sps.php?ch=dolce2</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=dolce3</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch/sps.php?ch=dolce3</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=dolce4</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch/sps.php?ch=dolce4</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=1</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=1</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=2</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=2</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=3</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=3</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=4</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=4</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=5</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=5</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=6</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=6</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>nart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=7</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=7</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=8</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=8</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=9</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=9</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=10</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=10</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=12</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=12</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=13</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=13</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=14</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=14</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=15</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=15</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=16</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=16</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=17</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=17</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=18</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=18</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=19</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=19</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=20</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=20</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=21</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=21</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=22</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=22</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=23</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=23</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=24</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=24</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=25</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=25</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=26</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=26</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=27</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=27</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=28</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=28</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=29</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=29</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=30</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=30</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+<item>
+	<title>SPORTS_STREAM-ch=31</title>
+	<link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/ch.php?id=31</link>
+	<thumbnail>http://www.sports-stream.net/favicon.gif</thumbnail>
+	<fanart>http://www.sports-stream.net/logo.png</fanart>
+</item>
+
+

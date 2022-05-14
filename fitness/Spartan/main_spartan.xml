@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
+<layoutype>fuckOFF</layoutype>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Workout[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLSBS8mX4PazrC13Klcppx-A4Kao3n-L5-/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Motivation[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLSBS8mX4Pazq_jtbyViOtoTwOQhhP67we/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Crossfit[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLSBS8mX4PazqNNqDPrv7CQstrJZBrpC8_/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>
+
+<plugin>
+<title>[COLOR orchid]¤ [/COLOR] [COLOR white][B]Sport Girls[/B][/COLOR]</title>
+<link>plugin://plugin.video.youtube/playlist/PLSBS8mX4PazoABb3FA1Z2yHV93P2Xu4B3/</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_blackhat.png</thumbnail>
+<fanart>https://bitbucket.org/threw/xmls2/raw/master/fitness/bg/fitness_fanart.jpg</fanart>
+<summary></summary>
+</plugin>

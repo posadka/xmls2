@@ -1,0 +1,828 @@
+# -*- coding: utf-8 -*-
+
+import re,json,base64,requests
+
+from resources.lib.modules import client
+from resources.lib.modules import site
+from resources.lib.modules import workers
+from resources.lib.modules import jsunpack
+
+class streamer:
+    def dodgycodes(s):
+        return re.sub('&#(\d+);', '', s)
+
+    def resolve(self, url):
+        try:
+            if 'btstream.live/category/' in url: u = self.btstream(url)
+
+            elif 'buffstreamz.com' in url: u = self.buff(url)
+
+            elif 'eddensports.com' in url: u = self.edden(url)
+
+            elif 'nflup.live' in url: u = self.nflup(url)
+
+            elif 'buffstream.live/nflstreams.php' in url: u = self.bslivenfl(url)
+
+            elif 'buffstream.live/nbastreams.php' in url: u = self.bslivenba(url)
+
+            elif 'ufcstreams.net/nbastreams.php' in url: u = self.bslivenba(url)
+
+            elif 'crackstreams.ac/nflstreams' in url: u = self.crackacnfl(url)
+
+            elif 'thecrackstreams.net/nflstreams' in url: u = self.thecsnetnfl(url)
+
+            elif 'thecrackstreams.net/boxingstreams' in url: u = self.thecsnetboxing(url)
+
+            elif 'crackstreams.net/boxingstreams.php' in url: u = self.csnetnba(url)
+
+            elif 'crackstreams.net/ufcstreams.php' in url: u = self.csnetmma(url)
+
+            elif 'crackstreams.net/nflstreams.php' in url: u = self.csnetnfl(url)
+
+            elif 'crackstreams.net/nbastreams.php' in url: u = self.csnetnba(url)
+
+            elif 'bfst.xyz' in url: u = self.beast(url)
+
+            elif 'hesgoal.com' in url: u = self.hesgoal(url)
+
+            elif 'elixx.me' in url: u = self.elixx(url)
+
+            elif 'worldstreams.net' in url: u = self.worldstreams(url)
+
+            elif 'bestsolaris.com' in url: u = self.solaris(url)
+
+            elif 'papahd.live' in url: u = self.papahd(url)
+
+            elif 'fightpass.site' in url: u = self.fightpass(url)
+
+            elif 'allsportsmedia.live' in url: u = self.fightpass(url)
+
+            elif 'icelz.newsrade.tk' in url: u = self.ice(url)
+
+            elif '6stream.xyz' in url: u = self.sixstream(url)
+
+            elif 'markkystreams.com/' in url: u = self.sixstream(url)
+
+            elif '6streams.tv' in url: u = self.sixstream(url)
+
+            elif 'mazymedias.com' in url: u = self.mazy(url)
+
+            elif 'hockeynews.site' in url: u = self.helena(url)
+
+            elif 'nbaweb.site' in url: u = self.helena(url)
+
+            elif 'hockeyweb' in url: u = self.helena(url)
+
+            elif 'crackstreams.me' in url: u = self.crackstreams(url)
+
+            elif 'methstreams' in url: u = self.crackstreams(url)
+
+            elif 'nbastreams.xyz/games/' in url: u = self.nbacrackstreams(url)
+
+            elif 'hhdstreams.club' in url: u = self.hdstreams(url)
+
+            elif 'uhdstreams.club' in url: u = self.hdstreams(url)
+
+            elif 'hdstreamss.club' in url: u = self.hdstreams(url)
+
+            elif 'sportsstatsme.net' in url: u = self.sportsstatsme(url)
+
+            elif 'sports24.club/nba' in url: u = self.sports24nba(url)
+
+            elif 'sports24.club/nfl' in url: u = self.sports24ncaa(url)
+
+            elif 'sports24.club/f1' in url: u = self.sports24f1(url)
+
+            elif 'sports24.club/ncaa' in url: u = self.sports24ncaa(url)
+
+            elif 'sports24.club/ncaab' in url: u = self.sports24ncaab(url)
+
+            elif 'live-tennis.stream' in url: u = self.tennislive(url)
+
+            elif 'nascar-live.stream' in url: u = self.nascarlive(url)
+
+            elif 'ertech.work' in url: u = self.skuanet(url)
+
+            elif 'skuanet.us' in url: u = self.skuanet(url)
+
+            elif 'azulitostreams.com' in url: u = self.azulito(url)
+
+            elif 'chimxoan.net' in url: u = self.skuanet(url)
+
+            elif 'viafb.site/' in url: u = self.skuanet(url)
+
+            elif 'everysports.us' in url: u = self.everysport(url)
+
+            elif 'givemereddit.stream' in url: u = self.give(url)
+
+            elif 'givemenbastreams.com/' in url: u = self.give(url)
+
+            elif 'givemenflstreams.com' in url: u = self.give(url)
+
+            elif 'givememmastreams.com/' in url: u = self.give(url)
+
+            elif 'givemeredditstreams.com/boxing' in url: u = self.giveboxing(url)
+
+            elif 'ripple.stream/nbastreams' in url: u = self.ripplenba(url)
+
+            elif 'ripple.stream/nflstreams' in url: u = self.ripplenfl(url)
+
+            elif 'ripple.stream/soccerstreams' in url: u = self.ripplenfl(url)
+
+            elif '123tvsports.com/category/nba-streams' in url: u = self.tvnba(url)
+
+            elif 'streameast.live' in url: u = self.streameast(url)
+
+            elif 'topstreams.info/nba' in url: u = self.topstreamsnba(url)
+
+            elif 'topstreams.info' in url: u = self.topstreamsnfl(url)
+
+            elif 'crichd.sx/live' in url: u = self.cric(url)
+            
+            elif 'telehub.org/#video8' in url: u = self.tubsport(url)
+
+            elif '123tvnow.com/' in url: u = self.tvnow(url)
+
+            elif 'ovostreams.com' in url: u = self.ovostreams(url)
+            
+            elif 'soccerjumbotv1.me' in url: u = self.jumbo(url)
+
+            elif 'sportnews.to' in url: u = self.sportnews(url)
+
+            elif 'volokit.com/all-games/schedule/nfl.php' in url: u = self.volokitnfl(url)
+
+            elif 'redsoccer.info' in url: u = self.redsoccer(url)
+
+            elif 'nflsportz.com' in url: u = self.nflsportz(url)
+
+            elif 'blacktiesports.net' in url: u = self.blacktie(url)
+
+            elif 'ufckhabib.com' in url: u = self.ufckhabib(url)
+
+            elif 'crackstreams.biz' in url: u = self.csbiz(url)
+
+            elif 'crackstreams.is' in url: u = self.csis(url)
+
+            elif 'crackstreams.to' in url: u = self.csto(url)
+
+            elif 'techoreels.com/schedule/soccerstreams' in url: u = self.technofifa(url)
+
+            elif 'techoreels.com/schedule/mmastreams/' in url: u = self.technomma(url)
+
+            elif 'bdnewszh.com/nba' in url: u = self.ranionba(url)
+
+            elif 'bdnewszh.com/nfl' in url: u = self.ranionba(url)
+
+            elif 'bdnewszh.com/nhl' in url: u = self.ranionba(url)
+
+            elif 'streamspass.com' in url: u = self.raniofifa(url)
+
+            elif 'recipemam.com' in url: u = self.recipemam(url)
+
+            elif 'catchystream.com' in url: u = self.catchy(url)
+
+            elif 'sportsurge.in' in url: u = self.sportsurge(url)
+
+            elif 'hdstreams.pw' in url: u = self.sportsurge(url)
+
+            elif 'chaturbate.com' in url: u = self.chaturbate(url)
+
+            elif 'p2pstreams.com' in url: u = self.ptwopstreams(url)
+
+            elif 'p2pstreams.live' in url: u = self.ptwopstreams(url)
+
+            elif 'soccer24hd.com' in url: u = self.sstwentyfour(url)
+
+            return u
+        except:
+            pass
+
+    def btstream(self, url):
+        try:
+            u = client.request(url)
+            e = re.findall('timegmt dtstart"(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
+            return e
+        except:
+            return
+
+    def ripplenba(self, url):
+        try:
+            u = client.request(url)
+            u = ''
+            u += client.request('http://ripple.stream/nbastreams')
+            u += client.request('http://ripple.stream/nbastreams?start=9')
+            u += client.request('http://ripple.stream/nbastreams?start=18')
+            u += client.request('http://ripple.stream/nbastreams?start=27')
+            r = re.findall('(?s)float-left">.*?src="([^"]*).*?href="([^"]*)">([^<]*)', u)
+            sort = [('http://ripple.stream'+i[0],'http://ripple.stream'+i[1],i[2]) for i in r]
+            return sort
+        except:
+            return
+
+    def ripplenfl(self, url):
+        try:
+            u = client.request(url)
+            u = ''
+            u += client.request('http://ripple.stream/nflstreams')
+            u += client.request('http://ripple.stream/nflstreams?start=9')
+            u += client.request('http://ripple.stream/nflstreams?start=18')
+            u += client.request('http://ripple.stream/nflstreams?start=27')
+            r = re.findall('(?s)float-left">.*?src="([^"]*).*?href="([^"]*)">([^<]*)', u)
+            sort = [('http://ripple.stream'+i[0],'http://ripple.stream'+i[1],i[2]) for i in r]
+            return sort
+        except:
+            return
+
+    def tvnba(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)title"><a href="([^"]*)(?:[^>]*)>([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def topstreamsnba(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('href="([^"]*)" >([^<]*)', page_data)
+            sort = [('http://topstreams.info'+i[0],i[1]) for i in e]
+            return sort
+        except:
+            return
+
+    def topstreamsnfl(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)<div class="away".*?score">([^<]*).*?code">([^<]*).*?name">([^<]*).*?score">([^<]*).*?code">([^<]*).*?name">([^<]*).*?href="([^"]*)', page_data)
+            return s
+        except:
+            return
+
+    def cric(self, url):
+        try:
+            u = client.request(url)
+            r = re.findall('<div class="channels">\s*<a href="([^"]*)', u)
+            r = [(i,i.split('/')[-1]) for i in r]
+            r = [(i[0],i[1].replace('-',' ').replace('live stream s','').replace('live stream','').replace('sp1','').replace('sp2','').replace('bs2','').replace('bs1','').replace('osc','')) for i in r]
+            return r
+        except:
+            return
+
+    def tubsport(self, url):
+        try:
+            u = client.request(url)
+            u = u.split('id="video8"',1)[-1]
+            u = u.split('id="video9"',1)[0]
+            r = re.findall('(?s)<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)" alt="([^"]*)',u)
+            r = [('http://telehub.org'+i[0], 'http://telehub.org'+i[1],i[0].split('/')[1].split('.')[0].replace('-',' ')) for i in r]
+            return r
+        except:
+            return
+
+    def tvnow(self, url):
+        try:
+            u = ''
+            u = client.request(url)
+            u += client.request('http://123tvnow.com/category/united-states-usa/page/2/')
+            u += client.request('http://123tvnow.com/category/united-states-usa/page/3/')
+            u += client.request('http://123tvnow.com/category/united-states-usa/page/4/')
+            u += client.request('http://123tvnow.com/category/united-states-usa/page/5/')
+            r = re.findall('<div class="video-thumb">\s<a href="([^"]*)".\s<img src="([^"]*)" alt="([^"]*)',u)
+            sort = [(i[0],i[1],i[2].replace('#038;','')) for i in r]
+            return sort
+        except:
+            return
+
+    def streameast(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('<div style="float: left;">LIVE',1)[-1]
+            page_data = page_data.split('<div class="GunlukMac"',1)[0]
+            e = re.findall('(?s)<a href="([^"]*)(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)">([^<]*)(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)">([^<]*)(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)">([^<]*)', page_data)
+            return e
+        except:
+            return
+
+    def buff(self, url):
+        try:
+            u = client.request(url, headers={'user-agent':'Mozilla/5.0'})
+            items = re.findall('(?s)<div class="col-sm-8">(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>\s*([^<]*)(?:.*?i>)([^<]*)(?:.*?i>)([^<]*)(?:.*?href)="([^"]*)', u)
+            sort = [(i[0],i[1],i[2],i[3]) for i in items]
+            return sort
+        except:
+            return
+
+    def sixstream(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('Article">',1)[-1]
+            page_data = page_data.split('</div></div>',1)[0]
+            e = re.findall('(?s)data-original="([^"]*).*?href="([^"]*)" title="([^"]*)', page_data)
+            sort = [(i[0],i[1],i[2].replace('#038;','')) for i in e]
+            return sort
+        except:
+            return
+
+    def crackstreams(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<a href=\'([^\']*)(?:.*?heading\'>)([^<]*).*?p>([^<]*)', page_data)
+            return r 
+        except:
+            return
+    
+    def nbacrackstreams(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<a href=\'([^\']*)(?:.*?heading\'>)([^<]*).*?p>([^<]*)', page_data)
+            return r 
+        except:
+            return
+
+    def giveboxing(self, url):
+        try:
+            u = client.request(url)
+            r = re.findall('(?s)<hr class="mb-4 mt-2">\s*<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)">(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>\s+([^\n]*)', u)
+            r = [(i[0],i[1],client.replaceHTMLCodes(i[2]), i[3]) for i in r if 'png' in i[1]]
+            r = [(i[0],i[1],i[2],i[3]) for i in r if 'All Games' not in i[2]]
+            return r
+        except:
+            return
+
+                
+    def give(self, url):
+        try:
+            u = client.request(url)
+            r = re.findall('(?s)<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)">(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>\s+([^\n]*)', u)
+            r = [(i[0],i[1],client.replaceHTMLCodes(i[2]), i[3]) for i in r if 'png' in i[1]]
+            r = [(i[0],i[1],i[2],i[3]) for i in r if 'All Games' not in i[2]]
+            return r
+        except:
+            return
+
+    def sportsstatsme(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)right" class="hidden-xs"><b>([^<]*).*?17px;">([^<]*).*?left" class="hidden-xs"><b>([^<]*).*?f="([^"]*)', page_data)
+            sort = [(i[0],i[1],i[2],'http://sportsstatsme.net'+i[3]) for i in r]
+            return sort
+        except:
+            return
+
+    def sports24nba(self, url):
+        try:
+            page_data = client.request(url)
+            site = page_data
+            items = re.findall('(?s)float: left;">([^<]*)(?:.*?href=")([^"]*)', site)
+            sort = [(i[0].replace('\xc3\xa9s',''),'https://sports24.club'+i[1].replace('\xc3\xa9s','')) for i in items]
+            return sort
+        except:
+            return
+
+    def sports24ncaab(self, url):
+        try:
+            page_data = client.request(url)
+            items = re.findall('(?s)float: right;">([^<]*)(?:.*?f=")([^"]*)', page_data)
+            sort = [(i[0],'http://sports24.club'+i[1]) for i in items]
+            return sort
+        except:
+            return
+
+    def sports24fl(self, url):
+        try:
+            page_data = client.request(url)
+            site = page_data
+            items = re.findall('(?s)<h4 class="card-title">([^<]*).*?href="([^"]*)', site)
+            sort = [(i[0].replace('\xc3\xa9s',''),'https://sports24.club'+i[1].replace('\xc3\xa9s','')) for i in items]
+            return sort
+        except:
+            return
+
+    def sports24ncaa(self, url):
+        try:
+            page_data = client.request(url)
+            site = page_data
+            items = re.findall('(?s)float: right;">([^<]*)(?:.*?text")>([^<]*)(?:.*?href=")([^"]*)', site)
+            sort = [(i[0].replace('\xc3\xa9s',''),i[1],'https://sports24.club'+i[2].replace('\xc3\xa9s','')) for i in items]
+            return sort
+        except:
+            return
+
+    def skuanet(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('home-posts home-right',1)[0]
+            r = re.findall('(?s)<h2 class="home-post-title">\s*<a href="([^"]*)"\s*>([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def azulito(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('<h3 class="g1-delta g1-delta-1st entry-title"><a href="([^"]*)(?:[^>]*)>([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def hdstreams(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)(?:>|>\s)(\d+:\d+)(?:.*?n>)([^<]*)(?:[^"]*)"([^"]*)', page_data)
+            return r
+        except:
+            return
+            
+    def jumbo(self, url):
+        try:
+            main = client.request(url)
+            main = main.replace('<font color="gold">','')
+            main = main.replace('</p>','')
+            link = zip(re.findall('-------------\s*<p>\D([^<]*)',main), re.findall('<iframe(?:[^=]*)=(?:[^=]*)="([^"]*)',main))
+            link = [(i[0].splitlines(), i[1]) for i in link]
+            link = [[(x, i[1]) for x in i[0]] for i in link]
+            link = sum(link, [])
+            return link 
+        except:
+            return
+
+    def mazy(self, url):
+        try:
+            page_data = client.request(url)
+            u = re.findall('(?s)<tr> <td>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*).*?href="([^"]*)', page_data)
+            sort = [(i[0],i[1],i[2],'https://mazymedias.com'+i[3]) for i in u]
+            return sort
+        except:
+            return
+
+    def helena(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)h4 class="mec-event-title">.*?href="([^"]*)">([^<]*)', page_data)
+            sort = [(i[0],i[1].replace('\xc3\xb4','o').replace('&#8217','').replace('&#038','').replace(';','').replace('s1','').replace('s2','').replace('s3','').replace('s4','').replace('a1','').replace('a2','').replace('A2','').replace('S1','').replace('S2','').replace('a3','').replace('a3','').replace('S3','').replace('z2','').replace('S4','').replace('S5','').replace('A3','').replace('A4','').replace('A1','').replace('t3','').replace('t1','').replace('T1','').replace('T2','').replace('t2','').replace('T3','')) for i in e]
+            return sort
+        except:
+            return
+
+    def ice(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)<div class="video-title">([^<]*).*?a>([^<]*).*?en\(\'([^\']*)', page_data)
+            sort = [(i[0],i[1],'https://icelz.newsrade.tk/'+i[2]) for i in s]
+            return sort
+        except:
+            return
+
+    def ovostreams(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)<a href="([^"]*).*?xs">([^<]*)', page_data)
+            sort = [('https://www.ovostreams.com'+i[0],i[1]) for i in e]
+            return sort
+        except:
+            return
+
+    def papahd(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('<div class="clear"',1)[-1]
+            page_data = page_data.split('<div class="clear"',1)[0]
+            r = re.findall('(?s)<p>([^<]*).*?<a href="([^"]*)',page_data)
+            sort = [(i[0].replace('\xc2\xa0',''),i[1]) for i in r]
+            return sort
+        except:
+            return
+
+    def everysport(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)style="position: relative;bottom: -5px;">([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^"]*)"([^"]*)', page_data)
+            return e
+        except:
+            return
+
+    def fightpass(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)event-id=.*?href="([^"]*)">([^<]*)', page_data)
+            sort = [(i[0],i[1].replace('&#8217','').replace(';','').replace('H1','').replace('W1','').replace('W2','').replace('V5','').replace('X1','').replace('X2','').replace('X3','').replace('X4','').replace('V1','').replace('k1','').replace('K2','').replace('K1','').replace('V3','').replace('V2','')) for i in e]
+            return sort
+        except:
+            return
+
+    def tennislive(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<a class="team" title="(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>.*?f="([^"]*)">([^<]*)', page_data)
+            sort = [('https://live-tennis.stream'+i[0],i[1]) for i in r]
+            return sort
+        except:
+            return
+
+    def nascarlive(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<a class="teamright.*?f="([^"]*)">([^<]*)', page_data)
+            sort = [('https://nascar-live.stream'+i[0],i[1]) for i in r]
+            return sort
+        except:
+            return
+
+    def solaris(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)f1-podium--item">\s*<a href="([^"]*)".*?ze">([^<]*).*?ih">([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def sportnews(self, url):
+        try:
+            page_data = client.request(url)
+            l = re.findall('(?s)mec\-event\-image">.*?src="([^"]*)(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)">([^<]*)', page_data)
+            sort = [(i[0],i[1],i[2].replace('\xe2\x80\x93','').replace('S1\t\t\t\t','').replace('S2\t\t\t\t','').replace('S3\t\t\t\t','').replace('S4\t\t\t\t','').replace('S5\t\t\t\t','')) for i in l]
+            return sort
+        except:
+            return
+
+    def beast(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)aria-hidden="true"><\/i>&nbsp([^<]*)(?:.*?f=")([^"]*)', page_data)
+            return s
+        except:
+            return
+
+    def elixx(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)<button class=.*?>([^<]*).*?href="([^"]*)', page_data)
+            return s
+        except:
+            return
+
+    def worldstreams(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)<h2 class="textwp-compact-post-title textwp-fp-post-title"><a href="([^"]*)".*?rk">([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+            return s
+        except:
+            return
+
+    def crackacnfl(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('NFL Regular Season',1)[-1]
+            page_data = page_data.split('Welcome to Crackstreams',1)[0]
+            s = re.findall('(?s)<a href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
+            return s
+        except:
+            return
+
+    def bslivenfl(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('HD 4k Streams',1)[-1]
+            s = re.findall('(?s)a href=[\'"]([^\'"]+).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
+            return s
+        except:
+            return
+
+    def bslivenba(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('NBA Live Streams and Schedule',1)[-1]
+            s = re.findall('(?s)a href=[\'"]([^\'"]+).*?ing\'>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+            return s
+        except:
+            return
+
+    def csnetmma(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('UFC Fight Night: Premium 4k Streams',1)[-1]
+            e = re.findall('(?s)<a href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
+            sort = [('http://crackstreams.net'+i[0],i[1],i[2]) for i in e]
+            return sort
+        except:
+            return
+
+    def csnetnba(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('NBA Premium Streams in 4K',1)[-1]
+            e = re.findall('(?s)href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
+            sort = [('http://crackstreams.net'+i[0],i[1],i[2]) for i in e]
+            return sort
+        except:
+            return
+
+    def csnetnfl(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('NFL Live Streams and Schedule',1)[-1]
+            e = re.findall('(?s)<a href=\'([^\']*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=\'([^\']*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+            return e
+        except:
+            return
+
+    def hesgoal(self, url):
+        try:
+            u = client.request(url)
+            r = re.findall('(?s)class="file(?:[^=]*)=(?:[^=]*)="([^"]*)"><img src="([^"]*)(?:.*?alt=")([^"]*)(?:.*?<p>)([^<]*)',u)
+            r = [(i[0],i[1],i[2],i[3]) for i in r if 'vs' in i[2]]
+            return r
+        except:
+            return
+
+    def volokitnfl(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)game">([^<]*)(?:.*?href=")([^"]*)(?:[^>]*)>([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def nflup(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)fadeIn"><a href="([^"]*).*?rk">([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def edden(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<h4 class="mec-event-title">.*?href="([^"]*)".*?r">([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def nflsportz(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)gia;">(\w+\s\w+\s.*?vs.*?)&(?:[^=]*)="([^"]*)', page_data)
+            return r
+        except:
+            return
+
+    def redsoccer(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)<h2 class="post-title"><a href="([^"]*)">([^:]*)', page_data)
+            return e
+        except:
+            return
+
+    def blacktie(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)description">\s*([^<]*).*?ef="([^"]*)', page_data)
+            sort = [(i[0],'http://blacktiesports.net'+i[1]) for i in r if 'Press' not in i[0]]
+            return sort
+        except:
+            return
+
+    def ufckhabib(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)href="([^"]*).*?nk">([^<]*)', page_data)
+            sort = [(i[0],i[1].replace('\xc5\x82',' '))for i in e]
+            return sort
+        except:
+            return
+
+    def csbiz(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)<div class="ctpage"><a href="([^"]*).*?ing">([^<]*).*?p>([^<]*)', page_data)
+            sort = [(i[0],i[1].replace('\xc5\x82',' ').replace('&',' ').replace('#',' ').replace('8211',' ').replace(',',' '),i[2])for i in e]
+            return sort
+        except:
+            return
+
+    def csis(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
+            return e
+        except:
+            return
+
+    def csto(self, url):
+        try:
+            page_data = client.request(url)
+            w = re.findall('(?s)div class="media-body">\s*<a href="([^"]*).*?white;">.*?white;">([^<]*)', page_data)
+            sort = [('http://crackstreams.to/'+i[0],i[1]) for i in w]
+            return sort
+        except:
+            return
+
+    def technofifa(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('<td><a href="([^"]*)"\s*target="_blank">([^<]*)', page_data)
+            sort = [('https://techoreels.com'+i[0],i[1]) for i in e if 'vs' in i[1]]
+            return sort
+        except:
+            return
+
+    def technomma(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('<hr class="mb-4 mt-2">\s*<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+            sort = [('https://techoreels.com'+i[0],i[1]) for i in e]
+            return sort
+        except:
+            return
+
+    def ranionba(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)time">([^<]*).*?n>([^<]*).*?name">([^<]*).*?vs">([^<]*).*?name">([^<]*).*?href="([^"]*)', page_data)
+            sort = [(i[0],i[1],i[2],i[3],i[4],'https://bdnewszh.com'+i[5]) for i in e]
+            return sort 
+        except:
+            return
+
+    def raniofifa(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('(?s)time">([^<]*).*?n>([^<]*).*?name">([^<]*).*?src="([^"]*).*?href="([^"]*)', page_data)
+            sort = [(i[0],i[1],i[2],'https://streamspass.com'+i[3],'https://streamspass.com'+i[4]) for i in e]
+            return sort 
+        except:
+            return
+
+    def recipemam(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)data-event.*?href="([^"]*)">([^<]*)',page_data)
+            return s
+        except:
+            return
+
+    def catchy(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)<li role="presentation" class="">\s*<a href="([^"]*).*?h4>([^<]*).*?h4>.*?h4>.*?h4>.*?h4>([^<]*)',page_data)
+            sort = [('http://catchystream.com'+i[0],i[1],i[2]) for i in s]
+            return sort
+        except:
+            return
+
+    def sportsurge(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)mt-2">\s*<a href="([^"]*).*?mb-2">([^<]*).*?sm">\s*([^<]*)', page_data)
+            return r
+        except:
+            return
+
+    def chaturbate(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('<li(?s).*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data)
+            hosts = ['WOMEN','MEN','TRANS','COUPLES','FEATURED']; e =[]
+            for i in r:
+                if any(x for x in hosts if x in i[1]): e.append(('https://chaturbate.com'+i[0],i[1]))
+            return e
+        except:
+            return
+
+    def ptwopstreams(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('none"><h3><strong>([^<]*)|(?s)none">\s*<a href="([^"]*).*?span c(?:[^>]*)>([^<]*).*?value="([^"]*):',page_data)
+            return r
+        except:
+            return
+
+    def sstwentyfour(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('Today\'s games',1)[-1]
+            page_data = page_data.split('Sport channels',1)[0]
+            r = re.findall('href="([^"]*)(?s).*?me2">([^<]*).*?vs2">([^<]*).*?me2">([^<]*)',page_data)
+            return r
+        except:
+            return
+
+    def thecsnetnfl(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('NFL Live Streams and Schedule',1)[-1]
+            r = re.findall('<a href="([^"]*)(?s).*?ing">([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
+            return r
+        except:
+            return
+
+    def thecsnetboxing(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('BOXING Live Streams and Schedule',1)[-1]
+            r = re.findall('<a href="([^"]*)(?s).*?ing">([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
+            return r
+        except:
+            return
