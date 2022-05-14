@@ -1649,14 +1649,18 @@ class streamer:
             a = requests.get(t,headers=headers).text
             w = re.findall('iframe.*?src="([^"]*)',a)[0]
             h = requests.get(w,headers=headers).text
-            l = re.findall('atob\(\'([^\']*)', h)[0]
-            l = base64.b64decode(l).decode('utf-8')
+            if 'm3u8' in h:
+                l = re.findall('source:"([^"]*)', h)[0]
+                return l + '|User-Agent=Mozilla/5.0&Referer=' + w
+            else :
+                l = re.findall('atob\(\'([^\']*)', h)[0]
+                l = base64.b64decode(l).decode('utf-8')
             #q = re.findall('iframe.*?src="([^"]*)',h)[0]
             #e = requests.get(q,headers=headers).text
             #find = re.findall('eval\(function(.+?m3u8.+)', e)[0]
             #unpack = jsunpack.unpack(find)
             #i = re.findall('var (?:source|src|file)=\s*[\'"]([^\'"]+)',unpack)[0]
-            return l + '|User-Agent=Mozilla/5.0&Referer=' + w
+                return l + '|User-Agent=Mozilla/5.0&Referer=' + w
         except:
             return
 
