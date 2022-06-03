@@ -381,7 +381,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui,re
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    token = client.request('http://aburr.org/Crew/dummyToken.txt')
+    token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
     w = w.replace('master_desktop_complete','5600K/5600_slide')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
@@ -500,7 +500,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re
-    token = client.request('http://aburr.org/Crew/dummyToken.txt')
+    token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     r = re.findall('"videoUrl":"([^"]*)', page_data)[0]
     r = r.replace('\\','')
     r = r.replace('master_desktop_complete','5600K/5600_slide')
@@ -558,7 +558,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re
-    token = client.request('http://aburr.org/Crew/dummyToken.txt')
+    token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     r = re.findall('(?s)= "https:\/\/([^"]*)', page_data)[0]
     r = r.replace('hlslive','https://hlslive')
     r = r.replace('master_desktop_complete','5600K/5600_slide')
@@ -599,7 +599,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     s = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
     s = s.replace('https://href.li/?','')
-    token = client.request('http://aburr.org/Crew/dummyToken.txt')
+    token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     u = client.request(s)
     r = re.findall('var sou = "([^"]*)', u)[0]
     r = r.replace('master_desktop_complete','5600K/5600_slide')
@@ -639,7 +639,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re,base64
     s = client.request('[makelist.param2]')
-    token = client.request('http://aburr.org/Crew/dummyToken.txt')
+    token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     u = re.findall('(?s)id="playframe">(?:.*?src)="([^"]*)', s)[0]
     b = 'https://sports24.stream'+u
     b = b.replace(' ', '%20')
@@ -682,7 +682,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
     import re
     x = re.findall('id="VideoFrame">\s (?:.*?src=)"([^"]*)', page_data)[0]
-    token = client.request('http://aburr.org/Crew/dummyToken.txt')
+    token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     w = client.request(x)
     r = re.findall('source: \'([^\']*)', w)[0]
     r = r.replace('master_desktop_complete','5600K/5600_slide')
@@ -737,7 +737,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re
-    token = client.request('http://aburr.org/Crew/dummyToken.txt')
+    token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     r = re.findall('{source:"([^"]*)', page_data)[0]
     r = r.replace('master_desktop_complete','5600K/5600_slide')
     return r + '|Cookie=Authorization=' + token
