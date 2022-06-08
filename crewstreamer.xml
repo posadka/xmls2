@@ -1705,11 +1705,17 @@ class streamer:
     def onestream(self, url):
         try:
             page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
-            r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
-            s = re.findall('cdn\s*=\s*\["([^"]*)', page_data)[0]
-            x = base64.b64decode(r).decode("ascii")
-            x = x.replace(x[x.index("/") + 2:].split(".")[0], s)
-            return x +'|Referer=' + quote_plus(url)
+            #r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
+            #s = re.findall('cdn\s*=\s*\["([^"]*)', page_data)[0]
+            #x = base64.b64decode(r).decode("ascii")
+            #x = x.replace(x[x.index("/") + 2:].split(".")[0], s)
+            w = re.findall('url:\s*\'([^\']*)', page_data)[0]
+            h = 'http://1stream.top' + w
+            hat = requests.get(h, headers={"User-Agent": 'Mozilla/5.0'}).text
+            i = re.findall('source":"([^"]*)', hat)[0]
+            t = base64.b64decode(i).decode("utf-8")
+            #return x +'|Referer=' + quote_plus(url)
+            return t +'|Referer=' + quote_plus(url)
         except:
             return
 
