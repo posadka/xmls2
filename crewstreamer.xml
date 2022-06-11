@@ -4,6 +4,7 @@ import re,json,base64,requests,time
 try: from urllib import urlencode, quote_plus
 except ImportError: from urllib.parse import urlencode, quote_plus
 
+from resources.lib.modules import control
 from resources.lib.modules import client
 from resources.lib.modules import site
 from resources.lib.modules import workers
@@ -1704,6 +1705,7 @@ class streamer:
 
     def onestream(self, url):
         try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
             #r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
             #s = re.findall('cdn\s*=\s*\["([^"]*)', page_data)[0]
