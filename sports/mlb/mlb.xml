@@ -503,8 +503,8 @@ def GetLSProData(page_data,Cookie_Jar,m):
     token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     r = re.findall('"videoUrl":"([^"]*)', page_data)[0]
     r = r.replace('\\','')
-    r = r.replace('master_desktop_complete','5600K/5600_slide')
-    return r + '|Cookie=Authorization=' + token
+    r = r.replace('master_desktop_complete','5600K/5600_complete')
+    return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
 ]]></expres>
 <page>[lists.param1]</page>
 <referer></referer>
@@ -561,8 +561,8 @@ def GetLSProData(page_data,Cookie_Jar,m):
     token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     r = re.findall('(?s)= "https:\/\/([^"]*)', page_data)[0]
     r = r.replace('hlslive','https://hlslive')
-    r = r.replace('master_desktop_complete','5600K/5600_slide')
-    return r + '|Cookie=Authorization=' + token
+    r = r.replace('master_desktop_complete','5600K/5600_complete')
+    return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
 ]]></expres>
 <page>[lists.param1]</page>
 <referer></referer>
