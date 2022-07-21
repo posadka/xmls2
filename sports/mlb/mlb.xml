@@ -387,7 +387,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
-    return w + '|Cookie=Authorization=' + token
+    return w + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
 ]]></expres>
 <page>[lists.param1]</page>
 <referer></referer>
