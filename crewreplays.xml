@@ -246,7 +246,7 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             r = re.findall('source: "([^"]*)', page_data)[0]
-            r = r.replace('master_wired60','5600K/5600_slide')
+            r = r.replace('master_desktop_complete','5600K/5600_slide')
             return r + '|Cookie=Authorization=' + token
         except:
             return
