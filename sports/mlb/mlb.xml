@@ -602,8 +602,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
     u = client.request(s)
     r = re.findall('var sou = "([^"]*)', u)[0]
-    r = r.replace('master_desktop_complete','5600K/5600_slide')
-    return r + '|User-Agent=iPad&Authorization=' + token
+    r = r.replace('master_desktop_complete','5600K/5600_complete')
+    return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
 ]]></expres>
 <page>[makelist.param3]</page>
 </regex>
