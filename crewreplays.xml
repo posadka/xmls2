@@ -214,7 +214,7 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             white = re.findall('source.*?src="([^"]*)', page_data)[0]
-            white = white.replace('master_desktop_complete_gdfp','5600K/5600_slide')
+            white = white.replace('master_desktop_slide_gdfp','5600K/5600_slide')
             return white + '|Cookie=Authorization=' + token
         except:
             return
@@ -268,7 +268,7 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             r = re.findall('source:\s*"([^"]*)', page_data)[0]
-            r = r.replace('master_wired60','5600K/5600_slide')
+            r = r.replace('master_desktop_slide_gdfp','5600K/5600_slide')
             return r + '|Cookie=Authorization=' + token
         except:
             return
