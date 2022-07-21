@@ -170,7 +170,7 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             h = re.findall(r'(?s)<div class="embed-responsive embed-responsive-16by9">(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)', page_data)[0]
-            h = h.replace('master_desktop_complete_gdfp','5600K/5600_slide')
+            h = h.replace('master_desktop_slide_gdfp','5600K/5600_slide')
             return h + '|Cookie=Authorization=' + token
         except:
             return
