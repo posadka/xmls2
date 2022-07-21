@@ -214,8 +214,8 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             white = re.findall('source.*?src="([^"]*)', page_data)[0]
-            white = white.replace('master_desktop_slide_gdfp','5600K/5600_slide')
-            return white + '|Cookie=Authorization=' + token
+            white = white.replace('master_desktop_slide_gdfp','5600K/5600_complete')
+            return white + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
 
@@ -226,8 +226,8 @@ class streamer:
             x = re.findall('(?s)<iframe(?:.*?c=)\'([^\']*)', page_data)[0]
             w = client.request(x)
             r = re.findall('var source = "([^"]*)', w)[0]
-            r = r.replace('master_desktop_complete','5600K/5600_slide')
-            return r + '|Cookie=Authorization=' + token
+            r = r.replace('master_desktop_complete','5600K/5600_complete')
+            return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
 
@@ -236,8 +236,8 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             r = re.findall('source: "([^"]*)', page_data)[0]
-            r = r.replace('master_desktop_complete','5600K/5600_slide')
-            return r + '|Cookie=Authorization=' + token
+            r = r.replace('master_desktop_complete','5600K/5600_complete')
+            return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
 
