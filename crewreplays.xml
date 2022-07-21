@@ -171,7 +171,7 @@ class streamer:
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             h = re.findall(r'(?s)<div class="embed-responsive embed-responsive-16by9">(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)', page_data)[0]
             h = h.replace('master_desktop_slide_gdfp','5600K/5600_complete')
-            return h + '|Cookie=Authorization=' + token
+            return h + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
 
@@ -205,7 +205,7 @@ class streamer:
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             white = re.findall('(?s)var sou.*?"([^"]*)', page_data)[0]
             white = white.replace('master_desktop_slide_gdfp','5600K/5600_complete')
-            return white + '|Cookie=Authorization=' + token
+            return white + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
 
