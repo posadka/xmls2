@@ -268,8 +268,8 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             r = re.findall('source:\s*"([^"]*)', page_data)[0]
-            r = r.replace('master_desktop_slide_gdfp','5600K/5600_slide')
-            return r + '|Cookie=Authorization=' + token
+            r = r.replace('master_desktop_slide_gdfp','5600K/5600_complete')
+            return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
 
