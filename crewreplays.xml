@@ -241,9 +241,15 @@ class streamer:
         try:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
-            r = re.findall('source: "([^"]*)', page_data)[0]
-            r = r.replace('master_desktop_complete','5600K/5600_complete')
-            return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&orgin=http://volokit2.com&Authorization=' + token
+            if 'hlslive-akc-ewr1.media.mlb.com' in page_data:
+                r = re.findall('source: "([^"]*)', page_data)[0]
+                r = r.replace('master_desktop_complete','5600K/5600_complete')
+                return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&orgin=http://volokit2.com&Authorization=' + token
+            else : 
+                white = re.findall('(?s)iframe sandbox.*?src="([^"]*)', page_data)[0]
+                this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white)[0]
+                this = 'https:' + this if w.startswith('//') else this
+                return this + '|referer=' + white
         except:
             return
 
