@@ -209,6 +209,7 @@ class streamer:
                 return white + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
             else : 
                 white = re.findall('(?s)iframe sandbox.*?src="([^"]*)', page_data)[0]
+                white = 'http:' + white
                 white1 = client.request(white)
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white1)[0]
                 this = 'https:' + this if this.startswith('//') else this
