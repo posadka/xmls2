@@ -209,7 +209,8 @@ class streamer:
                 return white + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
             else : 
                 white = re.findall('(?s)iframe sandbox.*?src="([^"]*)', page_data)[0]
-                this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white)[0]
+                white1 = client.request(white)
+                this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white1)[0]
                 this = 'https:' + this if w.startswith('//') else this
                 return this + '|referer=' + white
         except:
@@ -247,7 +248,8 @@ class streamer:
                 return r + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&orgin=http://volokit2.com&Authorization=' + token
             else : 
                 white = re.findall('(?s)iframe sandbox.*?src="([^"]*)', page_data)[0]
-                this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white)[0]
+                white1 = client.request(white)
+                this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white1)[0]
                 this = 'https:' + this if w.startswith('//') else this
                 return this + '|referer=' + white
         except:
