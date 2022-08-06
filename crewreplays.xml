@@ -213,7 +213,7 @@ class streamer:
                 white1 = client.request(white)
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white1)[0]
                 this = 'http:' + this if this.startswith('//') else this
-                return this + '|referer=' + white
+                return this + '|referer=http://bdnewszh.com'
         except:
             return
 
@@ -253,7 +253,7 @@ class streamer:
                 white1 = client.request(white)
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white1)[0]
                 this = 'http:' + this if this.startswith('//') else this
-                return this + '|referer=' + white
+                return this + '|referer=http://bdnewszh.com'
         except:
             return
 
