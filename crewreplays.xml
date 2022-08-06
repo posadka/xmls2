@@ -211,7 +211,7 @@ class streamer:
                 white = re.findall('(?s)iframe sandbox.*?src="([^"]*)', page_data)[0]
                 white1 = client.request(white)
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white1)[0]
-                this = 'https:' + this if w.startswith('//') else this
+                this = 'https:' + this if white1.startswith('//') else this
                 return this + '|referer=' + white
         except:
             return
@@ -250,7 +250,7 @@ class streamer:
                 white = re.findall('(?s)iframe sandbox.*?src="([^"]*)', page_data)[0]
                 white1 = client.request(white)
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white1)[0]
-                this = 'https:' + this if w.startswith('//') else this
+                this = 'https:' + this if white1.startswith('//') else this
                 return this + '|referer=' + white
         except:
             return
