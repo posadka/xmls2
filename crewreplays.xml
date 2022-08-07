@@ -319,7 +319,7 @@ class streamer:
             hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
             the = client.request(hat)
             crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
-            made = crew.replace('\\', '').replace('master_desktop_slide_gdfp','5600K/5600_complete')
+            made = crew.replace('\\', '').replace('master_desktop_complete_gdfp2','5600K/5600_complete')
             return made + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
