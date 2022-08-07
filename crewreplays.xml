@@ -19,6 +19,8 @@ class streamer:
 
             elif 'liveonscore.tv/mlb-streams' in url: u = self.weakspellmlb(url)
 
+            elif 'weakstreams.com/mlb-streams' in url: u = self.weakspellmlb(url)
+
             elif 'sporteks.net' in url: u = self.sporteks(url)
 
             elif 'bestnhl.com' in url: u = self.bestnhl(url)
@@ -302,5 +304,22 @@ class streamer:
             crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
             made = crew.replace('\\', '')
             return made + '|Cookie=Authorization=' + token
+        except:
+            return
+
+    def weakspellmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
+            w = re.findall('url:\s*"([^"]*)', page_data)[0]
+            h = re.findall('data:\s\{"([^"]*)', page_data)[0]
+            i = re.findall('var vidgstream = "([^"]*)', page_data)[0]
+            t = re.findall('gethlsUrl\(vidgstream,\s([^,]*)', page_data)[0]
+            e = re.findall('gethlsUrl\(vidgstream,(?:[^,]*),\s([^\)]*)', page_data)[0]
+            hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
+            the = client.request(hat)
+            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+            made = crew.replace('\\', '').replace('master_desktop_slide_gdfp','5600K/5600_complete')
+            return made + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
