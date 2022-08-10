@@ -372,7 +372,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     import re,requests
-    page_data = requests.get('https://daddylive.me/').text
+    page_data = requests.get('https://daddylive.futbol/').text
     page_data = page_data.split('>Soccer<',1)[-1]
     page_data = page_data.split('>Cricket<',1)[0]
     e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
