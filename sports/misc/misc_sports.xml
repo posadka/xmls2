@@ -144,7 +144,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,control
     import re,requests
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    page_data = requests.get('https://daddylive.me/').text
+    page_data = requests.get('https://daddylive.futbol/').text
     page_data = page_data.split('>Darts<',1)[-1]
     page_data = page_data.split('>Ice Hockey<',1)[0]
     e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
@@ -193,7 +193,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    page_data = site.request('https://daddylive.vip/')
+    page_data = site.request('https://daddylive.futbol/')
     page_data = page_data.split('Rugby Union',1)[-1]
     page_data = page_data.split('>Horse Racing<',1)[0]
     e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
@@ -247,7 +247,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <thumbnail>https://i.imgur.com/8EL6mr3.png</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[alert">.*\n.*?0;">((?!Alt)[^<]+)|hr>(\d+:\d+)\s*([^<]+).*?href="([^"]+)]]></expres>
-<page>https://daddylive.click/</page>
+<page>https://daddylive.futbol/</page>
 </regex>
 <regex>
 <name>m5</name>
