@@ -23,7 +23,9 @@ class streamer:
 
             elif 'sporteks.net' in url: u = self.sporteks(url)
 
-            elif 'bestnhl.com' in url: u = self.bestnhl(url)
+            elif 'bestnhl.com/nhl' in url: u = self.bestnhl(url)
+
+            elif 'bestnhl.com/mlb' in url: u = self.bestmlb(url)
 
             elif 'crackstreams.biz' in url: u = self.biznhl(url)
 
@@ -320,6 +322,20 @@ class streamer:
             the = client.request(hat)
             crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
             made = crew.replace('\\', '').replace('master_desktop_complete_gdfp2','5600K/5600_complete')
+            return made + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
+        except:
+            return
+          
+
+    def bestmlb(self, url):
+        try:
+            page_data = client.request(url)
+            token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
+            w = re.findall('t>\s*<iframe.*?src="([^"]*)', page_data)[0]
+            h = 'https://bestnhl.com/mlb/' + w 
+            i = client.request(h)
+            t = re.findall('var strm = "([^"]*)', i)[0]
+            made = t.replace('master_desktop_complete_gdfp2','5600K/5600_complete')
             return made + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
