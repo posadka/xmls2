@@ -332,7 +332,7 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             w = re.findall('t>\s*<iframe.*?src="([^"]*)', page_data)[0]
-            h = 'https://bestnhl.com/mlb/' + w 
+            h = 'https://bestnhl.com/mlb' + w 
             i = client.request(h)
             t = re.findall('var strm = "([^"]*)', i)[0]
             made = t.replace('master_desktop_complete_gdfp2','5600K/5600_complete')
