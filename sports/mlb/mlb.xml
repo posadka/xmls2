@@ -353,7 +353,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     r = re.findall('td style="width:180px;text-align: center;">([^<]*)(?s).*?ef="([^"]*).*?rk">([^<]*)', page_data)
-    sort = [(i[0],i[1],i[2].replace('&#8211','').replace(';','')) for i in r]
+    sort = [(i[0],i[1],i[2].replace('8211','').replace(';','').replace('&','').replace('#','')) for i in r]
     return sort
 ]]></expres>
 <page>http://dofusports.xyz/sport/mlb/</page>
