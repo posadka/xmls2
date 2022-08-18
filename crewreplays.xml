@@ -347,7 +347,7 @@ class streamer:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
             w = re.findall('source: "([^"]*)', page_data)[0]
-            made = t.replace('master_desktop_complete_gdfp2','5600K/5600_complete')
+            made = w.replace('master_desktop_complete_gdfp2','5600K/5600_complete')
             return made + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
