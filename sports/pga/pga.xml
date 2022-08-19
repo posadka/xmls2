@@ -8,85 +8,13 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/pga_fanart.jpg</fanart>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]GOLF LIVE[/COLOR] [COLOR orchid] (FREEFEDS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/pga.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/pga_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[makelist.param1] [COLOR orange][B][makelist.param2][/B] [/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>[makelist.param2]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import re
-    page_data = page_data.split('Golf schedule',1)[-1]
-    page_data = page_data.split('Darts schedule',1)[0]
-    s = re.findall('<h3>([^<]*)|box">([^<]*)(?s).*?ue="([^"]*)', page_data)
-    return s
-]]></expres>
-<page>https://freefeds.com/</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re,requests,time,json
-    try: from urllib import urlencode
-    except ImportError: from urllib.parse import urlencode
-    murl='[makelist.param3]';now=int((int(time.time()) + 86400) * 1000)
-    source=requests.get(murl,headers={'user-agent':'Mozilla/5.0','referer':'https://sportsbay.org/','accept':'*/*'}).text
-    if 'm3u8' in source:
-        strurl = re.findall('Clappr.Player[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)',source)[0]+'|user-agent=ipad&origin=https://freefeds.com&referer=https://freefeds.com/'
-        return strurl
-    else :     
-        teleID=re.findall('embed/(\d+)\.',source)[0]
-        r=requests.get('https://teleriumtv.com/streams/%s/%s.json'%(teleID,now),headers={'user-agent':'Mozilla/5.0','referer':'https://teleriumtv.com/embed/%s.html'%teleID,'accept':'*/*'},cookies={'volume':'0'}).json()
-        strurl=r.get('url');netloc='https://teleriumtv.com'
-        headers={'user-agent': 'Mozilla/5.0','origin':netloc,'referer':'https://teleriumtv.com/embed/%s.html'%teleID}
-        if r.get('tokenurl'):
-          strurl += requests.get(netloc+r.get('tokenurl'),headers=headers).json()[10][::-1]
-        strurl=strurl if strurl.startswith('http') else 'https:'+strurl
-        return strurl+'|{0}'.format(urlencode(headers))
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PGA[/COLOR] [COLOR orchid]RYDER CUP[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>
-        <sublink>http://s5.dfgdfgdfgdfg.xyz/live/zfpqruo4/chunks.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9OS8yNi8yMDIxIDQ6MTA6NDMgUE0maGFzaF92YWx1ZT1hTkNKZXdnWWlzcC9KbVpteVBmbXdBPT0mdmFsaWRtaW51dGVzPTEyMCZzdHJtX2xlbj0xMw==|User-agent=ipad&referer=http://live94today.com/watch/nbc-20201017/</sublink>
-    </link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/pga.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/pga_fanart.jpg</fanart>
-</item>
-
 <item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PGA[/COLOR] [COLOR orchid]NETWORK[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
-        <sublink>https://www.livedoomovies.com/02_golfhd_720p/chunklist.m3u8</sublink>
-        <sublink>http://us1-external-sources.iptvserver.tv:80/kkkrkDp2a9KNwAwGzpb/QT94uK5NNQw4r4Qs/558?checkedby:iptvcat.com</sublink>
-        <sublink>http://185.71.64.167:80/307216011114/307216011114/80953?checkedby:iptvcat.com</sublink>
-        <sublink>http://jetstar.one:8080/instruktora1961cd/mjikdsep9c/11182?checkedby:iptvcat.com</sublink>
-        <sublink>http://80.82.77.130:80/live/mag00:1A:79:B1:2B:23/iB3OuVaDYu/79325.m3u8</sublink>
+        <sublink>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/pga.xml</sublink>
     </link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/pga.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/pga_fanart.jpg</fanart>
 </item>
 
-<item>
-    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]PGA[/COLOR] [COLOR orchid]CHANNELS[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
-    <thumbnail>https://bitbucket.org/threw/xmls2/raw/master/sports/bg/sportsstream/pga.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/pga_fanart.jpg</fanart>
-</item>
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SKY SPORTS[/COLOR] [COLOR orchid]GOLF[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=http://www.sports-stream.net/http://www.sports-stream.net/Sky-Sports-Golf.html</link>
-    <thumbnail>https://bitbucket.org/threw/xmls2/raw/master/sports/bg/sportsstream/SKYSPORTSGOLF.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/pga_fanart.jpg</fanart>
-</item>
+
