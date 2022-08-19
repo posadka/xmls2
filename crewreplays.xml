@@ -211,9 +211,11 @@ class streamer:
         try:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
+            r = re.findall('iframe sandbox=(?s).*?src="([^"]*)', page_data)[0]
+            s = client.request(r)
             if 'hlslive-akc-ewr1.media.mlb.com' in page_data:
-                white = re.findall('(?s)var sou.*?"([^"]*)', page_data)[0]
-                white = white.replace('master_desktop_slide_gdfp','5600K/5600_complete')
+                white = re.findall('(?s)var sou.*?"([^"]*)', s)[0]
+                white = white.replace('master_desktop_slide_gdfp2','5600K/5600_complete')
                 return white + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
             else : 
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
