@@ -813,7 +813,7 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('NFL PREMIUM HD 4K STREAMS',1)[-1]
-            r = re.findall('a href=\'([^\']*)(?s).*?ing\'>([^<]*)',page_data)
+            r = re.findall('a href=\'([^\']*)(?s).*?ing\'>([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
             return r
         except:
             return
