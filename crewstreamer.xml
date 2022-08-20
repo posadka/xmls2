@@ -282,6 +282,8 @@ class streamer:
 
             elif 'ustvgo.cc' in url: u = self.skuanet(url)
 
+            elif 'hinhnenhd.info' in url: u = self.skuanet(url)
+
             elif 'azulitostreams.com' in url: u = self.skuanet(url)
 
             elif 'boxingfightsvideos' in url: u = self.boxingfightsvideos(url)
