@@ -48,6 +48,8 @@ class streamer:
 
             elif 'allsportsmedia.live' in url: u = self.fightpass(url)
 
+            elif 'allsportsdaily.co' in url: u = self.tvnba(url)
+
             elif 'icelz.newsrade.tk' in url: u = self.ice(url)
 
             elif 'hockeynews.site' in url: u = self.helena(url)
