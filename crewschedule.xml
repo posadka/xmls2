@@ -621,7 +621,7 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('NFL Live Streams and Schedule',1)[-1]
-            e = re.findall('(?s)<a href=\'([^\']*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=\'([^\']*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+            e = re.findall('(?s)<a href=\'([^\']*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=\'([^\']*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
             return e
         except:
             return
