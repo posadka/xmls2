@@ -814,7 +814,8 @@ class streamer:
             page_data = client.request(url)
             page_data = page_data.split('NFL PREMIUM HD 4K STREAMS',1)[-1]
             r = re.findall('a href=\'([^\']*)(?s).*?ing\'>([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
-            return r
+            sort = [('http://crackstreams.net'+i[0],i[1],i[2]) for i in r]
+            return sort
         except:
             return
 
