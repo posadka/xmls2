@@ -208,6 +208,8 @@ class streamer:
 
             elif 'nflstreams.link' in url: u = self.csnetnfl(url)
 
+            elif 'rackstreams.net/nfl-streams' in url: u = self.csnetnfl(url)
+
             elif 'nbastreams.xyz' in url: u = self.crackstreams(url)
 
             elif 'nbastreams123.xyz' in url: u = self.crackstreams(url)
