@@ -37,7 +37,7 @@ class streamer:
 
             elif 'crackstreams.net/ufcstreams.php' in url: u = self.csnetmma(url)
 
-            elif 'crackstreams.net/nflstreams.php' in url: u = self.csnetnfl(url)
+            elif 'crackstreams.net/nfl-streams' in url: u = self.csnetnfl(url)
 
             elif 'crackstreams.net/nbastreams.php' in url: u = self.csnetnba(url)
 
