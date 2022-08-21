@@ -550,7 +550,7 @@ class streamer:
             r = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
             w = client.request(r)
             x = re.findall(' source: \'([^\']*)', w)[0]
-            return x + '|Referer=' + r
+            return x + '|User-Agent=Mozilla/5.0&Referer=' + r
         except:
             return
 #link
