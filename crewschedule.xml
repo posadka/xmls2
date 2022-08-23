@@ -193,6 +193,8 @@ class streamer:
 
             elif 'soccer24hd.com' in url: u = self.sstwentyfour(url)
 
+            elif 'ustv247.tv' in url: u = self.ustvtwentyfourseven(url)
+
             return u
         except:
             pass
@@ -827,3 +829,12 @@ class streamer:
             return r
         except:
             return
+      
+    def ustvtwentyfourseven(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('<li><strong><a href="([^"]*)">([^<]*)', page_data)
+            return e
+        except:
+            return                
+                
