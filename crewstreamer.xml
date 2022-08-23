@@ -450,6 +450,8 @@ class streamer:
 
             elif 'sportsguild.net' in url: u = self.sportsguild(url)
 
+            elif 'ustv247.tv' in url: u = self.ustvtwentyfourseven(url)
+
             return u
         except:
             pass
@@ -1897,3 +1899,15 @@ class streamer:
             return s + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + r
         except:
             return
+
+      def ustvtwentyfourseven(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            w = re.findall('iframe src=\'([^\']*)', page_data)[0]
+            h = 'https://ustv247.tv' + w
+            i = client.request(h)
+            s = re.findall('var hls_src=\'([^\']*)',i)[0]
+            return s + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + h
+        except:
+            return
+                
