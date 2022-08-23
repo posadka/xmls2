@@ -1900,7 +1900,7 @@ class streamer:
         except:
             return
 
-      def ustvtwentyfourseven(self, url):
+    def ustvtwentyfourseven(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             w = re.findall('iframe src=\'([^\']*)', page_data)[0]
