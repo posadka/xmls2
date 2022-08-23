@@ -1903,6 +1903,7 @@ class streamer:
     def ustvtwentyfourseven(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
             w = re.findall('iframe src=\'([^\']*)', page_data)[0]
             h = 'https://ustv247.tv' + w
             i = client.request(h)
