@@ -834,7 +834,8 @@ class streamer:
         try:
             page_data = client.request(url)
             e = re.findall('<li><strong><a href="([^"]*)">([^<]*)', page_data)
-            return e
+            sort = [(i[0],i[1].replace('amp;','')) for i in e]
+            return sort
         except:
             return                
                 
