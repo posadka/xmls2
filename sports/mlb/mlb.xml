@@ -92,7 +92,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </dir>
 
 ###############################
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (BN)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
