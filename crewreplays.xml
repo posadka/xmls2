@@ -211,14 +211,15 @@ class streamer:
         try:
             page_data = client.request(url)
             token = client.request('http://team-crew.co.uk/Crew/dummyToken.txt')
-            r = re.findall('iframe sandbox=(?s).*?src="([^"]*)', page_data)[0]
-            s = client.request(r)
-            if 'hlslive' in s:
-                white = re.findall('(?s)var sou.*?"([^"]*)', s)[0]
+            #r = re.findall('iframe sandbox=(?s).*?src="([^"]*)', page_data)[0]
+            #s = client.request(r)
+            if 'hlslive' in page_data:
+                white = re.findall('(?s)var sou.*?"([^"]*)', page_data)[0]
                 white = white.replace('master_desktop_complete_gdfp2','5600K/5600_complete')
                 return white + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
             else :
-                white = re.findall('(?s)var sou.*?"([^"]*)', s)[0]
+                white = re.findall('iframe id="abc_frame" src="([^"]*)', page_data)[0]
+                s = client.request(white)
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white)[0]
                 this = 'http:' + this if this.startswith('//') else this
                 return this + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36&referer=http://bdnewszh.com/'
