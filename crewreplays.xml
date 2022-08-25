@@ -217,7 +217,7 @@ class streamer:
                 white = re.findall('(?s)var sou.*?"([^"]*)', s)[0]
                 white = white.replace('master_desktop_complete_gdfp2','5600K/5600_complete')
                 return white + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
-            elif :
+            else :
                 white = re.findall('(?s)var sou.*?"([^"]*)', s)[0]
                 this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white)[0]
                 this = 'http:' + this if this.startswith('//') else this
