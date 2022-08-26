@@ -452,6 +452,8 @@ class streamer:
 
             elif 'ustv247.tv' in url: u = self.ustvtwentyfourseven(url)
 
+            elif 'sportinglive' in url: u = self.sportinglive(url)
+
             return u
         except:
             pass
@@ -1911,4 +1913,12 @@ class streamer:
             return s + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + h
         except:
             return
-                
+         
+    def    sportinglive (self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            w = re.findall('source\s*src="([^"]*)', page_data)[0]
+            return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + url
+        except:
+            return
