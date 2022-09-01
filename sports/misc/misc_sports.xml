@@ -247,7 +247,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <thumbnail>https://i.imgur.com/8EL6mr3.png</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[alert">.*\n.*?0;">((?!Alt)[^<]+)|hr>(\d+:\d+)\s*([^<]+).*?href="([^"]+)]]></expres>
-<page>https://daddylive.futbol/</page>
+<page>https://livetvon.click/</page>
 </regex>
 <regex>
 <name>m5</name>
