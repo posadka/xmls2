@@ -44,6 +44,8 @@ class streamer:
 
             elif 'bfst.xyz' in url: u = self.beast(url)
 
+            elif 'bfst.live' in url: u = self.buff(url)
+
             elif 'fightpass.site' in url: u = self.fightpass(url)
 
             elif 'allsportsmedia.live' in url: u = self.fightpass(url)
