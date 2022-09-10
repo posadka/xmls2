@@ -470,85 +470,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (W4)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR dodgerblue][makelist.param3] [/COLOR] [COLOR orange][makelist.param2][/COLOR] Vs [COLOR orange][makelist.param4][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import site,workers
-    import re
 
-    class page:
-        def run(self, r):
-            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
-            for i in r: threads.append(workers.Thread(self.request, i))
-            [i.start() for i in threads] ; [i.join() for i in threads]
-            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
-        def request(self, i):
-            self.r += [(i[0], site.request(i[1]))]
 
-    url = 'http://sporteks.net/r/cfbstreams/page/'
-    u = []
-    for i in range(1,20): u += [url + str(i)]
-    u = page().run(u)
-    r = re.findall('(?s)competition"><a href="([^"]*).*?e">([^<]*).*?s">([^<]*).*?e">([^<]*)', u)
-    return r
-]]></expres>
-<page></page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param1]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (IS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[crewschedule]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-<regex>
-<name>crewschedule</name>
-<listrepeat><![CDATA[
-<title>[COLOR orange][crewschedule.param2][/COLOR] [COLOR dodgerblue][crewschedule.param3][/COLOR]</title>
-<link>$doregex[play]</link>
-        <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://crackstreams.is/cfbstreams/')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>play</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[crewschedule.param1]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
 <item
 <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (RS)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
@@ -630,101 +554,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-    <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (YSS) [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue] [makelist.param3][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re
-    r = re.findall('(?s)<a href="([^"]*)" title="([^"]*).*?vs">([^<]*)', page_data)
-    sort = [('http://yoursports.stream/'+i[0],i[1],i[2]) for i in r]
-    return sort
-]]></expres>
-<page>http://yoursports.stream/hockey</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import re,base64
-    w = re.findall('(?s)<iframe frameborder=0 height=100% width=100% src="([^"]*)', page_data)[0]
-    h = client.request(w)
-    i = re.findall('\}\s(?:.*?var)(?:[^\']*)\'([^\']*)', h)[0]
-    t = base64.b64decode(i)
-    return t + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + w
-]]></expres>
-<page>[makelist.param1]</page>
-</regex>
-</item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (S24)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR orange][makelist.param1][/COLOR] [COLOR dodgerblue][makelist.param2][/COLOR]</title>
-    <link>$doregex[player]</link>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://sports24.club/ncaa/')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>player</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param3]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
-<item>
-    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]NCAA[/COLOR] [COLOR orchid] CHANNELS[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-</item>
 
-<dir>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]ESPN[/COLOR] [COLOR orchid] SPORTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>https://bitbucket.org/threw/xmls2/raw/master/sports/channels/espn.xml</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/espn.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-</dir>
 
-<item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA[/COLOR] [COLOR orchid] GAMEDAY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>
-    <sublink>http://cdn.sports24.win/espn.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer=http://sports24.club/ncaa/gameday-espn.html</sublink>
-    <sublink>https://espn-ak.espn.com/hls/live/2002490/espn/espn1-p-4500/espn1-p-4500.m3u8</sublink>
-</link>
-<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-</item>
 
-<dir>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]COLLEGE[/COLOR] [COLOR orchid] CHANNELS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>https://bitbucket.org/threw/xmls2/raw/master/sports/ncaa/ncaa_channels.xml</link>
-<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
-</dir>
