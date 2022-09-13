@@ -679,7 +679,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://p2pstreams.live/football-streams/')
+    url = client.schedule('http://p2pstreams.live/football-streams')
     return url
 ]]></expres>
 <page></page>
