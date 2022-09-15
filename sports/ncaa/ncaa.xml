@@ -287,6 +287,39 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (P2P)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR dodgerblue][makelist.param4][/COLOR] [makelist.param1] [COLOR orange][makelist.param3][/COLOR]</title>
+    <link>$doregex[player]</link>
+    <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://p2pstreams.live/football-streams')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
 <item
 <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (SE)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
