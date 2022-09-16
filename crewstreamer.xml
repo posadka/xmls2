@@ -296,6 +296,8 @@ class streamer:
 
             elif 'bubofitness.com' in url: u = self.skuanet(url)
 
+            elif 'midcoastplanning.org' in url: u = self.skuanet(url)
+
             elif 'azulitostreams.com' in url: u = self.skuanet(url)
 
             elif 'boxingfightsvideos' in url: u = self.boxingfightsvideos(url)
