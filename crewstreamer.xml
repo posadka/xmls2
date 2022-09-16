@@ -160,7 +160,7 @@ class streamer:
 
             elif 'volokit.com/volostream/nfl-games' in url: u = self.volokitnfl(url)
 
-            elif 'volokit2' in url: u = self.tvnba(url)
+            elif 'volokit2' in url: u = self.volokit2(url)
 
             elif 'sportsstatsme.net/watch/NHL-streams' in url: u = self.ssnhl(url)
 
@@ -1959,5 +1959,16 @@ class streamer:
             page_data = client.request(url)
             w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
             return w + '|User-Agent=Mozilla/5.0&Referer=' + url
+        except:
+            return
+
+    def volokit2(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            h = client.request(w)
+            i = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', h)[0]
+            return i + '|User-Agent=Mozilla/5.0&Referer=' + w
         except:
             return
