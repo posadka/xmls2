@@ -466,6 +466,8 @@ class streamer:
 
             elif 'silverspoon.site' in url: u = self.silverspoon(url)
 
+            elif 'sequencecard.xyz' in url: u = self.silverspoon(url)
+
             return u
         except:
             pass
