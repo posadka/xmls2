@@ -236,6 +236,8 @@ class streamer:
 
             elif 'uhdstreams.club' in url: u = self.hdstreams(url)
 
+            elif 'uhdgames.xyz' in url: u = self.hdstreams(url)
+
             elif 'bfstrms.xyz' in url: u = self.buff(url)
 
             elif 'ntgdhsgfs.re/' in url: u = self.buff(url)
