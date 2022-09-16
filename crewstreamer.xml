@@ -1882,7 +1882,7 @@ class streamer:
             w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
             h = client.request(w)
             i = re.findall('<iframe.*?id=([^"]*)', h)[0]
-            return 'https://uload.ru.com/cdn/premium' + i + '/chunks.m3u8|referer=https://player.licenses4.me/'
+            return 'https://webui.vhls.ru.com/lb/wiki' + i + '/chunks.m3u8|referer=https://streamservicehd.click/'
         except:     
             return
 
