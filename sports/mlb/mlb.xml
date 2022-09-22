@@ -5,14 +5,12 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
 </item>
 
-<item>
+<dir>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB[/COLOR] [COLOR orchid] DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>http://team-crew.co.uk/Crew/mlb.xml</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
-    <link>
-        <sublink>http://team-crew.co.uk/Crew/mlb.xml</sublink>
-    </link>
-</item> 
+</dir> 
 
 <item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
