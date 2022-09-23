@@ -1375,7 +1375,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR orchid] NETWORK[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>http://p2p2.tv247.us/live/nfl/chunks.m3u8</sublink>
-        <sublink>http://sports24.club/nfl/get.m3u8?ch=eba20618_lbnfltv_hd_4500_pc.m8|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36&Referer=http://sports24.club/tv/v?id=nflnetwork</sublink>
+        <sublink></sublink>
     </link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
