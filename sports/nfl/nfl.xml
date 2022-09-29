@@ -1374,7 +1374,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR orchid] NETWORK[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
-        <sublink>http://p2p2.tv247.us/live/nfl/chunks.m3u8</sublink>
+        <sublink>https://b.methstreams.click/nfln.m3u8|User-Agent=ipad&Referer=http://nbastreamswatch.com/</sublink>
         <sublink></sublink>
     </link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_network.png</thumbnail>
