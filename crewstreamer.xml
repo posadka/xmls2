@@ -106,6 +106,8 @@ class streamer:
 
             elif 'bestsolaris.com/nbastreams' in url: u = self.tvnba(url)
 
+            elif 'bestsolaris.com/mlbstreams' in url: u = self.tvnba(url)
+
             elif 'bestsolaris.com/category/nflstreams/' in url: u = self.tvnba(url)
 
             elif 'bestsolaris.com/nflstreams' in url: u = self.tvnba(url)
