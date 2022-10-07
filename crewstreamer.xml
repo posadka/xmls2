@@ -300,6 +300,8 @@ class streamer:
 
             elif 'azulitostreams.com' in url: u = self.skuanet(url)
 
+            elif 'banknotewiki.com' in url: u = self.skuanet(url)
+
             elif 'boxingfightsvideos' in url: u = self.boxingfightsvideos(url)
 
             elif 'crichd' in url: u = self.cric(url)
