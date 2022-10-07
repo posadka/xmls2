@@ -77,7 +77,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -86,7 +85,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'http://watchprowrestling.live/category/boxing/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -134,7 +132,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -143,7 +140,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://nflreplay.net/?cat=58&paged='
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -185,7 +181,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -194,7 +189,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://nflreplay.net/?cat=58&paged='
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -253,7 +247,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -262,7 +255,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://nflreplay.net/?cat=58&paged='
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -322,7 +314,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -331,7 +322,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://nflreplay.net/?cat=93&paged='
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -389,7 +379,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -398,7 +387,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://fullmatchtv.com/nba/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -423,7 +411,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (NT)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
@@ -431,7 +419,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-  <title>[COLOR snow][makelist.param3][/COLOR]</title>
+  <title>[COLOR snow][makelist.param2][/COLOR]</title>
   <link>$doregex[lists]</link>
   <thumbnail>[makelist.param1]</thumbnail>
 ]]></listrepeat>
@@ -440,7 +428,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -449,13 +436,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
-    url = 'https://nbahdreplay.com/page/'
+    url = 'https://nbatvreplay.com/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
     u = page().run(u)
     r = re.findall('(?s)7" src="([^"]*)"(?:.*?href=)"([^"]*)(?:[^>]*)>([^<]*)', u)
-    sort = [(i[0],i[1],i[2].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r]
+    sort = [(i[0],i[1].replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r]
     return sort
 ]]></expres>
 <page></page>
@@ -508,7 +494,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-
     class page:
         def run(self, r):
             threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
@@ -517,7 +502,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://nbareplay.net/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -537,7 +521,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m):
     import re
-    page_data = page_data.split('>#1 OK <', 1)[-1]
+    page_data = page_data.split('<strong>#Dmotion', 1)[-1]
     page_data = page_data.split('<div class=',1)[0]
     f = re.findall('(?s)<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
     return f
@@ -551,7 +535,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re
-    s = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+    s = re.findall('(?s)<iframe w.*?src="([^"]*)', page_data)[0]
     return s
 ]]></expres>
 <page>[lists.param1]</page>
@@ -584,7 +568,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://fullmatchtv.com/mlb/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -634,7 +617,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://fullmatchtv.com/nhl/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -724,7 +706,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/ufc/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -784,7 +765,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/wwe/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -842,7 +822,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/aew/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -898,7 +877,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/impact-wrestling/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -954,7 +932,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/roh/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -1010,7 +987,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/indy-shows/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -1066,7 +1042,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/njpw/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -1122,7 +1097,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/pay-per-view/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -1178,7 +1152,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-
     for i in range(1, 10): u += ['http://watchprowrestling.live/category/trending/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
@@ -1232,7 +1205,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://fullmatchtv.com/other-sports/rugby/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -1282,7 +1254,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-
     url = 'https://fullmatchtv.com/motorsports/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
@@ -1313,3 +1284,18 @@ def GetLSProData(page_data,Cookie_Jar,m):
 <thumbnail>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</thumbnail>
 <fanart>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</fanart>
 </dir>
+Footer
+© 2022 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+xmls2/replays.xml at main · posadka/xmls2
