@@ -1503,7 +1503,7 @@ class streamer:
             page_data = client.request(url)
             #w = re.findall(' source: \'([^\']*)', page_data)[0]
             w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return w
+            eturn w + '|User-agent=ipad&Referer=' + url
         except:
             return
 
