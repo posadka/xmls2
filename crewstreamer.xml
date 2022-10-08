@@ -1573,8 +1573,8 @@ class streamer:
             src = re.findall('iframe.*?src="([^"]*)', page_data)[0]
             src = 'http:' + src if src.startswith('//') else src
             fu = requests.get(src, headers={'user-agent':'Mozilla/5.0','referer':url}).text
-            hat = re.findall('iframe.*?id=([^"]*)', fu)[0]
-            return 'https://webui.vhls.ru.com/cdnus2/premium' + hat + '/index.m3u8|referer=https://eplayer.click/'
+            hat = re.findall('iframe src.*?id=([^"]*)', fu)[0]
+            return 'https://webudi.openhd.lol/ddy6/premium' + hat + '/tracks-v1a1/mono.m3u8|referer=https://eplayer.click/'
         except:
             return
 
