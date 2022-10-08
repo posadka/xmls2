@@ -372,6 +372,8 @@ class streamer:
 
             elif 'techoreels.com' in url: u = self.techno(url)
 
+            elif 'techclips.net' in url: u = self.techno(url)
+
             elif 'bdnewszh.com/ncaaf' in url: u = self.ranionfl(url)
 
             elif 'bdnewszh.com/nba' in url: u = self.ranionfl(url)
