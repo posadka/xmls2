@@ -1887,10 +1887,14 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
-            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            i = re.findall('<iframe.*?id=([^"]*)', h)[0]
-            return 'https://webui.vhls.ru.com/lb/wiki' + i + '/chunks.m3u8|referer=https://streamservicehd.click/'
+            headers={'user-agent':'Mozilla/5.0','referer':'http://www.tvsportslive.fr','accept':'*/*'}
+            q = re.findall('iframe.*?src="([^"]*)',page_data)[0]
+            e = requests.get(q,headers=headers).text
+            find = re.findall('(eval\(function\(p,a,c,k,e,d\).+?{}\)\))', e)[0]
+            unpack = jsunpack.unpack(find)
+            link = eval(re.findall(r"var jameiei=(\[.+?\])", unpack)[0])
+            hat = "".join([chr(x) for x in link])
+            return hat + '|User-Agent=Mozilla/5.0&Referer=' + q
         except:     
             return
 
