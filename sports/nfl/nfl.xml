@@ -54,7 +54,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.external('http://givemenflstreams.com/nflstream/redzone-stream?sport=american-football')
+    url = client.external('http://givemenflstreams.com/nflstream/redzone-stream')
     return url
 ]]></expres>
 <page></page>
