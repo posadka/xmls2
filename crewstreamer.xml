@@ -479,6 +479,8 @@ class streamer:
 
             elif 'sportsallday.net' in url: u = self.silverspoon(url)
 
+            elif 'sportsupa' in url: u = self.silverspoon(url)
+
             return u
         except:
             pass
