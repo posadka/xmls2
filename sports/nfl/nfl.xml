@@ -297,7 +297,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     page_data = client.request('https://v2.sportsurge.net/list-nfl')
-    page_data = page_data.split('>WATCH<',1)[-1]
+    page_data = page_data.split('NFL REDZONE',1)[-1]
     page_data = page_data.split('<footer class=',1)[0]
     s = re.findall('(?s)<a href="([^"]*).*?h4>([^<]*).*?h4>.*?h4>([^<]*).*?;">([^<]*)',page_data)
     #s = re.findall('(?s)<a href="([^"]*).*?tle="([^"]*).*?;">.*?;">.*?;">.*?;">([^<]*)',page_data)
