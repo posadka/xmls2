@@ -1587,7 +1587,7 @@ class streamer:
             src = 'http:' + src if src.startswith('//') else src
             fu = requests.get(src, headers={'user-agent':'Mozilla/5.0','referer':url}).text
             hat = re.findall('iframe src.*?id=([^"]*)', fu)[0]
-            return 'https://webudi.openhd.lol/ddy6/premium' + hat + '/tracks-v1a1/mono.m3u8|referer=https://eplayer.click/'
+            return 'https://webudi.openhd.lol/ddy4/premium' + hat + '/tracks-v1a1/mono.m3u8|referer=https://eplayer.click/'
         except:
             return
 
