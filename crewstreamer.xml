@@ -481,6 +481,8 @@ class streamer:
 
             elif 'sportsupa' in url: u = self.silverspoon(url)
 
+            elif 'nbagaffer' in url: u = self.silverspoon(url)
+
             return u
         except:
             pass
