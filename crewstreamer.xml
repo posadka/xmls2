@@ -477,6 +477,8 @@ class streamer:
 
             elif 'sequencecard.xyz' in url: u = self.silverspoon(url)
 
+            elif 'willsports' in url: u = self.silverspoon(url)
+
             elif 'sportsallday.net' in url: u = self.silverspoon(url)
 
             elif 'sportsupa' in url: u = self.silverspoon(url)
