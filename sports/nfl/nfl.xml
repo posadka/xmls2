@@ -26,6 +26,24 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (1s)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+  <name>makelist</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.external('http://1stream.top/title-game/MTk4NzY0MQ==?sport=american-football')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (GR)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
@@ -116,23 +134,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE SICILANO (TS)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-  <name>makelist</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.external('https://topstreams.info/nfl/siciliano')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
 <item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE DIRECTS[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
