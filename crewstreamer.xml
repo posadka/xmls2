@@ -9,6 +9,7 @@ from resources.lib.modules import client
 from resources.lib.modules import site
 from resources.lib.modules import workers
 from resources.lib.modules import jsunpack
+from resources.lib.modules import hunter
 
 class streamer:
     def dodgycodes(s):
@@ -565,10 +566,16 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             u = client.request(url) 
             #r = re.findall('(?s)iframe frameborder=0 height=100% width=100% src="([^"]*)', u)[0]
-            r = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
-            w = client.request(r)
-            x = re.findall('source:\s*\'([^\']*)', w)[0]
-            return x + '|User-Agent=Mozilla/5.0&Referer=' + r
+            #r = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
+            #w = client.request(r)
+            #x = re.findall('source:\s*\'([^\']*)', w)[0]
+            #return x + '|User-Agent=Mozilla/5.0&Referer=' + r
+            w = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
+            h = client.request(w)
+            i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("(.+?)",(.+?),"(.+?)",(.+?),(.+?),(.+?)\)').findall(h)[0]
+            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
+            e = re.findall('source:\s*\'([^\']*)',t)[0]
+            return e + '|User-Agent=Mozilla/5.0&Referer=' + w
         except:
             return   
 
