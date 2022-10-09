@@ -79,7 +79,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     sort = [('http://methstreams.com'+i[0],i[1],i[2]) for i in r]
     return sort
 ]]></expres>
-<page>https://methstreams.com/wwestreams/</page>
+<page>http://methstreams.com/wwestreams/</page>
 </regex>
 <regex>
 <name>player</name>
