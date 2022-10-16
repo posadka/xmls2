@@ -303,6 +303,8 @@ class streamer:
 
             elif 'midcoastplanning.org' in url: u = self.skuanet(url)
 
+            elif 'fxmagicmusic' in url: u = self.skuanet(url)
+
             elif 'azulitostreams.com' in url: u = self.skuanet(url)
 
             elif 'banknotewiki.com' in url: u = self.skuanet(url)
