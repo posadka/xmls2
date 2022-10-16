@@ -329,7 +329,6 @@ class streamer:
 
             elif 'blacktiesports.net/category/Soccer' in url: u = self.blacktienba(url)
 
-            elif 'blacktiesports.net/nflstreams' in url: u = self.blacktienfl(url)
 
             elif 'blacktiesports.net/nfl' in url: u = self.blacktienba(url)
 
