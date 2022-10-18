@@ -13,6 +13,72 @@
 </dir> 
 
 <item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR white] [makelist.param2][/COLOR] [COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue] [makelist.param4][/COLOR] VS [COLOR orange][makelist.param5][/COLOR] [COLOR dodgerblue] [makelist.param6][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    r = re.findall('(?s)<div class="col-md-6 col-sm-6">\s*<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?name">([^<]*).*?ore">([^<]*).*?name">([^<]*).*?ore">([^<]*)', page_data)
+    return r
+]]></expres>
+<page>https://mlbshow.com/</page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re,requests
+    e = re.findall('var streamsMatchId\s*=\s*([^;]*)',page_data)[0]
+    r = re.findall('var streamsSport\s*=\s*"([^;"]*)',page_data)[0]
+    t = requests.get('https://sportscentral.io/streams-table/' + e + '/' + r + '?new-ui=1&origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
+    t = t.split('Fubo',1)[-1]
+    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    sort = [(client.tinyu(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'tinyurl' in i[0] if 'natharaky' not in i[1] if 'topstreamer' not in i[1]]
+    sort1 = [(client.tinyu(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'tinyurl' in i[0] if 'KobeStreams' not in i[1]]
+    #sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
+    #sort1 = [(i[0] ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1] if 'topstreamer' not in i[1]]
+    return sort + sort1
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
