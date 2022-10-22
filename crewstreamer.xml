@@ -231,7 +231,7 @@ class streamer:
 
             elif 'givemeredditstreams.com' in url: u = self.givemereddit(url)
 
-            elif 'givememmastreams.com' in url: u = self.givememma(url)
+            elif 'givememmastreams.com' in url: u = self.givemereddit(url)
 
             elif 'tezgoal.com' in url: u = self.hdstreams(url)
 
