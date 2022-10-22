@@ -325,7 +325,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://www.ovostreams.com/mmastreams.php')
+    url = client.schedule('http://www.ovostreams.com/mmastreamz/')
     return url
 ]]></expres>
 <page></page>
