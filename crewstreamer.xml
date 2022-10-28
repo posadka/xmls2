@@ -327,26 +327,7 @@ class streamer:
 
             elif 'footy.to' in url: u = self.sportnews(url)
 
-            elif 'blacktiesports.to' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/soccer' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/category/Soccer' in url: u = self.blacktienba(url)
-
-
-            elif 'blacktiesports.net/nfl' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/nbastreams' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/category/NBA' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/nba' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/category/BoxingPPV' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/boxingstreams' in url: u = self.blacktienba(url)
-
-            elif 'blacktiesports.net/live/nba' in url: u = self.blacktienba(url)
+            elif 'blacktiesports' in url: u = self.blacktienba(url)
 
             elif 'wpstream.tv' in url: u = self.weakspell(url)
 
