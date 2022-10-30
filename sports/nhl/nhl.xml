@@ -74,6 +74,69 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL LIVE[/COLOR] [COLOR orchid] (SRS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param2] VS [makelist.param3][/COLOR] [COLOR dodgerblue][makelist.param4][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    page_data = client.request('https://v2.sportsurge.net/list-hockey')
+    page_data = page_data.split('>WATCH<',1)[-1]
+    page_data = page_data.split('<footer class=',1)[0]
+    s = re.findall('(?s)<a href="([^"]*).*?h4>([^<]*).*?h4>.*?h4>([^<]*).*?;">([^<]*)',page_data)
+    r = [('https://v2.sportsurge.net/'+i[0],i[1],i[2],i[3]) for i in s]
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    page_data = client.request('[makelist.param1]')
+    r = re.findall('(?s)game-forecast-link MobildeGoster.*?ef=\'([^\']*).*?4>([^<]*)',page_data)
+    sort = [(i[0],i[1]) for i in r if 'Stream East' not in i[1] if 'dudestream' not in i[1] if 'chenstream' not in i[1] if 'NbaStreams' not in i[1] if 'Livefreegame' not in i[1] if 'tvsportslive' not in i[1] if 'bilasport' not in i[1] if 'Dubz Streams' not in i[1] if 'Freetvlive1' not in i[1] if 'NoDelayStream' not in i[1] if 'Sportinglivestreamz' not in i[1] if 'Icelz  ' not in i[1] if 'bestnhl.com' not in i[1] if 'papahd' not in i[1] if 'Sports News' not in i[1] if 'sportsio' not in i[1] if 'Streamos' not in i[1] if 'SoccerJumboTV' not in i[1] if 'streamhd247' not in i[1] if 'babysharkstream' not in i[1] if 'Icelz' not in i[1] if 'MyGoodStream' not in i[1] if 'Semensport' not in i[1] if 'Bilasport' not in i[1] if 'Sports24' not in i[1] if 'Yoursports Stream' not in i[1] if 'KobeStreams' not in i[1] if 'sportsway' not in i[1] if 'summerstream' not in i[1] if 'RoyStream' not in i[1] if 'BuffStreams' not in i[1] if 'Time4tv' not in i[1]]
+    return sort
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL LIVE[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
