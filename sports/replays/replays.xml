@@ -85,7 +85,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-    url = 'http://watchprowrestling.live/category/boxing/page/'
+    url = 'https://watchprowrestling.org/category/boxing/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
     u = page().run(u)
@@ -706,7 +706,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/ufc/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/ufc/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -765,7 +765,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/wwe/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/wwe/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -822,7 +822,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/aew/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/aew/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -877,7 +877,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/impact-wrestling/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/impact-wrestling/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -932,7 +932,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/roh/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/roh/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -987,7 +987,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/indy-shows/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/indy-shows/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -1042,7 +1042,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/njpw/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/njpw/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -1097,7 +1097,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/pay-per-view/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/pay-per-view/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -1152,7 +1152,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         return re.sub('&#(\d+);', '', s)    
         
     u = []
-    for i in range(1, 10): u += ['http://watchprowrestling.live/category/trending/page/' + str(i)]
+    for i in range(1, 10): u += ['https://watchprowrestling.org/category/trending/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="item-img">\s*<a href="([^"]*).*?src="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
     u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
@@ -1284,18 +1284,3 @@ def GetLSProData(page_data,Cookie_Jar,m):
 <thumbnail>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</thumbnail>
 <fanart>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</fanart>
 </dir>
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-xmls2/replays.xml at main · posadka/xmls2
