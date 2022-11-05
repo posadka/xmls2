@@ -75,7 +75,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('a href="([^"]*)(?s).*?ing\'>([^<]*)', page_data)
+    r = re.findall('(?s)\'clearfix\'.*?<a href="([^"]*)(?s).*?ing\'>([^<]*)', page_data)
     return r
 ]]></expres>
 <page>https://methstreams.com/wwestreams/</page>
