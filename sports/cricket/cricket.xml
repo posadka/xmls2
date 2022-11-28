@@ -22,7 +22,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     page_data = page_data.split('>Cricket<',1)[-1]
     page_data = page_data.split('>Boxing<',1)[0]
     e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
-    return e
+    return 'https://daddyhd.com' + e
 ]]></expres>
 <page></page>
 </regex>
