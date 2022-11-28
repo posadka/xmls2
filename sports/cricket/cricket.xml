@@ -34,7 +34,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     url = client.external('[makelist.param2]')
     return url
 ]]></expres>
-<page>[makelist.param2]</page>
+<page>https://daddyhd.com[makelist.param2]</page>
 </regex>
 </item>
 
