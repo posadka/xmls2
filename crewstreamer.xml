@@ -21,6 +21,8 @@ class streamer:
 
             elif 'daddylive' in url: u = self.daddylive(url)
 
+            elif 'daddyhd' in url: u = self.daddylive(url)
+
             elif 'livetvon' in url: u = self.daddylive(url)
 
             elif 'eddensports.com' in url: u = self.solaris(url)
