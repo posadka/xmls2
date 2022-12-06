@@ -96,7 +96,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    e = re.findall('<a href="([^"]*)" c(?s).*?src="([^"]*).*?ing">([^<]*).*?">\s*([^<]*)            ', page_data)
+    e = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)" c.*?src="([^"]*).*?ing">([^<]*).*?">\s*([^<]*)            ', page_data)
     return e
 ]]></expres>
 <page>http://1stream.link/</page>
