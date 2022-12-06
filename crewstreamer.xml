@@ -1860,13 +1860,26 @@ class streamer:
             #t = base64.b64decode(i).decode("utf-8")
             #return x +'|Referer=' + quote_plus(url)
             #return t +'|Referer=' + quote_plus(url)
-            w = re.findall('url:\s*\'([^\']*)', page_data)[0] + str(random.randint(1,64))
-            token = re.findall('_token": "([^"]*)', page_data)[0]
-            h = 'http://1stream.link' + w
-            hat = requests.post(h, data={"_token": token, "sport": "other"}, headers={"Referer": h, "User-Agent": 'Mozilla/5.0', "X-Requested-With": "XMLHttpRequest"}).json()
-            s = re.findall('"source":"([^"]*)', hat)[0]
-            s = base64.b64decode(s).decode('utf-8')
-            return s +'|Referer=' + quote_plus(url)
+            #w = re.findall('url:\s*\'([^\']*)', page_data)[0] + str(random.randint(1,64))
+            #token = re.findall('_token": "([^"]*)', page_data)[0]
+            #h = 'http://1stream.link' + w
+            #hat = requests.post(h, data={"_token": token, "sport": "other"}, headers={"Referer": h, "User-Agent": 'Mozilla/5.0', "X-Requested-With": "XMLHttpRequest"}).json()
+            #s = re.findall('"source":"([^"]*)', hat)[0]
+            #s = base64.b64decode(s).decode('utf-8')
+            #return s +'|Referer=' + quote_plus(url)
+            linkUrlPieces = re.findall('canonical" href="([^:]*):\/\/([^\/]*)\/', page_data)[0]
+            protocol = linkUrlPieces[0]
+            domain = linkUrlPieces[1]
+            linkPayload = re.findall('url: \'([^\']*)\'[\s\S]*eventId: "([^"]*)"[\s\S]*_token": "([^"]*)"[\s\S]*sport: \'([^"]*)\'', page_data)
+            path = linkPayload[0][0]
+            eventId = linkPayload[0][1]
+            token = linkPayload[0][2]
+            sport = linkPayload[0][3]
+            postData = {'eventId': eventId, 'token': token, 'sport': sport}
+            streamPostResponse = requests.post(protocol + '://' + domain + '/' + path + str(random.randint(1,64)),postData).text
+            encryptedStreamUrl = re.findall('"source":"([^"]*)', streamPostResponse)[0]
+            decryptedStreamUrl = base64.b64decode(encryptedStreamUrl).decode('utf-8')
+            return decryptedStreamUrl + '|Referer=' + protocol + '://' + domain
         except:
             return
 
