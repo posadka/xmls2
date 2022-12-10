@@ -197,6 +197,8 @@ class streamer:
 
             elif 'playoffsstream.live/nhl' in url: u = self.playoffnhl(url)
 
+            elif 'playoffsstream.com/reddit-nfl-streams' in url: u = self.playoffnfl(url)
+
             elif 'yoursports.stream' in url: u = self.yss(url)
 
             elif 'yrsprts.stream' in url: u = self.yss(url)
@@ -885,6 +887,38 @@ class streamer:
             r = re.findall('(?s)= "https:\/\/([^"]*)', page_data)[0]
             r = r.replace('hlslive','https://hlslive')
             return r + nhl_auth
+        except:
+            return
+    
+    def playoffnhl(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            iframe_source_url = re.findall("embed-responsive-item\" src='([^']*)", page_data)
+            iframe_data = requests.get(iframe_source_url[0]).text
+            pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
+            zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
+            pid = re.findall("pid = \\b([0-9])", iframe_data)[0]
+            edm = re.findall('edm = "([^"]*)', iframe_data)[0]
+            embed_script_url = re.findall('<script\\W*async\\W*src="([^"]*)', iframe_data)[0]
+            embed_script_page_data = requests.get(embed_script_url,'https://embedstream.me/').text
+            embed_file = re.findall('edm\\+"([^"]*)', embed_script_page_data)
+            url_to_post = "https://" + edm[0] + embed_file[0]
+            url="https://"+edm+"/sd0embed" + '?p=' +pid + '&id=' + pdettxt + '&v=' +zmid
+            embed_source_data = requests.post(url, headers={"Origin": "https://embedstream.me", "Referer": "https://embedstream.me/", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0"}).text
+            i = re.compile(r'decodeURIComponent\(escape.*\("(.+?)",(.+?),"(.+?)",(.+?),(.+?),(.+?)\)').findall(embed_source_data)[0]
+            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
+            unique_id = re.findall(r"const unqiueId = \'([^\']*)", t)[0]
+            scode = re.findall(r'sCode = \'([^\']*)', t)[0]
+            ts = re.findall(r'Ts = ([0-9]{10})', t)[0]
+            key = 'https://key.seckeyserv.me/?stream=' + unique_id + '&scode=' + scode + '&expires=' + ts
+            key2 = requests.get(key, headers={"Referer": url, "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0", "Origin": "https://www.nolive.me"}).text
+            scode2 = re.findall(r'"scode":"([^"]*)', key2)[0]
+            ts2 = re.findall(r'"ts":([0-9]{10})', key2)[0]
+            m3u8 = re.findall('const vdoUrl = \'([^\']*)',t)[0]
+            m3u8 = base64.b64decode(m3u8).decode("UTF-8")
+            authUrl = {"scode": scode2, "ts": ts2,'Referer': url, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0'}
+            return m3u8 + '|{0}'.format(urlencode(authUrl))
         except:
             return
 
