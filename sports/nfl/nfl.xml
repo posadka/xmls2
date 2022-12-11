@@ -631,7 +631,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    page_data = page_data.split('>NFL PREMIUM HD 4K STREAMS <',1)[-1] 
+    r = r.split('>NFL PREMIUM HD 4K STREAMS <',1)[-1] 
     r = re.findall('(?s)<a href="([^"]*).*?ing">([^<]*).*?p>([^<]*)', page_data)
     sort = [('https://amethstreams.com'+i[0],i[1],i[2]) for i in r]
     return sort
