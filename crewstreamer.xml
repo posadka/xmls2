@@ -892,7 +892,7 @@ class streamer:
         except:
             return
     
-    def playoffnhl(self, url):
+    def playoffnfl(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
@@ -919,7 +919,7 @@ class streamer:
             ts2 = re.findall(r'"ts":([0-9]{10})', key2)[0]
             m3u8 = re.findall('const vdoUrl = \'([^\']*)',t)[0]
             m3u8 = base64.b64decode(m3u8).decode("UTF-8")
-            authUrl = {"scode": scode2, "ts": ts2,'Referer': url, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0'}
+            authUrl = {"scode": scode2, "ts": ts2,'Referer': url, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Origin": "https://www.nolive.me","Referer": "https://www.nolive.me/sd0embed"}
             return m3u8 + '|{0}'.format(urlencode(authUrl))
         except:
             return
