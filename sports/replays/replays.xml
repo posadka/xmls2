@@ -108,7 +108,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     main = site.request('[makelist.param1]')
     main = main.split('<b>Main Card Download Links HD<br',1)[-1]
     main = main.split('<b>Main Card Download Links SD<br',1)[0]
-    regex = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    regex = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     return regex
 ]]></expres>
 <page></page>
@@ -728,7 +728,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     main = site.request('[makelist.param1]')
     main = main.split('<strong>Dailymotion<',1)[-1]
     main = main.split('<strong>Download Links SD<',1)[0]
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -785,7 +785,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -842,7 +842,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -897,7 +897,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -952,7 +952,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -1007,7 +1007,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -1062,7 +1062,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -1117,7 +1117,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -1172,7 +1172,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)wrapper"><a href="([^"]*)(?:[^>]*)>([^<]*)',main)
+    r = re.findall('(?s)<strong>([^<]*)|<a href="([^"]*)(?:[^>]*)>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
