@@ -475,6 +475,8 @@ class streamer:
 
             elif 'nbagaffer' in url: u = self.silverspoon(url)
 
+            elif 'maxsport' in url: u = self.maxsport(url)
+
             return u
         except:
             pass
@@ -2037,5 +2039,19 @@ class streamer:
             h = client.request(w)
             i = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', h)[0]
             return i + '|User-Agent=Mozilla/5.0&Referer=' + w
+        except:
+            return
+                
+    def maxsport(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            s = re.findall('iframe a(?s).*?src="([^"]*)',page_data)[0]
+            t = requests.get(s,headers={"Referer": 'https://maxsport.one/skymain.php', "User-Agent": 'Mozilla/5.0'}).text
+            pattern = r'''return\(\[([^\]]+).+?\+\s*([^\.]+).+?\+.+?"([^"]+)'''.format(t)
+            par1, par2, par3 = re.findall(pattern, t, re.DOTALL)[0]
+            part1 = par1.replace('","','').replace('\\/', '/')[1:-1]
+            part1 = 'http:' + part1 if part1.startswith('//') else part1
+            return part1  + '|User-Agent=iPad&Referer=https://gocast2.com/'
         except:
             return
