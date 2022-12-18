@@ -343,6 +343,8 @@ class streamer:
 
             elif 'weakstreams' in url: u = self.weakspell(url)
 
+            elif 'weakstream.org' in url: u = self.weakspell(url)
+
             elif 'ufckhabib.com' in url: u = self.ufckhabib(url)
 
             elif 'ovostreams.com' in url: u = self.ovostreams(url)
