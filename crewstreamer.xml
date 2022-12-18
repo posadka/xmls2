@@ -479,6 +479,8 @@ class streamer:
 
             elif 'maxsport' in url: u = self.maxsport(url)
 
+            elif 'thegentleclass' in url: u = self.tvnba(url)
+
             return u
         except:
             pass
@@ -2064,3 +2066,4 @@ class streamer:
             return part1  + '|User-Agent=iPad&Referer=https://gocast2.com/'
         except:
             return
+
