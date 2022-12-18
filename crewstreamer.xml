@@ -563,7 +563,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             u = client.request(url) 
-            headers= {"Referer": 'https://olacast.live/', "User-Agent": 'Mozilla/5.0','Accept':'*/*','Accept-Encoding':'gzip, deflate, br','Accept-Language':'en-US,en;q=0.5','Connection':'keep-alive','Origin':'https://olacast.live','Host':'webdi.openhd.lol','Sec-Fetch-Dest':'empty','Sec-Fetch-Mode':'cors','Sec-Fetch-Site':'cross-site','TE':'trailers'}
+            headers= {'Referer': 'https://olacast.live/', 'User-Agent': 'Mozilla/5.0','Accept':'*/*','Accept-Encoding':'gzip, deflate, br','Accept-Language':'en-US,en;q=0.5','Connection':'keep-alive','Origin':'https://olacast.live','Host':'webdi.openhd.lol','Sec-Fetch-Dest':'empty','Sec-Fetch-Mode':'cors','Sec-Fetch-Site':'cross-site','TE':'trailers'}
             #r = re.findall('(?s)iframe frameborder=0 height=100% width=100% src="([^"]*)', u)[0]
             #r = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
             #w = client.request(r)
