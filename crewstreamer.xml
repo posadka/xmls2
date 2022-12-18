@@ -579,7 +579,7 @@ class streamer:
             i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
             t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), i[5])
             e = re.findall('<iframe src=.*?id=([^\\\]*)',t)[0]
-            return 'https://webdi.openhd.lol/cdn/' + e + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A107.0)%20Gecko%2F20100101%20Firefox%2F107.0&Referer=https%3A%2F%2Folacast.live%2F'
+            return 'https://webdi.openhd.lol/cdn/' + e + /tracks-v1a1/mono.m3u8 +'|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A107.0)%20Gecko%2F20100101%20Firefox%2F107.0&Referer=https%3A%2F%2Folacast.live%2F'
         except:
             return   
 
