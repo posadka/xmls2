@@ -568,12 +568,18 @@ class streamer:
             #w = client.request(r)
             #x = re.findall('source:\s*\'([^\']*)', w)[0]
             #return x + '|User-Agent=Mozilla/5.0&Referer=' + r
+            #w = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
+            #h = requests.get(w, headers={"Referer": w, "User-Agent": 'Mozilla/5.0'}).text
+            #i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
+            #t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
+            #e = re.findall('source:\s*\'([^\']*)',t)[0]
+            #return e + '|User-Agent=Mozilla/5.0&Referer=' + w
             w = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
             h = requests.get(w, headers={"Referer": w, "User-Agent": 'Mozilla/5.0'}).text
             i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
-            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
-            e = re.findall('source:\s*\'([^\']*)',t)[0]
-            return e + '|User-Agent=Mozilla/5.0&Referer=' + w
+            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), i[5])
+            e = re.findall('<iframe src=.*?id=([^\\\]*)',t)[0]
+            return 'https://webdi.openhd.lol/cdn/' + e + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A107.0)%20Gecko%2F20100101%20Firefox%2F107.0&Referer=https%3A%2F%2Folacast.live%2F'
         except:
             return   
 
