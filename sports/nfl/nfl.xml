@@ -1001,7 +1001,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
         sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'topstreamer' not in i[1] if 'givemereddit' in i[1]]
         return sort
     else:
-        sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'topstreamer' not in i[1] if 'givemereddit' in i[1]]
+        sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'topstreamer' not in i[1] if 'givemereddit' in i[1]]
         return sort
 ]]></expres>
 <page>[makelist.param1]</page>
