@@ -1681,7 +1681,7 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return w + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + url
+            return w + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&referer=' + url
         except:
             return
 
@@ -1689,14 +1689,14 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             u = client.request(url)
-            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36','Orgin': 'http://xestreams.com', 'Referer': 'http://ftdryiwv.mmazones.com:8080/'}
+            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36','Orgin': 'http://xestreams.com', 'Referer': 'http://ftdryiwv.mmazones.com:8080/'}
             r = re.findall('<iframe class.*?src="([^"]*)',u)[0]
             r = 'http:' + r if r.startswith('//') else r
             page_data = requests.get(r, headers=headers).text
             z = re.findall('window.atob\("([^"]*)',page_data)[0]
             z = base64.b64decode(z).decode('utf-8')
             z = 'https:' + z if z.startswith('//') else z
-            return z + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&Orgin=https://xestreams.com&Referer=https://xestreams.com/'
+            return z + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&Orgin=https://xestreams.com&Referer=https://xestreams.com/'
             #if 'm3u8' in page_data:
                # z = re.findall('source:\s*\'([^\']*)')
                # return z + '|User-Agent=iPad&Referer=' + r
@@ -1778,7 +1778,7 @@ class streamer:
             #crew= re.findall('var\s*src="([^"]*)',the)[0]
             #return crew + '|user-agent=ipad&referer=' + url
             w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return w + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + url
+            return w + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&referer=' + url
         except:
             return
 
@@ -1949,7 +1949,7 @@ class streamer:
             u = requests.get(url, headers={"User-Agent": 'ipad'}).text
             s = re.findall('atob\(["|\']([^"|\']*)', u)[0]
             s = base64.b64decode(s).decode('utf-8')
-            return s + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + url
+            return s + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&referer=' + url
         except:
             return
 
@@ -1986,7 +1986,7 @@ class streamer:
             w = re.findall('(?s)<iframe src="([^"]*)',page_data)[0]
             h = requests.get(w).text
             i = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', h)[0]
-            return i + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + w
+            return i + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&referer=' + w
         except:
             return
 
@@ -1998,7 +1998,7 @@ class streamer:
             t = client.request(r)
             s = re.findall('atob\(["|\']([^"|\']*)', t)[0]
             s = base64.b64decode(s).decode('utf-8')
-            return s + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&referer=' + r
+            return s + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&referer=' + r
         except:
             return
 
