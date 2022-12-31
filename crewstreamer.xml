@@ -481,6 +481,8 @@ class streamer:
 
             elif 'thegentleclass' in url: u = self.tvnba(url)
 
+            elif 'hitstreams' in url: u = self.hitstreams(url)
+
             return u
         except:
             pass
@@ -2064,6 +2066,18 @@ class streamer:
             part1 = par1.replace('","','').replace('\\/', '/')[1:-1]
             part1 = 'http:' + part1 if part1.startswith('//') else part1
             return part1  + '|User-Agent=iPad&Referer=https://gocast2.com/'
+        except:
+            return
+                
+    def hitstreams(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('fid="([^"]*)', page_data)[0]
+            s = 'https://switchcast2.com/embed.php?player=desktop&live=' + r
+            t = requests.get(s, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Referer": url}).text
+            w = ("".join(eval(re.findall(r"return\((\[.+?\])", t)[0]))).replace("\\", "")
+            return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s
         except:
             return
 
