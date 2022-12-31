@@ -483,10 +483,82 @@ class streamer:
 
             elif 'hitstreams' in url: u = self.hitstreams(url)
 
+            else: u = self.generic(url)
+
             return u
         except:
             pass
 
+
+    def generic(self, url):
+        try:
+            r = client.request(url)
+            r = r.replace('\\', '')
+
+            s = re.findall("[0-9_']+:\s\'([^']+)", r) + re.findall("\s*=\s*\"(http.+?)\"", r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = re.findall("\(\w+\(\"([^\"]*)", r) + re.findall("\(\w+\(\'([^\']*)", r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+            
+            if not s: s = re.findall('\"\w+\":"([^"]*)', r) + re.findall('\'\w+\':\'([^\']*)', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = re.findall('\s*=\s*\'(http.+?)\'', r) + re.findall('\s*=\s*\"(http.+?)\"', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = re.findall('\s*:\s*\"(http.+?)\"', r) + re.findall('\s*:\s*\'(http.+?)\'', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = re.findall('\s*\(\s*\"(http.+?)\"', r) + re.findall('\s*\(\s*\'(http.+?)\'', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s:s = re.findall('\s*:\s*\"(//.+?)\"', r) + re.findall('\s*:\s*\'(//.+?)\'', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s:s = re.findall('\:\"(\.+?)\"', r) + re.findall('\:\'(\.+?)\'', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = re.findall('\s*\(\s*\"(//.+?)\"', r) + re.findall('\s*\(\s*\'(//.+?)\'', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = re.findall('\s*=\s*\'(//.+?)\'', r) + re.findall('\s*=\s*\"(//.+?)\"', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = re.findall('\w*:\s*\"(http.+?)\"', r) + re.findall('\w*:\s*\'(http.+?)\'', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+            
+            if not s: s = re.findall('\w*=\'([^\']*)', r) + re.findall('\w*=\"([^\"]*)', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+            
+            if not s: s = re.findall('\w*\s*=\s*\'([^\']*)', r) + re.findall('\w*\s*=\s*\"([^\"]*)', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+            
+            if not s: s = re.findall('(?s)<file>([^<]*)', r)
+            s = [i for i in s if (urlparse.urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
+
+            if not s: s = client.parseDOM(r, 'source', ret='src', attrs = {'type': 'video.+?'})
+            s = ['http:' + i if i.startswith('//') else i for i in s]
+            s = [urlparse.urljoin(url, i) if not i.startswith('http') else i for i in s]
+            s = [x for y,x in enumerate(s) if x not in s[:y]]
+
+            self.u = []
+            def request(i):
+                try:
+                    i = i.replace(' ','%20')
+                    c = client.request(i, output='headers')
+                    checks = ['video','mpegurl','html','octet-stream']
+                    if any(f for f in checks if f in c['Content-Type']): self.u.append((i, int(c['Content-Length'])))
+                except:
+                    pass
+            threads = []
+            for i in s: threads.append(workers.Thread(request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            u = sorted(self.u, key=lambda x: x[1])[::-1]
+            u = client.request(u[0][0], output='geturl', referer=url)
+            return u
+        except:
+            pass
 
     def weakspell(self, url):
         try:
