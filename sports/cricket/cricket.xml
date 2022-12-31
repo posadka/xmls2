@@ -20,7 +20,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     s = re.findall('<div class="media-body">\s*<a href="([^"]*)(?s).*?rc="([^"]*).*?e;">\s*([^<]*).*?e;">([^<]*)',page_data)
     return s
 ]]></expres>
-<page>https://ww.hitstreams.live/footballstreams-1.php</page>
+<page>https://ww.hitstreams.live/cricketstreams.php</page>
 </regex>
 <regex>
   <name>makelist2</name>
