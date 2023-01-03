@@ -483,6 +483,8 @@ class streamer:
 
             elif 'hitstreams' in url: u = self.hitstreams(url)
 
+            elif 'metaporky' in url: u = self.tvnba(url)
+
             else: u = self.generic(url)
 
             return u
