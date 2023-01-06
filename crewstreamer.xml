@@ -477,7 +477,6 @@ class streamer:
 
             elif 'sportsupa' in url: u = self.silverspoon(url)
 
-
             elif 'maxsport' in url: u = self.maxsport(url)
 
             elif 'thegentleclass' in url: u = self.tvnba(url)
