@@ -327,6 +327,8 @@ class streamer:
             
             elif 'soccerjumbotv1.me' in url: u = self.jumbo(url)
 
+            elif 'sjumbotvs' in url: u = self.jumbo(url)
+
             elif 'sportnews.to' in url: u = self.sportnews(url)
 
             elif 'mysports.to' in url: u = self.sportnews(url)
