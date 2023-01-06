@@ -227,6 +227,8 @@ class streamer:
 
             elif 'nbastreams123.xyz' in url: u = self.crackstreams(url)
 
+            elif '60fps' in url: u = self.givemereddit(url)
+
             elif 'givemereddit.stream' in url: u = self.givemereddit(url)
 
             elif 'givemenflstreams.com' in url: u = self.givemereddit(url)
