@@ -487,7 +487,7 @@ class streamer:
 
             elif 'alexsports' in url: u = self.alexsports(url)
 
-            elif 'soccermlbstream' in url: u = self.soccermlbstream(url)
+            elif 'nbagaffer' in url: u = self.nbagaffer(url)
 
             else: u = self.generic(url)
 
@@ -2176,3 +2176,11 @@ class streamer:
         except:
             return
                 
+    def nbagaffer(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
+            return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
+        except:
+            return
