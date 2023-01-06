@@ -1500,12 +1500,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            w = re.findall('<iframe style="width: 100.*?src="([^"]*)', page_data)[0]
-            h = 'http://www.ovostreams.com/' + w
-            i = client.request(w)
-            a = re.findall('<a href="([^"]*)', i)[0]
-            d = 'http://www.ovostreams.com/' + a
-            t = re.findall('source: "([^"]*)', d)[0]
+            t = re.findall('var source = \'([^\']*)', page_data)[0]
             return t + '|user-agent=ipad&referer=' + url
         except:
             return
