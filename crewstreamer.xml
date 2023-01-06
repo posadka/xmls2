@@ -483,7 +483,7 @@ class streamer:
 
             elif 'hitstreams' in url: u = self.hitstreams(url)
 
-            elif 'metaporky' in url: u = self.tvnba(url)
+            elif 'metaporky' in url: u = self.metaporky(url)
 
             elif 'alexsports' in url: u = self.alexsports(url)
 
@@ -2160,5 +2160,16 @@ class streamer:
             s = requests.get(e).text
             t = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',s)[0]
             return t + '|User-Agent=Mozilla/5.0&referer=' + e
+        except:
+            return
+                                         
+    def metaporky(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            s = re.findall('iframe\sf(?s).*?src="([^"]*)',page_data)
+            t = requests.get(s).text
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
+            return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
         except:
             return
