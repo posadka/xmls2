@@ -67,6 +67,8 @@ class streamer:
 
             elif 'dofusports' in url: u = self.dofusports(url)
 
+            elif 'ovostreams' in url: u = self.ovostreams(url)
+
 
             return u
         except:
@@ -355,3 +357,17 @@ class streamer:
             return made + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
+
+    def ovostreams(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            w = re.findall('<iframe style="width: 100.*?src="([^"]*)', page_data)[0]
+            h = 'http://www.ovostreams.com/' + w
+            i = client.request(w)
+            a = re.findall('<a href="([^"]*)', i)[0]
+            d = 'http://www.ovostreams.com/' + a
+            t = re.findall('source: "([^"]*)', d)[0]
+            return t + '|user-agent=ipad&referer=' + url
+        except:
+            return                
