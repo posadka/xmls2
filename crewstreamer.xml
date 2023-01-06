@@ -347,7 +347,7 @@ class streamer:
 
             elif 'ufckhabib.com' in url: u = self.ufckhabib(url)
 
-            elif 'ovostreams.com' in url: u = self.ovostreams(url)
+            elif 'ovostreams' in url: u = self.ovostreams(url)
 
             elif 'tv247.us' in url: u = self.tvtwofour(url)
 
