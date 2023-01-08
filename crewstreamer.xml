@@ -2164,13 +2164,13 @@ class streamer:
                 the = client.request(hat)
                 crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
                 made = crew.replace('\\', '')
-                return made + '?&connection=keepalive' + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&Referer=' + url
+                return made + '?&connection=keepalive' + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=https%3A%2F%2Fweakstream.org%2F'
             else:
                 r = re.findall('fid="([^"]*)', page_data)[0]
                 s = 'https://switchcast2.com/embed.php?player=desktop&live=' + r
                 t = requests.get(s, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Referer": url}).text
                 w = ("".join(eval(re.findall(r"return\((\[.+?\])", t)[0]))).replace("\\", "")
-                return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=https%3A%2F%2Fweakstream.org%2F' 
+                return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s 
         except:  
             return
                 
