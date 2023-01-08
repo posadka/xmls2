@@ -381,7 +381,7 @@ class streamer:
 
             elif 'bdnewszh.com/mma' in url: u = self.ranionfl(url)
 
-            elif 'streamspass.com' in url: u = self.ranionfl(url)
+            elif 'streamspass' in url: u = self.ranionfl(url)
 
             elif 'bdnewszh.com/soccer' in url: u = self.ranionfl(url)
 
