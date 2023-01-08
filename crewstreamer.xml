@@ -2152,11 +2152,23 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('fid="([^"]*)', page_data)[0]
-            s = 'https://switchcast2.com/embed.php?player=desktop&live=' + r
-            t = requests.get(s, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Referer": url}).text
-            w = ("".join(eval(re.findall(r"return\((\[.+?\])", t)[0]))).replace("\\", "")
-            return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s
+            if 'weakstream' in page_data:
+                w = re.findall('url:\s*"([^"]*)', page_data)[0]
+                h = re.findall('data:\s\{"([^"]*)', page_data)[0]
+                i = re.findall('var vidgstream = "([^"]*)', page_data)[0]
+                t = re.findall('gethlsUrl\(vidgstream,\s([^,]*)', page_data)[0]
+                e = re.findall('gethlsUrl\(vidgstream,(?:[^,]*),\s([^\)]*)', page_data)[0]
+                hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
+                the = client.request(hat)
+                crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
+                made = crew.replace('\\', '')
+                return made + '?&connection=keepalive' + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&Referer=' + url
+            else:
+                r = re.findall('fid="([^"]*)', page_data)[0]
+                s = 'https://switchcast2.com/embed.php?player=desktop&live=' + r
+                t = requests.get(s, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Referer": url}).text
+                w = ("".join(eval(re.findall(r"return\((\[.+?\])", t)[0]))).replace("\\", "")
+                return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s
         except:
             return
                 
