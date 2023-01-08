@@ -491,6 +491,8 @@ class streamer:
 
             elif 'nbagaffer' in url: u = self.nbagaffer(url)
 
+            elif 'soccerstreams.football' in url: u = self.soccerstreams(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2198,7 +2200,18 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
             return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
+        except:
+            return
+
+    def soccerstreams(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('iframe(?s).*?src="([^"]*)', page_data)[0]
+            t = requests.get(r).text
+            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
+            return x + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
         except:
             return
