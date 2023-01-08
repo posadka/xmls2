@@ -2170,7 +2170,7 @@ class streamer:
                 s = 'https://switchcast2.com/embed.php?player=desktop&live=' + r
                 t = requests.get(s, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Referer": url}).text
                 w = ("".join(eval(re.findall(r"return\((\[.+?\])", t)[0]))).replace("\\", "")
-                return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s
+                return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=http://weakstream.org/' 
         except:
             return
                 
