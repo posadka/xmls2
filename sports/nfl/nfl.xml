@@ -25,7 +25,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (1s)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
