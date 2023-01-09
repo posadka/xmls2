@@ -44,8 +44,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
     from resources.lib.modules import client
-    import re,requests 
-    t = requests.get('https://scdn.dev/main-assets/' + url + '/' + 'soccer' + '?new-ui=1&origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
+    import re,requests https://scdn.dev/main-assets/{game_id}/soccer?origin=reddit1.nbabite.com
+    t = requests.get('https://scdn.dev/main-assets/' + url + '/' + 'soccer' + '?origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
     t = t.split('Fubo',1)[-1]
     z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     e = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
