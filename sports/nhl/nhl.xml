@@ -9,8 +9,8 @@
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL LIVE[/COLOR] [COLOR orchid] (NBTO)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
@@ -310,8 +310,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL LIVE[/COLOR] [COLOR orchid] (HELENA)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[crewschedule]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
 <regex>
 <name>crewschedule</name>
 <listrepeat><![CDATA[
