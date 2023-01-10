@@ -144,7 +144,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param1][/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
+        <title>[COLOR orange][makelist.param1][/COLOR] [COLOR dodgerblue][makelist.param2][/COLOR]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -164,7 +164,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[makelist.param2]')
+    url = client.external('[makelist.param3]')
     pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
