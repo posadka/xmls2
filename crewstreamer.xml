@@ -493,6 +493,8 @@ class streamer:
 
             elif 'soccerstreams.football' in url: u = self.soccerstreams(url)
 
+            elif 'soccersislive' in url: u = self.soccersislive(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2213,5 +2215,13 @@ class streamer:
             t = requests.get(r).text
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
             return x + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=https://fordems.biz/'
+        except:
+
+    def soccersislive(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            x = re.findall('\?id=([^"]*)', page_data)[0]
+            return 'https://newtest.openhd.lol/ddy4/premium'+ x +'/tracks-v1a1/mono.m3u8' + |User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Feplayer.click%2F
         except:
             return
