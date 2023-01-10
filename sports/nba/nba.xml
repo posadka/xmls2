@@ -327,7 +327,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     e = re.findall('<a href="([^"]*)" c(?s).*?src="([^"]*).*?ing">([^<]*).*?">\s*([^<]*)            ', page_data)
     return e
 ]]></expres>
-<page>http://1stream.link/nbastreams</page>
+<page>http://1stream.eu/nbastreams</page>
 </regex>
 <regex>
   <name>makelist2</name>
