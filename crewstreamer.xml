@@ -2216,7 +2216,8 @@ class streamer:
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
             return x + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=https://fordems.biz/'
         except:
-
+            return
+                                         
     def soccersislive(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
