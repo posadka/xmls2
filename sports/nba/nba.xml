@@ -67,7 +67,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (NB)19 ONLY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
 <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -139,7 +139,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (SC)19 ONLY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
 <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
