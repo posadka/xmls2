@@ -2229,7 +2229,7 @@ class streamer:
             x = re.findall('\?id=([^"]*)', page_data)[0]
             return 'https://newtest.openhd.lol/ddy4/premium'+ x +'/tracks-v1a1/mono.m3u8' + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Feplayer.click%2F'
         except:
-            return   <iframe(?s).*?src="([^"]*)
+            return
                 
     def basketballvideo(self, url):
         try:
