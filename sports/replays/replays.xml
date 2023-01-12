@@ -360,16 +360,16 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAM REPLAYS[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAM REPLAYS[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-<title>[makelist.param3]</title>
-<link>$doregex[crewstreamer]</link>
-<thumbnail>https://basketball-video.com[makelist.param2]</thumbnail>
+  <title>[COLOR snow][makelist.param3][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>https://basketball-video.com[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -396,21 +396,18 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <page></page>
 </regex>
 <regex>
-<name>crewstreamer</name>
-<listrepeat><![CDATA[
-<title>[crewstreamer.param2]</title>
-<link>[crewstreamer.param1]</link>
-<thumbnail>https://basketball-video.com[makelist.param2]</thumbnail>
-]]></listrepeat>
+<name>m3u</name>
 <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     url = client.external('https://basketball-video.com[makelist.param1]')
     return url
 ]]></expres>
 <page></page>
+<referer></referer>
 </regex>
 </item>
+
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
