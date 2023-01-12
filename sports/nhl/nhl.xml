@@ -32,7 +32,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>lists</name>
 <listrepeat><![CDATA[
-  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <title>[COLOR orange][lists.param2][/COLOR]</title>
   <link>$doregex[m3u]</link>
   <thumbnail>[makelist.param3]</thumbnail>
 ]]></listrepeat>
