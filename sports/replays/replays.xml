@@ -3,7 +3,7 @@
 <layoutype>fuckOFF</layoutype>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING REPLAYS[/COLOR] [COLOR orchid] (BR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]BOXING REPLAYS[/COLOR] [COLOR orchid] (BR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
@@ -58,7 +58,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
 
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]BOXING HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
@@ -113,7 +113,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL FULL GAME REPLAYS 2021-2022 Season[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL FULL GAME REPLAYS 2021-2022 Season[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -162,7 +162,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL FULL GAME REPLAYS DATE GROUPING[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL FULL GAME REPLAYS DATE GROUPING[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -228,7 +228,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL FULL GAME REPLAYS[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL FULL GAME REPLAYS[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -295,7 +295,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL CONDENSED GAME REPLAYS[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL CONDENSED GAME REPLAYS[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -360,7 +360,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAM REPLAYS[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NCAAM REPLAYS[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -410,7 +410,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA REPLAYS 2022-2023[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NBA REPLAYS 2022-2023[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
 <link>$doregex[makelist]</link>
@@ -461,7 +461,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
 <link>$doregex[makelist]</link>
@@ -510,7 +510,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (NT)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (NT)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
 <link>$doregex[makelist]</link>
@@ -576,7 +576,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FULL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FULL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
 <link>$doregex[makelist]</link>
@@ -642,7 +642,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]MLB REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -691,7 +691,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NHL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -740,7 +740,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL REPLAYS[/COLOR] [COLOR orchid] (LSX)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NHL REPLAYS[/COLOR] [COLOR orchid] (LSX)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
@@ -776,7 +776,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC/MMA HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]UFC/MMA HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
@@ -835,7 +835,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]WWE HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
@@ -892,7 +892,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]AEW HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/aew.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/aew_fanart.jpg</fanart>
@@ -949,7 +949,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]IMPACT HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]IMPACT HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
@@ -1004,7 +1004,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]ROH HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]ROH HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
@@ -1059,7 +1059,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]INDY SHOWS HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]INDY SHOWS HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
@@ -1114,7 +1114,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NJPW HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NJPW HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
@@ -1169,7 +1169,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PPV HD REPLAYS SCRAPER[/COLOR] [COLOR orange]WWE/AEW/MMA/UFC/PPV/IMPACT/INDY/ROH/NJPW[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]PPV HD REPLAYS SCRAPER[/COLOR] [COLOR orange]WWE/AEW/MMA/UFC/PPV/IMPACT/INDY/ROH/NJPW[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
@@ -1224,7 +1224,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]TRENDING WRESTLING SCRAPER[/COLOR] [COLOR orange]WWE/AEW/MMA/UFC/PPV/IMPACT/INDY/ROH/NJPW[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]TRENDING WRESTLING SCRAPER[/COLOR] [COLOR orange]WWE/AEW/MMA/UFC/PPV/IMPACT/INDY/ROH/NJPW[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
@@ -1279,7 +1279,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]RUGBY REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]RUGBY REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>https://i.guim.co.uk/img/media/bf0c095c20092815cb1c80f206c0debd193345db/0_69_3500_2101/master/3500.jpg?width=605&quality=45&auto=format&fit=max&dpr=2&s=e1c476b16c9795c53cd2728b87813ab1</thumbnail>
     <fanart></fanart>
 <link>$doregex[makelist]</link>
@@ -1328,7 +1328,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]F1 / MOTO GP / NASCAR REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]F1 / MOTO GP / NASCAR REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -1377,7 +1377,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </item>
 
 <dir>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]OLYPMIC[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]OLYPMIC[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/olypmic.xml</link>
 <thumbnail>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</thumbnail>
 <fanart>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</fanart>
