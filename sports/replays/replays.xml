@@ -362,12 +362,12 @@ def GetLSProData(page_data,Cookie_Jar,m):
 <item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAM REPLAYS[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-<title>[makelist.param2]</title>
+<title>[makelist.param3]</title>
 <link>$doregex[crewstreamer]</link>
 <thumbnail>https://basketball-video.com[makelist.param1]</thumbnail>
 ]]></listrepeat>
