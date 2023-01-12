@@ -2236,6 +2236,6 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             x = re.findall('<iframe(?s).*?src="([^"]*)', page_data)[0]
-            return 'http://' + x
+            return x
         except:
             return
