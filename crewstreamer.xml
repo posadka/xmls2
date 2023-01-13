@@ -1581,14 +1581,8 @@ class streamer:
             page_data = client.request(url)
             w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
             w = 'http:' + w if w.startswith('//') else w
-            i = client.request(w)
-            t = re.findall('(?s)<iframe.*?src=\'([^\']*)', i)[0]
-            t = 'http:' + t if t.startswith('//') else t
-            e = client.request(t)
-            u = re.findall('(?s)<iframe.*?src=\'([^\']*)', e)[0]
-            u = 'http:' + u if u.startswith('//') else u
-            o = client.request(u)
-            z = re.findall('source:\s*"([^"]*)', o)[0]
+            i = client.request(w, headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36',"Orgin": 'http://rainostreams.com', "Referer": 'http://rainostreams.com/'})
+            z = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', i)[0]
             z = 'http:' + z if z.startswith('//') else z
             return z + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&orgin=http://bdnewszh.com&Referer=http://bdnewszh.com/'
         except:
