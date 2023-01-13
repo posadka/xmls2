@@ -1584,7 +1584,7 @@ class streamer:
             i = client.request(w, headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36',"Orgin": 'http://rainostreams.com', "Referer": 'http://rainostreams.com/'})
             z = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', i)[0]
             z = 'http:' + z if z.startswith('//') else z
-            return z + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&orgin=http://bdnewszh.com&Referer=http://bdnewszh.com/'
+            return z + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=http%3A%2F%2Fbdnewszh.com%2F'
         except:
             return
 
