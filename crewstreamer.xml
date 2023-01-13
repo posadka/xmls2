@@ -371,19 +371,9 @@ class streamer:
 
             elif 'techclips.net' in url: u = self.techno(url)
 
-            elif 'bdnewszh.com/ncaaf' in url: u = self.ranionfl(url)
-
-            elif 'bdnewszh.com/nba' in url: u = self.ranionfl(url)
-
-            elif 'bdnewszh.com/nfl' in url: u = self.ranionfl(url)
-
-            elif 'bdnewszh.com/nhl' in url: u = self.ranionfl(url)
-
-            elif 'bdnewszh.com/mma' in url: u = self.ranionfl(url)
+            elif 'bdnewszh' in url: u = self.ranionfl(url)
 
             elif 'streamspass' in url: u = self.ranionfl(url)
-
-            elif 'bdnewszh.com/soccer' in url: u = self.ranionfl(url)
 
             elif 'recipemam.com' in url: u = self.recipemam(url)
 
