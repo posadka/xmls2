@@ -51,8 +51,8 @@ def GetLSProData(page_data,Cookie_Jar,m):
         sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
         return sort + sort1
     else:
-        sort = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0]]
-        sort1 = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0]]
+        sort = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0]]
+        sort1 = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0]]
         return sort + sort1     
 ]]></expres>
 <page>[makelist.param1]</page>
