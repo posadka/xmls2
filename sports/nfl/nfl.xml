@@ -1096,14 +1096,15 @@ def GetLSProData(page_data,Cookie_Jar,m):
     import re,requests
     e = re.findall('var streamsMatchId\s*=\s*([^;]*)',page_data)[0]
     r = re.findall('var streamsSport\s*=\s*"([^;"]*)',page_data)[0]
-    t = requests.get('https://sportscentral.io/streams-table/' + e + '/' + r + '?new-ui=1&origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
+    t = requests.get('https://scdn.dev/main-assets/' + e + '/' + r + '?origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
     t = t.split('Fubo',1)[-1]
-    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     if 'tinyurl' in z:
-        sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'topstreamer' not in i[1] if 'givemereddit' in i[1]]
-        return sort
+        sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
+        sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
+        return sort + sort1
     else:
-        sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'topstreamer' not in i[1] if 'givemereddit' in i[1]]
+        sort = [(i[0] ,i[1]) for i in z if 'giveme' in i[0]]
         return sort
 ]]></expres>
 <page>[makelist.param1]</page>
