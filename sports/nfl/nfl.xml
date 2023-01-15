@@ -180,7 +180,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re,requests
     e = re.findall('value="([^"]*)(?s).*?>.*?>.*?>.*?>.*?>.*?>.*?>.*?>([^<]*).*?>.*?>.*?>([^<]*)',page_data)
-    sort = [(i[0] ,i[1],i[2]) for i in e]
+    sort = [(i[0] ,i[1],i[2]) for i in e if 'soccermlbstream' not in i[1]]
     return sort  
 ]]></expres>
 <page>[makelist.param1]</page>
