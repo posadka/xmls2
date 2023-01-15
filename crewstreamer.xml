@@ -483,6 +483,8 @@ class streamer:
 
             elif 'soccerstreams.football' in url: u = self.soccerstreams(url)
 
+            elif 'f1livestream' in url: u = self.soccerstreams(url)
+
             elif 'soccersislive' in url: u = self.soccersislive(url)
 
             elif 'bikesports' in url: u = self.tvnba(url)
