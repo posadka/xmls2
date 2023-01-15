@@ -495,6 +495,8 @@ class streamer:
 
             elif 'enjoyhd' in url: u = self.enjoyhd(url)
 
+            elif 'youpit' in url: u = self.youpit(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2253,5 +2255,18 @@ class streamer:
             w = requests.get(e).text
             hat = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', w)[0]
             return hat + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Fenjoyhd.xyz%2F' 
+        except:
+            return
+
+    def youpit(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            s = re.findall('<iframe\ssrc="([^"]*)', page_data)[0]
+            h = requests.get(s, headers={"Referer": s, "User-Agent": 'Mozilla/5.0'}).text
+            i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
+            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
+            e = re.findall('source:\s*\'([^\']*)',t)[0]                
+            return e + '|User-Agent=Mozilla/5.0&Referer=' + s
         except:
             return
