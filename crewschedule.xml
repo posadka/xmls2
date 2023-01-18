@@ -197,6 +197,8 @@ class streamer:
 
             elif 'ustv247.tv' in url: u = self.ustvtwentyfourseven(url)
 
+            elif 'prolive.tv' in url: u = self.prolive(url)
+
             return u
         except:
             pass
@@ -839,5 +841,12 @@ class streamer:
             sort = [(i[0],i[1].replace('amp;','')) for i in e]
             return sort
         except:
-            return                
-                
+            return
+
+    def prolive(self, url):
+        try:
+            page_data = client.request(url)
+            e = re.findall('<h2><a href="([^"]*)">([^<]*)(?s).*?url\(([^\)]*)', page_data)
+            return e
+        except:
+            return
