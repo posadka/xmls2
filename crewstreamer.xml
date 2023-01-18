@@ -497,6 +497,8 @@ class streamer:
 
             elif 'youpit' in url: u = self.youpit(url)
 
+            elif 'mysports.to' in url: u = self.sportnews(url)
+
             else: u = self.generic(url)
 
             return u
