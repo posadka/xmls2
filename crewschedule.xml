@@ -544,7 +544,7 @@ class streamer:
         try:
             page_data = client.request(url)
             l = re.findall('(?s)mec\-event\-image">.*?src="([^"]*)(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)">([^<]*)', page_data)
-            sort = [(i[0],i[1],dodgycodes(i[2]).replace('\xe2\x80\x93','').replace('S1\t\t\t\t','').replace('S2\t\t\t\t','').replace('S3\t\t\t\t','').replace('S4\t\t\t\t','').replace('S5\t\t\t\t','')) for i in l]
+            sort = [(i[0],i[1],i[2].replace('\xe2\x80\x93','').replace('S1\t\t\t\t','').replace('S2\t\t\t\t','').replace('S3\t\t\t\t','').replace('S4\t\t\t\t','').replace('S5\t\t\t\t','')) for i in l]
             return sort
         except:
             return
