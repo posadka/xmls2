@@ -149,6 +149,8 @@ class streamer:
 
             elif 'sportnews.to' in url: u = self.sportnews(url)
 
+            elif 'sportfacts' in url: u = self.sportnews(url)
+
             elif 'volokit.com/all-games/schedule/nfl.php' in url: u = self.volokitnfl(url)
 
             elif 'redsoccer.info' in url: u = self.redsoccer(url)
