@@ -2272,7 +2272,7 @@ class streamer:
             h = requests.get(s, headers={"Referer": s, "User-Agent": 'Mozilla/5.0'}).text
             i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
             t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
-            e = re.findall('source:\s*\'([^\']*)',t)[0]                
+            e = re.findall('source:\s*\'([^\']*)',t)[0]
             return e + '|User-Agent=Mozilla/5.0&Referer=' + s
         except:
             return
@@ -2291,6 +2291,6 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             hat = re.findall('(?s)<iframe.*?ch(\d+)',page_data)[0]
-            return 'https://newtest.webtv1.lol/ddy4/premium' + hat + '/tracks-v1a1/mono.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https%3A%2F%2Feplayer.click%2F'
+            return 'https://webudi.webtv1.lol/lb/premium' + hat + '/index.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https%3A%2F%2Feplayer.click%2F'
         except:
             return
