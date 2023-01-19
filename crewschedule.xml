@@ -857,7 +857,7 @@ class streamer:
         try:
             page_data = client.request(url)
             e = re.findall('(?s)class="p_box">.*?"([^"]*)".*?"([^"]*).*?lt="([^"]*)', page_data)
-            sort = [(i[0],i[1],i[2]) for i in e if 'Polsat' not in i[3] if 'Eleven Sports 1' not in i[3] if 'Eleven Sports 2' not in i[3] if 'Eleven Sports 3' not in i[3]]
+            sort = [(i[0],i[1],i[2]) for i in e if 'Polsat' not in i[2] if 'Eleven Sports 1' not in i[2] if 'Eleven Sports 2' not in i[2] if 'Eleven Sports 3' not in i[2]]
             return sorted(sort,key=lambda thecrew: (thecrew[1]))
         except:
             return
