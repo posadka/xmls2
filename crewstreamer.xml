@@ -2290,9 +2290,10 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
+            headers={'Accept':'*/*','Accept-Encoding':'gzip, deflate, br','Accept-Language':'en-US,en;q=0.5','Connection':'keep-alive','Host':'newtest.webtv1.lol','Origin':'https://eplayer.click','Referer':'https://eplayer.click/','Sec-Fetch-Dest':'empty','Sec-Fetch-Mode':'cors','Sec-Fetch-Site':'cross-site','TE':'trailers','User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'}
             white = re.findall('position": 3(?s).*?".*?".*?".*?".*?"([^"]*)',page_data)[0]
             crew = requests.get(white).text
             hat = re.findall('(?s)<iframe.*?ch(\d+)',crew)[0]
-            return 'https://webudi.webtv1.lol/lb/premium' + hat + '/index.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https://eplayer.click/&Orgin=https://eplayer.click'
+            return 'https://webudi.webtv1.lol/lb/premium' + hat + '/index.m3u8' + '|{0}'.format(urlencode(headers))
         except:
             return
