@@ -50,6 +50,10 @@ def GetLSProData(page_data,Cookie_Jar,m):
         sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
         sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
         return sort + sort1
+    elif 'streamcheck' in z:
+        sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
+        sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
+        return sort + sort1
     else:
         sort = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0]]
         sort1 = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0]]
