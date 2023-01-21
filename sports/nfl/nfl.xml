@@ -230,7 +230,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>lists</name>
 <listrepeat><![CDATA[
-  <title>[COLOR orange][lists.param2][/COLOR]  [lists.param1]</title>
+  <title>[COLOR orange][lists.param2][/COLOR] </title>
   <link>$doregex[m3u]</link>
   <thumbnail>[makelist.param3]</thumbnail>
 ]]></listrepeat>
@@ -251,8 +251,8 @@ def GetLSProData(page_data,Cookie_Jar,m):
         sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
         return sort + sort1
     elif 'streamcheck' in z:
-        #sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'tinyurl' in i[0]]
-        #sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1] if 'tinyurl' in i[0]]
+        #sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'streamcheck' in i[0]]
+        #sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1] if 'streamcheck' in i[0]]
         sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
         sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
         return sort + sort1
