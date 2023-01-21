@@ -211,7 +211,7 @@ class streamer:
 
             elif 'nbastreamswatch' in url: u = self.meth(url)
 
-            elif 'hesgoal.com' in url: u = self.hesgoal(url)
+            elif 'hesgoal' in url: u = self.hesgoal(url)
 
             elif 'thecrackstreams.net' in url: u = self.thecsnet(url)
 
@@ -644,16 +644,12 @@ class streamer:
 #link  
     def hesgoal(self, url):
         try:
-           if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-           page_data = client.request(url)
-           t = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
-           t = t.replace(' ', '%20')
-           t = 'http:' + t
-           u = requests.get(t).text
-           s = re.findall('atob\(["|\']([^"|\']*)', u)[0]
-           s = base64.b64decode(s).decode('utf-8')
-           if not s: s = re.findall('source: "([^"]*)', u)[0]
-           return s + '|user-agent=iPad&referer=' + url
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            t = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
+            u = requests.get(t).text
+            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', u)[0]
+            return x + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=https://fordems.biz/'
         except:
             return
 #link
