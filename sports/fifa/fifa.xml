@@ -96,7 +96,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     s = re.findall('ff;">([^<]*)(?s).*?>([^<]*).*?"([^"]*)',page_data)
-    sort = [(i[0] ,i[1],i[2]) for i in s if 'Soccer' in i[1]]
+    sort = [(i[0] ,i[1],i[2]) for i in s if 'Soccer' in i[0]]
     return sort
 ]]></expres>
 <page>https://gameshdlive.xyz/</page>
