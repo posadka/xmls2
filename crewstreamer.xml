@@ -509,6 +509,8 @@ class streamer:
 
             elif 'olympicology.com' in url: u = self.olympicology(url)
 
+            elif 'enjoy4k' in url: u = self.enjoyfourk(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2367,3 +2369,14 @@ class streamer:
             return s + '|User-Agent=Mozilla/5.0&Referer=' + hat
         except:
             return
+                
+    def enjoyfourk(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            hat = re.findall('<iframe\s*src="([^"]*)',page_data)[0]
+            h = requests.get(hat).text
+            whitehat = re.findall('<iframe\s*src="([^"]*)',h)[0]
+            s = requests.get(whitehat).text
+            crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', s)[0]
+            return s + '|User-Agent=Mozilla/5.0&Referer=' + s
