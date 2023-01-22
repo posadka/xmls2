@@ -1019,7 +1019,8 @@ class streamer:
             unique_id = re.findall(r"const unqiueId = \'([^\']*)", t)[0]
             scode = re.findall(r'sCode = \'([^\']*)', t)[0]
             ts = re.findall(r'Ts = ([0-9]{10})', t)[0]
-            key = 'https://key.seckeyserv.me/?stream=' + unique_id + '&scode=' + scode + '&expires=' + ts
+            # Unnessary call for now 
+            #key = 'https://key.seckeyserv.me/?stream=' + unique_id + '&scode=' + scode + '&expires=' + ts
             authUrl = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', 'Origin': 'https://www.nolive.me','Referer': 'https://www.nolive.me/sd0embed'}
             return m3u8 + '|{0}'.format(urlencode(authUrl))
         except:
