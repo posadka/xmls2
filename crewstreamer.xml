@@ -2380,3 +2380,5 @@ class streamer:
             s = requests.get(whitehat).text
             crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', s)[0]
             return s + '|User-Agent=Mozilla/5.0&Referer=' + s
+        except:
+            return
