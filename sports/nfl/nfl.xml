@@ -253,14 +253,14 @@ def GetLSProData(page_data,Cookie_Jar,m):
     
         #sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'streamcheck' in i[0]]
         #sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1] if 'streamcheck' in i[0]]
-    sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
-    sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
+    sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
+    sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
     return sort + sort1
     #else:
         #sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
         #sort1 = [(i[0] ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1]]
-        #sort = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
-        #sort1 = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0]]
+        #sort = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
+        #sort1 = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0]]
         #return sort + sort1 
 ]]></expres>
 <page>[makelist.param1]</page>
@@ -327,11 +327,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
     z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     if 'tinyurl' in z:
         sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'tinyurl' in i[0]]
-        sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1] if 'tinyurl' in i[0]]
+        sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'tinyurl' in i[0]]
         return sort + sort1
     else:
         sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
-        sort1 = [(i[0] ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1]]
+        sort1 = [(i[0] ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] ]
         return sort + sort1
 ]]></expres>
 <page>[makelist.param2]</page>
@@ -396,7 +396,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     import re
     page_data = client.request('[makelist.param1]')
     r = re.findall('(?s)game-forecast-link MobildeGoster.*?ef=\'([^\']*).*?4>([^<]*)',page_data)
-    sort = [(i[0],i[1]) for i in r if 'Stream East' not in i[1] if 'dudestream' not in i[1] if 'chenstream' not in i[1] if 'NbaStreams' not in i[1] if 'Livefreegame' not in i[1] if 'tvsportslive' not in i[1] if 'bilasport' not in i[1] if 'Dubz Streams' not in i[1] if 'Freetvlive1' not in i[1] if 'NoDelayStream' not in i[1] if 'Sportinglivestreamz' not in i[1] if 'Icelz  ' not in i[1] if 'bestnhl.com' not in i[1] if 'papahd' not in i[1] if 'Sports News' not in i[1] if 'sportsio' not in i[1] if 'Streamos' not in i[1] if 'SoccerJumboTV' not in i[1] if 'streamhd247' not in i[1] if 'babysharkstream' not in i[1] if 'Icelz' not in i[1] if 'MyGoodStream' not in i[1] if 'Semensport' not in i[1] if 'Bilasport' not in i[1] if 'Sports24' not in i[1] if 'Yoursports Stream' not in i[1] if 'KobeStreams' not in i[1] if 'sportsway' not in i[1] if 'summerstream' not in i[1] if 'RoyStream' not in i[1] if 'BuffStreams' not in i[1] if 'Time4tv' not in i[1]]
+    sort = [(i[0],i[1]) for i in r if 'Stream East' not in i[1] if 'dudestream' not in i[1] if 'chenstream' not in i[1] if 'NbaStreams' not in i[1] if 'Livefreegame' not in i[1] if 'tvsportslive' not in i[1] if 'bilasport' not in i[1] if 'Dubz Streams' not in i[1] if 'Freetvlive1' not in i[1] if 'NoDelayStream' not in i[1] if 'Sportinglivestreamz' not in i[1] if 'Icelz  ' not in i[1] if 'bestnhl.com' not in i[1] if 'papahd' not in i[1] if 'Sports News' not in i[1] if 'sportsio' not in i[1] if 'Streamos' not in i[1] if 'SoccerJumboTV' not in i[1] if 'streamhd247' not in i[1] if 'babysharkstream' not in i[1] if 'Icelz' not in i[1] if 'MyGoodStream' not in i[1] if 'Semensport' not in i[1] if 'Bilasport' not in i[1] if 'Sports24' not in i[1] if 'Yoursports Stream' not in i[1] if 'sportsway' not in i[1] if 'summerstream' not in i[1] if 'RoyStream' not in i[1] if 'BuffStreams' not in i[1] if 'Time4tv' not in i[1]]
     return sort
 ]]></expres>
 <page>[makelist.param1]</page>
