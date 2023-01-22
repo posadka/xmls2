@@ -199,6 +199,8 @@ class streamer:
 
             elif '720pstream' in url: u = self.seventwenty(url)
 
+            elif 'watchkobestreams' in url: u = self.watchkobestreams(url)
+
             elif 'yoursports.stream' in url: u = self.yss(url)
 
             elif 'yrsprts.stream' in url: u = self.yss(url)
@@ -1037,6 +1039,35 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             iframe_source_url = re.findall('<iframe(?s).*?rc="([^"]*)', page_data)[0]
+            iframe_data = requests.get(iframe_source_url).text
+            pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
+            zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
+            pid = re.findall("pid = \\b([0-9])", iframe_data)[0]
+            edm = re.findall('edm = "([^"]*)', iframe_data)[0]
+            embed_script_url = re.findall('<script\\W*async\\W*src="([^"]*)', iframe_data)[0]
+            url="https://"+edm+"/sd0embed?v=" + zmid
+            embed_source_data = requests.post(url, headers={"Origin": "https://embedstream.me", "Referer": "https://embedstream.me/", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0"}).text
+            i = re.compile(r'decodeURIComponent\(escape.*\("(.+?)",(\d+),"(.+?)",(\d+),(\d+),(\d+)').findall(embed_source_data)[0]
+            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
+            m3u8 = re.findall('const vdoUrl = \'([^\']*)',t)[0]
+            m3u8 = base64.b64decode(m3u8).decode("UTF-8")
+            unique_id = re.findall(r"const unqiueId = \'([^\']*)", t)[0]
+            scode = re.findall(r'sCode = \'([^\']*)', t)[0]
+            ts = re.findall(r'Ts = ([0-9]{10})', t)[0]
+            # Unnessary call for now 
+            #key = 'https://key.seckeyserv.me/?stream=' + unique_id + '&scode=' + scode + '&expires=' + ts
+            authUrl = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', 'Origin': 'https://www.nolive.me','Referer': 'https://www.nolive.me/sd0embed'}
+            return m3u8 + '|{0}'.format(urlencode(authUrl))
+        except:
+            return
+                
+    def watchkobestreams(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            iframe_source_url = re.findall('<iframe(?s).*?rc="([^"]*)', page_data)[0]
+            embed_r = requests.get(iframe_source_url).text
+            embed_stream = re.findall('<iframe(?s).*?rc="([^"]*)', embed_stream)[0]
             iframe_data = requests.get(iframe_source_url).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
