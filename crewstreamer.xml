@@ -195,9 +195,7 @@ class streamer:
 
             elif 'sportsstatsme.net/watch/MLS-streams' in url: u = self.ssnba(url)
 
-            elif 'playoffsstream.live/nhl' in url: u = self.playoffnhl(url)
-
-            elif 'playoffsstream.com/reddit-nfl-streams' in url: u = self.playoffnfl(url)
+            elif 'playoffsstream' in url: u = self.playoffnfl(url)
 
             elif 'yoursports.stream' in url: u = self.yss(url)
 
