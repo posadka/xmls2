@@ -111,12 +111,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
   <name>makelist2</name>
 <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
+def GetLSProData(page_data,Cookie_Jar,m,url = '[http://playoffsstream.com[makelist.param2]'):
     from resources.lib.modules import client
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('http://playoffsstream.com[makelist.param2]')
+    url = client.external([http://playoffsstream.com[makelist.param2]')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
