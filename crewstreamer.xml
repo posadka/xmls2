@@ -1064,9 +1064,9 @@ class streamer:
     def watchkobestreams(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
+            page_data = client.request(url,headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' })
             iframe_source_url = re.findall('<iframe(?s).*?rc="([^"]*)', page_data)[0]
-            embed_r = requests.get(iframe_source_url).text
+            embed_r = requests.get(iframe_source_url,headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' }).text
             embed_stream = re.findall('<iframe(?s).*?rc="([^"]*)', embed_r)[0]
             iframe_data = requests.get(embed_stream).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
