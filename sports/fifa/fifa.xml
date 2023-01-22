@@ -328,7 +328,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://hockeyweb.live/schedule/')
+    url = client.schedule('http://tennews.live/schedule/')
     return url
 ]]></expres>
 <page></page>
