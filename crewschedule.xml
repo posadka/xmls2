@@ -73,6 +73,8 @@ class streamer:
 
             elif 'hockeyweb' in url: u = self.helena(url)
 
+            elif 'tennews.live' in url: u = self.helena(url)
+
             elif 'crackstreams.me' in url: u = self.crackstreams(url)
 
             elif 'methstreams' in url: u = self.crackstreams(url)
