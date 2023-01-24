@@ -96,8 +96,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import control
     import re
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('btn\s*btn-secondary"\s*title\s*=\s*"([^"]*)"\s*href\s*=\s*"([^"]*)(?s).*?src="([^"]*)', page_data)
+    r = re.findall('(?s)btn-secondary\" title = "([^"]*)" href = "([^"]*).+?src="([^"]*)', page_data)
     return r
 ]]></expres>
 <page>http://hdtv.720pstream.me/soccer-streams</page>
