@@ -8,7 +8,7 @@
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (SC)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (SC)19 ONLY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/fifa_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -37,7 +37,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>lists</name>
 <listrepeat><![CDATA[
-  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <title>[COLOR orange][lists.param2][/COLOR] [COLOR dodgerblue][lists.param1][/COLOR]</title>
   <link>$doregex[m3u]</link>
   <thumbnail>[makelist.param3]</thumbnail>
 ]]></listrepeat>
@@ -49,11 +49,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
     t = t.split('Fubo',1)[-1]
     z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     #if 'streamcheck' in z:
-        #sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z  if 'streamcheck' in i[0]]
-        #return sort
-    #else:
-    sort = [(i[0] ,i[1],i[2]) for i in z]
+    sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z]
     return sort
+    #else:
+    #sort = [(i[0] ,i[1],i[2]) for i in z]
+    #return sort
 ]]></expres>
 <page>[makelist.param7]</page>
 <referer></referer>
