@@ -48,12 +48,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
     t = requests.get('https://scdn.dev/main-assets/' + url + '/' + 'soccer' + '?origin=sportscentral.io', headers={'user-agent':'iPad','referer':'https://sportscentral.io'}).text
     t = t.split('Fubo',1)[-1]
     z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    #if 'streamcheck' in z:
-    sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z]
+    sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'streamcheck' in i[0] ]
     return sort
-    #else:
-    #sort = [(i[0] ,i[1],i[2]) for i in z]
-    #return sort
 ]]></expres>
 <page>[makelist.param7]</page>
 <referer></referer>
