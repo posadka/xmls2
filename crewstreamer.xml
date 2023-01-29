@@ -1017,7 +1017,7 @@ class streamer:
             iframe_data = requests.get(iframe_source_url).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
-            pid = re.findall("pid = \\b([0-9])", iframe_data)[0]
+            pid = re.findall("pid = ([0-9])", iframe_data)[0]
             edm = re.findall('edm = "([^"]*)', iframe_data)[0]
             embed_script_url = re.findall('<script\\W*async\\W*src="([^"]*)', iframe_data)[0]
             url="https://"+edm+"/sd0embed?v=" + zmid
@@ -1044,7 +1044,7 @@ class streamer:
             iframe_data = requests.get(iframe_source_url).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
-            pid = re.findall("pid = \\b([0-9])", iframe_data)[0]
+            pid = re.findall("pid = ([0-9])", iframe_data)[0]
             edm = re.findall('edm = "([^"]*)', iframe_data)[0]
             embed_script_url = re.findall('<script\\W*async\\W*src="([^"]*)', iframe_data)[0]
             url="https://"+edm+"/sd0embed?v=" + zmid
@@ -1073,7 +1073,7 @@ class streamer:
             iframe_data = requests.get(embed_stream).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
-            pid = re.findall("pid = \\b([0-9])", iframe_data)[0]
+            pid = re.findall("pid = ([0-9])", iframe_data)[0]
             edm = re.findall('edm = "([^"]*)', iframe_data)[0]
             embed_script_url = re.findall('<script\\W*async\\W*src="([^"]*)', iframe_data)[0]
             url="https://"+edm+"/sd0embed?v=" + zmid
