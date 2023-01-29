@@ -357,6 +357,8 @@ class streamer:
 
             elif 'sportschamp' in url: u = self.ovostreams(url)
 
+            elif 'soccerstreams.football' in url: u = self.ovostreams(url)
+
             elif 'tv247.us' in url: u = self.tvtwofour(url)
 
             elif 'myoplay.club' in url: u = self.myoplay(url)
