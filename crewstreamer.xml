@@ -497,6 +497,8 @@ class streamer:
 
             elif 'basketball-video' in url: u = self.basketballvideo(url)
 
+            elif 'nfl-video' in url: u = self.nflvideo(url)
+
             elif 'nizarstream' in url: u = self.nizarstream(url)
 
             elif 'enjoyhd' in url: u = self.enjoyhd(url)
@@ -2282,7 +2284,7 @@ class streamer:
             return x + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=https://fordems.biz/'
         except:
             return
-                                         
+
     def soccersislive(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -2291,7 +2293,7 @@ class streamer:
             return 'https://newtest.openhd.lol/ddy4/premium'+ x +'/tracks-v1a1/mono.m3u8' + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Feplayer.click%2F'
         except:
             return
-                
+
     def basketballvideo(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -2300,7 +2302,16 @@ class streamer:
             return x
         except:
             return
-                
+
+    def nflvideo(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            x = re.findall('(?s)Full Game Replay.*?<iframe.*?src="([^"]*)', page_data)[0]
+            return x
+        except:
+            return
+
     def nizarstream(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
