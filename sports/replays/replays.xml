@@ -113,6 +113,56 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL REPLAYS 2022-2023[/COLOR] [COLOR orchid] (NV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][makelist.param3][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>https://nfl-video.com/[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import cache,client,workers,control
+    import re,xbmc,xbmcgui
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    class page:
+        def run(self, r):
+            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
+            for i in r: threads.append(workers.Thread(self.request, i))
+            [i.start() for i in threads] ; [i.join() for i in threads]
+            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
+        def request(self, i):
+            self.r += [(i[0], client.request(i[1]))]
+    def dodgycodes(s):
+        return re.sub('&#(\d+);', '', s)
+    url = 'https://nfl-video.com/2022?page'
+    u = []
+    for i in range(1,15): u += [url + str(i)]
+    u = page().run(u)
+    items = re.findall('<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*)(?s).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
+    sort = [('https://nfl-video.com'+i[0],i[1],i[2]) for i in items]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+<referer></referer>
+</regex>
+</item>
+
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL FULL GAME REPLAYS 2021-2022 Season[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
