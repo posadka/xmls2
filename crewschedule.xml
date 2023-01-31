@@ -203,6 +203,8 @@ class streamer:
 
             elif 'paktech2' in url: u = self.paktech(url)
 
+            elif 'tv247.us' in url: u = self.tvtwofour(url)
+
             return u
         except:
             pass
@@ -861,5 +863,13 @@ class streamer:
             e = re.findall('(?s)class="p_box">.*?"([^"]*)".*?"([^"]*).*?lt="([^"]*)', page_data)
             sort = [(i[0],i[1],i[2]) for i in e if 'Polsat' not in i[2] if 'Eleven Sports 1' not in i[2] if 'Eleven Sports 2' not in i[2] if 'Eleven Sports 3' not in i[2]]
             return sorted(sort,key=lambda thecrew: (thecrew[1]))
+        except:
+            return
+
+    def tvtwofour(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall('(?s)<a target="_blank" href="([^"]*)">([^<]*).*?src="([^"]*)', page_data)
+            return sorted(r,key=lambda thecrew: (thecrew[1]))
         except:
             return
