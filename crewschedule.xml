@@ -871,7 +871,7 @@ class streamer:
     def tvtwofour(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall('(?s)<a target="_blank" href="([^"]*)">([^<]*).*?src="([^"]*)', page_data)
+            r = re.findall('(?s)<img alt src="([^"]*).*?ef="([^"]*)">([^<]*)', page_data)
             return sorted(r,key=lambda thecrew: (thecrew[1]))
         except:
             return
