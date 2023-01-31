@@ -205,6 +205,8 @@ class streamer:
 
             elif 'tv247.us' in url: u = self.tvtwofour(url)
 
+            elif 'maxsport' in url: u = self.maxsport(url)
+
             return u
         except:
             pass
@@ -871,5 +873,14 @@ class streamer:
             page_data = client.request(url)
             r = re.findall('(?s)<a target="_blank" href="([^"]*)">([^<]*).*?src="([^"]*)', page_data)
             return sorted(r,key=lambda thecrew: (thecrew[1]))
+        except:
+            return
+
+    def maxsport(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('<div class="grid-item(?s).*?="([^"]*).*?g>([^<]*)',page_data)
+            sort = [(i[0],i[1]) for i in s if 'Polsat' not in i[1] if 'Eleven Sports 1' not in i[1] if 'Eleven Sports 2' not in i[1] if 'Eleven Sports 3' not in i[1]]
+            return sorted(sort,key=lambda thecrew: (thecrew[1]))
         except:
             return
