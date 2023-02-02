@@ -797,7 +797,7 @@ class streamer:
     def chaturbate(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall('<li(?s).*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data)
+            r = re.findall('(?s)<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data)
             hosts = ['WOMEN','MEN','TRANS','COUPLES','FEATURED']; e =[]
             for i in r:
                 if any(x for x in hosts if x in i[1]): e.append(('https://chaturbate.com'+i[0],i[1]))
@@ -818,7 +818,7 @@ class streamer:
             page_data = client.request(url)
             page_data = page_data.split('Today\'s games',1)[-1]
             page_data = page_data.split('Sport channels',1)[0]
-            r = re.findall('href="([^"]*)(?s).*?me2">([^<]*).*?vs2">([^<]*).*?me2">([^<]*)',page_data)
+            r = re.findall('(?s)href="([^"]*).*?me2">([^<]*).*?vs2">([^<]*).*?me2">([^<]*)',page_data)
             return r
         except:
             return
@@ -827,7 +827,7 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('NFL PREMIUM HD 4K STREAMS',1)[-1]
-            r = re.findall('a href=\'([^\']*)(?s).*?ing\'>([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
+            r = re.findall('(?s)a href=\'([^\']*).*?ing\'>([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
             sort = [('http://crackstreams.net'+i[0],i[1],i[2]) for i in r]
             return sort
         except:
@@ -837,7 +837,7 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('BOXING Live Streams and Schedule',1)[-1]
-            r = re.findall('<a href="([^"]*)(?s).*?ing">([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
+            r = re.findall('(?s)<a href="([^"]*).*?ing">([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
             return r
         except:
             return
@@ -854,7 +854,7 @@ class streamer:
     def prolive(self, url):
         try:
             page_data = client.request(url)
-            e = re.findall('<h2><a href="([^"]*)">([^<]*)(?s).*?url\(([^\)]*)', page_data)
+            e = re.findall('(?s)<h2><a href="([^"]*)">([^<]*).*?url\(([^\)]*)', page_data)
             return e
         except:
             return
@@ -879,7 +879,7 @@ class streamer:
     def maxsport(self, url):
         try:
             page_data = client.request(url)
-            s = re.findall('<div class="grid-item(?s).*?="([^"]*).*?g>([^<]*)',page_data)
+            s = re.findall('(?s)<div class="grid-item.*?="([^"]*).*?g>([^<]*)',page_data)
             sort = [(i[0],i[1]) for i in s if 'Polsat' not in i[1] if 'Eleven Sports 1' not in i[1] if 'Eleven Sports 2' not in i[1] if 'Eleven Sports 3' not in i[1]]
             return sorted(sort,key=lambda thecrew: (thecrew[1]))
         except:

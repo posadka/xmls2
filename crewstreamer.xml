@@ -1034,7 +1034,7 @@ class streamer:
             scode = re.findall(r'sCode = \'([^\']*)', t)[0]
             ts = re.findall(r'Ts = ([0-9]{10})', t)[0]
             # Unnessary call for now 
-            #key = 'https://key.seckeyserv.me/?stream=' + unique_id + '&scode=' + scode + '&expires=' + ts
+            key = 'https://key.seckeyserv.me/?stream=' + unique_id + '&scode=' + scode + '&expires=' + ts
             authUrl = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', 'Origin': 'https://www.nolive.me','Referer': 'https://www.nolive.me/sd0embed'}
             return m3u8 + '|{0}'.format(urlencode(authUrl))
         except:
@@ -1044,7 +1044,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            iframe_source_url = re.findall('<iframe(?s).*?rc="([^"]*)', page_data)[0]
+            iframe_source_url = re.findall('(?s)<iframe.*?rc="([^"]*)', page_data)[0]
             iframe_data = requests.get(iframe_source_url).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
@@ -1071,9 +1071,9 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url,headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' })
-            iframe_source_url = re.findall('<iframe(?s).*?rc="([^"]*)', page_data)[0]
+            iframe_source_url = re.findall('(?s)<iframe.*?rc="([^"]*)', page_data)[0]
             embed_r = requests.get(iframe_source_url,headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' }).text
-            embed_stream = re.findall('<iframe(?s).*?rc="([^"]*)', embed_r)[0]
+            embed_stream = re.findall('(?s)<iframe.*?rc="([^"]*)', embed_r)[0]
             iframe_data = requests.get(embed_stream).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
@@ -2020,7 +2020,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('<iframe allow=(?s).*?src=\'([^\']*)',page_data)[0]
+            r = re.findall('(?s)<iframe allow=.*?src=\'([^\']*)',page_data)[0]
             q = client.request(r)
             w = re.findall('url:\s*"([^"]*)', q)[0]
             h = re.findall('data:\s\{"([^"]*)', q)[0]
@@ -2207,7 +2207,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            #s = re.findall('iframe a(?s).*?src="([^"]*)',page_data)[0]
+            #s = re.findall('(?s)iframe a.*?src="([^"]*)',page_data)[0]
             #t = requests.get(s,headers={"Referer": url, "User-Agent": 'Mozilla/5.0'}).text
             #pattern = r'''return\(\[([^\]]+).+?\+\s*([^\.]+).+?\+.+?"([^"]+)'''.format(t)
             #par1, par2, par3 = re.findall(pattern, t, re.DOTALL)[0]
@@ -2260,7 +2260,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            s = re.findall('iframe\sf(?s).*?src="([^"]*)',page_data)[0]
+            s = re.findall('(?s)iframe\sf.*?src="([^"]*)',page_data)[0]
             t = requests.get(s).text
             r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
             return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
@@ -2280,7 +2280,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('iframe(?s).*?src="([^"]*)', page_data)[0]
+            r = re.findall('(?s)iframe.*?src="([^"]*)', page_data)[0]
             t = requests.get(r).text
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
             return x + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=https://fordems.biz/'
@@ -2300,7 +2300,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            x = re.findall('<iframe(?s).*?src="([^"]*)', page_data)[0]
+            x = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             return x
         except:
             return
@@ -2318,7 +2318,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('<iframe(?s)\ssrc="([^"]*)',page_data)[0]
+            r = re.findall('(?s)<iframe\ssrc="([^"]*)',page_data)[0]
             s = requests.get(r,headers={'user-agent':'ipad','referer':'http://nizarstream.com/nfl/stream/1172'}).text
             find = re.findall('eval\(function(.+?m3u8.+)', s)[0]
             unpack = jsunpack.unpack(find)
@@ -2367,7 +2367,7 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             headers={'Accept':'*/*','Accept-Encoding':'gzip, deflate, br','Accept-Language':'en-US,en;q=0.5','Connection':'keep-alive','Host':'newtest.webtv1.lol','Origin':'https://eplayer.click','Referer':'https://eplayer.click/','Sec-Fetch-Dest':'empty','Sec-Fetch-Mode':'cors','Sec-Fetch-Site':'cross-site','TE':'trailers','User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'}
-            white = re.findall('position": 3(?s).*?".*?".*?".*?".*?"([^"]*)',page_data)[0]
+            white = re.findall('(?s)position": 3.*?".*?".*?".*?".*?"([^"]*)',page_data)[0]
             crew = requests.get(white).text
             hat = re.findall('(?s)<iframe.*?ch(\d+)',crew)[0]
             return 'https://webudi.webtv1.lol/lb/premium' + hat + '/index.m3u8' + '|{0}'.format(urlencode(headers))

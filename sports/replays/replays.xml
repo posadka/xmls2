@@ -143,7 +143,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1,15): u += [url + str(i)]
     u = page().run(u)
-    items = re.findall('<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*)(?s).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
+    items = re.findall('(?s)<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
     sort = [('https://nfl-video.com'+i[0],i[1],i[2]) for i in items]
     return sort
 ]]></expres>
@@ -440,7 +440,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1,15): u += [url + str(i)]
     u = page().run(u)
-    items = re.findall('<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*)(?s).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
+    items = re.findall('(?s)<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
     sort = [('https://basketball-video.com'+i[0],i[1],i[2]) for i in items]
     return sort
 ]]></expres>
@@ -490,7 +490,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1,15): u += [url + str(i)]
     u = page().run(u)
-    items = re.findall('<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*)(?s).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
+    items = re.findall('(?s)<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
     sort = [('https://basketball-video.com'+i[0],i[1],i[2]) for i in items]
     return sort
 ]]></expres>
