@@ -128,7 +128,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
-    s = re.findall('ff;">([^<]*)(?s).*?>([^<]*).*?"([^"]*)',page_data)
+    s = re.findall('(?s)ff;">([^<]*).*?>([^<]*).*?"([^"]*)',page_data)
     sort = [(i[0] ,i[1],i[2]) for i in s if 'Soccer' in i[0]]
     return sort
 ]]></expres>
@@ -169,7 +169,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('data-event-id(?s).*?f="([^"]*)">([^<]*)', page_data)
+    r = re.findall('(?s)data-event-id.*?f="([^"]*)">([^<]*)', page_data)
     return r
 ]]></expres>
 <page>http://bikesports.live/click-here-for-daily-fixtures/</page>
@@ -247,7 +247,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
-    s = re.findall('<div class="media-body">\s*<a href="([^"]*)(?s).*?rc="([^"]*).*?e;">\s*([^<]*).*?e;">([^<]*)',page_data)
+    s = re.findall('(?s)<div class="media-body">\s*<a href="([^"]*).*?rc="([^"]*).*?e;">\s*([^<]*).*?e;">([^<]*)',page_data)
     return s
 ]]></expres>
 <page>https://ww.hitstreams.live/footballstreams-1.php</page>
@@ -354,7 +354,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     page_data = page_data.split('Soccer schedule',1)[-1]
     page_data = page_data.split('<h3>Motorsports schedule</h3>',1)[0]
-    s = re.findall('<h3>([^<]*)|box">([^<]*)|(?s)URL.*?ue="([^"]*)', page_data)
+    s = re.findall('(?s)<h3>([^<]*)|box">([^<]*)|(?s)URL.*?ue="([^"]*)', page_data)
     return s
 ]]></expres>
 <page>https://freefeds.com/</page>
@@ -537,7 +537,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     page_data = requests.get('https://livetvon.click/').text
     page_data = page_data.split('>Soccer<',1)[-1]
     page_data = page_data.split('>Cricket<',1)[0]
-    e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
+    e = re.findall('(?s)<hr>([^<]*)|(?s)href="([^"]*).*?ner">([^<]*)', page_data)
     return e
 ]]></expres>
 <page></page>
