@@ -2202,7 +2202,7 @@ class streamer:
             return i + '|User-Agent=Mozilla/5.0&Referer=' + w
         except:
             return
-                
+
     def maxsport(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -2242,7 +2242,7 @@ class streamer:
                 return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s 
         except:  
             return
-                
+
     def alexsports(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -2253,7 +2253,7 @@ class streamer:
             return t + '|User-Agent=Mozilla/5.0&referer=' + e
         except:
             return
-                                         
+
     def metaporky(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -2264,7 +2264,7 @@ class streamer:
             return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
         except:
             return
-                
+
     def nbagaffer(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
