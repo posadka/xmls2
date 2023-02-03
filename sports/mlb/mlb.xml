@@ -214,7 +214,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('Away Team" \/>\s*([^<]*)(?s).*?h5>([^<]*)|pull-right watch-li.*?href="([^"]*).*?i>([^<]*)', page_data)
+    r = re.findall('(?s)Away Team" \/>\s*([^<]*).*?h5>([^<]*)|pull-right watch-li.*?href="([^"]*).*?i>([^<]*)', page_data)
     sort = [(i[0],i[1],'https://bestnhl.com/mlb/' + i[2],i[3]) for i in r]
     return sort
 ]]></expres>
@@ -396,7 +396,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     u = client.request('http://volokit2.com/sport/mlb/')
-    r = re.findall('padding:0">([^<]*)(?s).*?href="([^"]*)', u)
+    r = re.findall('(?s)padding:0">([^<]*).*?href="([^"]*)', u)
     return r
 ]]></expres>
 <page></page>
@@ -457,7 +457,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('td style="width:180px;text-align: center;">([^<]*)(?s).*?ef="([^"]*).*?rk">([^<]*)', page_data)
+    r = re.findall('(?s)td style="width:180px;text-align: center;">([^<]*).*?ef="([^"]*).*?rk">([^<]*)', page_data)
     sort = [(i[0],i[1],i[2].replace('8211','').replace(';','').replace('&','').replace('#','')) for i in r]
     return sort
 ]]></expres>

@@ -221,7 +221,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1,7): u += [url + str(i)]
     u = page().run(u)
-    e = re.findall('<td style="width:180px;text-align: center;">([^<]*)(?s).*?href="([^"]*).*?k">([^<]*)', u)
+    e = re.findall('(?s)<td style="width:180px;text-align: center;">([^<]*).*?href="([^"]*).*?k">([^<]*)', u)
     sort = [(i[0],i[1],i[2].replace('&','').replace('#','').replace('8217','').replace('8211','').replace(';','').replace('Main',''))for i in e]
     return sort
 ]]></expres>
@@ -350,7 +350,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    e = re.findall('<a href="([^"]*)" c(?s).*?src="([^"]*).*?ing">([^<]*).*?">\s*([^<]*)            ', page_data)
+    e = re.findall('(?s)<a href="([^"]*)" c.*?src="([^"]*).*?ing">([^<]*).*?">\s*([^<]*)            ', page_data)
     return e
 ]]></expres>
 <page>http://1stream.link/mmastreams</page>
@@ -594,7 +594,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     page_data = page_data.split('UFC schedule',1)[-1]
     page_data = page_data.split('WWE schedule',1)[0]
-    s = re.findall('<h3>([^<]*)|box">([^<]*)(?s).*?ue="([^"]*)', page_data)
+    s = re.findall('(?s)<h3>([^<]*)|(?s)box">([^<]*).*?ue="([^"]*)', page_data)
     return s
 ]]></expres>
 <page>https://freefeds.com/</page>

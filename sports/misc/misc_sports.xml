@@ -147,7 +147,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     page_data = requests.get('https://livetvon.click/').text
     page_data = page_data.split('>Darts<',1)[-1]
     page_data = page_data.split('>Ice Hockey<',1)[0]
-    e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
+    e = re.findall('(?s)<hr>([^<]*)|href="([^"]*).*?ner">([^<]*)', page_data)
     return e
 ]]></expres>
 <page></page>
@@ -196,7 +196,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     page_data = site.request('https://livetvon.click/')
     page_data = page_data.split('Rugby Union',1)[-1]
     page_data = page_data.split('>Horse Racing<',1)[0]
-    e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
+    e = re.findall('(?s)<hr>([^<]*)|href="([^"]*).*?ner">([^<]*)', page_data)
     return e
 ]]></expres>
 <page></page>

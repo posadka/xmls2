@@ -17,7 +17,7 @@
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
-    s = re.findall('<div class="media-body">\s*<a href="([^"]*)(?s).*?rc="([^"]*).*?e;">\s*([^<]*).*?e;">([^<]*)',page_data)
+    s = re.findall('(?s)<div class="media-body">\s*<a href="([^"]*).*?rc="([^"]*).*?e;">\s*([^<]*).*?e;">([^<]*)',page_data)
     return s
 ]]></expres>
 <page>https://ww.hitstreams.live/cricketstreams.php</page>
@@ -60,7 +60,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     page_data = requests.get('https://daddyhd.com/').text
     page_data = page_data.split('>Cricket<',1)[-1]
     page_data = page_data.split('>Boxing<',1)[0]
-    e = re.findall('<hr>([^<]*)|href="([^"]*)(?s).*?ner">([^<]*)', page_data)
+    e = re.findall('(?s)<hr>([^<]*)|href="([^"]*).*?ner">([^<]*)', page_data)
     return e
 ]]></expres>
 <page></page>
