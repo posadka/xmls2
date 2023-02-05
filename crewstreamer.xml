@@ -2260,16 +2260,8 @@ class streamer:
             page_data = client.request(url)
             s = re.findall('(?s)iframe\sf.*?src="([^"]*)',page_data)[0]
             t = requests.get(s).text
-            if 'bestsolaris' in t :
-                bs = re.findall('(?s)iframe\sf.*?src="([^"]*)',t)[0]
-                frame = requests.get(bs).text
-                r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', frame)[0]
-                return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132
-                Safari/537.36&referer=' + url
-            else : 
-                r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
-                return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132
-                Safari/537.36&referer=' + url
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
+            return r + '|user-agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&referer=' + url
         except:
             return
 
