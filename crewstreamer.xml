@@ -1561,7 +1561,7 @@ class streamer:
             hat = re.findall('(?s)iframe src="(?:[^=]*)=([^"]*)',page_data)[0]
             #return 'https://i-am-so-cool.licenses4.me/cdn/premium' + hat + '/chunks.m3u8|referer=https://widevine.licenses4.me/'
             #return 'https://zcri.vhls.ru.com/cdn/premium' + hat + '/playlist.m3u8|referer=https://player.licenses4.me/'
-            return 'https://webudi.webtv1.lol/lb/premium' + hat + '/index.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https://streamservicehd.click/'
+            return 'https://webudi.onlinewebtv.lol/lb/premium' + hat + '/index.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https://streamservicehd.click/'
             #src= re.findall('<iframe class.*?src="([^"]*)',page_data)[0]
             #fu = requests.get(src, headers={'user-agent':'iPad','referer':src}).text
             #hat= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
