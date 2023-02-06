@@ -171,6 +171,8 @@ class streamer:
 
             elif 'techoreels.com/schedule/soccerstreams' in url: u = self.technofifa(url)
 
+            elif 'techclips.net' in url: u = self.technofifa(url)
+
             elif 'techoreels.com/schedule/mmastreams/' in url: u = self.technomma(url)
 
             elif 'bdnewszh.com/nba' in url: u = self.ranionba(url)
