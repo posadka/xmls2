@@ -517,6 +517,8 @@ class streamer:
 
             elif 'enjoy4k' in url: u = self.enjoyfourk(url)
 
+            elif 'sports-stream.site' in url: u = self.sportsstreamsite(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2395,5 +2397,21 @@ class streamer:
             s = requests.get(whitehat).text
             crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', s)[0]
             return s + '|User-Agent=Mozilla/5.0&Referer=' + s
+        except:
+            return
+
+    def sportsstreamsite(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('iframe sc.*?src="([^"]*)', page_data)[0]
+            q = requests.get(r).text
+            w = re.findall('iframe\s*.*?src="([^"]*)', q)[0]
+            s = 'https://www.sports-stream.site' + w
+            e = requests.get(s).text
+            u = re.findall('iframe src="([^"]*)', e)[0]
+            t = requests.get(u, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Referer": u}).text
+            w = ("".join(eval(re.findall(r"return\((\[.+?\])", t)[0]))).replace("\\", "")
+            return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s 
         except:
             return
