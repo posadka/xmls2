@@ -209,8 +209,6 @@ class streamer:
 
             elif 'maxsport' in url: u = self.maxsport(url)
 
-            elif 'sports-stream.site' in url: u = self.sportsstreamsite(url)
-
             return u
         except:
             pass
@@ -886,14 +884,5 @@ class streamer:
             s = re.findall('(?s)<div class="grid-item.*?="([^"]*).*?g>([^<]*)',page_data)
             sort = [(i[0],i[1]) for i in s if 'Polsat' not in i[1] if 'Eleven Sports 1' not in i[1] if 'Eleven Sports 2' not in i[1] if 'Eleven Sports 3' not in i[1]]
             return sorted(sort,key=lambda thecrew: (thecrew[1]))
-        except:
-            return
-
-    def sportsstreamsite(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)span style="font-family.*?0;">([^<]*).*?>([^<]*)<a href="([^"]*)', page_data)
-            return r
         except:
             return

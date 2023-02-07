@@ -2412,6 +2412,6 @@ class streamer:
             u = re.findall('iframe src="([^"]*)', e)[0]
             t = requests.get(u, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0', "Referer": u}).text
             w = ("".join(eval(re.findall(r"return\((\[.+?\])", t)[0]))).replace("\\", "")
-            return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s 
+            return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + u
         except:
             return
