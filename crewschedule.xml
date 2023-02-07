@@ -895,5 +895,5 @@ class streamer:
             page_data = client.request(url)
             r = re.findall('(?s)span style="font-family.*?0;">([^<]*).*?>([^<]*)<a href="([^"]*)', page_data)
             return r
-        except:  #color="red"><h3>([^&]*)|
+        except:
             return
