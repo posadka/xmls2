@@ -8,7 +8,7 @@
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (NB)19 ONLY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -23,10 +23,10 @@
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
-    r = re.findall('(?s)<div class="col-md-12 col-sm-12">\s*<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?name">([^<]*).*?ore">([^<]*).*?name">([^<]*).*?ore">([^<]*)', page_data)
+    r = re.findall('(?s)<span><img alt="([^"]*)|(?s)self"\s*href="([^"]*)', page_data)
     return r
 ]]></expres>
-<page>https://mmastreams.cc/</page>
+<page>https://mmabite.app/</page>
 </regex>
 <regex>
 <name>lists</name>
@@ -43,26 +43,11 @@ def GetLSProData(page_data,Cookie_Jar,m):
     r = re.findall('var streamsSport\s*=\s*"([^;"]*)',page_data)[0]
     t = requests.get('https://scdn.dev/main-assets/' + e + '/' + r + '?origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
     t = t.split('Fubo',1)[-1]
-    #z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    #if 'tinyurl' in z:
-        #sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'tinyurl' in i[0]]
-        #sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1] if 'tinyurl' in i[0]]
-        #sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
-        #sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'tinyurl' in i[0]]
-        #return sort + sort1
-    
-        #sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'streamcheck' in i[0]]
-        #sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1] if 'streamcheck' in i[0]]
-    sort = [(client.tinyl(i[0]) ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
-    sort1 = [(client.tinyl(i[0]) ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
-    return sort + sort1
-    #else:
-        #sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
-        #sort1 = [(i[0] ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'KobeStreams' not in i[1]]
-        #sort = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
-        #sort1 = [(i[0] ,i[1]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'watchkobestreams' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0]]
-        #return sort + sort1  
+    x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    z = re.findall('(?s)stream-link="(https:\/\/streamcheck.link[^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
+    sort1 = [(i[0] ,i[1],i[2]) for i in x if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0] if 'streamcheck' not in i[0]]
+    return sort1 + sort
 ]]></expres>
 <page>[makelist.param1]</page>
 <referer></referer>
