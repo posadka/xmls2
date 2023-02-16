@@ -29,7 +29,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     date_format = current_date.strftime("%Y-%m-%d")
     page_data = requests.get('https://sportscentral.io/new-api/matches?date=' + date_format, headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
     r = re.findall('(?s){"id":([^,]*),"l.*?ent":([^\}]*).*?ent":([^\}]*).*?e":"([^"]*).*?e":"([^"]*).*?pe":"([^"]*).*?nk":"([^"]*)', page_data)
-    sort = [(i[0],i[1],i[2],i[3],i[4],i[5],i[6]) for i in r if 'inprogress' in i[5]]
+    sort = [(i[0],i[1],i[2],i[3],i[4],i[5],i[6]) for i in r if 'finished' not in i[5]]
     return sort
 ]]></expres>
 <page></page>
