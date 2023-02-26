@@ -12,7 +12,7 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
 </dir> 
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -78,7 +78,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -111,7 +111,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -150,7 +150,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (123)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -197,7 +197,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </dir>
 
 ###############################
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (BN)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -239,7 +239,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (SPELL)19 ONLY[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -319,7 +319,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (SS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -378,7 +378,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (VK)[/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -440,7 +440,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (DS)[/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -481,7 +481,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (WC)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -541,7 +541,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (123)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -599,7 +599,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (BIZ)[/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -662,7 +662,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (6S)[/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -724,7 +724,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (7S)[/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -780,7 +780,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (PS)[/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
@@ -838,7 +838,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (FS)[/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -878,6 +878,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
+
+#####################################
 <item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (S24)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
@@ -923,7 +925,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <referer></referer>
 </regex>
 </item>
-#####################################
+
 <item
 <title>[COLOR orchid]¤[/COLOR] [COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
