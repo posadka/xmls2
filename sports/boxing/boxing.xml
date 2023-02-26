@@ -235,7 +235,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://crackstreams.biz/boxingstreams/')
+    url = client.schedule('https://crackstreams.biz/boxingstreams/')
     return url
 ]]></expres>
 <page></page>
