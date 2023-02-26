@@ -440,7 +440,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (DS)[/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -481,7 +481,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (WC)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -744,7 +744,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = [(i[0],'http://www.720pstream.se'+i[1],i[2]) for i in r]
     return r
 ]]></expres>
-<page>http://720pstream.se/mlb-stream</page>
+<page>http://hdtv.720pstream.me/mlb-streams</page>
 </regex>
 <regex>
 <name>lists</name>
@@ -757,7 +757,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m):
     import re
     e = re.findall('<a class="btn btn-primary btn-xs m-1" href="([^"]*)">([^<]*)',page_data)
-    e = [('http://www.720pstream.se'+i[0],i[1]) for i in e]
+    e = [('http://hdtv.720pstream.me'+i[0],i[1]) for i in e]
     return e
 ]]></expres>
 <page>[makelist.param2]</page>
