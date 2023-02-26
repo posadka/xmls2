@@ -797,9 +797,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    u = client.request('http://playoffsstream.live/reddit-mlb-streams')
+    u = client.request('http://playoffsstream.com/reddit-mlb-streams')
     r = re.findall('(?s)block" title="([^"]*)(?:.*?f=")([^"]*)(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
-    r = [(i[0],'http://playoffsstream.live'+i[1],i[2]) for i in r if 'vs' in i[0]]
+    r = [(i[0],'http://playoffsstream.com'+i[1],i[2]) for i in r if 'vs' in i[0]]
     return r
 ]]></expres>
 <page></page>
