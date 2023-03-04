@@ -85,7 +85,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<div class="col-md-6 col-sm-6">\s*<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?name">([^<]*).*?ore">([^<]*).*?name">([^<]*).*?ore">([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://reddit.nbabite.com/</page>
+<page>https://stream.nbabite.com/</page>
 </regex>
 <regex>
 <name>lists</name>
