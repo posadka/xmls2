@@ -99,7 +99,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re,requests
     e = re.findall('var streamsMatchId\s*=\s*([^;]*)',page_data)[0]
-    r = re.findall('var streamsSport\s*=\s*"([^;"]*)',page_data)[0]
+    r = re.findall('var streamsSport\s*=\s*\'([^\']*)',page_data)[0]
     t = requests.get('https://scdn.dev/main-assets/' + e + '/' + r + '?origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
     t = t.split('Fubo',1)[-1]
     x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
