@@ -345,6 +345,8 @@ class streamer:
 
             elif 'wpstream.tv' in url: u = self.weakspell(url)
 
+            elif 'weaksports' in url: u = self.weakspell(url)
+
             elif 'liveonscore.tv' in url: u = self.weakspell(url)
 
             elif 'liveonscore.to' in url: u = self.weakspell(url)
