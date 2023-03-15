@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
 <layoutype>fuckOFF</layoutype>
-
+<item>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]NCAAB[/COLOR] [COLOR orchid]LIVE[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
+</item>
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -67,11 +71,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
-    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]NCAAB[/COLOR] [COLOR orchid]LIVE[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
-</item>
+
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (PS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -116,7 +116,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
 
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
@@ -196,38 +196,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param3][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://6stream.xyz/ncaaf-streams/')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param2]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
 <item
     <title>[COLOR orchid]¤[/COLOR] [COLOR white]NCAAB[/COLOR] [COLOR orchid] (YSS) [COLOR orchid]¤[/COLOR]</title>
