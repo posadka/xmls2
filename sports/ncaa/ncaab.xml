@@ -15,14 +15,16 @@
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-    <title>[COLOR white] [makelist.param2][/COLOR] [COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue] [makelist.param4][/COLOR] VS [COLOR orange][makelist.param5][/COLOR] [COLOR dodgerblue] [makelist.param6][/COLOR]</title>
+    <title>[COLOR white] [makelist.param2][/COLOR] [COLOR orange][makelist.param4][/COLOR] At [COLOR orange] [makelist.param5]</title>
   <link>$doregex[lists]</link>
-  <thumbnail></thumbnail>
+  <thumbnail>[makelist.param3]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
+
+    page_data = page_data.split('>NBA<',1)[-1]
     r = re.findall('(?s)<div class="col-md-6 col-sm-6">\s*<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?name">([^<]*).*?ore">([^<]*).*?name">([^<]*).*?ore">([^<]*)', page_data)
     return r
 ]]></expres>
@@ -49,7 +51,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     sort1 = [(i[0] ,i[1],i[2]) for i in x if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0] if 'streamcheck' not in i[0]]
     return sort1 + sort
 ]]></expres>
-<page>[makelist.param1]</page>
+<page>https://stream.nbabite.com[makelist.param1]</page>
 <referer></referer>
 </regex>
 <regex>
