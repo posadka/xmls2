@@ -76,8 +76,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (HIS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
