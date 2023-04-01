@@ -225,7 +225,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://6streams.tv/ncaaf-streams/')
+    url = client.schedule('https://markkystreams.com/ncaaf-streams//')
     return url
 ]]></expres>
 <page></page>
