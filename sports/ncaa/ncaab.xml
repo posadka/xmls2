@@ -33,7 +33,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>lists</name>
 <listrepeat><![CDATA[
-  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <title>[COLOR snow][lists.param2][/COLOR] [COLOR orange][lists.param1][/COLOR] [COLOR dodgerblue][lists.param3][/COLOR]</title>
   <link>$doregex[m3u]</link>
   <thumbnail>[makelist.param3]</thumbnail>
 ]]></listrepeat>
@@ -49,7 +49,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     z = re.findall('(?s)stream-link="(https:\/\/streamcheck.link[^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
     sort1 = [(i[0] ,i[1],i[2]) for i in x if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0] if 'streamcheck' not in i[0]]
-    return sort
+    return sort1
 ]]></expres>
 <page>https://stream.nbabite.com[makelist.param1]</page>
 <referer></referer>
