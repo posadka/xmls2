@@ -47,7 +47,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     t = t.split('Fubo',1)[-1]
     x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     z = re.findall('(?s)stream-link="(https:\/\/streamcheck.link[^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    sort = [(i[0] ,i[1]) for i in x]
+    sort = [(client.tinyl(i[0]) ,i[1]) for i in x]
     return sort
 ]]></expres>
 <page>https://stream.nbabite.com[makelist.param1]</page>
