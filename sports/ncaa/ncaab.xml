@@ -46,7 +46,6 @@ def GetLSProData(page_data,Cookie_Jar,m):
     t = requests.get('https://scdn.dev/main-assets/' + e + '/' + r + '?origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
     t = t.split('Fubo',1)[-1]
     x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    z = re.findall('(?s)stream-link="(https:\/\/streamcheck.link[^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     sort = [(client.tinyl(i[0]) ,i[1]) for i in x]
     return sort
 ]]></expres>
