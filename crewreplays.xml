@@ -342,8 +342,8 @@ class streamer:
             w = re.findall('t>\s*<iframe.*?src="([^"]*)', page_data)[0]
             h = 'https://bestnhl.com' + w 
             i = client.request(h)
-            t = re.findall('var strm = "([^"]*)', i)[0]
-            made = t.replace('master_desktop_complete_gdfp2','5600K/5600_complete')
+            t = re.findall('var strm = "([^"]*) ', i)[0]
+            made = t.replace('master_desktop_complete_gdfp2-trimmed','5600K/5600_complete')
             return made + '|User-Agent=At Bat/26884 CFNetwork/894 Darwin/17.4.0&Authorization=' + token
         except:
             return
