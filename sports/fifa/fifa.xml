@@ -992,7 +992,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     page_data = page_data.split('NBA Live Streams Schedule',1)[-1]
-    r = re.findall('(?s)<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)">(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>\s+([^\n]*)', page_data)
+    r = re.findall('(?s)<div class="participate-team wow fade-in-left.*?src="([^"]*).*?a >([^<]*).*?ef="([^"]*).*?an>([^<]*).*?a >([^<]*)', page_data)
     return r
 ]]></expres>
 <page>https://givemeredditstreams.xyz/soccer</page>
