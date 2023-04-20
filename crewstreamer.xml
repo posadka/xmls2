@@ -2432,6 +2432,6 @@ class streamer:
             t = client.request(r)
             x = re.findall('atob\("([^"]*)',t)[0]
             x = base64.b64decode(x).decode('utf-8')
-            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
+            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=https://fastreams.com/&Orgin=https://fastreams.com'
         except:
             return
