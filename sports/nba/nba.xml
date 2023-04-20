@@ -852,7 +852,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (REZ)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
 <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
 <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
