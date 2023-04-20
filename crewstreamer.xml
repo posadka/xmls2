@@ -235,6 +235,8 @@ class streamer:
 
             elif '60fps' in url: u = self.givemereddit(url)
 
+            elif 'givemeredditstreams.xyz' in url: u = self.givemereddit(url)
+
             elif 'givemereddit.stream' in url: u = self.givemereddit(url)
 
             elif 'givemenflstreams.com' in url: u = self.givemereddit(url)
