@@ -991,7 +991,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    page_data = page_data.split('NBA Live Streams Schedule',1)[-1]
     r = re.findall('(?s)<div class="participate-team wow fade-in-left.*?src="([^"]*).*?a >([^<]*).*?ef="([^"]*).*?an>([^<]*).*?a >([^<]*)', page_data)
     return r
 ]]></expres>
