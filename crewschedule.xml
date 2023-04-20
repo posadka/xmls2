@@ -209,6 +209,8 @@ class streamer:
 
             elif 'maxsport' in url: u = self.maxsport(url)
 
+            elif 'hdrez' in url: u = self.hdrez(url)
+
             return u
         except:
             pass
@@ -884,5 +886,19 @@ class streamer:
             s = re.findall('(?s)<div class="grid-item.*?="([^"]*).*?g>([^<]*)',page_data)
             sort = [(i[0],i[1]) for i in s if 'Polsat' not in i[1] if 'Eleven Sports 1' not in i[1] if 'Eleven Sports 2' not in i[1] if 'Eleven Sports 3' not in i[1]]
             return sorted(sort,key=lambda thecrew: (thecrew[1]))
+        except:
+            return
+
+    def hdrez(self, url):
+        try:
+            u = client.request(url)
+            items = re.findall('<script>var.*?=\s*(\[[^;]+)', u)[0]
+            items = re.findall('"(.+?)"', items)
+            subitem = int(re.findall('\(atob.+?-\s*(\d+)', u)[0])
+            srp = ''
+            for item in items:
+                srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+            link = re.findall('(?s)kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp)
+            return link
         except:
             return
