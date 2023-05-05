@@ -2260,7 +2260,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            e = re.findall('iframe src="([^"]*)',page_data)[0]
+            e = re.findall('(?s)iframe class.*?src="([^"]*)',page_data)[0]
             s = requests.get(e).text
             t = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',s)[0]
             return t + '|User-Agent=Mozilla/5.0&referer=' + e
