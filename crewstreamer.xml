@@ -609,7 +609,7 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             w = re.findall('url:\s*"([^"]*)', page_data)[0]
-            h = re.findall('data:\s\{"([^"]*)', page_data)[0]
+            h = re.findall('data:\s\{\s*"([^"]*)', page_data)[0]
             i = re.findall('var vidgstream = "([^"]*)', page_data)[0]
             t = re.findall('gethlsUrl\(vidgstream,\s([^,]*)', page_data)[0]
             e = re.findall('gethlsUrl\(vidgstream,(?:[^,]*),\s([^\)]*)', page_data)[0]
