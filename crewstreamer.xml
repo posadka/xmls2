@@ -527,6 +527,8 @@ class streamer:
 
             elif 'hdrez' in url: u = self.hdrez(url)
 
+            elif 'bingsport' in url: u = self.bingsport(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2435,5 +2437,16 @@ class streamer:
             x = base64.b64decode(x).decode('utf-8')
             headers = {"Origin": "https://fastreams.com","Referer": "https://fastreams.com/","User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0"}
             return x + '|{0}'.format(urlencode(headers))
+        except:
+            return
+
+    def bingsport(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('(?s)iframe\ssrc="([^"]*)',page_data)[0]
+            t = client.request(r)
+            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',t)[0]
+            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + r
         except:
             return
