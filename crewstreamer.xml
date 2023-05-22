@@ -277,7 +277,7 @@ class streamer:
 
             elif 'topstreams.info/nfl' in url: u = self.topstreamsnfl(url)
 
-            elif 'streameast' in url: u = self.streameastnba(url)
+            elif 'streameast' in url: u = self.streameast(url)
 
             elif 'ertech.work' in url: u = self.skuanet(url)
 
@@ -792,32 +792,8 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            w = re.findall('<iframe frameborder="0" scrolling="no" allowfullscreen="" src="([^"]*)', page_data)[0]
-            #w = re.findall('src=\&quot\;([^q]*)\&', page_data)[0]
-            i = client.request(w)
-            e = re.findall('BaglantiBilgisi = "([^"]*)', i)[0]
-            return e + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + w
-        except:
-            return
-
-    def streameastnfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('src=\&quot\;([^q]*)\&', page_data)[0]
-            i = client.request(w)
-            e = re.findall('BaglantiBilgisi = "([^"]*)', i)[0]
-            return e + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + w
-        except:
-            return
-
-    def streameastnba(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #w = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
-            #i = client.request(w)
-            e = re.findall('var BaglantiBilgisi =\s*"([^"]*)', page_data)[0]
+            w = re.findall('atob\(\'([^\']*)', page_data)[0]
+            w = base64.b64decode(w).decode('utf-8')
             return e + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url
         except:
             return
