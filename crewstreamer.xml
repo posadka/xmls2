@@ -811,12 +811,10 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('a id="n.*?href="([^"]*)', page_data)[0]
-            u = client.request(r)    
-            t = re.findall('iframe f.*?src="([^"]*)',u[0]
-            s = client.request(t)    
-            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', s)[0]
-            return x + '|user-agent=iPad&referer=' + t
+            r = re.findall('<iframe f.*?(?:source|src|file)=\s*[\'"]([^\'"]+)', page_data)[0]
+            u = client.request(r)
+            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', u)[0]
+            return x + '|user-agent=iPad&referer=' + r
         except:
             return
 
