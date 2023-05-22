@@ -213,9 +213,7 @@ class streamer:
 
             elif 'buffstream.io' in url: u = self.crackstreams(url)
 
-            elif 'methstreams.com' in url: u = self.meth(url)
-
-            elif 'rmethstreams.com' in url: u = self.meth(url)
+            elif 'methstreams' in url: u = self.meth(url)
 
             elif 'nbastreamswatch' in url: u = self.meth(url)
 
@@ -237,7 +235,7 @@ class streamer:
 
             elif '60fps' in url: u = self.givemereddit(url)
 
-            elif 'givemeredditstreams' in url: u = self.givemereddit(url)
+            elif 'givemeredditstreamsr' in url: u = self.givemereddit(url)
 
             elif 'givemereddit.stream' in url: u = self.givemereddit(url)
 
