@@ -798,7 +798,7 @@ class streamer:
             page_data = client.request(url)
             w = re.findall('atob\(\'([^\']*)', page_data)[0]
             w = base64.b64decode(w).decode('utf-8')
-            return e + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url
+            return w + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url
         except:
             return
 
