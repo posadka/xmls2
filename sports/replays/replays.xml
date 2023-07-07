@@ -857,7 +857,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/ufc/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -916,7 +916,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/wwe/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -973,7 +973,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/aew/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -1028,7 +1028,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/impact-wrestling/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -1083,7 +1083,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/roh/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -1138,7 +1138,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/indy-shows/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -1193,7 +1193,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/njpw/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -1248,7 +1248,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/pay-per-view/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
@@ -1303,7 +1303,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/https://watchprowrestling.co/category/trending/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)<div class="entry-image">\s*<a href="([^"]*)"\stitle="([^"]*).*?src="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], unescape(i[1]), i[2]) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
