@@ -1303,7 +1303,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1, 10): u += ['https://watchprowrestling.co/category/trending/page/' + str(i)]
     u = page().run(u)
     u = re.findall('(?s)ultp-block-image-opacity"><a href="([^"]*).*?src="([^"]*).*?".*?".*?".*?".*?".*?".*?" >([^<]*)', u)
-    u = [(i[0], i[1], unescape(i[2])) for i in u if 'watchprowrestling' in i[0]]
+    u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[0]]
     return u
 ]]></expres>
 <page></page>
