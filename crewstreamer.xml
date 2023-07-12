@@ -2196,7 +2196,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            #s = re.findall('(?s)iframe a.*?src="([^"]*)',page_data)[0]
+            #s = re.findall('(?s)iframe src="([^"]*)',page_data)[0]
             #t = requests.get(s,headers={"Referer": url, "User-Agent": 'Mozilla/5.0'}).text
             #pattern = r'''return\(\[([^\]]+).+?\+\s*([^\.]+).+?\+.+?"([^"]+)'''.format(t)
             #par1, par2, par3 = re.findall(pattern, t, re.DOTALL)[0]
