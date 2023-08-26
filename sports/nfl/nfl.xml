@@ -380,7 +380,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re
     page_data = client.request('[makelist.param1]')
-    r = re.findall('(?s)game-forecast-link MobildeGoster.*?ef=\'([^\']*).*?4>([^<]*)',page_data)
+    r = re.findall('(?s)id="GelecekMaclar">\s*<li class="f1-podium--item  ">.*?ef="([^"]*).*?line ">([^<]*)',page_data)
     sort = [(i[0],i[1]) for i in r if 'Stream East' not in i[1] if 'dudestream' not in i[1] if 'chenstream' not in i[1] if 'NbaStreams' not in i[1] if 'Livefreegame' not in i[1] if 'tvsportslive' not in i[1] if 'bilasport' not in i[1] if 'Dubz Streams' not in i[1] if 'Freetvlive1' not in i[1] if 'NoDelayStream' not in i[1] if 'Sportinglivestreamz' not in i[1] if 'Icelz  ' not in i[1] if 'bestnhl.com' not in i[1] if 'papahd' not in i[1] if 'Sports News' not in i[1] if 'sportsio' not in i[1] if 'Streamos' not in i[1] if 'SoccerJumboTV' not in i[1] if 'streamhd247' not in i[1] if 'babysharkstream' not in i[1] if 'Icelz' not in i[1] if 'MyGoodStream' not in i[1] if 'Semensport' not in i[1] if 'Bilasport' not in i[1] if 'Sports24' not in i[1] if 'Yoursports Stream' not in i[1] if 'sportsway' not in i[1] if 'summerstream' not in i[1] if 'RoyStream' not in i[1] if 'BuffStreams' not in i[1] if 'Time4tv' not in i[1]]
     return sort
 ]]></expres>
