@@ -133,7 +133,7 @@ class streamer:
 
             elif '123tvsports.com/category/nba-streams' in url: u = self.tvnba(url)
 
-            elif 'streameast.live' in url: u = self.streameast(url)
+            elif 'streameast' in url: u = self.streameast(url)
 
             elif 'topstreams.info/nba' in url: u = self.topstreamsnba(url)
 
