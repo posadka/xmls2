@@ -244,11 +244,79 @@ def GetLSProData(page_data,Cookie_Jar,m):
     t = t.split('Fubo',1)[-1]
     x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     z = re.findall('(?s)stream-link="(https:\/\/streamcheck.link[^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
+    sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum'in i[2] if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
     sort1 = [(i[0] ,i[1],i[2]) for i in x if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0] if 'streamcheck' not in i[0]]
     return sort1 + sort
 ]]></expres>
 <page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (CS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR dodgerblue] [makelist.param3] [/COLOR] [COLOR orange] [makelist.param2][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param6]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re,requests
+    page_data = requests.get('https://crackedstreams.ai/nfl-streams').text
+    r = re.findall('(?s)<br>\s*<a href="([^"]*).*?ing".([^<]*).*?>.*?>\s*([^<]*)\n', page_data)
+    sort = [(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7]) for i in r]
+    return sort
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
+    from resources.lib.modules import client
+    import re,requests
+    t = requests.get('https://sportscentral.io/streams-table/' + url + '/' + 'american-football' + '?new-ui=1&origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
+    t = t.split('Fubo',1)[-1]
+    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    if 'tinyurl' in z:
+        sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'tinyurl' in i[0]]
+        sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'tinyurl' in i[0]]
+        return sort + sort1
+    else:
+        sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
+        sort1 = [(i[0] ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] ]
+        return sort + sort1
+]]></expres>
+<page>[makelist.param2]</page>
 <referer></referer>
 </regex>
 <regex>
