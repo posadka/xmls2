@@ -1216,19 +1216,21 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param4][/COLOR] [COLOR dodgerblue][makelist.param5][/COLOR] [COLOR white]@[/COLOR] [COLOR dodgerblue][makelist.param2][/COLOR]</title>
+        <title>[COLOR dodgerblue][makelist.param2][/COLOR] [COLOR white]@[/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
         <link>$doregex[makelist2]</link>
-        <thumbnail>[makelist.param1]</thumbnail>
+        <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<div class="participate-team wow fade-in-left.*?src="([^"]*).*?a >([^<]*).*?ef="([^"]*).*?an>([^<]*).*?a >([^<]*)', page_data)
+    r = u.split('NFL RedZone',1)[-1]
+    r = u.split('NFL News',1)[0]
+    r = re.findall('(?s)href="([^"]*).*?name">([^<]*).*?name">([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://givemeredditstreams.xyz/nfl</page>
+<page>https://official.givemeredditstream.cc/nfl</page>
 </regex>
 <regex>
   <name>makelist2</name>
@@ -1244,7 +1246,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     if (pDialog.iscanceled()): return
     return url
 ]]></expres>
-<page>[makelist.param1]</page>
+<page>https://official.givemeredditstream.cc/[makelist.param1]</page>
 </regex>
 </item>
 
