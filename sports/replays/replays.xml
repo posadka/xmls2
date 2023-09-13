@@ -163,7 +163,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL FULL GAME REPLAYS 2021-2022 Season[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL FULL GAME REPLAYS 2023-2024 Season[/COLOR] [COLOR orchid] (FHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
@@ -171,7 +171,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <name>makelist</name>
 <listrepeat><![CDATA[
   <title>[COLOR snow][makelist.param2][/COLOR]</title>
-  <link>$doregex[play]</link>
+  <link>$doregex[play12]</link>
   <thumbnail>[makelist.param3]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
@@ -187,13 +187,28 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
         def request(self, i):
             self.r += [(i[0], site.request(i[1]))]
-    url = 'https://nflreplay.net/?cat=58&paged='
+    url = 'https://fishkernfl.com/page/'
     u = []
     for i in range(1,20): u += [url + str(i)]
     u = page().run(u)
-    r = re.findall('landscape">\s(?:.*?f=)"([^"]*)(?:.*?e=)"([^"]*)"(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)', u)
-    sort = [(i[0],i[1],i[2]) for i in r if '2021' in i[1]]
-    return sort
+    r = re.findall('(?s)<article class="post excerpt">.*?href="([^"]*).*?le="([^"]*).*?\(([^\)]*)', u)
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>playurl2</name>
+<listrepeat><![CDATA[
+        <title>[playurl2.param1]</title>
+        <link>$doregex[play]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    r = re.findall('(?s)<strong>([^<]*).*?href="([^"]*)',page_data)[0]
+    return r
 ]]></expres>
 <page></page>
 </regex>
@@ -203,11 +218,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
     import re
-    r = re.findall('(?s)<iframe(?:.*?c=)"([^"]*)',page_data)[0]
+    r = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
     r = r.replace('//','https://')
     return r
 ]]></expres>
-<page>[makelist.param1]</page>
+<page>[playurl2.param1]</page>
 </regex>
 </item>
 
