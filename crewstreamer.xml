@@ -1902,8 +1902,8 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             s =  re.findall('var servs = \["([^"]*)', page_data)[0] 
-            r =  re.findall('source: "" \+ serv \+ "([^"]*)', page_data)[0]
-            return s + r + '|user-agent=ipad&referer=https://www.pawastreams.live'
+            #r =  re.findall('source: "" \+ serv \+ "([^"]*)', page_data)[0]
+            return s + '|user-agent=ipad&referer=https://www.pawastreams.live'
         except:
             return
 
