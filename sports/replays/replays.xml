@@ -139,7 +139,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             self.r += [(i[0], client.request(i[1]))]
     def dodgycodes(s):
         return re.sub('&#(\d+);', '', s)
-    url = 'https://nfl-video.com/2022?page'
+    url = 'https://nfl-video.com/2023?page'
     u = []
     for i in range(1,15): u += [url + str(i)]
     u = page().run(u)
