@@ -213,9 +213,9 @@ class streamer:
 
             elif 'buffstream.io' in url: u = self.crackstreams(url)
 
-            elif 'methstreams' in url: u = self.meth(url)
+            elif 'rmethstreams' in url: u = self.rmeth(url)
 
-            elif 'nbastreamswatch' in url: u = self.meth(url)
+            elif 'nbastreamswatch' in url: u = self.rmeth(url)
 
             elif 'hesgoal' in url: u = self.hesgoal(url)
 
@@ -2163,11 +2163,11 @@ class streamer:
         except:
             return
 
-    def meth(self, url):
+    def rmeth(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            i = re.findall('atob\("([^"]*)', page_data)[0]
+            i = re.findall('atob\(\'([^\']*)', page_data)[0]
             i = base64.b64decode(i).decode('utf-8')
             return i + '|User-Agent=Mozilla/5.0&Referer=' + url
         except:
