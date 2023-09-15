@@ -113,7 +113,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (72)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
@@ -169,7 +169,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://uhdstreams.club/')
+    url = client.schedule('https://freehdgames.xyz/')
     return url
 ]]></expres>
 <page></page>

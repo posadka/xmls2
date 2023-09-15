@@ -81,6 +81,8 @@ class streamer:
 
             elif 'nbastreams.xyz/games/' in url: u = self.nbacrackstreams(url)
 
+            elif 'freehdgames' in url: u = self.hdstreams(url)
+
             elif 'hhdstreams.club' in url: u = self.hdstreams(url)
 
             elif 'uhdstreams.club' in url: u = self.hdstreams(url)

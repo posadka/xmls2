@@ -251,6 +251,8 @@ class streamer:
 
             elif 'tezgoal.com' in url: u = self.hdstreams(url)
 
+            elif 'freehdgames' in url: u = self.hdstreams(url)
+
             elif 'hhdstreams.club' in url: u = self.hdstreams(url)
 
             elif 'hdstreamss.club' in url: u = self.hdstreams(url)
