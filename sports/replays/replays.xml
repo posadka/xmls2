@@ -861,10 +861,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
-    sort = [(i[0], i[1]) for i in r ]
-    return sort
+    return r
 ]]></expres>
 <page></page>
 </regex>
