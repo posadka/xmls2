@@ -210,7 +210,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<strong>([^<]*).*?href="([^"]*)',page_data)[0]
     return r
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 <regex>
 <name>play</name>
