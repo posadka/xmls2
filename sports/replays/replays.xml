@@ -1185,7 +1185,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re
-    s = re.findall('iframe width="640" height="360" src="([^"]*)', page_data)[0]
+    s = re.findall('<p><iframe.*?src="([^"]*)', page_data)[0]
     return s
 ]]></expres>
 <page>[makelist.param1]</page>
