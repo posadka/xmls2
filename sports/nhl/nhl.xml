@@ -15,7 +15,7 @@
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-    <title>[COLOR white] [makelist.param1][/COLOR] [COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue] [makelist.param4][/COLOR]</title>
+    <title>[COLOR white] [makelist.param1][/COLOR]</title>
   <link>$doregex[lists]</link>
   <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -24,7 +24,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)league-name ml-2">([^<]*).*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n.', page_data)
+    r = re.findall('(?s)class="competition".*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n.', page_data)
     return r
 ]]></expres>
 <page>https://buffstreams.app/nhlstreams</page>
@@ -34,7 +34,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <listrepeat><![CDATA[
   <title>[COLOR orange][lists.param2][/COLOR] [lists.param1]</title>
   <link>$doregex[m3u]</link>
-  <thumbnail>[makelist.param3]</thumbnail>
+  <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m):
