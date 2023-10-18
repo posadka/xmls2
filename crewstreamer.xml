@@ -261,7 +261,7 @@ class streamer:
 
             elif 'uhdgames.xyz' in url: u = self.hdstreams(url)
 
-            elif 'gameshdlive' in url: u = self.hdstreams(url)
+            elif 'gameshdlive' in url: u = self.solaris(url)
 
             elif 'bfstrms.xyz' in url: u = self.buff(url)
 
