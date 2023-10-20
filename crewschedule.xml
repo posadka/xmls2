@@ -117,6 +117,8 @@ class streamer:
 
             elif 'everysports.us' in url: u = self.everysport(url)
 
+            elif 'givemeredditstream' in url: u = self.give(url)
+
             elif 'givemereddit.stream' in url: u = self.give(url)
 
             elif 'givemenbastreams.com/' in url: u = self.give(url)
@@ -371,10 +373,9 @@ class streamer:
                 
     def give(self, url):
         try:
-            u = client.request(url)
-            r = re.findall('(?s)<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)">(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>\s+([^\n]*)', u)
-            r = [(i[0],i[1],client.replaceHTMLCodes(i[2]), i[3]) for i in r if 'png' in i[1]]
-            r = [(i[0],i[1],i[2],i[3]) for i in r if 'All Games' not in i[2]]
+            page_data = client.request(url)
+            page_data = page_data.split('NFL RedZone',1)[-1]
+            r = re.findall('(?s)<a href="([^"]*).*?name">([^<]*).*?name">([^<]*)', page_data)
             return r
         except:
             return

@@ -694,7 +694,7 @@ class streamer:
             #x = re.findall('source:\s*\'([^\']*)', w)[0]
             #return x + '|User-Agent=Mozilla/5.0&Referer=' + r
             if 'iframe' in  u:
-                w = re.findall('(?s)iframe\s*src="([^"]*)', u)[0]
+                w = re.findall('(?s)iframe class="embed-responsive-item" src="([^"]*)', u)[0]
                 h = requests.get(w, headers={"Referer": w, "User-Agent": 'Mozilla/5.0'}).text
                 i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
                 t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
@@ -713,7 +713,7 @@ class streamer:
             #e = re.findall('<iframe src=.*?id=([^\\\]*)',t)[0]
             #return 'https://webdi.openhd.lol/cdn/' + e + '/tracks-v1a1/mono.m3u8'+'|{0}'.format(urlencode(headers))
         except:
-            return   
+            return
 
 #link
     def givememma(self, url):
