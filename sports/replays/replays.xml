@@ -913,14 +913,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import site
+    from resources.lib.modules import client
     import re
-    main = site.request('[makelist.param1]')
-    r = re.findall('(?s)href=\'([^\']*).*?>([^<]*)',main)
-    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
-    return sort
+    r = re.findall('(?s)<a href=\'([^\']*).*?>([^<]*)',page_data)
+    return r
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -970,12 +968,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param1]')
-    r = re.findall('(?s)href=\'([^\']*).*?>([^<]*)',main)
-    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
-    return sort
+    r = re.findall('(?s)<a href=\'([^\']*).*?>([^<]*)',page_data)
+    return r
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -1025,12 +1021,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param1]')
-    r = re.findall('(?s)href=\'([^\']*).*?>([^<]*)',main)
-    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
-    return sort
+    r = re.findall('(?s)<a href=\'([^\']*).*?>([^<]*)',page_data)
+    return r
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
