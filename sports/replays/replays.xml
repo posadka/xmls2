@@ -915,7 +915,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)href=\'([^\']*).*?>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
@@ -970,7 +970,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)href=\'([^\']*).*?>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
