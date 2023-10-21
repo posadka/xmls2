@@ -962,8 +962,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>playurl</name>
 <listrepeat><![CDATA[
-        <title>[playurl.param1]</title>
-        <link>[playurl.param2]</link>
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
         <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
@@ -971,7 +971,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param2]')
-    r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
+    r = re.findall('(?s)href=\'([^\']*).*?>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
@@ -1017,8 +1017,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>playurl</name>
 <listrepeat><![CDATA[
-        <title>[playurl.param1]</title>
-        <link>[playurl.param2]</link>
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
         <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
@@ -1026,7 +1026,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
     main = site.request('[makelist.param1]')
-    r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
+    r = re.findall('(?s)href=\'([^\']*).*?>([^<]*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
 ]]></expres>
