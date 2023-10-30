@@ -2436,7 +2436,7 @@ class streamer:
         try:
             page_data = client.request(url)
             s = requests.Session()
-            r = s.get('https://thetvapp.to/tv/ae-live-stream/', headers={"User-Agent": 'Mozilla/5.0', 'Referer': 'https://thetvapp.to/'}).text
+            r = s.get('https://thetvapp.to/tv/', headers={"User-Agent": 'Mozilla/5.0', 'Referer': 'https://thetvapp.to/'}).text
             token = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', r)[0]
             return token + '|User-Agent=Mozilla/5.0&Referer=https://thetvapp.to/'
         except:
