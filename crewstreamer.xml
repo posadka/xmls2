@@ -2434,6 +2434,7 @@ class streamer:
 
     def tvapp(self, url):
         try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             token = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
             return token + '|User-Agent=Mozilla/5.0&Referer=https://thetvapp.to/'
