@@ -912,7 +912,7 @@ class streamer:
             page_data = client.request(url)
             page_data = page_data.split('<h3>Live TV Channels<',1)[-1]
             s = re.findall('<a href="([^"]*).*?>([^<]*)',page_data)
-            sort = [(i[0],i[1].replace('amp','').replace(';','')) for i in s]
-            return 'https://thetvapp.to/tv' + sort
+            sort = [('https://thetvapp.to/tv'+i[0],i[1].replace('amp','').replace(';','')) for i in s]
+            return sort
         except:
             return
