@@ -215,6 +215,8 @@ class streamer:
 
             elif 'hdrez' in url: u = self.hdrez(url)
 
+            elif 'thetvapp' in url: u = self.tvapp(url)
+
             return u
         except:
             pass
@@ -902,5 +904,15 @@ class streamer:
                 srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
             link = re.findall('(?s)kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp)
             return link
+        except:
+            return
+
+    def tvapp(self, url):
+        try:
+            page_data = client.request(url)
+            page_data = page_data.split('<h3>Live TV Channels<',1)[-1]
+            s = re.findall('<a href="([^"]*).*?>([^<]*)',page_data)
+            sort = [(i[0],i[1].replace('amp','').replace(';','')) for i in s]
+            return 'https://thetvapp.to/tv' + sort
         except:
             return
