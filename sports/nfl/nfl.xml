@@ -1262,12 +1262,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = u.split('NFL RedZone',1)[-1]
-    r = u.split('NFL News',1)[0]
-    r = re.findall('(?s)href="([^"]*).*?name">([^<]*).*?name">([^<]*)', page_data)
-    return r
+    r = client.request('https://official.givemeredditstream.cc/nfl')
+    r = r.split('NFL RedZone',1)[-1]
+    r = r.split('NFL News',1)[0]
+    s = re.findall('(?s)href="([^"]*).*?name">([^<]*).*?name">([^<]*)', r)
+    return s
 ]]></expres>
-<page>https://official.givemeredditstream.cc/nfl</page>
+<page></page>
 </regex>
 <regex>
   <name>makelist2</name>
