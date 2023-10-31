@@ -315,7 +315,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
-    page_data = client.request('https://official.givemeredditstream.cc/nhl')
+    page_data = client.request('https://official.givemeredditstream.cc/nba')
     r = re.findall('(?s)href="(\/nba[^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
     r = [(i[0],i[1]) for i in r if 'vs' in i[1]]
     return r
