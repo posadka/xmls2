@@ -1262,10 +1262,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = client.request('https://official.givemeredditstream.cc/nfl')
-    r = r.split('NFL RedZone',1)[-1]
-    r = r.split('NFL News',1)[0]
-    s = re.findall('(?s)href="([^"]*).*?name">([^<]*).*?name">([^<]*)', r)
+    page_data = client.request('https://official.givemeredditstream.cc/nfl')
+    page_data = page_data.split('NFL RedZone',1)[-1]
+    page_data = page_data.split('NFL News',1)[0]
+    s = re.findall('(?s)href="([^"]*).*?name">([^<]*).*?name">([^<]*)', page_data)
     return s
 ]]></expres>
 <page></page>
