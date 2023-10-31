@@ -273,7 +273,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
-    import re
+    import re,base64
     x = re.findall('window.atob\(\'([^\']*)',t)[0]
     x = base64.b64decode(x).decode('utf-8')
     return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=https://www.thecrackstreams.live'
