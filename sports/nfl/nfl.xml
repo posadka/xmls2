@@ -1248,12 +1248,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (GR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR dodgerblue][makelist.param2][/COLOR] [COLOR white]@[/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
+        <title>[COLOR dodgerblue][makelist.param2][/COLOR]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -1261,12 +1262,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     page_data = client.request('https://official.givemeredditstream.cc/nfl')
-    page_data = page_data.split('NFL RedZone',1)[-1]
-    page_data = page_data.split('NFL News',1)[0]
-    s = re.findall('(?s)href="([^"]*).*?name">([^<]*).*?name">([^<]*)', page_data)
-    return s
+    r = re.findall('(?s)href="(\/nfl[^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
+    r = [(i[0],i[1]) for i in r if 'vs' in i[1]]
+    return r
 ]]></expres>
 <page></page>
 </regex>
