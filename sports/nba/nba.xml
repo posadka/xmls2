@@ -330,7 +330,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('https://official.givemeredditstream.cc[makelist.param1]')
+    url = client.external('https://givemeredditstream.cc[makelist.param1]')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
