@@ -235,19 +235,13 @@ class streamer:
 
             elif '60fps' in url: u = self.givemereddit(url)
 
-            elif 'givemeredditstream' in url: u = self.givemereddit(url)
+            elif 'givemereddit' in url: u = self.givemereddit(url)
 
-            elif 'givemeredditstreamsr' in url: u = self.givemereddit(url)
+            elif 'givemenflstreams' in url: u = self.givemereddit(url)
 
-            elif 'givemereddit.stream' in url: u = self.givemereddit(url)
+            elif 'givemenbastreams' in url: u = self.givemereddit(url)
 
-            elif 'givemenflstreams.com' in url: u = self.givemereddit(url)
-
-            elif 'givemenbastreams.com' in url: u = self.givemereddit(url)
-
-            elif 'givemeredditstreams.com' in url: u = self.givemereddit(url)
-
-            elif 'givememmastreams.com' in url: u = self.givemereddit(url)
+            elif 'givememmastreams' in url: u = self.givemereddit(url)
 
             elif 'tezgoal.com' in url: u = self.hdstreams(url)
 
