@@ -7,204 +7,6 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (TIE)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-  <name>makelist</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.external('http://blacktiesports.to/redzone/')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (1s)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-  <name>makelist</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.external('http://1stream.top/title-game/MTk4NzY0MQ==?sport=american-football')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (GR)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-  <name>makelist</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.external('https://givemenflstreams.com/nflstream/redzone-stream')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (W4)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param2][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import control
-    import re
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    page_data = page_data.split('<strong>Reddit NFL Streams',1)[-1]
-    page_data = page_data.split('</span></span>',1)[0]
-    e = re.findall('(?s)<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
-    return e
-]]></expres>
-<page>http://wpstream.tv/category/nfl-streams/</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param1]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (RL)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-  <name>makelist</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.external('http://ripple.stream/nflstreams/nfl-redzone-live-stream')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE SICILANO (OR)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-  <name>makelist</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.external('http://ace08.usite.pro/flag1009/0.html?sport=american-football')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE DIRECTS[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
-    <link>
-        <sublink>http://cdn.crackstreams.net/live/redzone/index.m3u8|user-agent=ipad&referer=http://crackstreams.net/emb/nfl/redzone.php</sublink>
-        <sublink>http://tracka.azureedge.net/show/redzone/playlist.m3u8</sublink>
-        <sublink>http://cdn.odece.xyz/9.m3u8|Referer=http://cdn.odece.xyz/9.php</sublink>
-    </link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-</item>
-
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (NBTO)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<link>$doregex[makelist]</link>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR white] [makelist.param2][/COLOR] [COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue] VS [/COLOR] [COLOR orange][makelist.param4][/COLOR] </title>
-  <link>$doregex[lists]</link>
-  <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    import re
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<a target="_blank" href="([^"]*).*?14">([^<]*).*?ld">([^<]*).*?ld">([^<]*)', page_data)
-    return r
-]]></expres>
-<page>https://www.nflbite.to/</page>
-</regex>
-<regex>
-<name>lists</name>
-<listrepeat><![CDATA[
-  <title>[COLOR snow][lists.param2][/COLOR]</title>
-  <link>$doregex[m3u]</link>
-  <thumbnail>[makelist.param3]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m):
-    from resources.lib.modules import client
-    import re,requests
-    e = re.findall('(?s)value="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>.*?>.*?>([^<]*).*?>.*?>.*?>([^<]*)',page_data)
-    sort = [(i[0] ,i[1],i[2]) for i in e if 'soccermlbstream' not in i[1]]
-    return sort  
-]]></expres>
-<page>[makelist.param1]</page>
-<referer></referer>
-</regex>
-<regex>
-<name>m3u</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import xbmc,xbmcgui
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[lists.param1]')
-    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
-    pDialog.close()
-    if (pDialog.iscanceled()): return
-    return url
-]]></expres>
-<page>[lists.param1]</page>
-<referer></referer>
-</regex>
-</item>
-
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
@@ -267,73 +69,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (CS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<link>$doregex[makelist]</link>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR dodgerblue] [makelist.param3] [/COLOR] [COLOR orange] [makelist.param2][/COLOR]</title>
-  <link>$doregex[lists]</link>
-  <thumbnail>[makelist.param6]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    import re,requests
-    page_data = requests.get('https://crackedstreams.ai/nfl-streams').text
-    r = re.findall('(?s)<br>\s*<a href="([^"]*).*?ing".([^<]*).*?>.*?>\s*([^<]*)\n', page_data)
-    sort = [(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7]) for i in r]
-    return sort
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>lists</name>
-<listrepeat><![CDATA[
-  <title>[COLOR snow][lists.param2][/COLOR]</title>
-  <link>$doregex[m3u]</link>
-  <thumbnail>[makelist.param3]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
-    from resources.lib.modules import client
-    import re,requests
-    t = requests.get('https://sportscentral.io/streams-table/' + url + '/' + 'american-football' + '?new-ui=1&origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
-    t = t.split('Fubo',1)[-1]
-    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    if 'tinyurl' in z:
-        sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'tinyurl' in i[0]]
-        sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'tinyurl' in i[0]]
-        return sort + sort1
-    else:
-        sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
-        sort1 = [(i[0] ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] ]
-        return sort + sort1
-]]></expres>
-<page>[makelist.param2]</page>
-<referer></referer>
-</regex>
-<regex>
-<name>m3u</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import xbmc,xbmcgui
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[lists.param1]')
-    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
-    pDialog.close()
-    if (pDialog.iscanceled()): return
-    return url
-]]></expres>
-<page>[lists.param1]</page>
-<referer></referer>
-</regex>
-</item>
 
 <item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (SC)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -406,70 +141,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (SRS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<link>$doregex[makelist]</link>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR orange][makelist.param2] [/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
-  <link>$doregex[lists]</link>
-  <thumbnail>[makelist.param1]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    import re
-    page_data = client.request('https://v2.sportsurge.net/list-nfl')
-    page_data = page_data.split('>NFL - Sportsurge Streams',1)[-1]
-    page_data = page_data.split('<footer class=',1)[0]
-    #s = re.findall('(?s)<a href="([^"]*).*?h4>([^<]*).*?h4>.*?h4>([^<]*).*?;">([^<]*)',page_data)
-    s = re.findall('(?s)<a href="([^"]*).*?tle="([^"]*).*?;">.*?;">.*?;">.*?;">([^<]*)',page_data)
-    #r = [('https://v2.sportsurge.net/'+i[0],i[1],i[2],i[3]) for i in s]
-    r = [('https://v2.sportsurge.net/'+i[0],i[1],i[2]) for i in s]
-    return r
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>lists</name>
-<listrepeat><![CDATA[
-  <title>[COLOR snow][lists.param2][/COLOR]</title>
-  <link>$doregex[m3u]</link>
-  <thumbnail>[makelist.param3]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m):
-    from resources.lib.modules import client
-    import re
-    page_data = client.request('[makelist.param1]')
-    r = re.findall('(?s)id="GelecekMaclar">\s*<li class="f1-podium--item  ">.*?ef="([^"]*).*?line ">([^<]*)',page_data)
-    sort = [(i[0],i[1]) for i in r if 'Stream East' not in i[1] if 'dudestream' not in i[1] if 'chenstream' not in i[1] if 'NbaStreams' not in i[1] if 'Livefreegame' not in i[1] if 'tvsportslive' not in i[1] if 'bilasport' not in i[1] if 'Dubz Streams' not in i[1] if 'Freetvlive1' not in i[1] if 'NoDelayStream' not in i[1] if 'Sportinglivestreamz' not in i[1] if 'Icelz  ' not in i[1] if 'bestnhl.com' not in i[1] if 'papahd' not in i[1] if 'Sports News' not in i[1] if 'sportsio' not in i[1] if 'Streamos' not in i[1] if 'SoccerJumboTV' not in i[1] if 'streamhd247' not in i[1] if 'babysharkstream' not in i[1] if 'Icelz' not in i[1] if 'MyGoodStream' not in i[1] if 'Semensport' not in i[1] if 'Bilasport' not in i[1] if 'Sports24' not in i[1] if 'Yoursports Stream' not in i[1] if 'sportsway' not in i[1] if 'summerstream' not in i[1] if 'RoyStream' not in i[1] if 'BuffStreams' not in i[1] if 'Time4tv' not in i[1]]
-    return sort
-]]></expres>
-<page>[makelist.param1]</page>
-<referer></referer>
-</regex>
-<regex>
-<name>m3u</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import xbmc,xbmcgui
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[lists.param1]')
-    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
-    pDialog.close()
-    if (pDialog.iscanceled()): return
-    return url
-]]></expres>
-<page>[lists.param1]</page>
-<referer></referer>
-</regex>
-</item>
+
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (1S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -508,44 +180,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     return url
 ]]></expres>
 <page>[makelist.param1]</page>
-</regex>
-</item>
-
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (HIS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue][makelist.param4][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>https://ww.hitstreams.live/[makelist.param2]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re
-    s = re.findall('(?s)<div class="media-body">\s*<a href="([^"]*).*?rc="([^"]*).*?e;">\s*([^<]*).*?e;">([^<]*)',page_data)
-    return s
-]]></expres>
-<page>https://ww.hitstreams.live/nflstreams.php</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import xbmc,xbmcgui
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('https://ww.hitstreams.live/[makelist.param1]')
-    pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
-    pDialog.close()
-    if (pDialog.iscanceled()): return
-    return url
-]]></expres>
-<page></page>
 </regex>
 </item>
 
@@ -588,89 +222,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (PS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param1][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import control
-    import re
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('btn-info.*title="([^"]*)".*href="([^"]*)"[\s\S]*?img.*?src.*?src="([^"]*)', page_data)
-    return r
-]]></expres>
-<page>http://playoffsstream.com/reddit-nfl-streams</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
-    from resources.lib.modules import client
-    import xbmc,xbmcgui
-    whitehat = 'http://playoffsstream.com' + url
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external(whitehat)
-    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
-    pDialog.close()
-    if (pDialog.iscanceled()): return
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (72)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param1][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import control
-    import re
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)btn-secondary\" title = "([^"]*)" href = "([^"]*).+?src="([^"]*)', page_data)
-    return r
-]]></expres>
-<page>http://hdtv.720pstream.me/nfl-streams</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
-    from resources.lib.modules import client
-    import xbmc,xbmcgui
-    whitehat = 'http://hdtv.720pstream.me' + url
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external(whitehat)
-    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
-    pDialog.close()
-    if (pDialog.iscanceled()): return
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
@@ -704,72 +255,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (RN)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param3] [makelist.param4] [makelist.param5][/COLOR] [COLOR dodgerblue][makelist.param1] [makelist.param2][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://bdnewszh.com/nfl/')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param6]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (NU)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR orange][makelist.param2][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>http://6stream.xyz/wp-content/uploads/2019/11/11-1-1024x576.jpg</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://nflup.live/')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param1]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -798,39 +283,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
     url = client.external('[makelist.param1]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (GR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param3][/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>http://6stream.xyz/wp-content/uploads/2019/11/11-1-1024x576.jpg</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://official.givemeredditstream.cc/nfl')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('https://official.givemeredditstream.cc[makelist.param1]')
     return url
 ]]></expres>
 <page></page>
@@ -874,38 +326,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (TS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param2] [makelist.param3][/COLOR] @ [COLOR orange][makelist.param5] [makelist.param6][/COLOR] </title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>http://6stream.xyz/wp-content/uploads/2019/11/11-1-1024x576.jpg</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://topstreams.info')
-    return url
-]]></expres>
-<page>http://topstreams.info/</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('http://topstreams.info/nfl/[makelist.param6]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (AM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -947,87 +367,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (P2P)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR dodgerblue][makelist.param4][/COLOR] [makelist.param1] [COLOR orange][makelist.param3][/COLOR]</title>
-    <link>$doregex[player]</link>
-    <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://p2pstreams.live/football-streams')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>player</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param2]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (FREEFEDS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-        <title>[makelist.param1] [COLOR orange][B][makelist.param2][/B] [/COLOR] [COLOR lime][B][makelist.param3][/B] [/COLOR]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail>[makelist.param2]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import re
-    page_data = page_data.split('NFL schedule',1)[-1]
-    page_data = page_data.split('Boxing schedule',1)[0]
-    s = re.findall('<h3>([^<]*)|box">([^<]*)|(?s)URL.*?ue="([^"]*)', page_data)
-    return s
-]]></expres>
-<page>https://freefeds.com/</page>
-</regex>
-<regex>
-  <name>makelist2</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re,requests,time,json
-    try: from urllib import urlencode
-    except ImportError: from urllib.parse import urlencode
-    murl='[makelist.param3]';now=int((int(time.time()) + 86400) * 1000)
-    source=requests.get(murl,headers={'user-agent':'Mozilla/5.0','referer':'https://sportsbay.org/','accept':'*/*'}).text
-    if 'm3u8' in source:
-        strurl = re.findall('Clappr.Player[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)',source)[0]+'|user-agent=ipad&origin=https://freefeds.com&referer=https://freefeds.com/'
-        return strurl
-    else :     
-        teleID=re.findall('embed/(\d+)\.',source)[0]
-        r=requests.get('https://teleriumtv.com/streams/%s/%s.json'%(teleID,now),headers={'user-agent':'Mozilla/5.0','referer':'https://teleriumtv.com/embed/%s.html'%teleID,'accept':'*/*'},cookies={'volume':'0'}).json()
-        strurl=r.get('url');netloc='https://teleriumtv.com'
-        headers={'user-agent': 'Mozilla/5.0','origin':netloc,'referer':'https://teleriumtv.com/embed/%s.html'%teleID}
-        if r.get('tokenurl'):
-          strurl += requests.get(netloc+r.get('tokenurl'),headers=headers).json()[10][::-1]
-        strurl=strurl if strurl.startswith('http') else 'https:'+strurl
-        return strurl+'|{0}'.format(urlencode(headers))
-]]></expres>
-<page></page>
-</regex>
-</item>
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (MK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -1117,71 +456,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (TI)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-    <title>[COLOR orange][makelist.param1][/COLOR]</title>
-    <link>$doregex[player]</link>
-        <thumbnail>http://6stream.xyz/wp-content/uploads/2019/11/11-1-1024x576.jpg</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://blacktiesports.net/category/NFL')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>player</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param2]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (MM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[crewschedule]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
-<regex>
-<name>crewschedule</name>
-<listrepeat><![CDATA[
-<title>[COLOR orange][crewschedule.param1] [crewschedule.param3][/COLOR] [COLOR orange][crewschedule.param2][/COLOR]</title>
-<link>$doregex[play]</link>
-        <thumbnail></thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://mazymedias.com/schedule/nflstreams/')
-    return url
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>play</name>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    url = client.external('[crewschedule.param4]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
 
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (GR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
@@ -1613,4 +888,497 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (PS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param1][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    r = re.findall('btn-info.*title="([^"]*)".*href="([^"]*)"[\s\S]*?img.*?src.*?src="([^"]*)', page_data)
+    return r
+]]></expres>
+<page>http://playoffsstream.com/reddit-nfl-streams</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    whitehat = 'http://playoffsstream.com' + url
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external(whitehat)
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (72)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param1][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    r = re.findall('(?s)btn-secondary\" title = "([^"]*)" href = "([^"]*).+?src="([^"]*)', page_data)
+    return r
+]]></expres>
+<page>http://hdtv.720pstream.me/nfl-streams</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    whitehat = 'http://hdtv.720pstream.me' + url
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external(whitehat)
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (TIE)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+  <name>makelist</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.external('http://blacktiesports.to/redzone/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (1s)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+  <name>makelist</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.external('http://1stream.top/title-game/MTk4NzY0MQ==?sport=american-football')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (GR)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+  <name>makelist</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.external('https://givemenflstreams.com/nflstream/redzone-stream')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (W4)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param2][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = page_data.split('<strong>Reddit NFL Streams',1)[-1]
+    page_data = page_data.split('</span></span>',1)[0]
+    e = re.findall('(?s)<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
+    return e
+]]></expres>
+<page>http://wpstream.tv/category/nfl-streams/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param1]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE HANSON (RL)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+  <name>makelist</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.external('http://ripple.stream/nflstreams/nfl-redzone-live-stream')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE SICILANO (OR)[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+  <name>makelist</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.external('http://ace08.usite.pro/flag1009/0.html?sport=american-football')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+
+<item
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE DIRECTS[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>http://cdn.crackstreams.net/live/redzone/index.m3u8|user-agent=ipad&referer=http://crackstreams.net/emb/nfl/redzone.php</sublink>
+        <sublink>http://tracka.azureedge.net/show/redzone/playlist.m3u8</sublink>
+        <sublink>http://cdn.odece.xyz/9.m3u8|Referer=http://cdn.odece.xyz/9.php</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl_redzone.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (NBTO)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR white] [makelist.param2][/COLOR] [COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue] VS [/COLOR] [COLOR orange][makelist.param4][/COLOR] </title>
+  <link>$doregex[lists]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    r = re.findall('(?s)<a target="_blank" href="([^"]*).*?14">([^<]*).*?ld">([^<]*).*?ld">([^<]*)', page_data)
+    return r
+]]></expres>
+<page>https://www.nflbite.to/</page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re,requests
+    e = re.findall('(?s)value="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>.*?>.*?>([^<]*).*?>.*?>.*?>([^<]*)',page_data)
+    sort = [(i[0] ,i[1],i[2]) for i in e if 'soccermlbstream' not in i[1]]
+    return sort  
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (SRS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param2] [/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
+  <link>$doregex[lists]</link>
+  <thumbnail>[makelist.param1]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    page_data = client.request('https://v2.sportsurge.net/list-nfl')
+    page_data = page_data.split('>NFL - Sportsurge Streams',1)[-1]
+    page_data = page_data.split('<footer class=',1)[0]
+    #s = re.findall('(?s)<a href="([^"]*).*?h4>([^<]*).*?h4>.*?h4>([^<]*).*?;">([^<]*)',page_data)
+    s = re.findall('(?s)<a href="([^"]*).*?tle="([^"]*).*?;">.*?;">.*?;">.*?;">([^<]*)',page_data)
+    #r = [('https://v2.sportsurge.net/'+i[0],i[1],i[2],i[3]) for i in s]
+    r = [('https://v2.sportsurge.net/'+i[0],i[1],i[2]) for i in s]
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>lists</name>
+<listrepeat><![CDATA[
+  <title>[COLOR snow][lists.param2][/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail>[makelist.param3]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m):
+    from resources.lib.modules import client
+    import re
+    page_data = client.request('[makelist.param1]')
+    r = re.findall('(?s)id="GelecekMaclar">\s*<li class="f1-podium--item  ">.*?ef="([^"]*).*?line ">([^<]*)',page_data)
+    sort = [(i[0],i[1]) for i in r if 'Stream East' not in i[1] if 'dudestream' not in i[1] if 'chenstream' not in i[1] if 'NbaStreams' not in i[1] if 'Livefreegame' not in i[1] if 'tvsportslive' not in i[1] if 'bilasport' not in i[1] if 'Dubz Streams' not in i[1] if 'Freetvlive1' not in i[1] if 'NoDelayStream' not in i[1] if 'Sportinglivestreamz' not in i[1] if 'Icelz  ' not in i[1] if 'bestnhl.com' not in i[1] if 'papahd' not in i[1] if 'Sports News' not in i[1] if 'sportsio' not in i[1] if 'Streamos' not in i[1] if 'SoccerJumboTV' not in i[1] if 'streamhd247' not in i[1] if 'babysharkstream' not in i[1] if 'Icelz' not in i[1] if 'MyGoodStream' not in i[1] if 'Semensport' not in i[1] if 'Bilasport' not in i[1] if 'Sports24' not in i[1] if 'Yoursports Stream' not in i[1] if 'sportsway' not in i[1] if 'summerstream' not in i[1] if 'RoyStream' not in i[1] if 'BuffStreams' not in i[1] if 'Time4tv' not in i[1]]
+    return sort
+]]></expres>
+<page>[makelist.param1]</page>
+<referer></referer>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[lists.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[lists.param1]</page>
+<referer></referer>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (P2P)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR dodgerblue][makelist.param4][/COLOR] [makelist.param1] [COLOR orange][makelist.param3][/COLOR]</title>
+    <link>$doregex[player]</link>
+    <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://p2pstreams.live/football-streams')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (FREEFEDS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[makelist.param1] [COLOR orange][B][makelist.param2][/B] [/COLOR] [COLOR lime][B][makelist.param3][/B] [/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import re
+    page_data = page_data.split('NFL schedule',1)[-1]
+    page_data = page_data.split('Boxing schedule',1)[0]
+    s = re.findall('<h3>([^<]*)|box">([^<]*)|(?s)URL.*?ue="([^"]*)', page_data)
+    return s
+]]></expres>
+<page>https://freefeds.com/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    import re,requests,time,json
+    try: from urllib import urlencode
+    except ImportError: from urllib.parse import urlencode
+    murl='[makelist.param3]';now=int((int(time.time()) + 86400) * 1000)
+    source=requests.get(murl,headers={'user-agent':'Mozilla/5.0','referer':'https://sportsbay.org/','accept':'*/*'}).text
+    if 'm3u8' in source:
+        strurl = re.findall('Clappr.Player[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)',source)[0]+'|user-agent=ipad&origin=https://freefeds.com&referer=https://freefeds.com/'
+        return strurl
+    else :     
+        teleID=re.findall('embed/(\d+)\.',source)[0]
+        r=requests.get('https://teleriumtv.com/streams/%s/%s.json'%(teleID,now),headers={'user-agent':'Mozilla/5.0','referer':'https://teleriumtv.com/embed/%s.html'%teleID,'accept':'*/*'},cookies={'volume':'0'}).json()
+        strurl=r.get('url');netloc='https://teleriumtv.com'
+        headers={'user-agent': 'Mozilla/5.0','origin':netloc,'referer':'https://teleriumtv.com/embed/%s.html'%teleID}
+        if r.get('tokenurl'):
+          strurl += requests.get(netloc+r.get('tokenurl'),headers=headers).json()[10][::-1]
+        strurl=strurl if strurl.startswith('http') else 'https:'+strurl
+        return strurl+'|{0}'.format(urlencode(headers))
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (TI)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param1][/COLOR]</title>
+    <link>$doregex[player]</link>
+        <thumbnail>http://6stream.xyz/wp-content/uploads/2019/11/11-1-1024x576.jpg</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('http://blacktiesports.net/category/NFL')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>player</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[makelist.param2]')
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (MM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[crewschedule]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<regex>
+<name>crewschedule</name>
+<listrepeat><![CDATA[
+<title>[COLOR orange][crewschedule.param1] [crewschedule.param3][/COLOR] [COLOR orange][crewschedule.param2][/COLOR]</title>
+<link>$doregex[play]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('https://mazymedias.com/schedule/nflstreams/')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>play</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    url = client.external('[crewschedule.param4]')
+    return url
+]]></expres>
+<page></page>
+</regex>
 </item>
