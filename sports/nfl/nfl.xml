@@ -205,15 +205,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (BF)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-    <title>[COLOR white] [makelist.param1][/COLOR] [COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue] [makelist.param4][/COLOR]</title>
+    <title>[COLOR orange] [makelist.param1][/COLOR]</title>
   <link>$doregex[lists]</link>
   <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -222,7 +222,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)league-name ml-2">([^<]*).*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n.', page_data)
+    r = re.findall('(?s)class="competition".*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n.', page_data)
     return r
 ]]></expres>
 <page>https://buffstreams.app/nflstreams</page>
@@ -232,22 +232,18 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <listrepeat><![CDATA[
   <title>[COLOR orange][lists.param2][/COLOR] [lists.param1]</title>
   <link>$doregex[m3u]</link>
-  <thumbnail>[makelist.param3]</thumbnail>
+  <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re,requests
-    #e = re.findall('var streamsMatchId\s*=\s*([^;]*)',page_data)[0]
-    #r = re.findall('var streamsSport\s*=\s*"([^;"]*)',page_data)[0]
-    #t = requests.get('https://scdn.dev/main-assets/' + e + '/' + r + '?origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
-    #t = t.split('Fubo',1)[-1]
-    t = requests.get('[makelist.param3]').text
+    t = requests.get('[makelist.param2]').text
     x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?platinum">([^<]*)',t)
-    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?silver">([^<]*)',t)
-    sort = [(client.tinyl(i[0]) ,i[1],i[2],i[3]) for i in x if 'Platinum'in i[2] if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
-    sort1 = [(i[0] ,i[1],i[2],i[3]) for i in z  if 'Silver'in i[2] if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0] if 'streamcheck' not in i[0]]
-    return sort + sort1
+    #z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    sort = [(client.tinyw(i[0]) ,i[1],i[2]) for i in x if 'Platinum'in i[2] if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreams' not in i[0]]
+    #sort1 = [(client.tinyw(i[0] ,i[1]) for i in z ]
+    return sort #+ sort1
 ]]></expres>
 <page></page>
 <referer></referer>
