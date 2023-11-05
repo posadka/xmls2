@@ -223,6 +223,8 @@ class streamer:
 
             elif 'thecrackstreams.live' in url: u = self.thecslive(url)
 
+            elif 'buffstreams.app' in url: u = self.thecslive(url)
+
             elif 'crackstreams.net' in url: u = self.csnetmma(url)
 
             elif 'mmastreams.site' in url: u = self.csnetmma(url)
