@@ -221,6 +221,8 @@ class streamer:
 
             elif 'thecrackstreams.net' in url: u = self.thecsnet(url)
 
+            elif 'thecrackstreams.live' in url: u = self.thecslive(url)
+
             elif 'crackstreams.net' in url: u = self.csnetmma(url)
 
             elif 'mmastreams.site' in url: u = self.csnetmma(url)
@@ -2004,6 +2006,16 @@ class streamer:
             h = re.findall('e":"([^"]*)', e)[0]
             a = base64.b64decode(h).decode('utf-8')
             return a + '|user-agent=iPad&referer=http://thecrackstreams.net/'
+        except:
+            return
+
+    def thecslive(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = requests.get(url).text
+            x = re.findall('window.atob\(\'([^\']*)',page_data)[0]
+            x = base64.b64decode(x).decode('utf-8')
+            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=https://www.thecrackstreams.live'
         except:
             return
 
