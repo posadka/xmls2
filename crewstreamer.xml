@@ -219,23 +219,11 @@ class streamer:
 
             elif 'hesgoal' in url: u = self.hesgoal(url)
 
-            elif 'thecrackstreams.net' in url: u = self.thecsnet(url)
+            elif 'thecrackstreams.net' in url: u = self.thecslive(url)
 
             elif 'thecrackstreams.live' in url: u = self.thecslive(url)
 
             elif 'buffstreams.app' in url: u = self.thecslive(url)
-
-            elif 'crackstreams.net' in url: u = self.csnetmma(url)
-
-            elif 'mmastreams.site' in url: u = self.csnetmma(url)
-
-            elif 'nflstreams.link' in url: u = self.csnetnfl(url)
-
-            elif 'rackstreams.net/nfl-streams' in url: u = self.csnetnfl(url)
-
-            elif 'nbastreams.xyz' in url: u = self.crackstreams(url)
-
-            elif 'nbastreams123.xyz' in url: u = self.crackstreams(url)
 
             elif '60fps' in url: u = self.givemereddit(url)
 
@@ -1464,7 +1452,7 @@ class streamer:
             r = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             s = client.request(r)
             w = re.findall('(?s)source:\s"([^"]*)', s)[0]
-            return w + '|user-agent=ipad&referer=http://crackstreams.net/nflstreams.php'
+            return w + '|user-agent=ipad&referer=http://thecrackstreams.net/nflstreams.php'
         except:
             return
 
@@ -2000,18 +1988,7 @@ class streamer:
         except:
             return
 
-    def thecsnet(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            w = re.findall('url: \'([^\']*)', page_data)[0]
-            t = 'http://thecrackstreams.net' + w
-            e = requests.get(t).text
-            h = re.findall('e":"([^"]*)', e)[0]
-            a = base64.b64decode(h).decode('utf-8')
-            return a + '|user-agent=iPad&referer=http://thecrackstreams.net/'
-        except:
-            return
+
 
     def thecslive(self, url):
         try:
