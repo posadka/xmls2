@@ -80,7 +80,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <listrepeat><![CDATA[
     <title>[COLOR white] [makelist.param3] [/COLOR] [COLOR dodgerblue] [makelist.param7] - [makelist.param8][/COLOR] [COLOR orange] [makelist.param5] vs [makelist.param4][/COLOR]</title>
   <link>$doregex[lists]</link>
-  <thumbnail>[makelist.param6]</thumbnail>
+  <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -111,8 +111,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
     t = t.split('Fubo',1)[-1]
     z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     if 'tinyurl' in z:
-        sort = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1] if 'tinyurl' in i[0]]
-        sort1 = [(client.tinyl(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2] if 'tinyurl' in i[0]]
+        sort = [(client.tinyw(i[0]) ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
+        sort1 = [(client.tinyw(i[0]) ,i[1],i[2]) for i in z if 'Gold Standard' in i[2]]
         return sort + sort1
     else:
         sort = [(i[0] ,i[1],i[2]) for i in z if 'Platinum' in i[2] if 'natharaky' not in i[1]]
