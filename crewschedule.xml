@@ -217,6 +217,8 @@ class streamer:
 
             elif 'thetvapp' in url: u = self.tvapp(url)
 
+            elif 'score808.football' in url: u = self.score(url)
+
             return u
         except:
             pass
@@ -913,5 +915,13 @@ class streamer:
             s = re.findall('<a href="([^"]*).*?>([^<]*)',page_data)
             sort = [('https://thetvapp.to'+i[0],i[1].replace('amp','').replace(';','')) for i in s]
             return sort
+        except:
+            return
+
+    def score(self, url):
+        try:
+            page_data = client.request(url)
+            s = re.findall('(?s)k" href="([^"]*).*?2">([^<]*).*?2">([^<]*)',page_data)
+            return s
         except:
             return
