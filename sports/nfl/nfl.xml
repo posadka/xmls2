@@ -539,6 +539,46 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (REZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<link>$doregex[makelist]</link>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+  <title>[COLOR orange][makelist.param1][/COLOR] [COLOR dodgerblue] [makelist.param2] [/COLOR] [COLOR white][makelist.param3][/COLOR] [COLOR dodgerblue] [makelist.param4] [/COLOR]</title>
+  <link>$doregex[m3u]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('https://hdrez.com/schedule2.php?category=nfl')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+<name>m3u</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[makelist.param5]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page></page>
+<referer></referer>
+</regex>
+</item>
+
 <item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (SCORE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
