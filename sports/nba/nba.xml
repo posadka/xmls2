@@ -7,7 +7,7 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (NBTO)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
@@ -27,7 +27,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a target="_blank" href="([^"]*).*?14">.*?ld">([^<]*).*?ld">([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://nbabite.to/</page>
+<page>https://reddit1.nbabite.to/</page>
 </regex>
 <regex>
 <name>lists</name>
@@ -41,10 +41,11 @@ def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re,requests
     e = re.findall('(?s)value="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>.*?>.*?>([^<]*).*?>.*?>.*?>([^<]*)',page_data)
-    sort = [(i[0] ,i[1],i[2]) for i in e]
-    return sort  
+    sort = [(i[0] ,i[1],i[2]) for i in e if 'Platinum' in i[2] ]
+    sort1 = [(i[0] ,i[1],i[2]) for i in e if 'Gold' in i[2] ]
+    return sort + sort1 
 ]]></expres>
-<page>[makelist.param1]</page>
+<page>https://reddit1.nbabite.to[makelist.param1]</page>
 <referer></referer>
 </regex>
 <regex>
