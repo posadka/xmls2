@@ -527,6 +527,8 @@ class streamer:
 
             elif 'worldcupglory' in url: u = self.worldcupglory(url)
 
+            elif 'headlines.footybite.to' in url: u = self.worldcupglory(url)
+
             elif 'headlines.reddit-soccerstreams' in url: u = self.headlines(url)
 
             else: u = self.generic(url)
