@@ -533,6 +533,8 @@ class streamer:
 
             elif 'backfirstwo' in url: u = self.backfirstwo(url)
 
+            elif 'streambtw' in url: u = self.streambtw(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2483,5 +2485,14 @@ class streamer:
             t = client.request(r)
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',t)[0]
             return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + r
+        except:
+            return
+                
+    def streambtw(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',page_data)[0]
+            return r + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
         except:
             return
