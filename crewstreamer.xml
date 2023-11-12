@@ -525,6 +525,8 @@ class streamer:
 
             elif 'score808.football' in url: u = self.score(url)
 
+            elif 'worldcupglory' in url: u = self.worldcupglory(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2440,4 +2442,15 @@ class streamer:
             token = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
             return token + '|User-Agent=Mozilla/5.0&Referer=' + url
         except:
-            return 
+            return
+                
+    def worldcupglory(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('(?s)first-iframe">.*?src="([^"]*)',page_data)[0]
+            t = client.request(r)
+            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',t)[0]
+            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + r
+        except:
+            return
