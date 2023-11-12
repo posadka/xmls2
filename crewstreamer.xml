@@ -535,6 +535,8 @@ class streamer:
 
             elif 'streambtw' in url: u = self.streambtw(url)
 
+            elif 'livespor' in url: u = self.streambtw(url)
+
             else: u = self.generic(url)
 
             return u
