@@ -431,7 +431,7 @@ class streamer:
 
             elif 'sporteks.net' in url: u = self.sporteks(url)
 
-            elif 'pawastreams.live' in url: u = self.pawastreams(url)
+            elif 'pawastreams' in url: u = self.pawastreams(url)
 
             elif 'supertipz.com' in url: u = self.supertipz(url)
 
@@ -1907,9 +1907,11 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            s =  re.findall('var servs = \["([^"]*)', page_data)[0] 
-            #r =  re.findall('source: "" \+ serv \+ "([^"]*)', page_data)[0]
-            return s + '|user-agent=ipad&referer=https://www.pawastreams.live'
+            s =  re.findall('(?s)"><iframe.*?src="([^"]*)', page_data)[0] 
+            r = client.request(s)
+            x = re.findall('atob\(\'([^\']*)', r)[0]
+            t = base64.b64decode(x).decode('utf-8')
+            return s + '|user-agent=ipad&referer=' + r
         except:
             return
 
