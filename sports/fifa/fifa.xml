@@ -193,7 +193,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (UHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
@@ -245,7 +245,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     sort = [(i[0] ,i[1],i[2]) for i in s if 'Soccer' in i[0]]
     return sort
 ]]></expres>
-<page>https://gameshdlive.xyz/</page>
+<page>https://gameshdlive.net/</page>
 </regex>
 <regex>
   <name>makelist2</name>
