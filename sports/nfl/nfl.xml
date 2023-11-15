@@ -253,11 +253,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <listrepeat><![CDATA[
         <title>[COLOR orange][makelist.param2][/COLOR]</title>
         <link>$doregex[makelist2]</link>
-        <thumbnail>[makelist.param2]</thumbnail>
+        <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import control
+    from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     e = re.findall('(?s)title">\s<a href="([^"]*)" >\s*([^<]*)', page_data)
@@ -279,7 +279,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     if (pDialog.iscanceled()): return
     return url
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
