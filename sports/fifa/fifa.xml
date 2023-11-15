@@ -89,7 +89,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    e = re.findall('(?s)title">\s<a href="([^"]*)" >\s*([^<]*)\s\s\s', page_data)
+    e = re.findall('(?s)title">\s<a href="([^"]*)" >\s*([^<]*)', page_data)
     return e
 ]]></expres>
 <page>https://pawastreams.info/soccer-streams/</page>
