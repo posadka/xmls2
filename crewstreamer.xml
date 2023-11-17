@@ -225,6 +225,8 @@ class streamer:
 
             elif 'buffstreams.app' in url: u = self.thecslive(url)
 
+            elif 'buffstreams.ai' in url: u = self.thecslive(url)
+
             elif '60fps' in url: u = self.givemereddit(url)
 
             elif 'givemereddit' in url: u = self.givemereddit(url)
