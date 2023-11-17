@@ -411,7 +411,7 @@ class streamer:
 
             elif 'cricworld.club' in url: u = self.cricworld(url)
 
-            elif 'nflscoop.net' in url: u = self.capp(url)
+            elif 'nflscoop' in url: u = self.capp(url)
 
             elif 'nflbuzz.xyz' in url: u = self.capp(url)
 
@@ -475,7 +475,7 @@ class streamer:
 
             elif 'sportsallday.net' in url: u = self.silverspoon(url)
 
-            elif 'sportsupa' in url: u = self.silverspoon(url)
+            elif 'sportsupa' in url: u = self.sportsupa(url)
 
             elif 'maxsport' in url: u = self.maxsport(url)
 
@@ -2500,5 +2500,16 @@ class streamer:
             page_data = client.request(url)
             r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',page_data)[0]
             return r + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
+        except:
+            return
+                
+    def sportsupa(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            r = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
+            s = client.request(r)
+            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return w + '|User-Agent=Mozilla/5.0&Referer=' + url
         except:
             return
