@@ -340,7 +340,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     s = re.findall('(?s)ff;">([^<]*).*?>([^<]*).*?"([^"]*)',page_data)
-    sort = [(i[0].replace('&#','').replace('8212','').replace(';','') ,i[1],i[2]) for i in s if 'NFL' in i[1]]
+    sort = [(i[0].replace('&#','').replace('8212','').replace(';','') ,i[1].replace('&#','').replace('8212','').replace(';',''),i[2]) for i in s if 'NFL' in i[1]]
     return sort
 ]]></expres>
 <page>https://gameshdlive.net/</page>
