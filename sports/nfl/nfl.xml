@@ -680,7 +680,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)class="competition".*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n.', page_data)
+    r = re.findall('(?s)class="competition".*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n..*?<b>([^<]*)', page_data)
     return r
 ]]></expres>
 <page>https://buffstreams.ai/nfl</page>

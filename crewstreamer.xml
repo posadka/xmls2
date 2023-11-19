@@ -2421,7 +2421,7 @@ class streamer:
     def hdrez(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
+            page_data = requests.get(url).text
             r = re.findall('(?s)wrap">\s<iframe.*?src="([^"]*)',page_data)[0]
             t = client.request(r)
             x = re.findall('(?s)m3u8URL="([^"]*)',t)[0]

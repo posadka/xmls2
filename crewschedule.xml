@@ -896,7 +896,7 @@ class streamer:
 
     def hdrez(self, url):
         try:
-            u = client.request(url)
+            u = requests.get(url).text
             items = re.findall('<script>var.*?=\s*(\[[^;]+)', u)[0]
             items = re.findall('"(.+?)"', items)
             subitem = int(re.findall('\(atob.+?-\s*(\d+)', u)[0])
