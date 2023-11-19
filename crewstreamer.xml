@@ -411,7 +411,7 @@ class streamer:
 
             elif 'cricworld.club' in url: u = self.cricworld(url)
 
-            elif 'nflscoop' in url: u = self.capp(url)
+            elif 'nflscoop' in url: u = self.sportsupa(url)
 
             elif 'nflbuzz.xyz' in url: u = self.capp(url)
 
