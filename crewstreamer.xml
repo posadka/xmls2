@@ -355,6 +355,8 @@ class streamer:
 
             elif 'ufckhabib.com' in url: u = self.ufckhabib(url)
 
+            elif 'sportsurge.stream' in url: u = self.ufckhabib(url)
+
             elif 'ovostreams' in url: u = self.ovostreams(url)
 
             elif 'sportschamp' in url: u = self.ovostreams(url)
