@@ -111,6 +111,8 @@ class streamer:
 
             elif 'azulitostreams.com' in url: u = self.azulito(url)
 
+            elif 'fabtech' in url: u = self.azulito(url)
+
             elif 'chimxoan.net' in url: u = self.skuanet(url)
 
             elif 'viafb.site/' in url: u = self.skuanet(url)
