@@ -47,8 +47,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
     import re,requests
     t = requests.get('https://scdn.dev/main-assets/' + url + '/' + 'soccer' + '?origin=sportscentral.io', headers={'user-agent':'iPad','referer':'https://sportscentral.io'}).text
     t = t.split('Fubo',1)[-1]
-    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    sort = [(client.tinyw(i[0]) ,i[1],i[2]) for i in z if 'streamcheck' in i[0] ]
+    z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
+    sort = [(client.tinyw(i[0]) ,i[1],i[2]) for i in z if 'streamcheck' in i[0] if 'Platinum' in i[2] if 'Gold Standard' in i[2]]
     return sort
 ]]></expres>
 <page>[makelist.param7]</page>
