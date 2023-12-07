@@ -2051,7 +2051,7 @@ class streamer:
     def onestream(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
+            page_data = requests.get(url).text
             #r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
             #s = re.findall('cdn\s*=\s*\["([^"]*)', page_data)[0]
             #x = base64.b64decode(r).decode("ascii")
