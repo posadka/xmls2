@@ -2512,6 +2512,6 @@ class streamer:
             r = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
             s = client.request(r)
             w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return w + '|User-Agent=Mozilla/5.0&Referer=' + url
+            return w + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A120.0)%20Gecko%2F20100101%20Firefox%2F120.0&Referer=https%3A%2F%2Fnflscoop.xyz%2F'
         except:
             return
