@@ -312,7 +312,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
-    page_data = client.request('https://givemeredditstream.cc/nba')
+    page_data = client.request('https://givemeredditstreams.xyz/nba')
     r = re.findall('(?s)href="(\/nba[^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
     r = [(i[0],i[1]) for i in r if 'vs' in i[1]]
     return r
@@ -327,7 +327,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('https://givemeredditstream.cc[makelist.param1]')
+    url = client.external('https://givemeredditstreams.xyz[makelist.param1]')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
