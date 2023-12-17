@@ -1004,7 +1004,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </dir>
 
 
-<dir>
+<dir
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA[/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/ufc.xml</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
