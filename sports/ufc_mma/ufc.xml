@@ -114,7 +114,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param2]'):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (SRS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
