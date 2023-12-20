@@ -387,6 +387,8 @@ class streamer:
 
             elif 'bdnewszh' in url: u = self.ranionfl(url)
 
+            elif 'epllive.net' in url: u = self.ranionfl(url)
+
             elif 'streamspass' in url: u = self.ranionfl(url)
 
             elif 'recipemam.com' in url: u = self.recipemam(url)
