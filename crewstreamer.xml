@@ -1656,10 +1656,10 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            w = 'http:' + w if w.startswith('//') else w
+            w = 'https:' + w if w.startswith('//') else w
             i = client.request(w, headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36',"Orgin": 'http://rainostreams.com', "Referer": 'http://rainostreams.com/'})
-            z = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', i)[0]
-            z = 'http:' + z if z.startswith('//') else z
+            z = re.findall('(?:source|file|m3u8URL)=\s*[\'"]([^\'"]+)', i)[0]
+            z = 'https:' + z if z.startswith('//') else z
             return z + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=' + w
         except:
             return
