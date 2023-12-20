@@ -162,7 +162,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR dodgerblue][makelist.param1][/COLOR] [COLOR orange][makelist.param3][/COLOR]</title>
+        <title>[COLOR dodgerblue][makelist.param1][/COLOR] [COLOR dodgerblue][makelist.param4][/COLOR] [COLOR orange][makelist.param3][/COLOR]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -171,7 +171,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     page_data = client.request('https://methstreams.app/soccer/schedule')
-    r = re.findall('(?s)<h2>([^<]*)|<a href=\'([^\']*).*?ing\'>\s*([^<]*)\n', page_data)
+    r = re.findall('(?s)<h2>([^<]*)|<a href=\'([^\']*).*?ing\'>\s*([^<]*)\n.*?p>\s*([^<]*)\n', page_data)
     return r
 ]]></expres>
 <page></page>
