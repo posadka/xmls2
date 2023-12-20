@@ -340,12 +340,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (MA)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
-<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
-<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
+<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR deepblue][makelist.param1][/COLOR] [COLOR orange][makelist.param3][/COLOR]</title>
+        <title>[COLOR orange][makelist.param2][/COLOR]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -354,8 +354,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     page_data = client.request('https://methstreams.app/nba/schedule')
-    r = re.findall('(?s)<h2>([^<]*)|<a href=\'([^\']*).*?ing\'>\s*([^<]*)\n', page_data)
-    r = [(i[0],i[1],i[2]) for i in r if 'NBA' in i[0]]
+    page_data = page_data.split('NBA Live Streams and Schedule',1)[-1]
+    page_data = page_data.split('NCAA Men Live Streams and Schedule',1)[0]
+    r = re.findall('(?s)<a href=\'([^\']*).*?ing\'>\s*([^<]*)\n', page_data)
     return r
 ]]></expres>
 <page></page>
@@ -368,7 +369,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re,base64,xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    s = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)
+    s = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
     r = client.request(s)
     x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',r)[0]
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
@@ -376,7 +377,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     if (pDialog.iscanceled()): return
     return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + s
 ]]></expres>
-<page>[makelist.param2]</page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
