@@ -1399,12 +1399,12 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            w = re.findall('p>\s*<iframe src="([^"]*)',page_data)[0]
+            w = re.findall('(?s)iframe-wrapper">\s*<iframe src="([^"]*)',page_data)[0]
             h = 'http://elixx.xyz' + w
             i = requests.get(h).text
             t = re.findall('<iframe src="([^"]*)',i)[0]
             white = 'https:' + t
-            e = requests.get(white).text
+            e = requests.get(white, headers={'user-agent':'iPad','referer':t}).text
             z = re.findall('(?s)<iframe.*?src="([^"]*)',e)[0]
             hat = 'https:' + z
             pink = requests.get(hat, headers={'user-agent':'iPad','referer':t}).text
