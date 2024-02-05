@@ -134,7 +134,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)class="competition".*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n.', page_data)
     return r
 ]]></expres>
-<page>https://buffstreams.app/soccer</page>
+<page>https://buffstreams.app/soccerstreams</page>
 </regex>
 <regex>
 <name>makelist2</name>
