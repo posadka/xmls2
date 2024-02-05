@@ -832,7 +832,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
 </regex>
 </item>
 
-<item>
+<itemg
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (BIKE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
