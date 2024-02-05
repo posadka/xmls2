@@ -425,7 +425,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (SSS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
@@ -769,11 +769,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    e = re.findall('(?s)(\w+\:\w+)\s*([^|]*)\|(.*?php)', page_data)
+    e = re.findall('(?s)(\w+\:\w+)\s*([^|]*)\|\s(.*?php)', page_data)
     sort = [(i[0],i[1],i[2].replace(' ','')) for i in e]
     return sort
 ]]></expres>
-<page>https://sportsonline.to/prog.txt</page>
+<page>https://sportsonline.gl/prog.txt</page>
 </regex>
 <regex>
 <name>play</name>
