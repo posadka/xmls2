@@ -729,8 +729,8 @@ class streamer:
         try:
             page_data = client.request(url)
             e = re.findall('(?s)<div class="ctpage"><a href="([^"]*).*?ing">([^<]*).*?p>([^<]*)', page_data)
-            sort = [(i[0],i[1].replace('\xc5\x82',' ').replace('&',' ').replace('#',' ').replace('8211',' ').replace(',',' '),i[2])for i in e]
-            return sort
+            #sort = [(i[0],i[1].replace('\xc5\x82',' ').replace('&',' ').replace('#',' ').replace('8211',' ').replace(',',' '),i[2])for i in e]
+            return e#sort
         except:
             return
 
