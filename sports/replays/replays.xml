@@ -709,9 +709,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -732,7 +732,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/wwe/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -749,7 +749,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
@@ -766,9 +766,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -789,7 +789,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/aew/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -806,7 +806,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
@@ -821,9 +821,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -844,7 +844,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/impact-wrestling/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -861,7 +861,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
     return r
 ]]></expres>
@@ -875,9 +875,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -898,7 +898,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/roh/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -918,7 +918,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a href=\'([^\']*).*?>([^<]*)',page_data)
     return r
 ]]></expres>
-<page>[makelist.param2]</page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -928,9 +928,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -951,7 +951,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/indy-shows/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -971,7 +971,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a href=\'([^\']*).*?>([^<]*)',page_data)
     return r
 ]]></expres>
-<page>[makelist.param2]</page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -981,9 +981,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -1004,7 +1004,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/njpw/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -1024,7 +1024,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a href=\'([^\']*).*?>([^<]*)',page_data)
     return r
 ]]></expres>
-<page>[makelist.param2]</page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -1034,9 +1034,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -1057,7 +1057,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/pay-per-view/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -1074,7 +1074,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
@@ -1089,9 +1089,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[makelist.param1]</title>
+        <title>[makelist.param3]</title>
         <link>$doregex[playurl]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -1112,7 +1112,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1, 10): u += ['https://watchprowrestling.co/categorys/trending/page/' + str(i)]
     u = page().run(u)
-    u = re.findall('(?s)<a class="clip-link.*?le="([^"]*)" href="([^"]*).*?src="([^"]*)', u)
+    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
     u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
     return u
 ]]></expres>
@@ -1129,7 +1129,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site
     import re
-    main = site.request('[makelist.param2]')
+    main = site.request('[makelist.param1]')
     r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
     sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
     return sort
