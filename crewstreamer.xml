@@ -253,6 +253,8 @@ class streamer:
 
             elif 'gameshdlive' in url: u = self.solaris(url)
 
+            elif 'gamehdlive' in url: u = self.solaris(url)
+
             elif 'bfstrms.xyz' in url: u = self.buff(url)
 
             elif 'ntgdhsgfs.re/' in url: u = self.buff(url)
