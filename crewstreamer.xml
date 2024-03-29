@@ -85,7 +85,7 @@ class streamer:
 
             elif 'markky88.com' in url: u = self.markky(url)
 
-            elif 'markkystreams.com' in url: u = self.markky(url)
+            elif 'markkystreams' in url: u = self.markky(url)
 
             elif '6stream.xyz' in url: u = self.markky(url)
 

@@ -61,7 +61,7 @@ class streamer:
 
             elif '6stream.xyz' in url: u = self.sixstream(url)
 
-            elif 'markkystreams.com/' in url: u = self.sixstream(url)
+            elif 'markkystreams' in url: u = self.sixstream(url)
 
             elif '6streams.tv' in url: u = self.sixstream(url)
 
