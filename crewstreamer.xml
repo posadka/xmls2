@@ -219,6 +219,8 @@ class streamer:
 
             elif 'hesgoal' in url: u = self.hesgoal(url)
 
+            elif 'meth-streams' in url: u = self.thecslive(url)
+
             elif 'thecrackstreams.net' in url: u = self.thecslive(url)
 
             elif 'thecrackstreams.live' in url: u = self.thecslive(url)
