@@ -2199,6 +2199,7 @@ class streamer:
             if 'atob' in h:
                 i = re.findall('atob\("([^"]*)', h)[0]
                 i = base64.b64decode(i).decode('utf-8')
+                return i + '|User-Agent=Mozilla/5.0&Referer=' + url
             else:
                 i = re.findall('(?s)source src="([^"]*)', h)[0] 
                 return i + '|User-Agent=Mozilla/5.0&Referer=' + url
