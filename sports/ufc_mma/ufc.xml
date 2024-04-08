@@ -174,6 +174,47 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (MS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = page_data.split('MLB Live and Schedule',1)[-1]
+    r = re.findall('(?s)<a href=\'([^\']*).*?ing\'>([^-]*).*?p>([^<]*)', page_data)
+    return r
+]]></expres>
+<page>https://methstreams.com/mma-streams/1/</page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[makelist.param1]')
+    pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[makelist.param1]</page>
+</regex>
+</item>
+
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (DS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
