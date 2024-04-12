@@ -1090,7 +1090,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]RUGBY REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>https://i.guim.co.uk/img/media/bf0c095c20092815cb1c80f206c0debd193345db/0_69_3500_2101/master/3500.jpg?width=605&quality=45&auto=format&fit=max&dpr=2&s=e1c476b16c9795c53cd2728b87813ab1</thumbnail>
     <fanart></fanart>
@@ -1139,7 +1139,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]F1 / MOTO GP / NASCAR REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
