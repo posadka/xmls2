@@ -277,7 +277,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NBA REPLAYS 2022-2023[/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NBA REPLAYS [/COLOR] [COLOR orchid] (BV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
 <link>$doregex[makelist]</link>
@@ -303,7 +303,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             self.r += [(i[0], client.request(i[1]))]
     def dodgycodes(s):
         return re.sub('&#(\d+);', '', s)
-    url = 'https://basketball-video.com/2022-23/?page'
+    url = 'https://basketball-video.com/2023-24/?page'
     u = []
     for i in range(1,15): u += [url + str(i)]
     u = page().run(u)
@@ -327,7 +327,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NBA FULL REPLAYS[/COLOR] [COLOR orchid] (FM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nbatv.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>>
