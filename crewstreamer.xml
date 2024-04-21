@@ -537,6 +537,8 @@ class streamer:
 
             elif 'hdrez' in url: u = self.hdrez(url)
 
+            elif 'sporthaze' in url: u = self.hdrez(url)
+
             elif 'bingsport' in url: u = self.bingsport(url)
 
             elif 'thetvapp' in url: u = self.tvapp(url)
