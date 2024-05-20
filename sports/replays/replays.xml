@@ -29,7 +29,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             self.r += [(i[0], client.request(i[1]))]
     def dodgycodes(s):
         return re.sub('&#(\d+);', '', s)
-    url = 'https://www.boxingfightsvideos.com/category/full-fight/page/'
+    url = 'https://boxingfightsvideos.com/category/boxeo/page/'
     u = []
     for i in range(1,8): u += [url + str(i)]
     u = page().run(u)
