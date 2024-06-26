@@ -1622,8 +1622,13 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return r + '?&connection=keepalive' + '|Referer=' + url 
+            if 'atob' in page_data:
+                i = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
+                t = base64.b64decode(i).decode('utf-8')
+                return t + '?&connection=keepalive' + '|Referer=' + url
+            else:
+                r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+                return r + '?&connection=keepalive' + '|Referer=' + url 
         except:
             return
 
