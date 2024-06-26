@@ -1622,17 +1622,8 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            if 'iframe' in  u:
-                t = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
-                u = requests.get(t).text
-                x = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', u)[0]
-                s = requests.get(x).text
-                z = re.findall('window.atob\(\'([^\']*)', s)[0]
-                z = base64.b64decode(i).decode('utf-8')
-                return r + '?&connection=keepalive' + '|Referer=' + url 
-            else:
-                r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-                return r + '?&connection=keepalive' + '|Referer=' + x 
+            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            return r + '?&connection=keepalive' + '|Referer=' + url 
         except:
             return
 
