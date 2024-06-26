@@ -171,6 +171,8 @@ class streamer:
 
             elif 'sportsurge.stream' in url: u = self.ufckhabib(url)
 
+            elif 'crackstreamer.net' in url: u = self.csbiz(url)
+
             elif 'crackstreams.biz' in url: u = self.csbiz(url)
 
             elif 'crackstreams.dev' in url: u = self.csbiz(url)

@@ -375,6 +375,8 @@ class streamer:
 
             elif 'crackstreams.biz' in url: u = self.csbiz(url)
 
+            elif 'crackstreamer.net' in url: u = self.csbiz(url)
+
             elif 'crackstreams.dev' in url: u = self.csbiz(url)
 
             elif 'crackstreams.club' in url: u = self.csbiz(url)
