@@ -734,7 +734,7 @@ class streamer:
     def csbiz(self, url):
         try:
             page_data = client.request(url)
-            page_data = page_data.split('MLB Live Streams and Schedule',1)[-1]
+            page_data = page_data.split('Formula 1 Streams',1)[-1]
             e = re.findall('(?s)<a href="([^"]*).*?ing">([^<]*).*?>.*?>\s*([^<]*)\n', page_data)
             #sort = [(i[0],i[1].replace('\xc5\x82',' ').replace('&',' ').replace('#',' ').replace('8211',' ').replace(',',' '),i[2])for i in e]
             return e#sort
