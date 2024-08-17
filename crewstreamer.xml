@@ -381,6 +381,8 @@ class streamer:
 
             elif 'crackstreams.club' in url: u = self.csbiz(url)
 
+            elif 'crackedstreams.ai' in url: u = self.csbiz(url)
+
             elif 'crackstreams.is' in url: u = self.csis(url)
 
             elif 'nbastreams.gg' in url: u = self.csis(url)
