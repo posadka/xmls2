@@ -1063,7 +1063,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<div class="participate-team wow fade-in-left.*?src="([^"]*).*?ml">([^<]*).*?ef="([^"]*).*?an>([^<]*).*?ml">([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://givemeredditstreams.xyz/nba</page>
+<page>https://givemeredditstreams.xyz/mma</page>
 </regex>
 <regex>
   <name>makelist2</name>
