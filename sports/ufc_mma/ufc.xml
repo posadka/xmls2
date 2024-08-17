@@ -824,7 +824,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (HELENA)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[crewschedule]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -963,7 +963,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://ufckhabib.com/')
+    url = client.schedule('https://sportsurge.stream/')
     return url
 ]]></expres>
 <page></page>
