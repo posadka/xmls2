@@ -369,6 +369,8 @@ class streamer:
 
             elif 'soccerstreams.football' in url: u = self.ovostreams(url)
 
+            elif 'easy-sport.tv' in url: u = self.ovostreams(url)
+
             elif 'tv247.us' in url: u = self.tvtwofour(url)
 
             elif 'myoplay.club' in url: u = self.myoplay(url)
@@ -1606,7 +1608,7 @@ class streamer:
             page_data = client.request(url)
             hat = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
             h = requests.get(hat).text
-            s = re.findall('var\s(?:source|src|file)\s*=\s*[\'"]([^\'"]+)',h)[0]
+            s = re.findall('(https?:\/\/[^\s]+\.m3u8)',h)[0]
             return s + '|User-Agent=Mozilla/5.0&Referer=' + hat
         except:
             return
