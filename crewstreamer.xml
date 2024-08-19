@@ -563,6 +563,8 @@ class streamer:
 
             elif 'livespor' in url: u = self.streambtw(url)
 
+            elif 'mlbstreams.ai' in url: u = self.mlbstreamsai(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2546,5 +2548,14 @@ class streamer:
             s = client.request(r)
             w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', s)[0]
             return w + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A120.0)%20Gecko%2F20100101%20Firefox%2F120.0&Referer=https%3A%2F%2Fnflscoop.xyz%2F'
+        except:
+            return
+
+    def mlbstreamsai(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            e = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]; e = base64.b64decode(e).decode('utf-8')
+            return r + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
         except:
             return
