@@ -92,7 +92,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>lists</name>
 <listrepeat><![CDATA[
-  <title>[COLOR orange][lists.param2][/COLOR] [lists.param1]</title>
+  <title>[COLOR orange][lists.param1][/COLOR]</title>
   <link>$doregex[m3u]</link>
   <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
@@ -101,11 +101,9 @@ def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re,requests
     t = requests.get('[makelist.param2]').text
-    x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?platinum">([^<]*)',t)
-    #z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    sort = [(client.tinyw(i[0]) ,i[1],i[2]) for i in x if 'Platinum'in i[2] if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreamer' not in i[0]]
-    #sort1 = [(client.tinyw(i[0] ,i[1]) for i in z ]
-    return sort #+ sort1
+    x = re.findall('(?s)ml-2">([^<]*).*?href="([^"]*)',t)
+    sort = [(i[0] ,i[1]) for i in x]
+    return sort
 ]]></expres>
 <page></page>
 <referer></referer>
@@ -118,7 +116,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[lists.param1]')
+    url = client.external('[lists.param2]')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
