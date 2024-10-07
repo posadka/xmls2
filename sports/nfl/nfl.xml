@@ -1641,3 +1641,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <page></page>
 </regex>
 </item>
+
+<plugin>
+<name>Testings</name>
+<link>plugin://plugin.video.thecrew/?action=developer</link>
+<thumbnail></thumbnail>
+</plugin>
