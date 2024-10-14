@@ -584,7 +584,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://methstreams.com/get-nflstreams/live6/</page>
+<page>https://methstreams.com/get-nflstreams/live11/</page>
 </regex>
 <regex>
 <name>player</name>
