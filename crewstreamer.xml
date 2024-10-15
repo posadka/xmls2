@@ -1251,7 +1251,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            r = re.findall('(https?:\/\/[^\s]+\.m3u8)', page_data)[0]
             return r + '|User-Agent=iPad&Referer=' + url
         except:
             return
