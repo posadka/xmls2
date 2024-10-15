@@ -2209,7 +2209,7 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
+            w = re.findall('(?s)<iframe w.*?src="([^"]*)', page_data)[0]
             h = client.request(w)
             if 'atob' in h:
                 i = re.findall('atob\("([^"]*)', h)[0]
