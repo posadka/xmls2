@@ -668,7 +668,7 @@ class streamer:
             crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
         except: pass
         made = crew.replace('\\', '')
-        return made + '?&connection=keepalive' + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&Referer=' + url
+        return made + '?&connection=keepalive' + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&Referer=https%3A%2F%2Fmethstreams.to%2F'
 
 #link  
     def crackstreams(self, url):
