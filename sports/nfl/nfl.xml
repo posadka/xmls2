@@ -1066,7 +1066,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR dodgerblue][makelist.param2] [/COLOR] [COLOR orange][makelist.param4][/COLOR]</title>
+        <title>[COLOR orange][makelist.param2]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -1074,8 +1074,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
-    page_data = client.request('https://weakspell.to/category/nfl-streams/')
-    r = re.findall('(?s)<a href="([^"]*)" c.*?alt="([^"]*).*?src="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', page_data)
+    page_data = client.request('https://methstreams.to/nflstreams/')
+    r = re.findall('(?s)class="styled-list-item">\s*<a href="([^"]*)".*?_name">([^<]*)', page_data)
     return r
 ]]></expres>
 <page></page>

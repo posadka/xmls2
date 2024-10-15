@@ -213,6 +213,8 @@ class streamer:
 
             elif 'buffstream.io' in url: u = self.crackstreams(url)
 
+            elif 'methstreams.to' in url: u = self.weakspell(url)
+
             elif 'methstreams' in url: u = self.rmeth(url)
 
             elif 'nbastreamswatch' in url: u = self.rmeth(url)
