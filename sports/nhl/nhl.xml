@@ -575,7 +575,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
-    page_data = client.request('https://methstreams.app/nhl/schedule')
+    page_data = client.request('https://v1.methstreams.app/nhl/schedule')
     r = re.findall('(?s)<h2>([^<]*)|<a href=\'([^\']*).*?ing\'>\s*([^<]*)\n.*?p>\s*([^<]*)\n.*?p>\s*([^<]*)\n', page_data)
     return r
 ]]></expres>
