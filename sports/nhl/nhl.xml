@@ -146,7 +146,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NHL LIVE[/COLOR] [COLOR orchid] (P2P)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nhl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nhl_fanart.jpg</fanart>
