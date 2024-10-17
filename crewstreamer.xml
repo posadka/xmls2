@@ -567,6 +567,8 @@ class streamer:
 
             elif 'mlbstreams.ai' in url: u = self.mlbstreamsai(url)
 
+            elif 'naughtyblog' in url: u = self.naughtyblog(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2562,5 +2564,17 @@ class streamer:
             page_data = client.request(url)
             e = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]; e = base64.b64decode(e).decode('utf-8')
             return r + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
+        except:
+            return
+
+    def naughtyblog(self, url):
+        try:           
+            u = client.request(url)
+            u = u.split('<strong>Download:', 1)[-1]; u = u.split('<strong>Watch online:', 1)[0]
+            r = re.findall('(?s)<a h(?:[^=]*)=(?:[^=]*)="([^"]*)(?:[^>]*)>([^<]*)', u)
+            hosts = ['Rapidgator','Uploaded']; e =[]
+            for i in r:
+                if any(x for x in hosts if x in i[0]): e.append((i[0].replace('Direct Link',''),i[1]))
+            return e
         except:
             return
