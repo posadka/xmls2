@@ -27,6 +27,8 @@ class streamer:
 
             elif 'ufcstreams.net/nbastreams.php' in url: u = self.bslivenba(url)
 
+            elif 'crackstreams.app' in url: u = self.csbiz(url)
+
             elif 'crackstreams.ac/nflstreams' in url: u = self.crackacnfl(url)
 
             elif 'thecrackstreams.net/nflstreams' in url: u = self.thecsnetnfl(url)

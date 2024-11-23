@@ -158,12 +158,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)class="competition".*?title="Buffstreams([^"]*)"\s*href="([^"]*).*?score">\s*([^<]*)\n.', page_data)
     return r
 ]]></expres>
-<page>https://buffstreams.ai/nfl</page>
+<page>https://buffstreams.app/nflstreams</page>
 </regex>
 <regex>
 <name>lists</name>
 <listrepeat><![CDATA[
-  <title>[COLOR orange][lists.param2][/COLOR] [lists.param1]</title>
+  <title>[COLOR orange][lists.param1][/COLOR]</title>
   <link>$doregex[m3u]</link>
   <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
@@ -172,11 +172,9 @@ def GetLSProData(page_data,Cookie_Jar,m):
     from resources.lib.modules import client
     import re,requests
     t = requests.get('[makelist.param2]').text
-    x = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*).*?platinum">([^<]*)',t)
-    #z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
-    sort = [(client.tinyw(i[0]) ,i[1],i[2]) for i in x if 'Platinum'in i[2] if 'p2pstreams' not in i[0] if 'sportinglive' not in i[0] if 'DAZN' not in i[1] if 'ripplestream4u' not in i[0] if 'espnonline' not in i[0] if 'papahd' not in i[0] if 'stakes100' not in i[0] if 'cr8soccer' not in i[0] if 'topstreamer' not in i[0]]
-    #sort1 = [(client.tinyw(i[0] ,i[1]) for i in z ]
-    return sort #+ sort1
+    x = re.findall('(?s)ml-2">([^<]*).*?href="([^"]*)',t)
+    sort = [(i[0] ,i[1]) for i in x]
+    return sort
 ]]></expres>
 <page></page>
 <referer></referer>
@@ -189,7 +187,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[lists.param1]')
+    url = client.external('[lists.param2]')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
@@ -421,7 +419,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (MK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
@@ -436,7 +434,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://markkystreams.com/ncaaf-streams/')
+    url = client.schedule('https://v.markkystreams.com/cfb-streams//')
     return url
 ]]></expres>
 <page></page>
@@ -446,7 +444,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
     url = client.external('[makelist.param2]')
+    pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
     return url
 ]]></expres>
 <page></page>
@@ -456,8 +460,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
@@ -467,26 +471,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import site,workers,control
+    from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    import re
-
-    class page:
-        def run(self, r):
-            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
-            for i in r: threads.append(workers.Thread(self.request, i))
-            [i.start() for i in threads] ; [i.join() for i in threads]
-            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
-        def request(self, i):
-            self.r += [(i[0], site.request(i[1]))]
-
-    url = 'http://crackstreams.biz/cfbstreams/page/'
-    u = []
-    for i in range(1,7): u += [url + str(i)]
-    u = page().run(u)
-    e = re.findall('(?s)<div class="ctpage"><a href="([^"]*).*?ing">([^<]*).*?p>([^<]*)', u)
-    sort = [(i[0],i[1].replace('\xc5\x82',' '),i[2])for i in e]
-    return sort
+    url = client.schedule('https://ws.crackstreams.app/ncaa-streams')
+    return url
 ]]></expres>
 <page></page>
 </regex>
@@ -495,7 +483,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
     url = client.external('[makelist.param1]')
+    pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
     return url
 ]]></expres>
 <page></page>
@@ -572,48 +566,38 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (SOL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (SO)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-    <title>[COLOR orange][makelist.param2][/COLOR]</title>
+    <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
         <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
+        <thumbnail>http://6stream.xyz/wp-content/uploads/2019/11/11-1-1024x576.jpg</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import site,workers,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     import re
-
-    class page:
-        def run(self, r):
-            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
-            for i in r: threads.append(workers.Thread(self.request, i))
-            [i.start() for i in threads] ; [i.join() for i in threads]
-            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
-        def request(self, i):
-            self.r += [(i[0], site.request(i[1]))]
-
-    url = 'http://bestsolaris.com/category/cfbstreams/page/'
-    u = []
-    for i in range(1,5): u += [url + str(i)]
-    u = page().run(u)
-    r = re.findall('f1-podium--item">\s*<a href="([^"]*)(?s).*?ize">([^<]*)', u)
-    sort = [(i[0],i[1].replace('\xc2\xa0','').replace('&','').replace('#','').replace('8211','').replace(';','')) for i in r]
-    return sort
+    r = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>.*?>\s([^<]*).*?>.*?>.*?>.*?>\s([^<]*)', page_data)
+    return r
 ]]></expres>
-<page></page>
+<page>https://v3.bestsolaris.com/cfbstreams1/</page>
 </regex>
 <regex>
   <name>makelist2</name>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
     url = client.external('[makelist.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
     return url
 ]]></expres>
 <page></page>
