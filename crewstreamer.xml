@@ -459,6 +459,8 @@ class streamer:
 
             elif 'pawastreams' in url: u = self.pawastreams(url)
 
+            elif 'boltcast.info' in url: u = self.pawastreams(url)
+
             elif 'supertipz.com' in url: u = self.supertipz(url)
 
             elif 'dubsstreamz.com' in url: u = self.dubsstreamz(url)
@@ -2121,7 +2123,7 @@ class streamer:
             #encryptedStreamUrl = re.findall('"source":"([^"]*)', streamPostResponse)[0]
             encryptedStreamUrl = re.findall('source: window.atob\("([^"]*)', page_data)[0]
             decryptedStreamUrl = base64.b64decode(encryptedStreamUrl).decode('utf-8')
-            return decryptedStreamUrl + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0&Referer=https%3A%2F%2F1stream.eu%2F'
+            return decryptedStreamUrl + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0&Referer=https://googlapisapi.com/'
         except:
             return
 
