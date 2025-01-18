@@ -744,7 +744,7 @@ class streamer:
                 t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
                 e = re.findall('source:\s*\'([^\']*)',t)[0]
                 e = e.replace('\\','')
-                return e + '|User-Agent=Mozilla/5.0&Referer=' + w
+                return e + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&Referer=https://givemereddit.eu/&Orgin=https://givemereddit.eu'
             else:
                 i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(u)[0]
                 t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
