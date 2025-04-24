@@ -165,12 +165,6 @@ class streamer:
 
             elif 'everysports.us/view/nfl' in url: u = self.everysportsnfl(url)
 
-            elif 'volokit.com/all-games/nhl' in url: u = self.volokitnhl(url)
-
-            elif 'volokit.com/all-games/mlb' in url: u = self.volokitmlb(url)
-
-            elif 'volokit.com/volostream/nfl-games' in url: u = self.volokitnfl(url)
-
             elif 'volokit2' in url: u = self.volokit2(url)
 
             elif 'sportsstatsme.net/watch/NHL-streams' in url: u = self.ssnhl(url)
@@ -1003,41 +997,6 @@ class streamer:
             r = re.findall('source: \'([^\']*)', page_data)[0]
             r = r.replace('master_wired60','5600K/5600_slide')
             return r + '|User-Agent=iPad&Authorization=' + token
-        except:
-            return
-
-    def volokitnhl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #token = client.request('http://continuum.watch/Crew/nhl.txt')
-            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
-            #nhl_auth = "|Cookie=Authorization=" + token
-            r = re.findall('{source:"([^"]*)', page_data)[0]
-            return r + nhl_auth
-        except:
-            return
-
-    def volokitmlb(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            token = client.request('http://172.105.26.201/mlbs.txt')
-            r = re.findall('{source:"([^"]*)', page_data)[0]
-            r = r.replace('master_desktop_complete','5600K/5600_slide_gdfp')
-            return r + '|User-Agent=iPad&Authorization=' + token
-        except:
-            return
-
-    def volokitnfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('volokit-feed" src="([^"]*)', page_data)[0]
-            s = 'http://volokit.com' + s
-            u = client.request(s)
-            r = re.findall('{source:"([^"]*)', u)[0]
-            return r
         except:
             return
 
@@ -2249,9 +2208,9 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+            w = re.findall('(?s)iframe allow=\'encrypted-media.*?src=\'([^\']*)', page_data)[0]
             h = client.request(w)
-            i = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', h)[0]
+            i = re.findall('source: [\'"]([^\'"]+)', h)[0]
             return i + '|User-Agent=Mozilla/5.0&Referer=' + w
         except:
             return
