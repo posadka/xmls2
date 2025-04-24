@@ -264,7 +264,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (1S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -304,7 +304,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -343,7 +343,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (123)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -392,13 +392,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <listrepeat><![CDATA[
         <title>[COLOR orange][makelist.param2][/COLOR]</title>
         <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
+        <thumbnail>http://6stream.xyz/wp-content/uploads/2019/11/11-1-1024x576.jpg</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://the.streameast.app/mlbstreams1')
+    url = client.schedule('https://www.streameast.gd/nfl-streams')
     return url
 ]]></expres>
 <page></page>
@@ -421,7 +421,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (METH)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -462,7 +462,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (TCS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -505,7 +505,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (BUFF)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
