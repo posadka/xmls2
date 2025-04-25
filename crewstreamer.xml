@@ -2030,7 +2030,7 @@ class streamer:
             page_data = requests.get(url).text
             x = re.findall('window.atob\(\'([^\']*)',page_data)[0]
             x = base64.b64decode(x).decode('utf-8')
-            return x + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36&Referer=https://googlapisapi.com/'
+            return x + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36&Referer=https://googlapisapi.com/'
         except:
             return
 

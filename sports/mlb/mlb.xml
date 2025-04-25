@@ -511,7 +511,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (BUFF)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
