@@ -2087,7 +2087,7 @@ class streamer:
             #encryptedStreamUrl = re.findall('"source":"([^"]*)', streamPostResponse)[0]
             encryptedStreamUrl = re.findall('source: window.atob\("([^"]*)', page_data)[0]
             decryptedStreamUrl = base64.b64decode(encryptedStreamUrl).decode('utf-8')
-            return decryptedStreamUrl + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0&Referer=' + url
+            return decryptedStreamUrl + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0&Referer=https://googlapisapi.com/'
         except:
             return
 
