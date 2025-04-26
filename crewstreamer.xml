@@ -733,19 +733,13 @@ class streamer:
             #w = client.request(r)
             #x = re.findall('source:\s*\'([^\']*)', w)[0]
             #return x + '|User-Agent=Mozilla/5.0&Referer=' + r
-            if 'iframe' in  u:
-                w = re.findall('(?s)iframe class="embed-responsive-item" src="([^"]*)', u)[0]
-                h = requests.get(w, headers={"Referer": w, "User-Agent": 'Mozilla/5.0'}).text
-                i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
-                t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
-                e = re.findall('source:\s*\'([^\']*)',t)[0]
-                e = e.replace('\\','')
-                return e + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&Referer=https://givemeredditstreams.org/&Orgin=https://givemeredditstreams.org'
-            else:
-                i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(u)[0]
-                t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
-                e = re.findall('(?:source|src|file)(?:\:|=)\s*[\'"]([^\'"]+)',t)[0]
-                return e + '|User-Agent=Mozilla/5.0&Referer=' + url
+            w = re.findall('(?s)iframe class="embed-responsive-item" src="([^"]*)', u)[0]
+            h = requests.get(w, headers={"Referer": w, "User-Agent": 'Mozilla/5.0'}).text
+            i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
+            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
+            e = re.findall('source:\s*\'([^\']*)',t)[0]
+            e = e.replace('\\','')
+            return e + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&Referer=https://givemereddit.org/&Orgin=https://givemereddit.org'
             #w = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
             #h = requests.get(w, headers={"Referer": w, "User-Agent": 'Mozilla/5.0'}).text
             #i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
