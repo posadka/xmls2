@@ -1210,26 +1210,29 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (REZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
-<fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (DS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-  <title>[COLOR orange][makelist.param1][/COLOR] [COLOR dodgerblue] [makelist.param2] [/COLOR] [COLOR white][makelist.param3][/COLOR] [COLOR dodgerblue] [makelist.param4] [/COLOR]</title>
+  <title>[COLOR orange][makelist.param2][/COLOR]</title>
   <link>$doregex[m3u]</link>
   <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://sporthaze.me/nba/')
-    return url
+    e = re.findall('(?s)href="([^"]*)" rel="bookmark">([^<]*)', page_data)
+    sort = [(i[0],i[1].replace('&','').replace('#','').replace('8217','').replace('8211','').replace(';','').replace('Main',''))for i in e]
+    return sort
 ]]></expres>
-<page></page>
+<page>http://dofusports.xyz/sport/nba/</page>
 </regex>
 <regex>
 <name>m3u</name>
@@ -1239,7 +1242,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[makelist.param5]')
+    url = client.external('[makelist.param1]')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
@@ -1250,7 +1253,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (DS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
