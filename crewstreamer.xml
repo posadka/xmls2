@@ -1539,9 +1539,11 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            w = re.findall('atob\(\'([^\']*)', page_data)[0]
+            t = re.findall('(?s)iframe f.*?src="([^"]*)', page_data)[0]
+            fu = requests.get(t).text
+            w = re.findall('atob\(\'([^\']*)', fu)[0]
             s = base64.b64decode(w).decode('utf-8')
-            return s + '|user-agent=ipad&referer=' + url
+            return s + '|user-agent=ipad&referer=' + t
         except:
             return
 
