@@ -155,6 +155,8 @@ class streamer:
 
             elif 'ovostreams.com' in url: u = self.ovostreams(url)
 
+            elif 'ovo-gola' in url: u = self.ovostreams(url)
+
             elif 'easy-sport.tv' in url: u = self.ovostreams(url)
             
             elif 'soccerjumbotv1.me' in url: u = self.jumbo(url)
@@ -519,8 +521,8 @@ class streamer:
         try:
             page_data = client.request(url)
             e = re.findall('(?s)a href=\'([^\']*).*?ing\'>([^<]*)', page_data)
-            #sort = [('https://www.ovostreams.com'+i[0],i[1]) for i in e]
-            return e#sort
+            sort = [('https://ovo-gola.com'+i[0],i[1]) for i in e]
+            return sort
         except:
             return
 
