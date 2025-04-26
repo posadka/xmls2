@@ -521,8 +521,8 @@ class streamer:
         try:
             page_data = client.request(url)
             e = re.findall('(?s)a href=\'([^\']*).*?ing\'>([^<]*)', page_data)
-            sort = [('https://ovo-gola.com'+i[0],i[1]) for i in e]
-            return sort
+            #sort = [('https://ovo-gola.com'+i[0],i[1]) for i in e]
+            return e
         except:
             return
 
