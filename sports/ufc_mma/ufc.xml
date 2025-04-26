@@ -7,7 +7,7 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
@@ -173,7 +173,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (MS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -214,7 +214,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (MSTREAMER)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -301,7 +301,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -431,7 +431,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (AM)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -480,7 +480,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://easy-sport.tv')
+    url = client.schedule('https://ovo-gola.com/mmastreams/')
     return url
 ]]></expres>
 <page></page>
@@ -534,7 +534,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -609,7 +609,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (W4)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -785,7 +785,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'www.changnews.co.uk/ufc-fightnigh
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (SOL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -856,7 +856,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (BUFF)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
@@ -1006,7 +1006,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -1021,14 +1021,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    import re
-    page_data = page_data.split('HD Streams',1)[-1]
-    page_data = page_data.split('SD Streams',1)[0]
-    e = re.findall('(?s)window.location=\'([^\']*).*?src="([^"]*).*?<p>.*?<p>([^<]*)', page_data)
-    sort = [(i[0],i[1],i[2]) for i in e if 'mma' in i[0]]
-    return sort
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('https://www.streameast.gd/mma-streams')
+    return url
 ]]></expres>
-<page>https://www.streameast.live</page>
+<page></page>
 </regex>
 <regex>
   <name>makelist2</name>
@@ -1060,10 +1057,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<div class="participate-team wow fade-in-left.*?src="([^"]*).*?ml">([^<]*).*?ef="([^"]*).*?an>([^<]*).*?ml">([^<]*)', page_data)
+    r = re.findall('(?s)href="(\/nba[^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
+    r = [(i[0],i[1]) for i in r if 'vs' in i[1]]
     return r
 ]]></expres>
-<page>https://givemeredditstreams.xyz/mma</page>
+<page>https://givemeredditstreams.org/mma</page>
 </regex>
 <regex>
   <name>makelist2</name>
@@ -1073,7 +1071,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[makelist.param3]')
+    url = client.external('https://givemeredditstreams.org[makelist.param1]')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
@@ -1083,7 +1081,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (HS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -1118,7 +1116,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 
 <dir>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC FULL[/COLOR] [COLOR orchid]REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC FULL[/COLOR] [COLOR orchid]GHOST REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://thechains24.com/GREENHAT/iptv-homelander/UFC.txt</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
