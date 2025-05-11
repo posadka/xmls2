@@ -480,7 +480,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://ovo-gola.com/mmastreams/')
+    url = client.schedule('https://ovogoal.net/mmastreams//')
     return url
 ]]></expres>
 <page></page>
@@ -971,7 +971,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     r = re.findall('(?s)href="(\/nba[^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
-    r = [(i[0],i[1]) for i in r if 'vs' in i[1]]
     return r
 ]]></expres>
 <page>https://givemeredditstreams.org/mma</page>
