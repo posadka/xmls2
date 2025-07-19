@@ -344,8 +344,7 @@ class streamer:
     def streameast(self, url):
         try:
             page_data = client.request(url)
-            page_data = page_data.split('<div class="tab-pane fade" id="tab-live-games',1)[0]
-            e = re.findall('(?s)<li class="f1-podium--item  ">.*?href="([^"]*).*?line ">\s*([^<]*)\n', page_data)
+            e = re.findall('(?s)<li class="f1-podium--item ">\s*<a href="([^"]*).*?ze">([^<]*)', page_data)
             return e
         except:
             return
