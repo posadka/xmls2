@@ -155,6 +155,8 @@ class streamer:
 
             elif 'ovostreams.com' in url: u = self.ovostreams(url)
 
+            elif 'ovogoaal' in url: u = self.ovostreams(url)
+
             elif 'ovo-gola' in url: u = self.ovostreams(url)
 
             elif 'easy-sport.tv' in url: u = self.ovostreams(url)
