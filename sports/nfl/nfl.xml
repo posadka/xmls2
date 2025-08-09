@@ -302,7 +302,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     e = re.findall('(?s)title">\s*<a href="([^"]*)"\s*>\s*([^<]*)', page_data)
     return e
 ]]></expres>
-<page>https://boltcast.info/nfl/</page>
+<page>https://pawastreams.pro/nfl/</page>
 </regex>
 <regex>
   <name>makelist2</name>
