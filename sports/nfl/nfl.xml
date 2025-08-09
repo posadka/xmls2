@@ -736,13 +736,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <listrepeat><![CDATA[
 <title>[COLOR orange][crewschedule.param2][/COLOR]</title>
 <link>$doregex[play]</link>
-        <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
+        <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://ovo-gola.com/nflstreams/')
+    url = client.schedule('https://ovogoaal.com/mmastreams/')
     return url
 ]]></expres>
 <page></page>
@@ -752,13 +752,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
-    import xbmc,xbmcgui
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
     url = client.external('[crewschedule.param1]')
-    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
-    pDialog.close()
-    if (pDialog.iscanceled()): return
     return url
 ]]></expres>
 <page></page>
