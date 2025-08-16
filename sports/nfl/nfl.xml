@@ -378,7 +378,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?ine ">\s*([^<]*)\n', page_data)
+    r = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?ine ">\s*([^<]*)', page_data)
     return r
 ]]></expres>
 <page></page>
