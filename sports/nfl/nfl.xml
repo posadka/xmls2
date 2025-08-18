@@ -737,13 +737,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <listrepeat><![CDATA[
 <title>[COLOR orange][crewschedule.param2][/COLOR]</title>
 <link>$doregex[play]</link>
-        <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
+        <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://ovogoaal.com/mmastreams/')
+    url = client.schedule('https://ovogoaal.com/nflstreams/')
     return url
 ]]></expres>
 <page></page>
