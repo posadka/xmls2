@@ -378,10 +378,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?ine ">\s*([^<]*)', page_data)
+    r = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?ine ">\s*([^<]*)\n', page_data)
     return r
 ]]></expres>
-<page></page>
+<page>https://www.streameast.gd/nfl-streams</page>
 </regex>
 <regex>
   <name>makelist2</name>
@@ -421,7 +421,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     url = client.schedule('https://crackedstreams.ai/nfl-streams')
     return url
 ]]></expres>
-<page></page>
+<page><s/page>
 </regex>
 <regex>
   <name>makelist2</name>
