@@ -241,6 +241,8 @@ class streamer:
 
             elif 'score808.football' in url: u = self.score(url)
 
+            elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
+
             return u
         except:
             pass
@@ -945,5 +947,13 @@ class streamer:
             page_data = client.request(url)
             s = re.findall('(?s)k" href="([^"]*).*?2">([^<]*).*?2">([^<]*)',page_data)
             return s
+        except:
+            return
+
+    def tvsportslive(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            s = re.findall('<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)<\/a>',page_data)
         except:
             return

@@ -2120,15 +2120,16 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            r1 = re.findall('(?s)<iframe src="([^"]*)',page_data)[0]
-            u2 = requests.get(r1).text
-            fid = re.findall('fid="([^"]*)',u2)[0]
-            r3 = re.findall('(?s)fid.*?src="([^"]*)',u2)[0]
-            u3 = requests.get('https:' + r3).text
-            embedded = re.findall('(?s)embedded = "([^"]*)',u3)[0]
-            link = re.findall('(?s).*?src="([^=]*)',u3)[0]
-            final_link = link + '=' + embedded + '&live=' + fid
-            return final_link + '|user-agent=iPad&amp;referer=' + r1
+            s =  re.findall(r'src="([^"]+\.php\?[^"]*)', page_data)[0]
+            response = requests.get(s).text
+            fid = re.findall(r'fid\s*=\s*"([^"]+)"', response)[0]
+            w =  re.findall(r'src="([^"]+\.php\?[^"]*)', response)[0]
+            t = requests.get(w).text
+            doamin = re.findall(r'https?://[a-zA-Z0-9.-]+\.(?:com|net|org|xyz|info|tv|cc|co)', t)
+            x = f"{doamin}/maestrohd1.php?player=mobile&live={fid}"
+            r = requests.get(x).text
+            m3u8 = re.findall(r"atob\(['\"]([^'\"]+)['\"]\)", r)
+            return final = f'{m3u8}|Referer={doamin}/&Origin={doamin}&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
         except:
             return
 

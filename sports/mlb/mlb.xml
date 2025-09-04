@@ -74,15 +74,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (PAPA)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (TVS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/mlb_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param2][/COLOR] [COLOR dodgerblue][makelist.param3][/COLOR]</title>
+        <title>[COLOR orange][makelist.param2][/COLOR]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -90,7 +90,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://crackedstreams.ai/mlb-streams')
+    url = client.schedule('https://tvsportslive.fr/category/mlb/')
     return url
 ]]></expres>
 <page></page>
