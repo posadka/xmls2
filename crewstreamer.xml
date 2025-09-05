@@ -273,8 +273,6 @@ class streamer:
 
             elif 'streameast' in url: u = self.streameast(url)
 
-            elif 'the.streameast' in url: u = self.streameast(url)
-
             elif 'ertech.work' in url: u = self.skuanet(url)
 
             elif 'chimxoan.net' in url: u = self.skuanet(url)
