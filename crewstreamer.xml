@@ -832,7 +832,7 @@ class streamer:
             #t = requests.get(s,headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0', ).text
             w = re.findall('atob\(\'([^\']*)', page_data)[0]
             w = base64.b64decode(w).decode('utf-8')
-            return w + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36&Referer=https://gooz.aapmains.net/&Orgin=https://gooz.aapmains.net'
+            return w + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Referer=https://gooz.aapmains.net/&Orgin=https://gooz.aapmains.net'
         except:
             return
 
