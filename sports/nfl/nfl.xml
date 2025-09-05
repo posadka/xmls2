@@ -7,6 +7,17 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Cowboys Vs Eagles [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>https://d1.merichunidya.com:1686/hls/mphiladelphiaeagles.m3u8?md5=RTi9eTQpq-AVxQ7f3ZDa2w&expires=1757042727</sublink>
+        <sublink></sublink>
+        <sublink></sublink>
+    </link>
+    <thumbnail></thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
+</item>
+
 <item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (NBTO)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
@@ -201,7 +212,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (1S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
