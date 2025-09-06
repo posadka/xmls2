@@ -728,7 +728,7 @@ class streamer:
     def givemereddit(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url, headers={"Referer": url, "User-Agent": 'Mozilla/5.0'}) 
+            u = requests.get(url).text
             w = re.findall('(?s)iframe class="embed-responsive-item" src="([^"]*)', u)[0]
             h = requests.get(w, headers={"Referer": w, "User-Agent": 'Mozilla/5.0'}).text
             i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
