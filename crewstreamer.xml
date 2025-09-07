@@ -814,11 +814,13 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            #s = re.findall('(?s)<iframe class.*?src="([^"]*)', page_data)[0]
-            #t = requests.get(s,headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0', ).text
+            s = re.findall('(?s)<iframe[^>]+src="([^"]+)', page_data)[0]
+            parsed = urlparse(s)
+            origin = "{parsed.scheme}://{parsed.netloc}"
+            t = requests.get(s,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36','Referer':url} ).text
             w = re.findall('atob\(\'([^\']*)', page_data)[0]
             w = base64.b64decode(w).decode('utf-8')
-            return w + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Referer=https://gooz.aapmains.net/&Origin=https://gooz.aapmains.net'
+            return w + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Referer={origin}&Origin={origin}'
         except:
             return
 
