@@ -165,7 +165,7 @@ class streamer:
 
             elif 'everysports.us/view/nfl' in url: u = self.everysportsnfl(url)
 
-            elif 'volokit2' in url: u = self.volokit2(url)
+            elif 'volokit2' in url: u = self.volokit(url)
 
             elif 'sportsstatsme.net/watch/NHL-streams' in url: u = self.ssnhl(url)
 
@@ -2205,7 +2205,7 @@ class streamer:
         except:
             return
 
-    def volokit2(self, url):
+    def volokit(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
