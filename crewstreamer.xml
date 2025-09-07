@@ -1497,7 +1497,7 @@ class streamer:
             page_data = client.request(url)
             if 'm3u8' in page_data:
                 link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-                return link + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&Origin=http://blacktiesports.net&referer=' + r                  
+                return link + '|user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36&Origin=http://blacktiesports.net&referer=' + url                  
             elif 'php' in page_data:
                 r = re.findall('(?s)<iframe id="stream.*?src="([^"]*)', page_data)[0]
                 u = client.request(r)
@@ -2165,7 +2165,7 @@ class streamer:
         except:
             return
          
-    def    sportinglive (self, url):
+    def sportinglive(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
@@ -2257,9 +2257,7 @@ class streamer:
             e = re.findall('(?s)iframe class.*?src="([^"]*)',page_data)[0]
             e = e.replace('//', 'https://')
             s = requests.get(e).text
-            t = re.findall('window.atob\(["|\']([^"|\']*)', s)[0]
-            t = base64.b64decode(s).decode('utf-8')
-            t = t.replace('//', 'https://')
+            t = re.findall('window.atob\(["|\']([^"|\']*)', s)[0];t = base64.b64decode(t).decode('utf-8');t = t.replace('//', 'https://')
             return t + '|User-Agent=Mozilla/5.0&referer=' + e
         except:
             return
@@ -2404,7 +2402,7 @@ class streamer:
             whitehat = re.findall('<iframe\s*src="([^"]*)',h)[0]
             s = requests.get(whitehat).text
             crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', s)[0]
-            return s + '|User-Agent=Mozilla/5.0&Referer=' + s
+            return crew + '|User-Agent=Mozilla/5.0&Referer=' + s
         except:
             return
 
@@ -2525,7 +2523,7 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             e = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]; e = base64.b64decode(e).decode('utf-8')
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
+            return e + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
         except:
             return
 
