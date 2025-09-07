@@ -2115,7 +2115,7 @@ class streamer:
             x = f"{doamin}/maestrohd1.php?player=mobile&live={fid}"
             r = requests.get(x).text
             m3u8 = re.findall(r"atob\(['\"]([^'\"]+)['\"]\)", r)
-            return final = f'{m3u8}|Referer={doamin}/&Origin={doamin}&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+            return final = '{m3u8}|Referer={doamin}/&Origin={doamin}&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
         except:
             return
 
