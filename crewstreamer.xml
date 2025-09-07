@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re,json,base64,requests,time,random,math
-try: from urllib import urlencode, quote_plus, urlparse, urljoin
-except ImportError: from urllib.parse import urlencode, quote_plus, urlparse, urljoin
+try:
+    from urllib import urlencode, quote_plus, urlparse, urljoin
+except ImportError:
+    from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
 from resources.lib.modules import control
 from resources.lib.modules import client
@@ -2135,7 +2137,7 @@ class streamer:
     def epicmartial(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
+            page_data = requests.get(url,headers={"Referer": 'https://castweb.xyz', "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
             fid = re.findall(r'fid\s*=\s*"([^"]+)"', page_data)[0]
             x = 'https://processbigger.com/maestrohd1.php?player=mobile&live=' + fid
             headers = {
