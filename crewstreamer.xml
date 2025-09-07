@@ -2135,18 +2135,14 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             fid = re.findall(r'fid\s*=\s*"([^"]+)"', page_data)[0]
-            w =  re.findall(r'src=["\'](\/\/processbigger\.com\/[^\s"\']+)', page_data)[0]
-            x = 'https:' + w
-            u2 = requests.get(x).text
-            doamin = re.findall(r'https?://[a-zA-Z0-9.-]+\.(?:com|net|org|xyz|info|tv|cc|co)', u2)[0]
-            x = "{doamin}/maestrohd1.php?player=mobile&live={fid}"
+            x = 'https://processbigger.com/maestrohd1.php?player=mobile&live=' + fid
             r = requests.get(x,headers={"Referer": url, "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
             match = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
             array_content = match.group(1)
             chars = re.findall(r'"([^"]+)"', array_content)
             joined = ''.join(chars).replace(r'\/', '/')
             joined = joined.replace('https://///', 'https://').replace('https:////', 'https://').replace('https:///', 'https://')
-            return joined + '|Referer={doamin}/&Origin={doamin}&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+            return joined + '|Referer=https://processbigger.com/&Origin=https://processbigger.com&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
         except:
             return
 
