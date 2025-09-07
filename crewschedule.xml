@@ -143,6 +143,8 @@ class streamer:
 
             elif 'streameast' in url: u = self.streameast(url)
 
+            elif 'istreameast' in url: u = self.streameast(url)
+
             elif 'topstreams.info/nba' in url: u = self.topstreamsnba(url)
 
             elif 'topstreams.info' in url: u = self.topstreamsnfl(url)
@@ -346,7 +348,7 @@ class streamer:
     def streameast(self, url):
         try:
             page_data = client.request(url)
-            e = re.findall('(?s)<li class="f1-podium--item ">\s*<a href="([^"]*).*?ze">([^<]*)', page_data)
+            e = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?ine ">\s*([^<]*)\n', page_data)
             return e
         except:
             return
