@@ -684,7 +684,7 @@ class streamer:
     def crackstreams(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
+            page_data = client.request(url, headers={"Referer": 'https://crackstreams1.online', "User-Agent": 'Mozilla/5.0'})
             h = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             if 'givemereddit' in h:
                 gr = requests.get(h).text
