@@ -205,7 +205,7 @@ class streamer:
 
             elif 'yoursports.to' in url: u = self.yss(url)
 
-            elif 'buffstream.io' in url: u = self.crackstreams(url)
+            elif 'crackstreams1' in url: u = self.crackstreams(url)
 
             elif 'methstreams.to' in url: u = self.weakspell(url)
 
@@ -683,19 +683,13 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            t = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
+            t = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             x = client.request(t)
-            w = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', x)[0]   
-            u = client.request(w)
-        except: pass
-        try:
-            s = re.findall('atob\(["|\']([^"|\']*)', u)[0]
-            s = base64.b64decode(s).decode('utf-8')
-        except: pass
-        try:
-            s = re.findall('(?s)Player.*?(?:source|src|file):\s*[\'"]([^\'"]+)', u)[0]
-        except: pass
-        return s + '|user-agent=iPad&referer=' + url
+            w = re.findall('(?s)atob\(\'([^\']*)', x)[0]; w = base64.b64decode(w).decode('utf-8')   
+            u = re.findall('initURL\s*=\s*"([^"]*)', x)[0]
+            return u + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A131.0)%20Gecko%2F20100101%20Firefox%2F131.0&referer=https://kleanstorage.store/&Origin=https://kleanstorage.store'
+        except:
+            return
 
     def csis(self, url):
         try:
