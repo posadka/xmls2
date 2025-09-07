@@ -148,7 +148,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re,requests
     current_date = datetime.now()
     date_format = current_date.strftime("%Y-%m-%d")
-    page_data = requests.get('https://sportscentral.io/api/nfl-tournaments?date=' + date_format, headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
+    page_data = requests.get('https://sportscentral.io/api/nfl-tournaments?date=' + date_format, headers={'User-Agent':'iPad','Referer':'https://reddit.nbabite.com'}).text
     r = re.findall('(?s)},"id":([^,]*).*?nk":"([^"]*).*?ion":"([^"]*).*?awayTeam":{"name":"([^"]*).*?name":"([^"]*)","logo":"([^"]*).*?ent":"([^"]*).*?ent":"([^"]*)', page_data)
     sort = [(i[0],i[1].replace('\\',''),i[2],i[3],i[4],i[5].replace('\\',''),i[6],i[7]) for i in r]
     return sort
@@ -166,7 +166,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
     from resources.lib.modules import client
     import re,requests
-    t = requests.get('https://sportscentral.io/streams-table/' + url + '/' + 'american-football' + '?new-ui=1&origin=reddit.nbabite.com', headers={'user-agent':'iPad','referer':'https://reddit.nbabite.com'}).text
+    t = requests.get('https://sportscentral.io/streams-table/' + url + '/' + 'american-football' + '?new-ui=1&Origin=reddit.nbabite.com', headers={'User-Agent':'iPad','Referer':'https://reddit.nbabite.com'}).text
     t = t.split('Fubo',1)[-1]
     z = re.findall('(?s)stream-link="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)',t)
     if 'tinyurl' in z:
@@ -179,7 +179,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
         return sort + sort1
 ]]></expres>
 <page>[makelist.param2]</page>
-<referer></referer>
+<Referer></Referer>
 </regex>
 <regex>
 <name>m3u</name>
@@ -196,7 +196,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     return url
 ]]></expres>
 <page>[lists.param1]</page>
-<referer></referer>
+<Referer></Referer>
 </regex>
 </item>
 
@@ -382,7 +382,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?ine ">\s*([^<]*)\n', page_data)
     return r
 ]]></expres>
-<page>https://www.streameast.gd/nfl-streams</page>
+<page>https://istreameast.app/nflstreams</page>
 </regex>
 <regex>
   <name>makelist2</name>
@@ -918,7 +918,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     return url
 ]]></expres>
 <page></page>
-<referer></referer>
+<Referer></Referer>
 </regex>
 </item>
 
@@ -1439,7 +1439,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL[/COLOR] [COLOR red] RED ZONE DIRECTS[/COLOR][/B] [COLOR orchid] (SUNDAYS ONLY)[/COLOR] [COLOR orchid]¤[/COLOR]</title>
     <link>
-        <sublink>http://cdn.crackstreams.net/live/redzone/index.m3u8|user-agent=ipad&referer=http://crackstreams.net/emb/nfl/redzone.php</sublink>
+        <sublink>http://cdn.crackstreams.net/live/redzone/index.m3u8|User-Agent=ipad&Referer=http://crackstreams.net/emb/nfl/redzone.php</sublink>
         <sublink>http://tracka.azureedge.net/show/redzone/playlist.m3u8</sublink>
         <sublink>http://cdn.odece.xyz/9.m3u8|Referer=http://cdn.odece.xyz/9.php</sublink>
     </link>
@@ -1485,7 +1485,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     return sort  
 ]]></expres>
 <page>[makelist.param1]</page>
-<referer></referer>
+<Referer></Referer>
 </regex>
 <regex>
 <name>m3u</name>
@@ -1502,7 +1502,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     return url
 ]]></expres>
 <page>[lists.param1]</page>
-<referer></referer>
+<Referer></Referer>
 </regex>
 </item>
 
@@ -1550,7 +1550,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
     return sort
 ]]></expres>
 <page>[makelist.param1]</page>
-<referer></referer>
+<Referer></Referer>
 </regex>
 <regex>
 <name>m3u</name>
@@ -1567,7 +1567,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     return url
 ]]></expres>
 <page>[lists.param1]</page>
-<referer></referer>
+<Referer></Referer>
 </regex>
 </item>
 
@@ -1635,15 +1635,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     try: from urllib import urlencode
     except ImportError: from urllib.parse import urlencode
     murl='[makelist.param3]';now=int((int(time.time()) + 86400) * 1000)
-    source=requests.get(murl,headers={'user-agent':'Mozilla/5.0','referer':'https://sportsbay.org/','accept':'*/*'}).text
+    source=requests.get(murl,headers={'User-Agent':'Mozilla/5.0','Referer':'https://sportsbay.org/','accept':'*/*'}).text
     if 'm3u8' in source:
-        strurl = re.findall('Clappr.Player[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)',source)[0]+'|user-agent=ipad&origin=https://freefeds.com&referer=https://freefeds.com/'
+        strurl = re.findall('Clappr.Player[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)',source)[0]+'|User-Agent=ipad&Origin=https://freefeds.com&Referer=https://freefeds.com/'
         return strurl
     else :     
         teleID=re.findall('embed/(\d+)\.',source)[0]
-        r=requests.get('https://teleriumtv.com/streams/%s/%s.json'%(teleID,now),headers={'user-agent':'Mozilla/5.0','referer':'https://teleriumtv.com/embed/%s.html'%teleID,'accept':'*/*'},cookies={'volume':'0'}).json()
+        r=requests.get('https://teleriumtv.com/streams/%s/%s.json'%(teleID,now),headers={'User-Agent':'Mozilla/5.0','Referer':'https://teleriumtv.com/embed/%s.html'%teleID,'accept':'*/*'},cookies={'volume':'0'}).json()
         strurl=r.get('url');netloc='https://teleriumtv.com'
-        headers={'user-agent': 'Mozilla/5.0','origin':netloc,'referer':'https://teleriumtv.com/embed/%s.html'%teleID}
+        headers={'User-Agent': 'Mozilla/5.0','Origin':netloc,'Referer':'https://teleriumtv.com/embed/%s.html'%teleID}
         if r.get('tokenurl'):
           strurl += requests.get(netloc+r.get('tokenurl'),headers=headers).json()[10][::-1]
         strurl=strurl if strurl.startswith('http') else 'https:'+strurl
