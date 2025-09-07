@@ -2138,7 +2138,7 @@ class streamer:
             w =  re.findall(r'src=["\'](\/\/processbigger\.com\/[^\s"\']+)', page_data)[0]
             x = 'https:' + w
             u2 = requests.get(x).text
-            doamin = re.findall(r'https?://[a-zA-Z0-9.-]+\.(?:com|net|org|xyz|info|tv|cc|co)', u2)
+            doamin = re.findall(r'https?://[a-zA-Z0-9.-]+\.(?:com|net|org|xyz|info|tv|cc|co)', u2)[0]
             x = "{doamin}/maestrohd1.php?player=mobile&live={fid}"
             r = requests.get(x,headers={"Referer": url, "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
             match = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
