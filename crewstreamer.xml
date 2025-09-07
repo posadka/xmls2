@@ -19,6 +19,8 @@ class streamer:
         try:
             if 'epicmartial' in url: u = self.epicmartial(url)
 
+            if 'castweb' in url: u = self.epicmartial(url)
+
             if 'elixx.xyz' in url: u = self.elixx(url)
 
             elif 'daddylive' in url: u = self.daddylive(url)
