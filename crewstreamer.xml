@@ -2125,7 +2125,7 @@ class streamer:
     #        doamin = re.findall(r'https?://[a-zA-Z0-9.-]+\.(?:com|net|org|xyz|info|tv|cc|co)', t)
     #        x = "{doamin}/maestrohd1.php?player=mobile&live={fid}"
     #        r = requests.get(x).text
-    #        m3u8 = re.findall(r"atob\(['\"]([^'\"]+)['\"]\)", r)
+    #        m3u8 = re.findall(r"atob\(['\"]([^'\"]+)['\"]\)", r); m3u8 = base64.b64decode(m3u8).decode('utf-8')
     #        return m3u8 + '|Referer={doamin}/&Origin={doamin}&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
        # except:
        #     return
@@ -2140,7 +2140,7 @@ class streamer:
             doamin = re.findall(r'https?://[a-zA-Z0-9.-]+\.(?:com|net|org|xyz|info|tv|cc|co)', u2)
             x = "{doamin}/maestrohd1.php?player=mobile&live={fid}"
             r = requests.get(x).text
-            m3u8 = re.findall(r"atob\(['\"]([^'\"]+)['\"]\)", r)
+            m3u8 = re.findall(r"atob\(['\"]([^'\"]+)['\"]\)", r); m3u8 = base64.b64decode(m3u8).decode('utf-8')
             return m3u8 + '|Referer={doamin}/&Origin={doamin}&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
         except:
             return
