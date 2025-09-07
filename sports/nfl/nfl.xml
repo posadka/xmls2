@@ -7,63 +7,63 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Bucs Vs Falcons [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/falcons.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Bengals Vs Browns [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/browns.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Dolphins Vs Colts [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/colts.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Raiders Vs Patriots [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/patriots.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Cards Vs Saints [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/saints.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Panthers Vs Jaguars [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/jaguars.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
@@ -73,7 +73,7 @@
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/broncos.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
@@ -83,7 +83,7 @@
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/seahawks.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
@@ -93,7 +93,7 @@
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/packers.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
@@ -103,7 +103,7 @@
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/rams.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
@@ -113,7 +113,7 @@
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/bills.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
@@ -123,7 +123,7 @@
         <sublink>https://tommyagus.s3.us-east-2.amazonaws.com/bears.m3u8|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'</sublink>
         <sublink></sublink>
     </link>
-    <thumbnail></thumbnail>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 </item>
 
