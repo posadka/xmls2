@@ -745,8 +745,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     r = re.findall('(?s)sport:\s*"([^"]*)".*?"([^"]*)".*?"([^"]*).*?".*?".*?".*?"([^"]*).*?".*?".*?".*?"([^"]*)".*?"([^"]*)".*?".*?".*?"([^"]*)"', page_data)
-
-    return r
+    sort = [(i[0],i[1],i[2],i[3],i[4],i[5],i[6]) for i in r if 'NFL'  in i[1] ]
+    return sort
 ]]></expres>
 <page>https://epicmartial.xyz/200/index/n1/?s=Football</page>
 </regex>
