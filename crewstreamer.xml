@@ -2141,7 +2141,7 @@ class streamer:
                 "Referer": "https://castweb.xyz",
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
             }
-            page_data = requests.get(x, headers=headers).text
+            page_data = requests.get(url, headers=headers).text
             fid = re.findall(r'fid\s*=\s*"([^"]+)"', page_data)[0]
             x = 'https://processbigger.com/maestrohd1.php?player=mobile&live=' + fid
             r = requests.get(x, headers=headers).text
