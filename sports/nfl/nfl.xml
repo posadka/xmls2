@@ -758,11 +758,25 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import xbmc,xbmcgui
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    url = client.external('[makelist.param7]')
+    headers = {
+        "Referer": "https://castweb.xyz",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    }
+    page_data = requests.get('[makelist.param7]', headers=headers).text
+    #page_data = requests.get('[makelist.param7]',headers={"Referer": 'https://castweb.xyz', "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
+    fid = re.findall('fid\s*=\s*"([^"]+)"', page_data)[0]
+    x = 'https://processbigger.com/maestrohd1.php?player=mobile&live=' + fid
+    r = requests.get(x, headers=headers).text
+    #r = requests.get(x,headers={"Referer": 'https://castweb.xyz', "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
+    match = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
+    array_content = match.group(1)
+    chars = re.findall('"([^"]+)"', array_content)
+    joined = ''.join(chars).replace('\/', '/')
+    joined = joined.replace('https://///', 'https://').replace('https:////', 'https://').replace('https:///', 'https://')
     pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
     pDialog.close()
     if (pDialog.iscanceled()): return
-    return url
+    return joined + '|Referer=https://processbigger.com/&Origin=https://processbigger.com&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
 ]]></expres>
 <page></page>
 </regex>
