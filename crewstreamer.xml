@@ -581,7 +581,7 @@ class streamer:
 
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
 
-            elif 'totalsportek1000' in url: u = self.totalsportek(url)
+            elif 'live3.totalsportek1000' in url: u = self.totalsportek(url)
 
             else: u = self.generic(url)
 
