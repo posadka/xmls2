@@ -7,7 +7,7 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (NB)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
@@ -66,7 +66,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (SRS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
@@ -219,7 +219,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (1S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -259,7 +259,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -292,7 +292,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (HIS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -413,6 +413,87 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+        <title>[COLOR orange][makelist.param2][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('https://istreameast.app/boxingstreams')
+    return url
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[makelist.param1]')
+    pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page>[makelist.param1]</page>
+</regex>
+</item>
+
+<item>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (CS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
+<regex>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange][makelist.param3][/COLOR] [COLOR dodgerblue][makelist.param4][/COLOR]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail>https://crackstreams1.in[makelist.param2]</thumbnail>
+]]></listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import control
+    import re,requests
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = requests.get('https://crackstreams1.in/Boxing/',headers={"Referer": 'https://crackstreams1.in/', "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
+    page_data = page_data.split('Boxing Live and Schedule',1)[-1]
+    r = re.findall('(?s)<a href=\'([^\']*).*?<img src=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
+    return r
+]]></expres>
+<page></page>
+</regex>
+<regex>
+  <name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[makelist.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (OS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[crewschedule]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -420,7 +501,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <regex>
 <name>crewschedule</name>
 <listrepeat><![CDATA[
-<title>[COLOR orange][crewschedule.param2] [crewschedule.param3][/COLOR]</title>
+<title>[COLOR orange][crewschedule.param2] [/COLOR]</title>
 <link>$doregex[play]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -429,18 +510,18 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    e = re.findall('<a href="([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
-    sort = [('http://www.ovostreams.com'+i[0],i[1],i[2]) for i in e]
+    e = re.findall('(?s)data-category="([^"]+)">.*?>.*?>.*?>.*?>([^<]*)\n.*?href=\'([^\']*)', page_data)
+    sort = [(i[0],i[1],i[2]) for i in e if 'boxing' in i[0]]
     return sort
 ]]></expres>
-<page>http://www.ovostreams.com/boxingstreams.php</page>
+<page>https://ovogoaal.com/</page>
 </regex>
 <regex>
 <name>play</name>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
-    url = client.external('[crewschedule.param1]')
+    url = client.external('[crewschedule.param3]')
     return url
 ]]></expres>
 <page></page>
@@ -481,7 +562,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (6S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -548,7 +629,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (UK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -667,7 +748,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (NET)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -700,7 +781,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (PAPA)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -733,7 +814,7 @@ def GetLSProData(page_data,Cookie_Jar,m):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (BS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -765,7 +846,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (HELENA)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[crewschedule]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -797,40 +878,48 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item> 
 
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (GR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
+<item
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NFL LIVE[/COLOR] [COLOR orchid] (GR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param3][/COLOR]</title>
+        <title>[COLOR orange][makelist.param2][/COLOR]</title>
         <link>$doregex[makelist2]</link>
-        <thumbnail>[makelist.param2]</thumbnail>
+        <thumbnail>[makelist.param1]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://givemeredditstreams.com/boxing')
-    return url
+    r = re.findall('(?s)href="(\/nfl[^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
+    r = [(i[0],i[1]) for i in r if 'vs' in i[1]]
+    return r
 ]]></expres>
-<page></page>
+<page>https://givemeredditstreams.top/nfl</page>
 </regex>
 <regex>
   <name>makelist2</name>
 <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
-    url = client.external('[makelist.param1]')
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('https://givemeredditstreams.top[makelist.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
     return url
 ]]></expres>
 <page></page>
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (RIPL)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -880,7 +969,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (HS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -915,7 +1004,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 
 
-<dir>
+<dir
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/boxing.xml</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -929,7 +1018,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
 </dir>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]COMBAT[/COLOR] [COLOR orchid]GO[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>https://1610186124.rsc.cdn77.org/1610186124/tracks-v1a1/mono.m3u8|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&Referer= http://sports24.club/tv/v?id=fightbox</sublink>
@@ -937,7 +1026,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/combatgo.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
 </item>
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FIGHT[/COLOR] [COLOR orchid]BOX[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>
         <sublink>http://ott-cdn.ucom.am/s86/index.m3u8?fluxusTV.m3u8</sublink>

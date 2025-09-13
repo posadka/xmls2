@@ -617,14 +617,16 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import site,workers,control
-    import re
+    from resources.lib.modules import control
+    import re,requests
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = requests.get('https://crackstreams1.in/NFL/',headers={"Referer": 'https://crackstreams1.in/', "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
     page_data = page_data.split('NFL Live and Schedule',1)[-1]
     page_data = page_data.split('CFB Live and Schedule',1)[0]
-    r = re.findall('(?s)<a href=\'([^\']*).*?<img src='([^']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
+    r = re.findall('(?s)<a href=\'([^\']*).*?<img src=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://crackstreams1.in/NFL/</page>
+<page></page>
 </regex>
 <regex>
   <name>makelist2</name>
