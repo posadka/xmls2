@@ -348,7 +348,7 @@ class streamer:
     def streameast(self, url):
         try:
             page_data = client.request(url)
-            e = re.findall('(?s)<li class="f1-podium--item  ">\s*<a href="([^"]*).*?ine ">\s*([^<]*)\n', page_data)
+            e = re.findall('(?s)<li class="f1-podium--item\s*">\s*<a href="([^"]*).*?ize">([^<]*)', page_data)
             return e
         except:
             return
