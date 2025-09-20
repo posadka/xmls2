@@ -2,6 +2,7 @@
 <?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
 <layoutype>fuckOFF</layoutype>
 
+
 <dir>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PURELY WRESTLING [/COLOR] [COLOR orchid][/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/purely/base.xml</link>
@@ -10,6 +11,16 @@
 </dir>
 
 <item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white] Wrestlepooloza [/COLOR] [COLOR orchid]  [/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>
+        <sublink>https://too.mytherix.cz/wwe.m3u8</sublink>
+        <sublink>https://too.mytherix.cz/roxiewwe.m3u8</sublink>
+    </link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+</item>
+
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]ROYAL RUMBLE LIVE[/COLOR] [COLOR orchid] (BIZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
@@ -125,7 +136,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE LIVE[/COLOR] [COLOR orchid] (TST)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
@@ -159,7 +170,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<dir>
+<dir
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WRESTLING LIVE DIRECTS[/COLOR] [COLOR orchid][/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/wwe.xml</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
