@@ -702,10 +702,10 @@ class streamer:
                 e = e.replace('\\','')
                 return e + '|Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'
             else:
-                x = client.request(t)
+                x = client.request(h)
                 w = re.findall('(?s)atob\(\'([^\']*)', x)[0]; w = base64.b64decode(w).decode('utf-8')   
                 u = re.findall('initURL\s*=\s*"([^"]*)', w)[0]
-                return u + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A131.0)%20Gecko%2F20100101%20Firefox%2F131.0&Referer=https://kleanstorage.store/&Origin=https://kleanstorage.store'
+                return u + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A131.0)%20Gecko%2F20100101%20Firefox%2F131.0&Referer=' + h
         except:
             return
 
