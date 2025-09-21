@@ -909,7 +909,7 @@ class streamer:
         try:
             page_data = client.request(url)
             s = re.findall('<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)<\/a>',page_data)
-            sort = [(i[0].replace('&#8211','').replace(';',''),i[1]) for i in s]
+            sort = [(i[0],i[1].replace('&#8211','').replace(';','')) for i in s]
             return sort
         except:
             return
