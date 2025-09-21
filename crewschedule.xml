@@ -967,7 +967,7 @@ class streamer:
     def fsportshd(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
+            page_data = requests.get(url).text
             s = re.findall('(?s)<div class="media-body">\s*<a\s+href="(?P<href>[^"]+)".*?>.*?<h4[^>]*>\s*(?P<title>[^<]+?)\s*<\/h4>',page_data)
             return s
         except:
