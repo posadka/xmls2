@@ -93,16 +93,6 @@ class streamer:
 
             elif 'sportsstatsme.net' in url: u = self.sportsstatsme(url)
 
-            elif 'sports24.club/nba' in url: u = self.sports24nba(url)
-
-            elif 'sports24.club/nfl' in url: u = self.sports24ncaa(url)
-
-            elif 'sports24.club/f1' in url: u = self.sports24f1(url)
-
-            elif 'sports24.club/ncaa' in url: u = self.sports24ncaa(url)
-
-            elif 'sports24.club/ncaab' in url: u = self.sports24ncaab(url)
-
             elif 'live-tennis.stream' in url: u = self.tennislive(url)
 
             elif 'nascar-live.stream' in url: u = self.nascarlive(url)
@@ -416,45 +406,6 @@ class streamer:
             page_data = client.request(url)
             r = re.findall('(?s)right" class="hidden-xs"><b>([^<]*).*?17px;">([^<]*).*?left" class="hidden-xs"><b>([^<]*).*?f="([^"]*)', page_data)
             sort = [(i[0],i[1],i[2],'http://sportsstatsme.net'+i[3]) for i in r]
-            return sort
-        except:
-            return
-
-    def sports24nba(self, url):
-        try:
-            page_data = client.request(url)
-            site = page_data
-            items = re.findall('(?s)float: left;">([^<]*)(?:.*?href=")([^"]*)', site)
-            sort = [(i[0].replace('\xc3\xa9s',''),'https://sports24.club'+i[1].replace('\xc3\xa9s','')) for i in items]
-            return sort
-        except:
-            return
-
-    def sports24ncaab(self, url):
-        try:
-            page_data = client.request(url)
-            items = re.findall('(?s)float: right;">([^<]*)(?:.*?f=")([^"]*)', page_data)
-            sort = [(i[0],'http://sports24.club'+i[1]) for i in items]
-            return sort
-        except:
-            return
-
-    def sports24fl(self, url):
-        try:
-            page_data = client.request(url)
-            site = page_data
-            items = re.findall('(?s)<h4 class="card-title">([^<]*).*?href="([^"]*)', site)
-            sort = [(i[0].replace('\xc3\xa9s',''),'https://sports24.club'+i[1].replace('\xc3\xa9s','')) for i in items]
-            return sort
-        except:
-            return
-
-    def sports24ncaa(self, url):
-        try:
-            page_data = client.request(url)
-            site = page_data
-            items = re.findall('(?s)float: right;">([^<]*)(?:.*?text")>([^<]*)(?:.*?href=")([^"]*)', site)
-            sort = [(i[0].replace('\xc3\xa9s',''),i[1],'https://sports24.club'+i[2].replace('\xc3\xa9s','')) for i in items]
             return sort
         except:
             return
@@ -956,7 +907,6 @@ class streamer:
 
     def tvsportslive(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             s = re.findall('<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)<\/a>',page_data)
             sort = [(i[0].replace('&#8211','').replace(';',''),i[1]) for i in s]
@@ -966,7 +916,6 @@ class streamer:
 
     def fsportshd(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             s = re.findall('(?s)<div class="media-body">\s*<a\s+href="(?P<href>[^"]+)".*?>.*?<h4[^>]*>\s*(?P<title>[^<]+?)\s*<\/h4>',page_data)
             return s
