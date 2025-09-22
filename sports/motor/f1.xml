@@ -7,17 +7,10 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
 </item>
 
-<dir>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>https://thechains24.com/GREENHAT/Formula1debrid.xml</link>
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
-</dir>
-
-<item>
-<name>[COLOR dodgerblue]¤ [/COLOR] [B][COLOR white]Formula 1 Replays[/COLOR][/B] [COLOR dodgerblue] ¤[/COLOR]</name>
-<thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/main_greenhat.png</thumbnail>
-<fanart>http://thechains24.com/GREENHAT/green.jpg</fanart>
 <link>$doregex[dir]</link>
 <regex>
 <name>dir</name>
