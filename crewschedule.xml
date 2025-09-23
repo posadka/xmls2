@@ -3,6 +3,7 @@
 import re,json,base64,requests
 
 from resources.lib.modules import client
+from resources.lib.modules import control
 from resources.lib.modules import site
 from resources.lib.modules import workers
 from resources.lib.modules import jsunpack
