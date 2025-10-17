@@ -97,7 +97,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </regex>
 </item>
 
-<dir
+<dir>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PURELY WRESTLING [/COLOR] [COLOR orchid][/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/purely/base.xml</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
