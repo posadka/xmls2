@@ -642,19 +642,10 @@ class streamer:
             hat = w + '?' + h + '=' + i + '&serverid=' + t + '&cid=' + e
             the = client.request(hat)
             crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
-        except: pass
-        try:
-            s = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
-            p = client.request(s)
-            w = re.findall('url:\s*"([^"]*)', p)[0]
-            h = re.findall('data:\s\{"([^"]*)', p)[0]
-            i = re.findall('var vidgstream = "([^"]*)', p)[0]
-            hat = w + '?' + h + '=' + i
-            the = client.request(hat)
-            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
-        except: pass
-        made = crew.replace('\\', '')
-        return made + '?&connection=keepalive' + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A131.0)%20Gecko%2F20100101%20Firefox%2F131.0&Referer=https%3A%2F%2Fmethstreams.to%2F'
+            made = crew.replace('\\', '')
+            return made + '?&connection=keepalive' + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A131.0)%20Gecko%2F20100101%20Firefox%2F131.0&Referer=https%3A%2F%2Fmethstreams.to%2F'
+        except:
+            return
 
 #link  
     def crackstreams(self, url):
