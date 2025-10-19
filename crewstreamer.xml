@@ -207,7 +207,7 @@ class streamer:
 
             elif 'yoursports.to' in url: u = self.yss(url)
 
-            elif 'crackstreams1' in url: u = self.crackstreams(url)
+            elif 'crackstreams' in url: u = self.crackstreams(url)
 
             elif 'methstreams.to' in url: u = self.weakspell(url)
 
