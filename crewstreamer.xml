@@ -41,11 +41,7 @@ class streamer:
 
             elif 'mazystreams.xyz' in url: u = self.mazy(url)
 
-            elif 'buffstream.live/nfl' in url: u = self.crackacnfl(url)
-
             elif 'buffstream.live/nba' in url: u = self.bslivenba(url)
-
-            elif 'ufcstreams.net/nbastreams.php' in url: u = self.bslivenba(url)
 
             elif 'nflup.live' in url: u = self.nflup(url)
 
@@ -221,17 +217,7 @@ class streamer:
 
             elif 'hesgoal' in url: u = self.hesgoal(url)
 
-            elif 'meth-streams' in url: u = self.thecslive(url)
-
-            elif 'thecrackstreams.net' in url: u = self.thecslive(url)
-
-            elif 'thecrackstreams.live' in url: u = self.thecslive(url)
-
             elif 'buffstreams.app' in url: u = self.buffstreams(url)
-
-            elif 'buffstreams.ai' in url: u = self.thecslive(url)
-
-            elif '60fps' in url: u = self.givemereddit(url)
 
             elif 'givemereddit' in url: u = self.givemereddit(url)
 
@@ -384,26 +370,6 @@ class streamer:
             elif 'tv247.us' in url: u = self.tvtwofour(url)
 
             elif 'myoplay.club' in url: u = self.myoplay(url)
-
-            elif 'crackstreams.app' in url: u = self.csbiz(url)
-
-            elif 'crackstreams.biz' in url: u = self.csbiz(url)
-
-            elif 'crackstreamer.net' in url: u = self.csbiz(url)
-
-            elif 'crackstreams.dev' in url: u = self.csbiz(url)
-
-            elif 'crackstreams.club' in url: u = self.csbiz(url)
-
-            elif 'crackedstreams.ai' in url: u = self.csbiz(url)
-
-            elif 'crackstreams.is' in url: u = self.csis(url)
-
-            elif 'nbastreams.gg' in url: u = self.csis(url)
-
-            elif 'crackstreams.to' in url: u = self.csto(url)
-
-            elif 'sportsnews4u.net' in url: u = self.csto(url)
 
             elif 'techoreels.com' in url: u = self.techno(url)
 
@@ -694,7 +660,7 @@ class streamer:
     def crackstreams(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url, headers={"Referer": 'https://crackstreams1.online', "User-Agent": 'Mozilla/5.0'})
+            page_data = client.request(url, headers={"Referer": url, "User-Agent": 'Mozilla/5.0'})
             h = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             if 'givemereddit' in h:
                 gr = requests.get(h).text
@@ -1420,57 +1386,6 @@ class streamer:
         except:
             return
 
-    def crackacnfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
-            h = client.request(w)
-            i = re.findall('(?s)<iframe.*?src="([^"]*)',h)[0]
-            t = client.request(i)
-            e = re.findall('source: "([^"]*)', t)[0]
-            return e + '|User-Agent=ipad&Referer=' + i
-        except:
-            return
-
-    def bslivenba(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)play">.*?src="([^"]*)',page_data)[0]
-            h = client.request(w)
-            i = re.findall('(?s)<iframe allowfullscreen.*?src="([^"]*)',h)[0]
-            t = client.request(i)
-            e = re.findall('atob\(\'([^\']*)', t)[0]
-            hat = base64.b64decode(e).decode('utf-8')
-            return hat + '|User-Agent=ipad&Referer=' + i
-        except:
-            return
-
-    def csnetmma(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            i = re.findall('(?s)<iframe.*?src="([^"]*)', h)[0]
-            t = client.request(i)
-            e = re.findall('(?s)source:\s\'([^\']*)', t)[0]
-            return e + '|User-Agent=ipad&Referer=' + i
-        except:
-            return
-
-    def csnetnfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
-            s = client.request(r)
-            w = re.findall('(?s)source:\s"([^"]*)', s)[0]
-            return w + '|User-Agent=ipad&Referer=http://thecrackstreams.net/nflstreams.php'
-        except:
-            return
-
     def nflup(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1598,31 +1513,6 @@ class streamer:
             x = re.findall('(?s)channelName = "([^"]*)', page_data)[0]
             s = re.findall('(?s)var link=(?:.*?")([^"]*)', page_data)[0]
             return r + x + s + '|Referer=http://tv247.us/all-channels/'
-        except:
-            return
-
-    def csbiz(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            if 'atob' in page_data:
-                i = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
-                t = base64.b64decode(i).decode('utf-8')
-                return t + '?&connection=keepalive' + '|Referer=' + url
-            else:
-                r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-                return r + '?&connection=keepalive' + '|Referer=' + url 
-        except:
-            return
-
-    def csto(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            i = re.findall('source: "([^"]*)', h)[0]
-            return i + '|User-Agent=Mozilla/5.0&Referer=' + w
         except:
             return
 
@@ -2010,18 +1900,6 @@ class streamer:
             #unpack = jsunpack.unpack(find)
             #i = re.findall('var (?:source|src|file)=\s*[\'"]([^\'"]+)',unpack)[0]
                 return l + '|User-Agent=Mozilla/5.0&Referer=' + w
-        except:
-            return
-
-
-
-    def thecslive(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            x = re.findall('window.atob\(\'([^\']*)',page_data)[0]
-            x = base64.b64decode(x).decode('utf-8')
-            return x + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36&Referer=' + url
         except:
             return
 
