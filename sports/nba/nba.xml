@@ -515,7 +515,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://www.streameast.gd/nba-streams')
+    url = client.schedule('https://istreameast.app/nbastreams')
     return url
 ]]></expres>
 <page></page>
@@ -525,14 +525,20 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
     url = client.external('[makelist.param1]')
+    pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
     return url
 ]]></expres>
 <page>[makelist.param1]</page>
 </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (1S)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
 <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
