@@ -1492,7 +1492,7 @@ class streamer:
             hat = re.findall('(?s)player-box">\s*<iframe.*?src="([^"]*)',page_data)[0]
             h = requests.get(hat, headers={'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36','Referer':'https://sportstvnow.org/'}).text
             s = re.findall('source = "([^"]*)',h)[0]
-            return s + '|User-Agent=Mozilla/5.0&Referer=https://sportstvnow.org/'
+            return s + '|User-Agent=Mozilla/5.0&Referer=' + hat
         except:
             return
 
