@@ -727,7 +727,7 @@ class streamer:
         try:
             page_data = client.request(url)
             e = re.findall('<td><a href="([^"]*)"\s*target="_blank">([^<]*)', page_data)
-            sort = [('https://techoreels.com'+i[0],i[1]) for i in e if 'vs' in i[1]]
+            sort = [('https://techclips.net'+i[0],i[1]) for i in e if 'vs' in i[1]]
             return sort
         except:
             return
