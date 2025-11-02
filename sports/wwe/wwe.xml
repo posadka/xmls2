@@ -135,6 +135,25 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </regex>
 </item>
 
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]TNA IMPACT[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/TNA%20Impact.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
 <dir>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PURELY WRESTLING [/COLOR] [COLOR orchid][/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/purely/base.xml</link>
