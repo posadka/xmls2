@@ -113,7 +113,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL REPLAYS 2023-2024[/COLOR] [COLOR orchid] (NV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]NFL REPLAYS 2025[/COLOR] [COLOR orchid] (NV)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nfl.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nfl_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
