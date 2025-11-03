@@ -156,7 +156,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
     import re
     r = re.findall(r'(?is)<b>\s*Server\s*#2\s*</b>.*?<a[^>]+href="([^"]+)"',page_data)[0]
-    return r
+    s = requests.get(r).text
+    t = re.findall(r'(?s)div class="entry__article.*?src="([^"]*)',page_data)[0]
+    return t
 ]]></expres>
 <page></page>
 <referer></referer>
@@ -207,7 +209,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
     import re
     r = re.findall(r'(?is)<b>\s*Condensed\s*Game\s*<\/b>.*?<a[^>]+href="([^"]+)"',page_data)[0]
-    return r
+    s = requests.get(r).text
+    t = re.findall(r'(?s)div class="entry__article.*?src="([^"]*)',page_data)[0]
+    return t
 ]]></expres>
 <page>[makelist.param1]</page>
 <referer></referer>
