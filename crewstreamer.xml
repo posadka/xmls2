@@ -2479,6 +2479,7 @@ class streamer:
         try:           
             page_data = client.request(url)
             d = re.findall(r'(?s)const allStreams.*?ue":"([^"]*)',page_data)[0]
+            d = d.replace('\\', '')
             x = requests.get(d).text
             a = re.findall(r'fetch\(\'([^\']*)',x)[0]
             a = 'https://sharkstreams.net/' + a
