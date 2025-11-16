@@ -551,6 +551,8 @@ class streamer:
 
             elif 'fsportshd' in url: u = self.fsportshd(url)
 
+            elif 'methstreams' in url: u = self.meth(url)
+
             else: u = self.generic(url)
 
             return u
@@ -2476,5 +2478,19 @@ class streamer:
             joined = ''.join(chars).replace('\/', '/')
             joined = joined.replace('https://///', 'https://').replace('https:////', 'https://').replace('https:///', 'https://')
             return joined + '|Referer=https://stellarthread.com/&Origin=https://stellarthread.com&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+        except:
+            return
+
+    def meth(self, url):
+        try:           
+            page_data = client.request(url)
+            d = re.findall(r'(?s)const allStreams.*?ue":"([^"]*)',page_data)[0]
+            x = requests.get(d).text
+            a = re.findall(r'fetch\(\'([^\']*)',x)[0]
+            a = 'https://sharkstreams.net/' + a
+            e = requests.get(a).text
+            z = re.findall(r'\["([^"]*)',e)[0]
+            z = z.replace('\\', '')
+            return z + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Refer=' + a + '/&Origin=' + a
         except:
             return
