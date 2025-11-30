@@ -535,7 +535,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
     return r
 ]]></expres>
-<page>http://volokit2.com/sport/nba/</page>
+<page>http://volokit2.fun/sport/nba/</page>
 </regex>
 <regex>
 <name>makelist2</name>
@@ -656,7 +656,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
     return r
 ]]></expres>
-<page>http://volokit2.com/sport/womens-college-basketball/</page>
+<page>http://volokit2.fun/sport/womens-college-basketball/</page>
 </regex>
 <regex>
 <name>makelist2</name>
