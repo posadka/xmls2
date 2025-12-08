@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re,json,base64,requests,time,random,math
+import re,json,base64,requests,time,random,math,xbmcgui
 try:
     from urllib import urlencode, quote_plus, urlparse, urljoin
 except ImportError:
@@ -2476,16 +2476,52 @@ class streamer:
             return
 
     def meth(self, url):
-        try:           
+        try:
             page_data = client.request(url)
-            d = re.findall(r'(?s)const allStreams.*?ue":"([^"]*)',page_data)[0]
-            d = d.replace('\\', '')
-            x = requests.get(d).text
-            a = re.findall(r'fetch\(\'([^\']*)',x)[0]
-            a = 'https://sharkstreams.net/' + a
-            e = requests.get(a).text
-            z = re.findall(r'\["([^"]*)',e)[0]
-            z = z.replace('\\', '')
-            return z + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Refer=' + a + '/&Origin=' + a
+            m = re.search(r'const allStreams.*?ue":"([^"]+)', page_data, re.S)
+            json_url = m.group(1).replace('\\', '')
+            json_data = requests.get(json_url).text
+            m = re.search(r"fetch\('([^']+)", json_data)
+            fetch_path = m.group(1)
+            api_url = 'https://sharkstreams.net/' + fetch_path
+            api_data = requests.get(api_url).text
+            m = re.search(r'\["([^"]+)', api_data)
+            final_url = m.group(1).replace('\\', '')
+            UA = (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/140.0.0.0 Safari/537.36"
+            )
+            refer = api_url + '/'
+            origin = api_url.split('/', 3)[:3]
+            origin = '/'.join(origin)
+            return f"{final_url}|User-Agent={UA}&Refer={refer}&Origin={origin}"
+        except Exception:
+            return
+
+
+    def roxie(self, url):
+        try:
+            page_data = client.request(url)
+            m3u8_list = re.findall(r'https?://[^\s\'"]+\.m3u8', page_data, re.DOTALL)
+            if not m3u8_list:
+                return
+            if len(m3u8_list) == 1:
+                stream_url = m3u8_list[0]
+            else:
+                labels = [f'Stream {i+1}' for i in range(len(m3u8_list))]
+                choice = xbmcgui.Dialog().select('Select Stream', labels)
+                if choice == -1:
+                    return
+                stream_url = m3u8_list[choice]
+            ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
+            u = urlparse(url)
+            origin = f'{u.scheme}://{u.netloc}'
+            return (
+                stream_url
+                + '|User-Agent=' + ua +
+                '&Refer=' + url +
+                '&Origin=' + origin
+            )
         except:
             return
