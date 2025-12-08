@@ -547,6 +547,8 @@ class streamer:
 
             elif 'methstreams' in url: u = self.meth(url)
 
+            elif 'roxiestreams' in url: u = self.roxie(url)
+
             else: u = self.generic(url)
 
             return u
