@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re,json,base64,requests,time,random,math,xbmcgui
+import re, json, base64, requests, time, random, math, xbmcgui
 try:
     from urllib import urlencode, quote_plus, urlparse, urljoin
 except ImportError:
@@ -30,7 +30,6 @@ class streamer:
             elif 'nflup.live' in url: u = self.nflup(url)
             elif 'papahd' in url: u = self.papahd(url)
             elif 'bfst.xyz' in url: u = self.beast(url)
-            elif 'bfst.live' in url: u = self.onestream(url)
             elif 'fightpass.site' in url: u = self.fightpass(url)
             elif 'allsportsmedia.live' in url: u = self.fightpass(url)
             elif 'nbaweb.site' in url: u = self.helena(url)
@@ -64,8 +63,6 @@ class streamer:
             elif 'gameshdlive' in url: u = self.solaris(url)
             elif 'gamehdlive' in url: u = self.solaris(url)
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
-            elif 'topstreams.info/nba' in url: u = self.topstreams(url)
-            elif 'topstreams.info/nfl' in url: u = self.topstreamsnfl(url)
             elif 'streameast' in url: u = self.streameast(url)
             elif 'istreameast' in url: u = self.streameast(url)
             elif 'ertech.work' in url: u = self.skuanet(url)
@@ -91,12 +88,8 @@ class streamer:
             elif 'ftheanh.tech' in url: u = self.skuanet(url)
             elif 'azulitostreams.com' in url: u = self.skuanet(url)
             elif 'banknotewiki.com' in url: u = self.skuanet(url)
-            elif 'boxingfightsvideos' in url: u = self.boxingfightsvideos(url)
             elif 'crichd' in url: u = self.cric(url)
             elif 'telehub.org' in url: u = self.tubby(url)
-            elif 'btstream.live' in url: u = self.btstream(url)
-            elif 'soccerjumbotv1.me' in url: u = self.jumbo(url)
-            elif 'sjumbotvs' in url: u = self.jumbo(url)
             elif 'sportnews.to' in url: u = self.sportnews(url)
             elif 'mysports.to' in url: u = self.sportnews(url)
             elif 'footy.to' in url: u = self.sportnews(url)
@@ -116,37 +109,11 @@ class streamer:
             elif 'sportschamp' in url: u = self.ovostreams(url)
             elif 'soccerstreams.football' in url: u = self.ovostreams(url)
             elif 'easy-sport.tv' in url: u = self.ovostreams(url)
-            elif 'myoplay.club' in url: u = self.myoplay(url)
             elif 'techoreels.com' in url: u = self.techno(url)
             elif 'techclips.net' in url: u = self.techno(url)
-            elif 'bdnewszh' in url: u = self.ranionfl(url)
-            elif 'epllive.net' in url: u = self.ranionfl(url)
-            elif 'streamspass' in url: u = self.ranionfl(url)
-            elif 'recipemam.com' in url: u = self.recipemam(url)
-            elif 'catchystream.com' in url: u = self.catchy(url)
-            elif 'sportsurge.in' in url: u = self.sportsurge(url)
-            elif 'hdstreams.pw' in url: u = self.sportsurge(url)
-            elif 'ace' in url: u = self.ace(url)
-            elif 'nbatvsport.com' in url: u = self.nbatvsport(url)
-            elif 'changnews.co.uk' in url: u = self.nbatvsport(url)
-            elif 'geekingeek.com' in url: u = self.geekingeek(url)
-            elif 'rightcombat.com' in url: u = self.rightcombat(url)
-            elif 'poscitech.com' in url: u = self.poscitech(url)
-            elif 'iwizwig.online' in url: u = self.iwizwig(url)
             elif 'torridplay.com' in url: u = self.skuanet(url)
             elif 'sportinglive.co' in url: u = self.skuanet(url)
-            elif 'cricworld.club' in url: u = self.cricworld(url)
             elif 'nflscoop' in url: u = self.sportsupa(url)
-            elif 'nflbuzz.xyz' in url: u = self.capp(url)
-            elif 'techstribes.com' in url: u = self.capp(url)
-            elif 'grealish.net' in url: u = self.capp(url)
-            elif 'darwinstreams.com' in url: u = self.darwinstreams(url)
-            elif 'freetvsports.com' in url: u = self.freetvsports(url)
-            elif 'p2pstreams.com' in url: u = self.ptwopstreams(url)
-            elif 'p2pstreams.live' in url: u = self.ptwopstreams(url)
-            elif 'sportek.xyz' in url: u = self.sportek(url)
-            elif 'bongstreams.com' in url: u = self.bong(url)
-            elif 'sporteks.net' in url: u = self.sporteks(url)
             elif 'pawastreams' in url: u = self.pawastreams(url)
             elif 'boltcast.info' in url: u = self.pawastreams(url)
             elif 'supertipz.com' in url: u = self.supertipz(url)
@@ -154,54 +121,20 @@ class streamer:
             elif 'dubzstreams.com' in url: u = self.dubsstreamz(url)
             elif 'summerlivestream.com' in url: u = self.summerlivestream(url)
             elif 'streaming4u.org/' in url: u = self.summerlivestream(url)
-            elif 'soccer24hd.com' in url: u = self.sstwentyfour(url)
             elif 'crazystreams.ga' in url: u = self.crazystreams(url)
-            elif '1stream' in url: u = self.onestream(url)
-            elif 'topstreams.tv' in url: u = self.toptv(url)
-            elif 'dubznetwork' in url: u = self.dubznetwork(url)
-            elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
-            elif 'sportsguild.net' in url: u = self.sportsguild(url)
-            elif 'sportinglive' in url: u = self.sportinglive(url)
             elif 'silverspoon.site' in url: u = self.silverspoon(url)
             elif 'sequencecard.xyz' in url: u = self.silverspoon(url)
             elif 'willsports' in url: u = self.silverspoon(url)
             elif 'sportsallday.net' in url: u = self.silverspoon(url)
             elif 'sportsupa' in url: u = self.sportsupa(url)
-            elif 'maxsport' in url: u = self.maxsport(url)
-            elif 'thegentleclass' in url: u = self.tvnba(url)
             elif 'hitstreams' in url: u = self.hitstreams(url)
-            elif 'metaporky' in url: u = self.metaporky(url)
-            elif 'alexsports' in url: u = self.alexsports(url)
-            elif 'alexsportz' in url: u = self.alexsports(url)
-            elif 'nbagaffer' in url: u = self.nbagaffer(url)
             elif 'soccerstreams.football' in url: u = self.soccerstreams(url)
             elif 'f1livestream' in url: u = self.soccerstreams(url)
-            elif 'soccersislive' in url: u = self.soccersislive(url)
-            elif 'bikesports' in url: u = self.tvnba(url)
             elif 'basketball-video' in url: u = self.basketballvideo(url)
             elif 'nfl-video' in url: u = self.nflvideo(url)
-            elif 'nizarstream' in url: u = self.nizarstream(url)
-            elif 'enjoyhd' in url: u = self.enjoyhd(url)
             elif 'mysports.to' in url: u = self.sportnews(url)
-            elif 'prolive.tv' in url: u = self.prolive(url)
-            elif 'paktech2' in url: u = self.paktech(url)
-            elif 'olympicology.com' in url: u = self.olympicology(url)
-            elif 'enjoy4k' in url: u = self.enjoyfourk(url)
             elif 'sports-stream.site' in url: u = self.sportsstreamsite(url)
-            elif 'hdrez' in url: u = self.hdrez(url)
-            elif 'sporthaze' in url: u = self.hdrez(url)
-            elif 'bingsport' in url: u = self.bingsport(url)
-            elif 'thetvapp' in url: u = self.tvapp(url)
-            elif 'score808.football' in url: u = self.score(url)
-            elif 'worldcupglory' in url: u = self.worldcupglory(url)
-            elif 'headlines.footybite.to' in url: u = self.worldcupglory(url)
-            elif 'headlines.reddit-soccerstreams' in url: u = self.headlines(url)
-            elif 'backfirstwo' in url: u = self.backfirstwo(url)
-            elif 'streambtw' in url: u = self.streambtw(url)
-            elif 'livespor' in url: u = self.streambtw(url)
-            elif 'mlbstreams.ai' in url: u = self.mlbstreamsai(url)
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
-            elif 'live3.totalsportek1000' in url: u = self.totalsportek(url)
             elif 'fsportshd' in url: u = self.fsportshd(url)
             elif 'methstreams' in url: u = self.meth(url)
             elif 'roxiestreams' in url: u = self.roxie(url)
@@ -347,8 +280,8 @@ class streamer:
 
     def streameast(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':return
-            UA = (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36)
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
             page_data = client.request(url)
             m = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
             if not m:
@@ -377,7 +310,6 @@ class streamer:
             )
         except Exception:
             return
-
 
     def skuanet(self, url):
         try:
@@ -847,8 +779,8 @@ class streamer:
             return
 
     #def tvsportslive(self, url):
-     #   try:
-     #       if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    #    try:
+    #        if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     #        page_data = client.request(url)
     #        s =  re.findall(r'src="([^"]+\.php\?[^"]*)', page_data)[0]
     #        response = requests.get(s).text
@@ -860,8 +792,8 @@ class streamer:
     #        r = requests.get(x).text
     #        m3u8 = re.findall(r"atob\(['\"]([^'\"]+)['\"]\)", r); m3u8 = base64.b64decode(m3u8).decode('utf-8')
     #        return m3u8 + '|Referer={doamin}/&Origin={doamin}&Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-       # except:
-       #     return
+    #    except:
+    #        return
 
     def epicmartial(self, url):
         try:
