@@ -35,8 +35,6 @@ class streamer:
 
             elif 'mazystreams.xyz' in url: u = self.mazy(url)
 
-            elif 'buffstream.live/nba' in url: u = self.bslivenba(url)
-
             elif 'nflup.live' in url: u = self.nflup(url)
 
             elif 'papahd' in url: u = self.papahd(url)
@@ -49,12 +47,6 @@ class streamer:
 
             elif 'allsportsmedia.live' in url: u = self.fightpass(url)
 
-            elif 'allsportsdaily.co' in url: u = self.tvnba(url)
-
-            elif 'gameavenue.co' in url: u = self.tvnba(url)
-
-            elif 'maxsports.site' in url: u = self.tvnba(url)
-
             elif 'icelz.newsrade.tk' in url: u = self.ice(url)
 
             elif 'hockeynews.site' in url: u = self.helena(url)
@@ -63,31 +55,9 @@ class streamer:
 
             elif 'nbaweb.site' in url: u = self.helena(url)
 
-            elif 'hockeyweb' in url: u = self.tvnba(url)
-
-            elif 'scoresunday.com' in url: u = self.tvnba(url)
-
             elif 'nbaweb.xyz' in url: u = self.skuanet(url)
 
-            elif 'myustv.com' in url: u = self.myustv(url)
-
-            elif 'freesport.info' in url: u = self.myustv(url)
-
-            elif 'cricworld.club' in url: u = self.myustv(url)
-
             elif 'thecyclingentertainment.com' in url: u = self.markky(url)
-
-            elif 'motornews.live' in url: u = self.markky(url)
-
-            elif 'markky88.com' in url: u = self.markky(url)
-
-            elif 'markkystreams' in url: u = self.markky(url)
-
-            elif '6stream.xyz' in url: u = self.markky(url)
-
-            elif '6streams.tv' in url: u = self.markky(url)
-
-            elif 'foxupdates.com' in url: u = self.markky(url)
 
             elif 'successstudios.co' in url: u = self.markky(url)
 
@@ -205,8 +175,6 @@ class streamer:
 
             elif 'hesgoal' in url: u = self.hesgoal(url)
 
-            elif 'buffstreams.app' in url: u = self.buffstreams(url)
-
             elif 'givemereddit' in url: u = self.givemereddit(url)
 
             elif 'givemenflstreams' in url: u = self.givemereddit(url)
@@ -232,18 +200,6 @@ class streamer:
             elif 'gameshdlive' in url: u = self.solaris(url)
 
             elif 'gamehdlive' in url: u = self.solaris(url)
-
-            elif 'bfstrms.xyz' in url: u = self.buff(url)
-
-            elif 'ntgdhsgfs.re/' in url: u = self.buff(url)
-
-            elif 'bfst.to' in url: u = self.buff(url)
-
-            elif 'bfstrs.xyz' in url: u = self.buff(url)
-
-            elif 'buffstreamz.com' in url: u = self.buff(url)
-
-            elif 'ripple.stream' in url: u = self.ripple(url)
 
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
 
@@ -685,29 +641,40 @@ class streamer:
             return e + '||Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'
         except:
             return
-#link
-    def buff(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url, headers={'User-Agent':'Mozilla/5.0'})
-            reg = re.findall('(?s)<iframe(?:.*?src)="([^"]*)', page_data)[0]
-            page = client.request(reg, headers={'User-Agent':'Mozilla/5.0','Referer':url})
-            find = re.findall('source: atob\(\'([^\']*)', page)[0]
-            find = base64.b64decode(find).decode('utf-8')
-            return find + '|User-Agent=Mozilla/5.0&Referer=' + reg
-        except:
-            return
 
-    def streameast(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('(?s)<iframe[^>]+src="([^"]+)', page_data)[0]
-            t = requests.get(s,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36','Referer':url}).text
-            w = re.findall('atob\(\'([^\']*)', t)[0];w = base64.b64decode(w).decode('utf-8')
-            return w + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Referer=https://gooz.aapmains.net/&Origin=https://gooz.aapmains.net'
-        except:
+def streameast(self, url):
+    try:
+        if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':return
+        UA = (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36)
+        page_data = client.request(url)
+        m = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
+        if not m:
             return
+        iframe_url = m.group(1)
+        headers = {
+            'User-Agent': UA,
+            'Referer': url
+        }
+        iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
+        m = re.search(r"atob\('([^']+)", iframe_html)
+        if not m:
+            return
+        encoded = m.group(1)
+        try:
+            decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
+        except Exception:
+            return
+        referer = 'https://gooz.aapmains.net/'
+        origin = 'https://gooz.aapmains.net'
+        return (
+            f"{decoded}"
+            f"|User-Agent={UA}"
+            f"&Referer={referer}"
+            f"&Origin={origin}"
+        )
+    except Exception:
+        return
+
 
     def skuanet(self, url):
         try:
@@ -726,94 +693,6 @@ class streamer:
             u = client.request(r)
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', u)[0]
             return x + '|User-Agent=iPad&Referer=' + r
-        except:
-            return
-
-    def tvnba(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url
-        except:
-            return
-
-    def tvnfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
-            r = base64.b64decode(r).decode('utf-8')
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url 
-        except:
-            return
-
-    def tvncaaf(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
-            r = base64.b64decode(r).decode('utf-8')
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/ncaaf-streams/' 
-        except:
-            return
-
-    def tvnhl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #token = client.request('http://continuum.watch/Crew/nhl.txt')
-            #nhl_auth = "|Cookie=Authorization=" + token
-            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
-            r = re.findall('source:\s*"([^"]*)', page_data)[0]
-            if 'master_wired60' not in r:
-                return r + '|Referer=http://bestsolaris.com/'
-            else :
-                 r = r.replace('master_wired60','5600K/5600_slide')
-                 return r + nhl_auth
-        except:
-            return
-
-    def tvmma(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
-            r = base64.b64decode(r).decode('utf-8')
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/mma-streams/' 
-        except:
-            return
-
-    def tvboxing(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
-            r = base64.b64decode(r).decode('utf-8')
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/boxing-streams/' 
-        except:
-            return
-
-    def tvf1(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)atob\("([^"]*)', page_data)[0]
-            r = base64.b64decode(r).decode('utf-8')
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=http://123tvsports.com/category/f1-streams/' 
-        except:
-            return
-
-    def yss(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe frameborder=0 height=100% width=100% src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            i = re.findall('\}\s(?:.*?var)(?:[^\']*)\'([^\']*)', h)[0]
-            t = base64.b64decode(i).decode('utf-8')
-            if t.startswith('/'): t = 'http://yoursports.stream' + t
-            return t + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + w
         except:
             return
 
@@ -1779,16 +1658,6 @@ class streamer:
             #unpack = jsunpack.unpack(find)
             #i = re.findall('var (?:source|src|file)=\s*[\'"]([^\'"]+)',unpack)[0]
                 return l + '|User-Agent=Mozilla/5.0&Referer=' + w
-        except:
-            return
-
-    def buffstreams(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            x = re.findall('window.atob\(\'([^\']*)',page_data)[0]
-            x = base64.b64decode(x).decode('utf-8')
-            return x + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36&Referer=https://googlapisapi.com/'
         except:
             return
 
