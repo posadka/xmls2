@@ -77,30 +77,6 @@ class streamer:
 
             elif 'telechargementfilmhd.com' in url: u = self.nbahdreplay(url)
 
-            elif 'bestsolaris.com/nbastreams' in url: u = self.tvnba(url)
-
-            elif 'bestsolaris.com/mlbstreams' in url: u = self.tvnba(url)
-
-            elif 'bestsolaris.com/category/nflstreams/' in url: u = self.tvnba(url)
-
-            elif 'bestsolaris.com/nflstreams' in url: u = self.tvnba(url)
-
-            elif 'bestsolaris.com/cfbstreams' in url: u = self.tvnba(url)
-
-            elif '123tvsports.com/nfl-streams/' in url: u = self.tvnfl(url)
-
-            elif '9live.club' in url: u = self.tvnfl(url)
-
-            elif '123tvsports.com/ncaaf-streams/' in url: u = self.tvncaaf(url)
-
-            elif 'bestsolaris.com/nhlstreams' in url: u = self.tvnhl(url)
-
-            elif '123tvsports.com/mma-streams/' in url: u = self.tvmma(url)
-
-            elif '123tvsports.com/boxing-streams/' in url: u = self.tvboxing(url)
-
-            elif '123tvsports.com/f1-streams/' in url: u = self.tvf1(url)
-
             elif 'live-nhl.stream' in url: u = self.livenhl(url)
 
             elif 'sportsbay.org' in url: u = self.sportsbay(url)
