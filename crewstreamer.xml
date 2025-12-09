@@ -20,459 +20,196 @@ class streamer:
     def resolve(self, url):
         try:
             if 'epicmartial' in url: u = self.epicmartial(url)
-
-            if 'castweb' in url: u = self.epicmartial(url)
-
-            if 'elixx.xyz' in url: u = self.elixx(url)
-
+            elif 'castweb' in url: u = self.epicmartial(url)
+            elif 'elixx.xyz' in url: u = self.elixx(url)
             elif 'eddensports.com' in url: u = self.solaris(url)
-
             elif 'redsoccer.info' in url: u = self.solaris(url)
-
             elif 'worldstreams.net' in url: u = self.worldstreams(url)
-
             elif 'mazymedias.com' in url: u = self.mazy(url)
-
             elif 'mazystreams.xyz' in url: u = self.mazy(url)
-
             elif 'nflup.live' in url: u = self.nflup(url)
-
             elif 'papahd' in url: u = self.papahd(url)
-
             elif 'bfst.xyz' in url: u = self.beast(url)
-
             elif 'bfst.live' in url: u = self.onestream(url)
-
             elif 'fightpass.site' in url: u = self.fightpass(url)
-
             elif 'allsportsmedia.live' in url: u = self.fightpass(url)
-
-            elif 'icelz.newsrade.tk' in url: u = self.ice(url)
-
-            elif 'hockeynews.site' in url: u = self.helena(url)
-
-            elif 'tennews.live' in url: u = self.helena(url)
-
             elif 'nbaweb.site' in url: u = self.helena(url)
-
             elif 'nbaweb.xyz' in url: u = self.skuanet(url)
-
             elif 'thecyclingentertainment.com' in url: u = self.markky(url)
-
             elif 'successstudios.co' in url: u = self.markky(url)
-
             elif 'sportsnest.co' in url: u = self.sportsnest(url)
-
             elif 'dofusports' in url: u = self.sportsnest(url)
-
-            elif 'nbajunkie.xyz/' in url: u = self.sportsnest(url)
-
             elif 'bestreamsports.org' in url: u = self.sportsnest(url)
-
             elif 'sportsbuzz.co' in url: u = self.markky(url)
-
             elif 'givemevibes.com' in url: u = self.markky(url)
-
             elif 'techtricksng.com' in url: u = self.markky(url)
-
             elif 'telechargementfilmhd.com' in url: u = self.nbahdreplay(url)
-
-            elif 'sports24.club/nhl' in url: u = self.sports24nhl(url)
-
-            elif 'sports24.site/nhl' in url: u = self.sports24nhl(url)
-
-            elif 'sports24.club/f1' in url: u = self.sports24f1(url)
-
-            elif 'sports24.club/nba' in url: u = self.sports24nba(url)
-
-            elif 'sports24.club/nfl' in url: u = self.sports24nfl(url)
-
-            elif 'sports24.club/ncaa' in url: u = self.sports24ncaa(url)
-
-            elif 'sports24.club/ncaab' in url: u = self.sports24ncaab(url)
-
-            elif 'sports24.club/ncaab' in url: u = self.sports24ufc(url)
-
-            elif 'everysports.us/watch/nhl/' in url: u = self.everysportsnhl(url)
-
-            elif 'everysports.us/view/mlb' in url: u = self.everysportsmlb(url)
-
-            elif 'everysports.us/view/nfl' in url: u = self.everysportsnfl(url)
-
             elif 'volokit' in url: u = self.volokit(url)
-
-            elif 'sportsstatsme.net/watch/NHL-streams' in url: u = self.ssnhl(url)
-
-            elif 'retsports.com' in url: u = self.ssnhl(url)
-
-            elif 'sportsstats.xyz/www.sportsstats.me' in url: u = self.ssnhl(url)
-
-            elif 'sportsstats.xyz/www.sportsstats.me/nhl2' in url: u = self.ssnhl(url)
-
-            elif 'sportsstats.xyz/www.sportsrp.com/nhl' in url: u = self.ssnhl(url)
-
-            elif 'sportsrp.com/www.sportsstats.me/nhl2' in url: u = self.ssnhl(url)
-
-            elif 'sportsrp.com/sechdules/NHL-streams/2/' in url: u = self.ssnhl(url)
-
-            elif 'www.sportsrp.com/watch/NHL-streams' in url: u = self.ssnhl(url)
-
-            elif 'sportsstats.xyz/www.sportsstats.me/nhl3' in url: u = self.ssnhl(url)
-
-            elif 'sportsstats.xyz/www.sportsstzts.me/nhl2' in url: u = self.ssnhl(url)
-
-            elif 'sportsstatsme.net/watch/NBA-streams' in url: u = self.ssnba(url)
-
-            elif 'sportsstatsme.net/watch/NFL-streams' in url: u = self.ssnba(url)
-
-            elif 'sportsstatsme.net/watch/MLS-streams' in url: u = self.ssnba(url)
-
             elif 'playoffsstream' in url: u = self.playoffnfl(url)
-
             elif '720pstream' in url: u = self.seventwenty(url)
-
             elif 'watchkobestreams' in url: u = self.watchkobestreams(url)
-
-            elif 'yoursports.stream' in url: u = self.yss(url)
-
-            elif 'yrsprts.stream' in url: u = self.yss(url)
-
-            elif 'yoursports.to' in url: u = self.yss(url)
-
             elif 'crackstreams' in url: u = self.crackstreams(url)
-
             elif 'hesgoal' in url: u = self.hesgoal(url)
-
             elif 'givemereddit' in url: u = self.givemereddit(url)
-
             elif 'givemenflstreams' in url: u = self.givemereddit(url)
-
             elif 'givemenbastreams' in url: u = self.givemereddit(url)
-
             elif 'givememmastreams' in url: u = self.givemereddit(url)
-
             elif 'givemeredditstreams' in url: u = self.givemereddit(url)
-
             elif 'tezgoal.com' in url: u = self.hdstreams(url)
-
             elif 'freehdgames' in url: u = self.hdstreams(url)
-
             elif 'hhdstreams.club' in url: u = self.hdstreams(url)
-
             elif 'hdstreamss.club' in url: u = self.hdstreams(url)
-
             elif 'uhdstreams.club' in url: u = self.hdstreams(url)
-
             elif 'uhdgames.xyz' in url: u = self.hdstreams(url)
-
             elif 'gameshdlive' in url: u = self.solaris(url)
-
             elif 'gamehdlive' in url: u = self.solaris(url)
-
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
-
             elif 'topstreams.info/nba' in url: u = self.topstreams(url)
-
             elif 'topstreams.info/nfl' in url: u = self.topstreamsnfl(url)
-
             elif 'streameast' in url: u = self.streameast(url)
-
             elif 'istreameast' in url: u = self.streameast(url)
-
             elif 'ertech.work' in url: u = self.skuanet(url)
-
             elif 'chimxoan.net' in url: u = self.skuanet(url)
-
-            elif 'skuanet.us' in url: u = self.skuanet(url)
-
-            elif 'Skuanet.Us' in url: u = self.skuanet(url)
-
+            elif 'skuanet' in url: u = self.skuanet(url)
             elif 'harumu.me/' in url: u = self.skuanet(url)
-
             elif 'viafb.site/' in url: u = self.skuanet(url)
-
             elif 'fnew.tech' in url: u = self.skuanet(url)
-
             elif 'psm.wtf' in url: u = self.skuanet(url)
-
             elif 'fabtech.work' in url: u = self.skuanet(url)
-
             elif 'ruapa.com/' in url: u = self.skuanet(url)
-
             elif 'gardener101.work' in url: u = self.skuanet(url)
-
             elif 'jmutech.xyz' in url: u = self.skuanet(url)
-
             elif 'aas.works' in url: u = self.skuanet(url)
-
             elif 'kimta' in url: u = self.skuanet(url)
-
             elif 'sagoad.com/' in url: u = self.skuanet(url)
-
             elif 'anhdepmoingay.com/' in url: u = self.skuanet(url)
-
             elif 'ustvgo.cc' in url: u = self.skuanet(url)
-
             elif 'hinhnenhd.info' in url: u = self.skuanet(url)
-
             elif 'bubofitness.com' in url: u = self.skuanet(url)
-
             elif 'midcoastplanning.org' in url: u = self.skuanet(url)
-
             elif 'fxmagicmusic' in url: u = self.skuanet(url)
-
             elif 'ftheanh.tech' in url: u = self.skuanet(url)
-
             elif 'azulitostreams.com' in url: u = self.skuanet(url)
-
             elif 'banknotewiki.com' in url: u = self.skuanet(url)
-
             elif 'boxingfightsvideos' in url: u = self.boxingfightsvideos(url)
-
             elif 'crichd' in url: u = self.cric(url)
-            
             elif 'telehub.org' in url: u = self.tubby(url)
-
             elif 'btstream.live' in url: u = self.btstream(url)
-            
             elif 'soccerjumbotv1.me' in url: u = self.jumbo(url)
-
             elif 'sjumbotvs' in url: u = self.jumbo(url)
-
             elif 'sportnews.to' in url: u = self.sportnews(url)
-
             elif 'mysports.to' in url: u = self.sportnews(url)
-
             elif 'footy.to' in url: u = self.sportnews(url)
-
-            elif 'blacktiesports' in url: u = self.blacktienba(url)
-
             elif 'wpstream.tv' in url: u = self.weakspell(url)
-
             elif 'weakspell' in url: u = self.weakspell(url)
-
             elif 'weaksports.xyz' in url: u = self.hdstreams(url)
-
             elif 'liveonscore.tv' in url: u = self.weakspell(url)
-
             elif 'liveonscore.to' in url: u = self.weakspell(url)
-
             elif 'weakstreams' in url: u = self.weakspell(url)
-
             elif 'weakstream.org' in url: u = self.weakspell(url)
-
             elif 'ufckhabib.com' in url: u = self.ufckhabib(url)
-
             elif 'sportsurge.stream' in url: u = self.ufckhabib(url)
-
             elif 'ovostreams' in url: u = self.ovostreams(url)
-
             elif 'ovogoaal' in url: u = self.ovostreams(url)
-
             elif 'ovogoal' in url: u = self.ovostreams(url)
-
             elif 'ovo-gola' in url: u = self.ovostreams(url)
-
             elif 'sportschamp' in url: u = self.ovostreams(url)
-
             elif 'soccerstreams.football' in url: u = self.ovostreams(url)
-
             elif 'easy-sport.tv' in url: u = self.ovostreams(url)
-
-            elif 'tv247.us' in url: u = self.tvtwofour(url)
-
             elif 'myoplay.club' in url: u = self.myoplay(url)
-
             elif 'techoreels.com' in url: u = self.techno(url)
-
             elif 'techclips.net' in url: u = self.techno(url)
-
             elif 'bdnewszh' in url: u = self.ranionfl(url)
-
             elif 'epllive.net' in url: u = self.ranionfl(url)
-
             elif 'streamspass' in url: u = self.ranionfl(url)
-
             elif 'recipemam.com' in url: u = self.recipemam(url)
-
             elif 'catchystream.com' in url: u = self.catchy(url)
-
             elif 'sportsurge.in' in url: u = self.sportsurge(url)
-
             elif 'hdstreams.pw' in url: u = self.sportsurge(url)
-
             elif 'ace' in url: u = self.ace(url)
-
             elif 'nbatvsport.com' in url: u = self.nbatvsport(url)
-
             elif 'changnews.co.uk' in url: u = self.nbatvsport(url)
-
             elif 'geekingeek.com' in url: u = self.geekingeek(url)
-
             elif 'rightcombat.com' in url: u = self.rightcombat(url)
-
             elif 'poscitech.com' in url: u = self.poscitech(url)
-
             elif 'iwizwig.online' in url: u = self.iwizwig(url)
-
             elif 'torridplay.com' in url: u = self.skuanet(url)
-
             elif 'sportinglive.co' in url: u = self.skuanet(url)
-
             elif 'cricworld.club' in url: u = self.cricworld(url)
-
             elif 'nflscoop' in url: u = self.sportsupa(url)
-
             elif 'nflbuzz.xyz' in url: u = self.capp(url)
-
             elif 'techstribes.com' in url: u = self.capp(url)
-
             elif 'grealish.net' in url: u = self.capp(url)
-
             elif 'darwinstreams.com' in url: u = self.darwinstreams(url)
-
             elif 'freetvsports.com' in url: u = self.freetvsports(url)
-
             elif 'p2pstreams.com' in url: u = self.ptwopstreams(url)
-
             elif 'p2pstreams.live' in url: u = self.ptwopstreams(url)
-
             elif 'sportek.xyz' in url: u = self.sportek(url)
-
             elif 'bongstreams.com' in url: u = self.bong(url)
-
             elif 'sporteks.net' in url: u = self.sporteks(url)
-
             elif 'pawastreams' in url: u = self.pawastreams(url)
-
             elif 'boltcast.info' in url: u = self.pawastreams(url)
-
             elif 'supertipz.com' in url: u = self.supertipz(url)
-
             elif 'dubsstreamz.com' in url: u = self.dubsstreamz(url)
-
             elif 'dubzstreams.com' in url: u = self.dubsstreamz(url)
-
             elif 'summerlivestream.com' in url: u = self.summerlivestream(url)
-
             elif 'streaming4u.org/' in url: u = self.summerlivestream(url)
-
             elif 'soccer24hd.com' in url: u = self.sstwentyfour(url)
-
             elif 'crazystreams.ga' in url: u = self.crazystreams(url)
-
             elif '1stream' in url: u = self.onestream(url)
-
             elif 'topstreams.tv' in url: u = self.toptv(url)
-
             elif 'dubznetwork' in url: u = self.dubznetwork(url)
-
             elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
-
-            elif 'sportsio' in url: u = self.sportsio(url)
-
-            elif '60fps' in url: u = self.sixtyfps(url)
-
             elif 'sportsguild.net' in url: u = self.sportsguild(url)
-
-            elif 'ustv247.tv' in url: u = self.ustvtwentyfourseven(url)
-
             elif 'sportinglive' in url: u = self.sportinglive(url)
-
             elif 'silverspoon.site' in url: u = self.silverspoon(url)
-
             elif 'sequencecard.xyz' in url: u = self.silverspoon(url)
-
             elif 'willsports' in url: u = self.silverspoon(url)
-
             elif 'sportsallday.net' in url: u = self.silverspoon(url)
-
             elif 'sportsupa' in url: u = self.sportsupa(url)
-
             elif 'maxsport' in url: u = self.maxsport(url)
-
             elif 'thegentleclass' in url: u = self.tvnba(url)
-
             elif 'hitstreams' in url: u = self.hitstreams(url)
-
             elif 'metaporky' in url: u = self.metaporky(url)
-
             elif 'alexsports' in url: u = self.alexsports(url)
-
             elif 'alexsportz' in url: u = self.alexsports(url)
-
             elif 'nbagaffer' in url: u = self.nbagaffer(url)
-
             elif 'soccerstreams.football' in url: u = self.soccerstreams(url)
-
             elif 'f1livestream' in url: u = self.soccerstreams(url)
-
             elif 'soccersislive' in url: u = self.soccersislive(url)
-
             elif 'bikesports' in url: u = self.tvnba(url)
-
             elif 'basketball-video' in url: u = self.basketballvideo(url)
-
             elif 'nfl-video' in url: u = self.nflvideo(url)
-
             elif 'nizarstream' in url: u = self.nizarstream(url)
-
             elif 'enjoyhd' in url: u = self.enjoyhd(url)
-
-            elif 'youpit' in url: u = self.youpit(url)
-
             elif 'mysports.to' in url: u = self.sportnews(url)
-
             elif 'prolive.tv' in url: u = self.prolive(url)
-
             elif 'paktech2' in url: u = self.paktech(url)
-
             elif 'olympicology.com' in url: u = self.olympicology(url)
-
             elif 'enjoy4k' in url: u = self.enjoyfourk(url)
-
             elif 'sports-stream.site' in url: u = self.sportsstreamsite(url)
-
             elif 'hdrez' in url: u = self.hdrez(url)
-
             elif 'sporthaze' in url: u = self.hdrez(url)
-
             elif 'bingsport' in url: u = self.bingsport(url)
-
             elif 'thetvapp' in url: u = self.tvapp(url)
-
             elif 'score808.football' in url: u = self.score(url)
-
             elif 'worldcupglory' in url: u = self.worldcupglory(url)
-
             elif 'headlines.footybite.to' in url: u = self.worldcupglory(url)
-
             elif 'headlines.reddit-soccerstreams' in url: u = self.headlines(url)
-
             elif 'backfirstwo' in url: u = self.backfirstwo(url)
-
             elif 'streambtw' in url: u = self.streambtw(url)
-
             elif 'livespor' in url: u = self.streambtw(url)
-
             elif 'mlbstreams.ai' in url: u = self.mlbstreamsai(url)
-
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
-
             elif 'live3.totalsportek1000' in url: u = self.totalsportek(url)
-
             elif 'fsportshd' in url: u = self.fsportshd(url)
-
             elif 'methstreams' in url: u = self.meth(url)
-
             elif 'roxiestreams' in url: u = self.roxie(url)
-
             else: u = self.generic(url)
 
             return u
         except:
             pass
-
 
     def generic(self, url):
         try:
@@ -563,7 +300,6 @@ class streamer:
         except:
             return
 
-#link  
     def crackstreams(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -584,7 +320,6 @@ class streamer:
         except:
             return
 
-#link  
     def hesgoal(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -595,7 +330,7 @@ class streamer:
             return x + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=https://fordems.biz/'
         except:
             return
-#link
+
     def givemereddit(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -661,56 +396,6 @@ class streamer:
             u = client.request(r)
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', u)[0]
             return x + '|User-Agent=iPad&Referer=' + r
-        except:
-            return
-
-    def ssnhl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #token = client.request('http://continuum.watch/Crew/nhl.txt')
-            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
-            #the = re.findall('<iframe sandbox.*?src="([^"]*)', page_data)[0]
-            #crew = client.request(the)
-            #white = re.findall('(?s)var sou.*?"([^"]*)', crew)[0]
-            white = re.findall('(?s)var sou.*?"([^"]*)', page_data)[0]
-            white = white.replace('master_wired60','5600K/5600_slide')
-            return white + nhl_auth
-        except:
-            return
-
-    def ssnba(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
-            s = client.request(r)
-            white = re.findall('(?s)source:\s\'([^\']*)', s)[0]
-            return white + '|User-Agent=iPad&Referer=' + r
-        except:
-            return
-
-    def everysportsnhl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #token = client.request('http://continuum.watch/Crew/nhl.txt')
-            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
-            nhl_auth = "|Cookie=Authorization=" + token
-            r = re.findall('source: \'([^\']*)', page_data)[0]
-            r = r.replace('master_wired60','5600K/5600_slide')
-            return r + nhl_auth
-        except:
-            return
-
-    def everysportsmlb(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            token = client.request('http://172.105.26.201/mlbs.txt')
-            r = re.findall('source: \'([^\']*)', page_data)[0]
-            r = r.replace('master_wired60','5600K/5600_slide')
-            return r + '|User-Agent=iPad&Authorization=' + token
         except:
             return
 
@@ -1067,126 +752,6 @@ class streamer:
         except:
             return
 
-    def ranionba(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            i = client.request(w)
-            t = re.findall('(?s)https:\/\/hls.([^\']*)', i)[0]
-            e = 'https://hls.' + t
-            return e + '|Referer=' + w
-        except:
-            return
-
-    def ranionfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            w = 'https:' + w if w.startswith('//') else w
-            i = client.request(w, headers={"User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36',"Origin": 'http://rainostreams.com', "Referer": 'http://rainostreams.com/'})
-            z = re.findall('(?:source|file|m3u8URL)=\s*[\'"]([^\'"]+)', i)[0]
-            z = 'https:' + z if z.startswith('//') else z
-            return z + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=' + w
-        except:
-            return
-
-    def raniofifa(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            w = 'https:' + w if w.startswith('//') else w
-            i = client.request(w)
-            this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', i)[0]
-            this = 'https:' + this if w.startswith('//') else this
-            return this + '|Referer=' + w
-        except:
-            return
-
-    def nbatvsport(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            i = re.findall('atob\(["|\']([^"|\']*)', h)[0]
-            t = base64.b64decode(i).decode('utf-8')
-            return t + '|User-Agent=ipad&Referer=' + w
-        except:
-            return
-
-    def geekingeek(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
-            hat = 'http://www.geekingeek.com/' + w
-            h = client.request(hat)
-            i = re.findall('atob\(["|\']([^"|\']*)', h)[0]
-            t = base64.b64decode(i).decode('utf-8')
-            return t + '|User-Agent=ipad&Referer=' + w
-        except:
-            return
-
-    def rightcombat(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            if 'm3u8' in page_data:
-                s = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-                return s + '|User-Agent=Mozilla/5.0&Referer=' + url
-            else:
-                s = re.findall('iframe.*?src="([^"]*)', page_data)[0]
-                q = requests.get(s).text
-                src = re.findall('<iframe src="([^"]*)', q)[0]
-                src = 'http:' + src if src.startswith('//') else src
-                fu = requests.get(src, headers={'User-Agent':'iPad','Referer':url}).text
-                hat = re.findall('eval\(function(.+?m3u8.+)', fu)[0]
-                the = jsunpack.unpack(hat)
-                crew= re.findall('var\s*src="([^"]*)',the)[0]
-                return crew + '|User-Agent=ipad&Referer=' + url
-        except:
-            return
-
-    def poscitech(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #src= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
-            #fu = requests.get(src, headers={'User-Agent':'iPad','Referer':src}).text
-            #hat= re.findall('<iframe.*?src="([^"]*)',fu)[0]
-            #white = requests.get(hat, headers={'User-Agent':'iPad','Referer':src}).text
-            #crew= re.findall('source\s*:\s*"([^"]*)',white)[0]
-            #return crew + '|User-Agent=ipad&Referer=' + hat
-            src = re.findall('iframe.*?src="([^"]*)', page_data)[0]
-            src = 'http:' + src if src.startswith('//') else src
-            fu = requests.get(src, headers={'User-Agent':'Mozilla/5.0','Referer':url}).text
-            hat = re.findall('iframe src.*?id=([^"]*)', fu)[0]
-            return 'https://newtest.webtv1.lol/ddyx2/premium' + hat + '/playlist.m3u8|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Feplayer.click%2F'
-        except:
-            return
-
-    def cricworld(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            i = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
-            t = base64.b64decode(i).decode('utf-8')
-            return t + '|User-Agent=ipad&Referer=' + url
-        except:
-            return
-
-    def darwinstreams(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            i = re.findall('source: \'([^\']*)', page_data)[0]
-            return i + '|User-Agent=ipad&Referer=' + url
-        except:
-            return
-
     def pawastreams(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1252,41 +817,6 @@ class streamer:
                 return strurl+'|{0}'.format(urlencode(headers))
         except:
             return
-                
-    def myoplay(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('sources[\w\W]*?(?:source|src|file)(?:\s*|):(?:\s*|)[\'"]([^\'"]+)', page_data)[0]
-            return r + '|Referer=' + url
-        except:
-            return
-
-    def sstwentyfour(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            headers={'User-Agent':'Mozilla/5.0','Referer':'https://ww.soccer24hd.com','accept':'*/*'}
-            r = re.findall('(?s)holder">\s*<iframe.*?src="([^"]*)',page_data)[0]
-            s = requests.get(r,headers=headers).text
-            t = re.findall('iframe.*?src="([^"]*)',s)[0]
-            a = requests.get(t,headers=headers).text
-            w = re.findall('iframe.*?src="([^"]*)',a)[0]
-            h = requests.get(w,headers=headers).text
-            if 'm3u8' in h:
-                l = re.findall('source:"([^"]*)', h)[0]
-                return l + '|User-Agent=Mozilla/5.0&Referer=' + w
-            else :
-                l = re.findall('atob\(\'([^\']*)', h)[0]
-                l = base64.b64decode(l).decode('utf-8')
-            #q = re.findall('iframe.*?src="([^"]*)',h)[0]
-            #e = requests.get(q,headers=headers).text
-            #find = re.findall('eval\(function(.+?m3u8.+)', e)[0]
-            #unpack = jsunpack.unpack(find)
-            #i = re.findall('var (?:source|src|file)=\s*[\'"]([^\'"]+)',unpack)[0]
-                return l + '|User-Agent=Mozilla/5.0&Referer=' + w
-        except:
-            return
 
     def crazystreams(self, url):
         try:
@@ -1313,64 +843,6 @@ class streamer:
             page_data = client.request(url)
             r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
             return r + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.14%3B%20rv%3A99.0)%20Gecko%2F20100101%20Firefox%2F99.0&Referer=' + url
-        except:
-            return
-
-    def onestream(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            #r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]
-            #s = re.findall('cdn\s*=\s*\["([^"]*)', page_data)[0]
-            #x = base64.b64decode(r).decode("ascii")
-            #x = x.replace(x[x.index("/") + 2:].split(".")[0], s)
-            #w = re.findall('url:\s*\'([^\']*)', page_data)[0] + str(round(random.random() * 12))
-            #h = 'http://1stream.top' + w
-            #hat = requests.get(h, headers={"User-Agent": 'Mozilla/5.0'}).text
-            #I = re.findall('source":"([^"]*)', hat)[0]
-            #t = base64.b64decode(i).decode("utf-8")
-            #return x +'|Referer=' + quote_plus(url)
-            #return t +'|Referer=' + quote_plus(url)
-            #w = re.findall('url:\s*\'([^\']*)', page_data)[0] + str(random.randint(1,64))
-            #token = re.findall('_token": "([^"]*)', page_data)[0]
-            #h = 'http://1stream.link' + w
-            #hat = requests.post(h, data={"_token": token, "sport": "other"}, headers={"Referer": h, "User-Agent": 'Mozilla/5.0', "X-Requested-With": "XMLHttpRequest"}).json()
-            #s = re.findall('"source":"([^"]*)', hat)[0]
-            #s = base64.b64decode(s).decode('utf-8')
-            #return s +'|Referer=' + quote_plus(url)
-            #linkUrlPieces = re.findall('canonical" href="([^:]*):\/\/([^\/]*)\/', page_data)[0]
-            #protocol = linkUrlPieces[0]
-            #domain = linkUrlPieces[1]
-            #linkPayload = re.findall('url: \'([^\']*)\'[\s\S]*eventId: "([^"]*)"[\s\S]*_token": "([^"]*)"[\s\S]*sport: \'([^"]*)\'', page_data)
-            #path = linkPayload[0][0]
-            #eventId = linkPayload[0][1]
-            #token = linkPayload[0][2]
-            #sport = linkPayload[0][3]
-            #postData = {'eventId': eventId, 'token': token, 'sport': sport}
-            #streamPostResponse = requests.post(protocol + '://' + domain + '/' + path + str(random.randint(1,64)),postData).text
-            #encryptedStreamUrl = re.findall('"source":"([^"]*)', streamPostResponse)[0]
-            encryptedStreamUrl = re.findall('source: window.atob\("([^"]*)', page_data)[0]
-            decryptedStreamUrl = base64.b64decode(encryptedStreamUrl).decode('utf-8')
-            return decryptedStreamUrl + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0&Referer=https://googlapisapi.com/'
-        except:
-            return
-
-    def toptv(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={"User-Agent": 'ipad'}).text
-            s = re.findall('iframe.*?src="([^"]*)', page_data)[0]
-            return s
-        except:
-            return
-
-    def dubznetwork(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = requests.get(url, headers={"User-Agent": 'ipad'}).text
-            s = re.findall('atob\(["|\']([^"|\']*)', u)[0]
-            s = base64.b64decode(s).decode('utf-8')
-            return s + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&Referer=' + url
         except:
             return
 
@@ -1422,66 +894,6 @@ class streamer:
         except:
             return
 
-    def sixtyfps(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe src="([^"]*)',page_data)[0]
-            h = requests.get(w).text
-            i = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', h)[0]
-            return i + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&Referer=' + w
-        except:
-            return
-
-    def sportsguild(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url)
-            r = re.findall('(?s)<iframe src="([^"]*)', u)[0]
-            t = client.request(r)
-            s = re.findall('atob\(["|\']([^"|\']*)', t)[0]
-            s = base64.b64decode(s).decode('utf-8')
-            return s + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&Referer=' + r
-        except:
-            return
-
-    def ustvtwentyfourseven(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('iframe src=\'([^\']*)', page_data)[0]
-            h = 'https://ustv247.tv' + w
-            i = client.request(h)
-            s = re.findall('var hls_src=\'([^\']*)',i)[0]
-            return s + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + h
-        except:
-            return
-         
-    def sportinglive(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('source\s*src="([^"]*)', page_data)[0]
-            return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0&Referer=' + url
-        except:
-            return
-
-    def rmeth(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?s)<iframe w.*?src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            if 'atob' in h:
-                i = re.findall('atob\("([^"]*)', h)[0]
-                i = base64.b64decode(i).decode('utf-8')
-                return i + '|User-Agent=Mozilla/5.0&Referer=' + url
-            else:
-                i = re.findall('(?s)source src="([^"]*)', h)[0] 
-                return i + '|User-Agent=Mozilla/5.0&Referer=' + url
-        except:
-            return
-
     def silverspoon(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1499,22 +911,6 @@ class streamer:
             h = client.request(w)
             i = re.findall('source: [\'"]([^\'"]+)', h)[0]
             return i + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Referer=http://volokit2.com/&Origin=http://volokit2.com'
-        except:
-            return
-
-    def maxsport(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #s = re.findall('(?s)iframe src="([^"]*)',page_data)[0]
-            #t = requests.get(s,headers={"Referer": url, "User-Agent": 'Mozilla/5.0'}).text
-            #pattern = r'''return\(\[([^\]]+).+?\+\s*([^\.]+).+?\+.+?"([^"]+)'''.format(t)
-            #par1, par2, par3 = re.findall(pattern, t, re.DOTALL)[0]
-            #part1 = par1.replace('","','').replace('\\/', '/')[1:-1]
-            #part1 = 'http:' + part1 if part1.startswith('//') else part1
-            #return part1  + '|User-Agent=iPad&Referer=https://gocast2.com/'
-            s = re.findall('(?s)<iframe.*?src=".*?(\d+)',page_data)[0]
-            return 'https://webudi.webtv1.lol/lb/premium' + s + '/index.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https://streamservicehd.click/'
         except:
             return
 
@@ -1542,38 +938,6 @@ class streamer:
         except:  
             return
 
-    def alexsports(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            e = re.findall('(?s)iframe class.*?src="([^"]*)',page_data)[0]
-            e = e.replace('//', 'https://')
-            s = requests.get(e).text
-            t = re.findall('window.atob\(["|\']([^"|\']*)', s)[0];t = base64.b64decode(t).decode('utf-8');t = t.replace('//', 'https://')
-            return t + '|User-Agent=Mozilla/5.0&Referer=' + e
-        except:
-            return
-
-    def metaporky(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('(?s)iframe\sf.*?src="([^"]*)',page_data)[0]
-            t = requests.get(s).text
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url
-        except:
-            return
-
-    def nbagaffer(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=' + url
-        except:
-            return
-
     def soccerstreams(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1582,15 +946,6 @@ class streamer:
             t = requests.get(r).text
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', t)[0]
             return x + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&Referer=https://fordems.biz/'
-        except:
-            return
-
-    def soccersislive(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            x = re.findall('\?id=([^"]*)', page_data)[0]
-            return 'https://newtest.openhd.lol/ddy4/premium'+ x +'/tracks-v1a1/mono.m3u8' + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Feplayer.click%2F'
         except:
             return
 
@@ -1614,90 +969,6 @@ class streamer:
         except:
             return
 
-    def nizarstream(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)<iframe\ssrc="([^"]*)',page_data)[0]
-            s = requests.get(r,headers={'User-Agent':'ipad','Referer':'http://nizarstream.com/nfl/stream/1172'}).text
-            find = re.findall('eval\(function(.+?m3u8.+)', s)[0]
-            unpack = jsunpack.unpack(find)
-            m3u8 = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',unpack)[0]
-            return m3u8 + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Fonionplay.live%2F'
-        except:
-            return
-                
-    def enjoyhd(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('iframe.*?src="([^"]*)', page_data)[0]
-            t = requests.get(s).text
-            e = re.findall('<iframe.*?src="([^"]*)', t)[0]
-            w = requests.get(e).text
-            hat = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', w)[0]
-            return hat + '|User-Agent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010.15%3B%20rv%3A108.0)%20Gecko%2F20100101%20Firefox%2F108.0&Referer=https%3A%2F%2Fenjoyhd.xyz%2F' 
-        except:
-            return
-
-    def youpit(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('<iframe\ssrc="([^"]*)', page_data)[0]
-            h = requests.get(s, headers={"Referer": s, "User-Agent": 'Mozilla/5.0'}).text
-            i = re.compile(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^\)]*)').findall(h)[0]
-            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
-            e = re.findall('source:\s*\'([^\']*)',t)[0]
-            return e + '|User-Agent=Mozilla/5.0&Referer=' + s
-        except:
-            return
-
-    def prolive(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            hat = re.findall('(?s)<iframe.*?src=".*?=(\d+)',page_data)[0]
-            return 'https://newtest.webtv1.lol/ddy5/premium' + hat + '/tracks-v1a1/mono.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https://olacast.live/'
-        except:
-            return
-
-    def paktech(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            headers={'Accept':'*/*','Accept-Encoding':'gzip, deflate, br','Accept-Language':'en-US,en;q=0.5','Connection':'keep-alive','Host':'newtest.webtv1.lol','Origin':'https://eplayer.click','Referer':'https://eplayer.click/','Sec-Fetch-Dest':'empty','Sec-Fetch-Mode':'cors','Sec-Fetch-Site':'cross-site','TE':'trailers','User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'}
-            white = re.findall('(?s)position": 3.*?".*?".*?".*?".*?"([^"]*)',page_data)[0]
-            crew = requests.get(white).text
-            hat = re.findall('(?s)<iframe.*?ch(\d+)',crew)[0]
-            return 'https://webudi.webtv1.lol/lb/premium' + hat + '/index.m3u8' + '|{0}'.format(urlencode(headers))
-        except:
-            return
-
-    def olympicology(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            hat = re.findall('(?s)<iframe.*?src="([^"]*)',page_data)[0]
-            h = requests.get(hat).text
-            s = re.findall('var\s(?:source|src|file)\s*=\s*[\'"]([^\'"]+)',h)[0]
-            return s + '|User-Agent=Mozilla/5.0&Referer=' + hat
-        except:
-            return
-                
-    def enjoyfourk(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            hat = re.findall('<iframe\s*src="([^"]*)',page_data)[0]
-            h = requests.get(hat).text
-            whitehat = re.findall('<iframe\s*src="([^"]*)',h)[0]
-            s = requests.get(whitehat).text
-            crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', s)[0]
-            return crew + '|User-Agent=Mozilla/5.0&Referer=' + s
-        except:
-            return
-
     def sportsstreamsite(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1713,91 +984,6 @@ class streamer:
             return w + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + u
         except:
             return
-
-    def hdrez(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            r = re.findall('(?s)wrap">\s<iframe.*?src="([^"]*)',page_data)[0]
-            t = client.request(r)
-            x = re.findall('(?s)m3u8URL="([^"]*)',t)[0]
-            #x = base64.b64decode(x).decode('utf-8')
-            headers = {"Origin": "https://embed4u.xyz","Referer": "https://embed4u.xyz/","User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0"}
-            return x + '|{0}'.format(urlencode(headers))
-
-        except:
-            return
-
-    def bingsport(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)iframe\s*src="([^"]*)',page_data)[0]
-            t = client.request(r)
-            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',t)[0]
-            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + r
-        except:
-            return
-
-    def tvapp(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            token = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return token + '|User-Agent=Mozilla/5.0&Referer=https://thetvapp.to/'
-        except:
-            return
-
-    def score(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            token = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return token + '|User-Agent=Mozilla/5.0&Referer=' + url
-        except:
-            return
-                
-    def worldcupglory(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)first-iframe">.*?src="([^"]*)',page_data)[0]
-            t = client.request(r)
-            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',t)[0]
-            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + r
-        except:
-            return
-                
-    def headlines(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)first-iframe">.*?src="([^"]*)',page_data)[0]
-            t = client.request(r)
-            x = re.findall('(?s)source = \'([^\']*)',t)[0]
-            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + r
-        except:
-            return
-                
-    def backfirstwo(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)<iframe.*?src=\'([^\']*)',page_data)[0]
-            t = client.request(r)
-            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',t)[0]
-            return x + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + r
-        except:
-            return
-                
-    def streambtw(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)',page_data)[0]
-            return r + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
-        except:
-            return
                 
     def sportsupa(self, url):
         try:
@@ -1810,15 +996,6 @@ class streamer:
         except:
             return
 
-    def mlbstreamsai(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            e = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]; e = base64.b64decode(e).decode('utf-8')
-            return e + '|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0&Referer=' + url
-        except:
-            return
-
     def naughtyblog(self, url):
         try:           
             u = client.request(url)
@@ -1828,19 +1005,6 @@ class streamer:
             for i in r:
                 if any(x for x in hosts if x in i[0]): e.append((i[0].replace('Direct Link',''),i[1]))
             return e
-        except:
-            return
- 
-    def totalsportek(self, url):
-        try:           
-            page_data = client.request(url)
-            d = re.findall('(?s)><iframe.*?src="([^"]*)"\s*frameborder="0"\s*scrolling="no"\s*s',page_data)[0]
-            x = requests.get(d).text
-            a = re.findall('(?s)<iframe.*?src="([^"]*)',x)[0]
-            e = requests.get(a,headers={"Referer": d, "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'}).text
-            z = re.findall('streamUrl = "([^"]*)',e)[0]
-            z = z.replace('\\', '')
-            return z + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Refer=' + a + '/&Origin=' + a
         except:
             return
 
