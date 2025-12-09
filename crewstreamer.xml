@@ -77,14 +77,6 @@ class streamer:
 
             elif 'telechargementfilmhd.com' in url: u = self.nbahdreplay(url)
 
-            elif 'live-nhl.stream' in url: u = self.livenhl(url)
-
-            elif 'sportsbay.org' in url: u = self.sportsbay(url)
-
-            elif 'live-tennis.stream' in url: u = self.tennislive(url)
-
-            elif 'nascar-live.stream' in url: u = self.tennislive(url)
-
             elif 'sports24.club/nhl' in url: u = self.sports24nhl(url)
 
             elif 'sports24.site/nhl' in url: u = self.sports24nhl(url)
@@ -618,38 +610,38 @@ class streamer:
         except:
             return
 
-def streameast(self, url):
-    try:
-        if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':return
-        UA = (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36)
-        page_data = client.request(url)
-        m = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
-        if not m:
-            return
-        iframe_url = m.group(1)
-        headers = {
-            'User-Agent': UA,
-            'Referer': url
-        }
-        iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
-        m = re.search(r"atob\('([^']+)", iframe_html)
-        if not m:
-            return
-        encoded = m.group(1)
+    def streameast(self, url):
         try:
-            decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':return
+            UA = (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36)
+            page_data = client.request(url)
+            m = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
+                return
+            iframe_url = m.group(1)
+            headers = {
+                'User-Agent': UA,
+                'Referer': url
+            }
+            iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
+            m = re.search(r"atob\('([^']+)", iframe_html)
+            if not m:
+                return
+            encoded = m.group(1)
+            try:
+                decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
+            except Exception:
+                return
+            referer = 'https://gooz.aapmains.net/'
+            origin = 'https://gooz.aapmains.net'
+            return (
+                f"{decoded}"
+                f"|User-Agent={UA}"
+                f"&Referer={referer}"
+                f"&Origin={origin}"
+            )
         except Exception:
             return
-        referer = 'https://gooz.aapmains.net/'
-        origin = 'https://gooz.aapmains.net'
-        return (
-            f"{decoded}"
-            f"|User-Agent={UA}"
-            f"&Referer={referer}"
-            f"&Origin={origin}"
-        )
-    except Exception:
-        return
 
 
     def skuanet(self, url):
@@ -818,130 +810,6 @@ def streameast(self, url):
         except:
             return
 
-    def myustv(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('atob\(["|\']([^"|\']*)', page_data)[0]; r = base64.b64decode(r).decode('utf-8')
-            return r + '|User-Agent=iPad&Referer=' + url
-        except:
-            return
-
-    def livenhl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #token = client.request('http://continuum.watch/Crew/nhl.txt')
-            #nhl_auth = "|Cookie=Authorization=" + token
-            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
-            x = re.findall('(?s)<iframe(?:.*?c=)\'([^\']*)', page_data)[0]
-            w = client.request(x)
-            r = re.findall('var source = "([^"]*)', w)[0]
-            r = r.replace('master_wired60','5600K/5600_slide')
-            return r + nhl_auth
-        except:
-            return
-
-    def sportsbay(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            x = re.findall('(?s)<iframe(?:.*?c=)\'([^\']*)', page_data)[0]
-            w = client.request(x)
-            r = re.findall('var source = {   \'hls\':\'([^\']*)', w)[0]
-            return r + '|User-Agent=Mozilla/5.0&Referer=' + x
-        except:
-            return
-
-    def tennislive(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            x = re.findall('(?s)<iframe.*?src=\'([^\']*)', page_data)[0]
-            w = client.request(x)
-            r = re.findall('Player\({\s*source:\s*\'([^\']*)', w)[0]
-            return r + '|User-Agent=Mozilla/5.0&Referer=' + x
-        except:
-            return
-
-    def sports24nhl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #token = client.request('http://continuum.watch/Crew/nhl.txt')
-            #nhl_auth = "|Cookie=Authorization=" + token
-            nhl_auth = "|Cookie=Authorization=" + 'eyJhbGciOiJIUzI1NiJ9.eyJpcGlkIjoibmhsR2F0ZXdheUlkOjY3NzM0NTYiLCJjbGllbnRJZCI6ImFjdGl2YXRpb25fbmhsLXYxLjAuMCIsInBjX21heF9yYXRpbmdfbW92aWUiOiIiLCJjb250ZXh0Ijp7fSwidmVyaWZpY2F0aW9uTGV2ZWwiOjIsImV4cCI6MTY3MzgwOTkxMywidHlwZSI6IlVzZXIiLCJpYXQiOjE2NDIyNzM5MTMsInVzZXJpZCI6ImY0NDcwNTAyLTJkYWEtNDgzMS1iOWVhLTgyZTY0NDFmNTkzOS0zMTctYmQ2MGJjZjI2YTQ4MTQ4YjFkODljNmVlZTUyYTNiOWM5MjllYzc3YiIsInZlcnNpb24iOiJ2MS4wIiwicGNfbWF4X3JhdGluZ190diI6IiIsImVtYWlsIjoiYmc2NjE1QGdtYWlsLmNvbSJ9.ameiawUY4YxQLGF0e9-kLlsug8czcjAdiahGr3HwwvM;mediaAuth_v2=6455209108eaa22507b1b305ff7466270d11c4e1da95b073ba26d541692f17953320772ffa0eba4a000575f2095c9e94fc3511dd9de884109f1bf8cfec7db5a90f25f525537e58c0ce68b4587f94c28ed01bab51ec0d355a0f0e95595434fd39b0cbadd368136229ae6956fc8020bd342f2a1fa6ceb7eded883b08c967a21391862ffb6ee48c0924a87b874c97e4d5e53cb37a67b62203dc916d2530a5c13c30ebf76b13b0e6996f06345bf6a88a97f29c493c5c7768311023d1e8c3cad5130ada0e56ee4e27df63f7c3e1104e87a13b1e4fba3d4d1e1130d27aba5cd34fdd812913520d8811972d05ec90e8b8b6343419cb74e063a3e05cef3272bc8d9c44c46cfb641a306ca78b4c677809171a36b9202630d72f01e502dfb1a5487d2ea586499a718679782a65e6a6800f77eea39fc6d3c544d512160eab8689984ae7084b23c6adbcda40c35bcc813ee744594de07fabae81c127628907e5412dabc14bf05a658aaa90000a78295a1f0f14e644073a757ab7f0092d95c2a5e37a65d8f18eea0f7690a6d3ba27b1a28e421cb51ae7a213c3e2ce6372b135d4059fd9372929fbd9243c93b28b8767a28480cbdc0c360706b508ea9b94de85fea1a410ecac6031bbe31220910200eb587c82fb2c0e6cb23af904a4080b4037e246c9ec1d9daaebacb17d684bc726;192051129147321142019199714547152015'
-            u = re.findall('(?s)id="playframe">(?:.*?src)="([^"]*)', page_data)[0]
-            b = 'https:'+u
-            b = b.replace(' ', '%20')
-            x = client.request(b)
-            l = re.findall('(?s)xurl\s=\satob\(\'([^\']*)', x)[0]; l = base64.b64decode(l).decode('utf-8')
-            return l + nhl_auth
-        except:
-            return
-
-    def sports24nba(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            l = re.findall('(?s)src = "(.*?)"', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
-            l = l.replace('https:','')
-            l = l.replace('//','https://')
-            if l.startswith('/'): l = 'https://sports24.club' + l
-            return l + '|User-Agent=iPad&Referer=https://sports24.club/nba'
-        except:
-            return
-
-    def sports24ncaab(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('<iframe id.*?src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            l = re.findall('atob\(["|\']([^"|\']*)', h)[0]; l = base64.b64decode(l).decode('utf-8')
-            l = l.replace('https:','')
-            l = l.replace('//','https://')
-            if l.startswith('/'): l = 'https://sports24.club' + l
-            return l + '|User-Agent=iPad&Referer=' + w
-        except:
-            return
-
-    def sports24nfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            l = re.findall('(?s)src = "(.*?)"', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
-            l = l.replace('https:','')
-            l = l.replace('//','https://')
-            if l.startswith('/'): l = 'https://sports24.club' + l
-            return l + '|User-Agent=iPad&Referer=https://sports24.club/nfl'
-        except:
-            return
-
-    def sports24f1(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            l = re.findall('(?s)src = "(.*?)"', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
-            l = l.replace('https:','')
-            l = l.replace('//','https://')
-            if l.startswith('/'): l = 'https://sports24.club' + l
-            return l + '|User-Agent=iPad&Referer=https://sports24.club/fl'
-        except:
-            return
-
-    def sports24ncaa(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            l = re.findall('var xurl = atob\(\'([^\']*)', page_data)[0]; l = base64.b64decode(l).decode('utf-8')
-            l = l.replace('https:','')
-            l = l.replace('//','https://')
-            if l.startswith('/'): l = 'https://sports24.club' + l
-            return l + '|User-Agent=iPad&Referer=https://sports24.club/ncaa'
-        except:
-            return
-
     def markky(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -989,33 +857,6 @@ def streameast(self, url):
         except:
             return
 
-    def btstream(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url)
-            r = re.findall('(?s)<div class=\'player(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)', u)[0]
-            t = client.request(r)
-            s = re.findall('atob\(["|\']([^"|\']*)', t)[0]
-            s = base64.b64decode(s).decode('utf-8')
-            return s + '|Referer=' + r
-        except:
-            return
-            
-    def jumbo(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = requests.get(url).text
-            r = re.findall('<iframe src="([^"]*)',u)[0]
-            u2 = requests.get(r).text
-            r2 = re.findall('<iframe src="([^"]*)',u2)[0]
-            page = requests.get(r2, headers={'User-Agent':'iPad','Referer':r}).text
-            find = re.findall('(?s)<script>eval(.+?)<\/sc', page)[0]
-            unpack = jsunpack.unpack(find)
-            r3 = re.findall('source:"([^"]*)',unpack)[0]
-            return r3
-        except:
-            return
-
     def mazy(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1031,18 +872,6 @@ def streameast(self, url):
             page_data = client.request(url)
             w = re.findall('source: "([^"]*)', page_data)[0]
             return w + '|Referer=' + url
-        except:
-            return
-
-    def ice(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('iframe src="([^"]*)', page_data)[0]
-            r = client.request(s)
-            t = re.findall('replace\("([^"]*)', r)[0]
-            w = re.findall('(?s)\)\;.*?var url = "([^"]*)', r)[0]
-            return t + w + '|User-Agent=ipad&Referer=' + s
         except:
             return
 
@@ -1170,18 +999,6 @@ def streameast(self, url):
         except:
             return
 
-    def blacktienfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #r = re.findall('<iframe src="([^"]*)', page_data)[0]
-            r = re.findall('<iframe id="stream.*?src="([^"]*)', page_data)[0]  
-            u = client.request(r)
-            q = re.findall('(?:source|src|file):\s*[\'"]([^\'"]*)',u)[0]
-            return q + '|User-Agent=ipad&Referer=' + r
-        except:
-            return
-
     def blacktienba(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1239,17 +1056,6 @@ def streameast(self, url):
         except:
             return
 
-    def tvtwofour(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('(?s)baseUrl(?:.*?l = )"([^"]*)', page_data)[0]
-            x = re.findall('(?s)channelName = "([^"]*)', page_data)[0]
-            s = re.findall('(?s)var link=(?:.*?")([^"]*)', page_data)[0]
-            return r + x + s + '|Referer=http://tv247.us/all-channels/'
-        except:
-            return
-
     def techno(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1296,51 +1102,6 @@ def streameast(self, url):
             this = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', i)[0]
             this = 'https:' + this if w.startswith('//') else this
             return this + '|Referer=' + w
-        except:
-            return
-
-    def recipemam(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('<source src=\s*[\'"]([^\'"]+)', page_data)[0]
-            return s
-        except:
-            return
-
-    def catchy(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            r = re.findall('50><iframe src="([^"]*)', page_data)[0]
-            w = client.request(r)
-            x = re.findall('(?s)Setup the player.*?(?:source|src|file):\s*[\'"]([^\'"]+)', w)[0]
-            return x + '|User-Agent=ipad&Referer=' + r
-        except:
-            return
-
-    def sportsurge(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            h = client.request(w)
-            i = re.findall('<iframe.*?src="([^"]*)', h)[0]
-            t = client.request(i)
-            e = re.findall('<iframe.*?src="([^"]*)', t)[0]
-            hat = client.request(e)
-            saysfuckoff = re.findall('source:\s*\'([^\']*)', hat)[0]
-            return saysfuckoff + '|Referer=' + e
-        except:
-            return
-
-    def ace(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            #w = re.findall(' source: \'([^\']*)', page_data)[0]
-            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return w + '|User-Agent=ipad&Referer=' + url
         except:
             return
 
@@ -1407,22 +1168,6 @@ def streameast(self, url):
         except:
             return
 
-    def iwizwig(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            src= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
-            fu = requests.get(src, headers={'User-Agent':'iPad','Referer':src}).text
-            hat= re.findall('<iframe.*?src="([^"]*)',fu)[0]
-            white = requests.get(hat, headers={'User-Agent':'iPad','Referer':src}).text
-            #find = re.findall('eval\(function(.+?m3u8.+)', white)[0]
-            #the = jsunpack.unpack(find)
-            #crew= re.findall('source\s*:\s*"([^"]*)',the)[0]
-            crew= re.findall('source\s*:\s*"([^"]*)',white)[0]
-            return crew + '|User-Agent=ipad&Referer=http://iwizwig.online'
-        except:
-            return
-
     def cricworld(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
@@ -1439,100 +1184,6 @@ def streameast(self, url):
             page_data = client.request(url)
             i = re.findall('source: \'([^\']*)', page_data)[0]
             return i + '|User-Agent=ipad&Referer=' + url
-        except:
-            return
-
-    def freetvsports(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            src= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
-            fu = requests.get(src, headers={'User-Agent':'iPad','Referer':src}).text
-            hat= re.findall('<iframe.*?src="([^"]*)',fu)[0]
-            white = requests.get(hat, headers={'User-Agent':'iPad','Referer':src}).text
-            crew= re.findall('source\s*:\s*"([^"]*)',white)[0]
-            return crew + '|User-Agent=ipad&Referer=' + src
-        except:
-            return
-
-    def capp(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return w + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36&Referer=' + url
-        except:
-            return
-
-    def ptwopstreams(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url)
-            hea = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36','Origin': 'https://fastreams.com', 'Referer': 'https://fastreams.com/channel/15.php'}
-            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36','Origin': 'http://xestreams.com', 'Referer': 'http://ftdryiwv.mmazones.com:8080/'}
-            r = re.findall('<iframe class.*?src="([^"]*)',u)[0]
-            page_data = requests.get(r, headers=headers).text
-            t = re.findall('<iframe src="([^"]*)',page_data)[0]
-            a = requests.get(t, headers=hea).text
-            z = re.findall('window.atob\("([^"]*)',a)[0]
-            z = base64.b64decode(z).decode('utf-8')
-            return z + '|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36&Referer=' + t
-            #if 'm3u8' in page_data:
-               # z = re.findall('source:\s*\'([^\']*)')
-               # return z + '|User-Agent=iPad&Referer=' + r
-            #else:
-               # pattern = r'''return\(\[([^\]]+).+?\+\s*([^\.]+).+?\+.+?"([^"]+)'''.format(page_data)
-              #  par1, par2, par3 = re.findall(pattern, page_data, re.DOTALL)[0]
-              #  part2 = re.findall(r'var\s*{0}\s*=\s*\["([^]]+)'.format(par2), page_data)[0].replace('","', '')[:-1]
-              #  part3 = re.findall('id={0}>([^<]+)'.format(par3), page_data)[0]
-              #  part1 = par1.replace('","','').replace('\\/', '/')[1:-1]
-              #  part1 = 'http:' + part1 if part1.startswith('//') else part1
-              #  return part1 + part2 + part3 + '|User-Agent=iPad&Referer=' + r
-           # if 'window.atob' in page_data:
-               # z = re.findall('window.atob\("([^"]*)',page_data)[0]
-               # z = base64.b64decode(z).decode('utf-8')
-                #return z + '|User-Agent=iPad&Referer=' + r
-        except:
-            return
-
-    def sportek(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('" src="([^"]*)', page_data)[0]
-            h = 'http://sportek.xyz' + w
-            i = client.request(h)
-            t = re.findall('src : "([^"]*)', i)[0]
-            return t + '|Referer=' + h
-        except:
-            return
-
-    def bong(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            h = 'http://bongstreams.com' + w
-            i = client.request(h)
-            t = re.findall('src : "([^"]*)', i)[0]
-            return t + '|Referer=' + h
-        except:
-            return
-
-    def sporteks(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('(?s)iframe frameborder.*?src="([^"]*)', page_data)[0]
-            p = client.request(s)
-            w = re.findall('url:\s*"([^"]*)', p)[0]
-            h = re.findall('data:\s\{"([^"]*)', p)[0]
-            i = re.findall('var vidgstream = "([^"]*)', p)[0]
-            hat = w + '?' + h + '=' + i
-            the = requests.get(hat).text
-            crew = re.findall('{"rawUrl":"([^"]*)', the)[0]
-            made = crew.replace('\\', '')
-            return made + '|Referer=http://wpstream.tv/'
         except:
             return
 
