@@ -25,12 +25,6 @@ class streamer:
 
             if 'elixx.xyz' in url: u = self.elixx(url)
 
-            elif 'daddylive' in url: u = self.daddylive(url)
-
-            elif 'daddyhd' in url: u = self.daddylive(url)
-
-            elif 'livetvon' in url: u = self.daddylive(url)
-
             elif 'eddensports.com' in url: u = self.solaris(url)
 
             elif 'redsoccer.info' in url: u = self.solaris(url)
@@ -666,22 +660,6 @@ class streamer:
         except:
             return
 
-    def csis(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
-            #h = url + w
-            i = client.request(w)
-        except: pass
-        try:
-            e = re.findall('atob\(["|\']([^"|\']*)', i)[0]; e = base64.b64decode(e).decode('utf-8')
-        except: pass
-        try:
-            e = re.findall('var PLAYBACK_URL = \'([^\']*)', i)[0]
-        except: pass
-        return e + '|User-Agent=Mozilla/5.0&Referer=' + w
-
 #link  
     def hesgoal(self, url):
         try:
@@ -707,18 +685,6 @@ class streamer:
             return e + '||Referer=https://givemereddit.link/&Origin=https://givemereddit.link&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36&Accept=application/x-mpegURL,*/*'
         except:
             return
-
-#link
-    def givememma(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url) 
-            r = re.findall('(?s)<iframe class.*?src="([^"]*)', u)[0]
-            w = client.request(r)
-            x = re.findall(' source: \'([^\']*)', w)[0]
-            return x + '|User-Agent=Mozilla/5.0&Referer=' + r
-        except:
-            return
 #link
     def buff(self, url):
         try:
@@ -729,59 +695,6 @@ class streamer:
             find = re.findall('source: atob\(\'([^\']*)', page)[0]
             find = base64.b64decode(find).decode('utf-8')
             return find + '|User-Agent=Mozilla/5.0&Referer=' + reg
-        except:
-            return
-
-#list:url and title
-    def boxingfightsvideos(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url)
-            e = re.findall('(?s)<iframe(?:.*?src="([^"]*))', u)
-            e = [(i,i.split('//')[-1].split('/')[0]) for i in e]
-            e = [(i[0].replace('http:','').replace('https:','').replace('//','https://'),'[COLOR dodgerblue]Source: [/COLOR]'+i[1].replace('www.','').replace('.com','')) for i in e]
-            return e
-        except:
-            return
-
-    def topstreams(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('var hlsurl=\'([^\']*)', page_data)[0]
-            h = re.findall('var server=\'([^\']*)', page_data)[0]
-            i = re.findall('var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
-            t = re.findall('var key= \'([^\']*)', page_data)[0]
-            e = re.findall('var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
-            return w + h + i + t + e
-        except:
-            return
-
-    def topstreamsnfl(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            w = re.findall('\}\s*var hlsurl=\'([^\']*)', page_data)[0]
-            h = re.findall('-1\';\s*var server=\'([^\']*)', page_data)[0]
-            i = re.findall('}\s*var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
-            t = re.findall('(?s)var safety=.*?y= \'([^\']*)', page_data)[0]
-            e = re.findall('\}\s*var hlsurl=\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'(?:[^\']*)\'([^\']*)', page_data)[0]
-            return w + h + i + t + e
-        except:
-            return
-
-    def ripple(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            s = re.findall('(?s)"><iframe.*?src="([^"]*)', page_data)[0]
-            t = requests.get(s).text
-            r = re.findall('source: \'([^\']*)', t)[0]
-            r = r.replace('png','m3u8')
-            if 'http' not in r:
-                r = 'http://cdn.runid.xyz/' + r
-            return r + '|Referer=' + s
-            #return 'http://cdn.runid.xyz/' + r + '|Referer=' + s
         except:
             return
 
@@ -1457,29 +1370,6 @@ class streamer:
             w = re.findall('atob\(\'([^\']*)', fu)[0]
             s = base64.b64decode(w).decode('utf-8')
             return s + '|User-Agent=ipad&Referer=' + t
-        except:
-            return
-
-    def daddylive(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            hat = re.findall('(?s)iframe src="(?:[^=]*)=([^"]*)',page_data)[0]
-            #return 'https://i-am-so-cool.licenses4.me/cdn/premium' + hat + '/chunks.m3u8|Referer=https://widevine.licenses4.me/'
-            #return 'https://zcri.vhls.ru.com/cdn/premium' + hat + '/playlist.m3u8|Referer=https://player.licenses4.me/'
-            return 'https://webudi.onlinewebtv.lol/lb/premium' + hat + '/index.m3u8?&connection=keepalive|User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&Referer=https://streamservicehd.click/'
-            #src= re.findall('<iframe class.*?src="([^"]*)',page_data)[0]
-            #fu = requests.get(src, headers={'User-Agent':'iPad','Referer':src}).text
-            #hat= re.findall('<iframe.*?src="([^"]*)',page_data)[0]
-            #white = requests.get(hat, headers={'User-Agent':'Mozilla/5.0','Referer':'https://daddylive.co/','accept':'*/*'}).text
-            #if 'm3u8' in white:
-                #crew = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', white)[0]
-                #return crew + '|User-Agent=ipad&Referer=' + hat
-           # else:
-                #find = re.findall('eval\(function(.+?m3u8.+)', white)[0]
-                #the = jsunpack.unpack(find)
-                #crew= re.findall('source\s*:\s*"([^"]*)',the)[0]
-                #return crew + '|User-Agent=ipad&Referer=' + hat
         except:
             return
 
@@ -2460,21 +2350,38 @@ class streamer:
 
     def fsportshd(self, url):
         try:
+            UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
             headers = {
                 "Referer": "https://fsportshd.xyz/",
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+                "User-Agent": UA,
             }
             page_data = requests.get(url, headers=headers).text
-            fid = re.findall('fid\s*=\s*"([^"]+)"', page_data)[0]
-            x = 'https://stellarthread.com/footy.php?player=mobile&live=' + fid
-            r = requests.get(x, headers=headers).text
-            match = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
-            array_content = match.group(1)
-            chars = re.findall('"([^"]+)"', array_content)
-            joined = ''.join(chars).replace('\/', '/')
-            joined = joined.replace('https://///', 'https://').replace('https:////', 'https://').replace('https:///', 'https://')
-            return joined + '|Referer=https://stellarthread.com/&Origin=https://stellarthread.com&User-Agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-        except:
+            m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                return
+            fid = m.group(1)
+            api_url = 'https://stellarthread.com/footy.php?player=mobile&live=' + fid
+            r = requests.get(api_url, headers=headers).text
+            m = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
+            if not m:
+                return
+            array_content = m.group(1)
+            chars = re.findall(r'"([^"]+)"', array_content)
+            if not chars:
+                return
+            joined = ''.join(chars).replace(r'\/', '/')
+            for _ in range(3):
+                joined = joined.replace('https://///', 'https://')
+                joined = joined.replace('https:////', 'https://')
+                joined = joined.replace('https:///', 'https://')
+            final_url = joined
+            return (
+                final_url
+                + '|Referer=https://stellarthread.com/'
+                + '&Origin=https://stellarthread.com'
+                + '&User-Agent=' + UA
+            )
+        except Exception:
             return
 
     def meth(self, url):
@@ -2500,7 +2407,6 @@ class streamer:
             return f"{final_url}|User-Agent={UA}&Refer={refer}&Origin={origin}"
         except Exception:
             return
-
 
     def roxie(self, url):
         try:
