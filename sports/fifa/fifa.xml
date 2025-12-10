@@ -16,7 +16,7 @@
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-    <title>[COLOR orange] [makelist.param2][/COLOR] [COLOR dodgerblue] [makelist.param3][/COLOR]</title>
+    <title>[COLOR orange] [makelist.param2][/COLOR]</title>
   <link>$doregex[makelist2]</link>
   <thumbnail></thumbnail>
 ]]></listrepeat>
@@ -25,7 +25,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<a href="([^"]*)">\s*([^<]*)\n.*?<td>\s*([^<]*)\n', page_data)
+    r = re.findall('(?s)<a href="([^"]*)">\s*([^<]*)', page_data)
     return r
 ]]></expres>
 <page>https://roxiestreams.live/soccer</page>
