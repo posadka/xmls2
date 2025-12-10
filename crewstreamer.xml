@@ -513,42 +513,6 @@ class streamer:
             return r
         except:
             return
-            
-    def cric(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            p = client.request(url)
-            r0 = re.findall('(?s)<tr><td>(?:[^<]*)<\/td><td><a href="([^"]*)', p)[0]
-            p1 = client.request(r0)
-            r1 = re.findall('<iframe src="([^"]*)', p1)[0]
-            r1 = r1.replace('//', 'http://')
-            p2 = client.request(r1)
-            r2 = re.findall('fid="([^"]*)', p2)[0]
-            r3 = re.findall('v_width=([^\;]*)', p2)[0]
-            r4 = re.findall('v_height=([^\;]*)', p2)[0]
-            embed = 'http://www.freecast123.com/cricsp.php?player=desktop&live=' + r2 + '&vw=' + r3 + '&vh=' + r4
-            u = client.request(embed, headers={'User-Agent': UA, 'Referer': r1})
-            u = u.replace('\/', '/')
-            u = u.replace('",', '')
-            u = u.replace('"', '')
-            u = u.replace('//', 'http://')
-            r = re.findall('return\(\[([^\]]*)', u)[0]
-            x = re.findall('\[(hlsendtime.*?)\]', u)[0]
-            z = re.findall('>(ash.*?)<', u)[0]
-            return r + x + z
-        except:
-            return
-
-    def tubby(self, url):
-        try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url)
-            r = re.findall('<iframe src="([^"]*)', u)[0]
-            u2 = client.request(r)
-            r2 = re.findall('videoLink = \'([^\']*)', u2)[0]
-            return r2
-        except:
-            return
 
     def mazy(self, url):
         try:
