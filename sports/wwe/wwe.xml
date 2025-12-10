@@ -3,6 +3,43 @@
 <layoutype>fuckOFF</layoutype>
 
 <item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE[/COLOR] [COLOR orchid] LIVE (RS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<link>$doregex[makelist]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<regex>
+  <name>makelist</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import control
+    import re,xbmcgui
+    from urllib.parse import urlparse
+    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36'
+    m3u8_list = re.findall(r'https?://[^\s\'"]+\.m3u8', page_data, re.DOTALL)
+    if not m3u8_list:
+        return
+    if len(m3u8_list) == 1:
+        stream_url = m3u8_list[0]
+    else:
+        labels = [f'Stream {i+1}' for i in range(len(m3u8_list))]
+        choice = xbmcgui.Dialog().select('Select Stream', labels)
+        if choice == -1:
+            return
+        stream_url = m3u8_list[choice]
+    u = urlparse(page_data)
+    origin = f'{u.scheme}://{u.netloc}'
+    return (
+        stream_url
+        + '|User-Agent=' + UA
+        + '&Referer=' + page_data
+        + '&Origin=' + origin
+    )
+]]></expres>
+<page>https://roxiestreams.live/wwe-streams</page>
+</regex>
+</item>
+
+<item>
 <name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE RAW[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
