@@ -14,6 +14,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import control
     import re,xbmcgui
     from urllib.parse import urlparse
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36'
     m3u8_list = re.findall(r'https?://[^\s\'"]+\.m3u8', page_data, re.DOTALL)
     if not m3u8_list:
