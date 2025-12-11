@@ -766,19 +766,32 @@ class streamer:
 
     def naughtyblog(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            u = client.request(url)
-            u = u.split('<strong>Download:', 1)[-1]
-            u = u.split('<strong>Watch online:', 1)[0]
-            r = re.findall('(?s)<a h(?:[^=]*)=(?:[^=]*)="([^"]*)(?:[^>]*)>([^<]*)', u)
+            if not control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            html = client.request(url)
+            if not html:
+                return
+            part = html.split('<strong>Download:', 1)
+            if len(part) < 2:
+                return
+            segment = part[1]
+            part = segment.split('<strong>Watch online:', 1)
+            if len(part) > 1:
+                segment = part[0]
+            links = re.findall(
+                r'(?is)<a\s+href="([^"]+)"[^>]*>([^<]+)</a>',
+                segment
+            )
             hosts = ['Rapidgator']
-            e = []
-            for i in r:
-                if any(x for x in hosts if x in i[0]):
-                    e.append((i[0].replace('Direct Link', ''), i[1]))
-            return e
-        except:
+            results = []
+            for href, label in links:
+                if any(h in href for h in hosts):
+                    clean_url = href.strip()
+                    clean_label = label.replace('Direct Link', '').strip()
+                    results.append((clean_url, clean_label))
+            return results or None
+        except Exception:
             return
+
 
     def fsportshd(self, url):
         try:
