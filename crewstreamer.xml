@@ -723,7 +723,7 @@ class streamer:
             page_data = client.request(url)
             w = re.findall('(?s)iframe allow=\'encrypted-media.*?src=\'([^\']*)', page_data)[0]
             h = client.request(w)
-            i = re.findall('source: [\'"]([^\'"]+)', h)[0]
+            i = re.findall('source \s*[:=]\s*[\'"]([^\'"]+)', h)[0]
             return (
                 i
                 + '|User-Agent=' + UA
