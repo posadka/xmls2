@@ -721,17 +721,28 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            w = re.findall('(?s)iframe allow=\'encrypted-media.*?src=\'([^\']*)', page_data)[0]
-            h = client.request(w)
-            i = re.findall('source\s*[:=]\s*[\'"]([^\'"]+)', h)[0]
+            if not page_data:
+                return
+            m = re.search(r'(?s)<iframe[^>]*allow=[\'"]encrypted-media[^>]*src=[\'"]([^\'"]+)',page_data)
+            if not m:
+                return
+            iframe_url = m.group(1)
+            iframe_html = client.request(iframe_url)
+            if not iframe_html:
+                return
+            m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
+            if not m:
+                return
+            src = m.group(1)
             return (
-                i
-                + '|User-Agent=' + UA
-                + '&Referer=http://volokit2.com/'
-                + '&Origin=http://volokit2.com'
+                f"{src}"
+                f"|User-Agent={UA}"
+                f"&Referer=http://volokit2.com/"
+                f"&Origin=http://volokit2.com"
             )
-        except:
+        except Exception:
             return
+
 
     def basketballvideo(self, url):
         try:
