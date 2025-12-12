@@ -609,7 +609,7 @@ class streamer:
                     'Referer': 'https://sportstvnow.org/'
                 }
             ).text
-            s = re.findall('source = "([^"]*)', h)[0]
+            s = re.findall('source\s*[:=]\s*[\'"]([^\'"]+)', h)[0]
             return s + '|User-Agent=' + UA + '&Referer=' + hat
         except:
             return
