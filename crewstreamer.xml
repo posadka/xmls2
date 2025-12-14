@@ -734,11 +734,13 @@ class streamer:
             if not m:
                 return
             src = m.group(1)
+            u = urlparse(url)
+            origin = f'{u.scheme}://{u.netloc}'
             return (
                 f"{src}"
                 f"|User-Agent={UA}"
-                f"&Referer=http://volokit.xyz/"
-                f"&Origin=http://volokit.xyz"
+                f"&Referer={origin}/"
+                f"&Origin={origin}"
             )
         except Exception:
             return
