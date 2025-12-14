@@ -737,8 +737,8 @@ class streamer:
             return (
                 f"{src}"
                 f"|User-Agent={UA}"
-                f"&Referer=http://volokit2.com/"
-                f"&Origin=http://volokit2.com"
+                f"&Referer=http://volokit2.fun/"
+                f"&Origin=http://volokit2.fun"
             )
         except Exception:
             return
