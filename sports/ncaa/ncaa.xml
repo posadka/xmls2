@@ -31,7 +31,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<a href="([^"]*)">\s*([^<]*)\n.*?<td>\s*([^<]*)\n', page_data)
+    r = re.findall('(?s)<a href="([^"]*)">([^<]*).*?d>([^<]*)', page_data)
     return r
 ]]></expres>
 <page>https://roxiestreams.live/nfl</page>
