@@ -874,23 +874,41 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             b64_tokens = re.findall(r'atob\(\s*[\'"]([^\'"]+)[\'"]\s*\)', page_data, re.I)
-            if not b64_tokens:
-                return
             urls = []
             for tok in b64_tokens:
                 try:
                     decoded = base64.b64decode(tok).decode("utf-8", "ignore")
-                except Exception:
+                except Exception as e:
+                    xbmc.log(f"[buff] base64 decode failed: {e}", xbmc.LOGDEBUG)
                     continue
-                urls += re.findall(r'"([^"]*)', decoded, re.I)
+                found = re.findall(r'https?:(?:\\\/\\\/|\/\/)[^"\'\s\\]+(?:\\\/[^"\'\s\\]+)*', decoded, re.I)
+                if found:
+                    urls.extend(found)
+            if not urls:
+                xbmc.log("[buff] decoded atob() but found no urls", xbmc.LOGDEBUG)
+                return
+            urls = [u.replace('\\/', '/') for u in urls]
             seen = set()
-            m3u8_list = [x for x in urls if not (x in seen or seen.add(x))]
+            m3u8_list = []
+            for u in urls:
+                if u not in seen:
+                    seen.add(u)
+                    m3u8_list.append(u)
+            xbmc.log("[buff] extracted urls:", xbmc.LOGDEBUG)
+            for i, u in enumerate(m3u8_list, 1):
+                xbmc.log(f"[buff] {i:02d} -> {u}", xbmc.LOGDEBUG)
             if not m3u8_list:
                 return
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
-                labels = [f"Stream {i+1}" for i in range(len(m3u8_list))]
+                labels = []
+                for i, s in enumerate(m3u8_list, 1):
+                    try:
+                        host = urlparse(s).netloc
+                    except Exception:
+                        host = "stream"
+                    labels.append(f"{i}. {host}")
                 choice = xbmcgui.Dialog().select("Select Stream", labels)
                 if choice == -1:
                     return
@@ -905,4 +923,5 @@ class streamer:
             )
         except:
             return
+
 
