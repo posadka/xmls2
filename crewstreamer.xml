@@ -873,25 +873,36 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            m3u8_list = re.findall(r'atob\(\'([^\']*)', page_data, re.DOTALL)
-            m3u8_list = base64.b64decode(m3u8_list).decode('utf-8')
+            b64_tokens = re.findall(r'atob\(\s*[\'"]([^\'"]+)[\'"]\s*\)', page_data, re.I)
+            if not b64_tokens:
+                return
+            urls = []
+            for tok in b64_tokens:
+                try:
+                    decoded = base64.b64decode(tok).decode("utf-8", "ignore")
+                except Exception:
+                    continue
+                urls += re.findall(r'"([^"]*)', decoded, re.I)
+            seen = set()
+            m3u8_list = [x for x in urls if not (x in seen or seen.add(x))]
             if not m3u8_list:
                 return
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
-                labels = [f'Stream {i+1}' for i in range(len(m3u8_list))]
-                choice = xbmcgui.Dialog().select('Select Stream', labels)
+                labels = [f"Stream {i+1}" for i in range(len(m3u8_list))]
+                choice = xbmcgui.Dialog().select("Select Stream", labels)
                 if choice == -1:
                     return
                 stream_url = m3u8_list[choice]
             u = urlparse(url)
-            origin = f'{u.scheme}://{u.netloc}'
+            origin = f"{u.scheme}://{u.netloc}"
             return (
                 stream_url
-                + '|User-Agent=' + UA
-                + '&Referer=' + url
-                + '&Origin=' + origin
+                + "|User-Agent=" + UA
+                + "&Referer=" + url
+                + "&Origin=" + origin
             )
         except:
             return
+
