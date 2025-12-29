@@ -791,7 +791,7 @@ class streamer:
                     clean_label = label.replace('Direct Link', '').strip()
                     results.append((clean_url, clean_label))
             return results or None
-        except Exception:
+        except:
             return
 
 
@@ -819,7 +819,7 @@ class streamer:
                 + '&Origin=https://stellarthread.com'
                 + '&User-Agent=' + UA
             )
-        except Exception:
+        except:
             return
 
     def meth(self, url):
@@ -839,7 +839,7 @@ class streamer:
             origin = api_url.split('/', 3)[:3]
             origin = '/'.join(origin)
             return f"{final_url}|User-Agent={UA}&Referer={refer}&Origin={origin}"
-        except Exception:
+        except:
             return
 
     def roxie(self, url):
@@ -849,27 +849,25 @@ class streamer:
             pattern = r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)"
             stream_calls = re.findall(pattern, page)
             m3u8_list = []
-            if stream_calls:
-                try:
-                    domain_txt_url = urljoin(url, 'domains.txt')
-                    domain_text = client.request(domain_txt_url)
-                    domains = [line.strip() for line in domain_text.splitlines() if line.strip()]
-                except:
-                    domains = []
-                for stream_path, subdomain in stream_calls:
-                    if domains:
-                        for domain in domains:
-                            m3u8_list.append(f'https://{subdomain}.{domain}/{stream_path}')
-                    else:
-                        m3u8_list.append(f'https://{subdomain}.shadow-ran.online/{stream_path}')
-            else:
+            try:
+                domain_text = client.request('https://roxiestreams.live/domains.txt')
+                domains = [line.strip() for line in domain_text.splitlines() if line.strip()]
+            except:
+                domains = []
+            for stream_path, subdomain in stream_calls:
+                if domains:
+                    for domain in domains:
+                        m3u8_list.append(f'https://{subdomain}.{domain}/{stream_path}')
+                else:
+                    m3u8_list.append(f'https://{subdomain}.shadow-ran.online/{stream_path}')  # Fallback
+            if not m3u8_list:
                 m3u8_list = re.findall(r'https?://[^\s\'"]+\.m3u8', page, re.DOTALL)
             if not m3u8_list:
                 return
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
-                labels = [f'Stream {i+1}' for i in range(len(m3u8_list))]
+                labels = [f'Stream {i+1}: {urlparse(u).netloc}' for i, u in enumerate(m3u8_list)]
                 choice = xbmcgui.Dialog().select('Select Stream', labels)
                 if choice == -1:
                     return
@@ -882,5 +880,5 @@ class streamer:
                 + '&Referer=' + url
                 + '&Origin=' + origin
             )
-        except Exception:
+        except:
             return
