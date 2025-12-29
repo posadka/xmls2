@@ -847,29 +847,24 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page = client.request(url)
             pattern = r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)"
-            stream_calls = re.findall(pattern, page)
-            stream_urls = set()
+            stream_calls = set(re.findall(pattern, page))
+            if not stream_calls:
+                return
             try:
                 domain_text = client.request('https://roxiestreams.live/domains.txt')
-                domains = [line.strip() for line in domain_text.splitlines() if line.strip()]
+                domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
             except:
-                domains = []
-            for stream_path, subdomain in set(stream_calls):
-                if domains:
-                    for domain in domains:
-                        stream_urls.add(f'https://{subdomain}.{domain}/{stream_path}')
-                else:
-                    stream_urls.add(f'https://{subdomain}.shadow-ran.online/{stream_path}')
-            if not stream_urls:
-                m3u8_fallbacks = re.findall(r'https?://[^\s\'"]+\.m3u8', page, re.DOTALL)
-                stream_urls.update(m3u8_fallbacks)
-            m3u8_list = sorted(stream_urls)
+                domains = ['shadow-ran.online']
+            m3u8_list = []
+            for stream_path, subdomain in stream_calls:
+                domain = random.choice(domains)
+                m3u8_list.append(f'https://{subdomain}.{domain}/{stream_path}')
             if not m3u8_list:
                 return
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
-                labels = [f'Stream {i+1}: {urlparse(u).netloc}' for i, u in enumerate(m3u8_list)]
+                labels = [f'Stream {i+1}' for i in range(len(m3u8_list))]
                 choice = xbmcgui.Dialog().select('Select Stream', labels)
                 if choice == -1:
                     return
