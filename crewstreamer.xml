@@ -844,23 +844,34 @@ class streamer:
 
     def roxie(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            page = client.request(url)
-            pattern = r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)"
-            stream_calls = set(re.findall(pattern, page))
-            if not stream_calls:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            if not page_data:
                 return
-            try:
-                domain_text = client.request('https://roxiestreams.live/domains.txt')
-                domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
-            except:
-                domains = ['shadow-ran.online']
-            m3u8_list = []
-            for stream_path, subdomain in stream_calls:
-                domain = random.choice(domains)
-                m3u8_list.append(f'https://{subdomain}.{domain}/{stream_path}')
-            if not m3u8_list:
-                return
+            if 'getRandomStream' in page_data:
+                pattern = r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)"
+                stream_calls = set(re.findall(pattern, page_data))
+                if not stream_calls:
+                    return
+                try:
+                    domain_text = client.request('https://roxiestreams.live/domains.txt')
+                    domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
+                except:
+                    domains = ['shadow-ran.online']
+                m3u8_list = []
+                for stream_path, subdomain in stream_calls:
+                    domain = random.choice(domains)
+                    m3u8_list.append(f'https://{subdomain}.{domain}/{stream_path}')
+                if not m3u8_list:
+                    return
+            else:
+                m3u8_list = re.findall(
+                    r'https?://[^\s\'"]+\.m3u8',
+                    page_data,
+                    re.DOTALL
+                )
+                if not m3u8_list:
+                    return
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
