@@ -146,9 +146,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     page_data = page_data.split('NFL Live and Schedule',1)[-1]
     page_data = page_data.split('CFB Live and Schedule',1)[0]
     r = re.findall('(?s)<a href=\'([^\']*).*?<img src=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
-    sort = [(i[0],i[1],i[2],i[3]) for i in r if 'HD1' in i[2]]
-    sort1 = [(i[0],i[1],i[2],i[3]) for i in r if 'NFL' in i[2]]
-    return sort1 + sort
+    #sort = [(i[0],i[1],i[2],i[3]) for i in r if 'HD1' in i[2]]
+    #sort1 = [(i[0],i[1],i[2],i[3]) for i in r if 'NFL' in i[2]]
+    return r #sort1 + sort
 ]]></expres>
 <page></page>
 </regex>
