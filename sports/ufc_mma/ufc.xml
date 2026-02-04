@@ -28,7 +28,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a href="([^"]*)">\s*([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://roxiestreams.live/fighting</page>
+<page>https://roxiestreams.info/fighting</page>
 </regex>
 <regex>
 <name>makelist2</name>

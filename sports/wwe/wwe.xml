@@ -36,7 +36,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         + '&Origin=' + origin
     )
 ]]></expres>
-<page>https://roxiestreams.live/wwe-streams</page>
+<page>https://roxiestreams.info/wwe-streams</page>
 </regex>
 </item>
 
