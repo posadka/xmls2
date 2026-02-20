@@ -344,8 +344,7 @@ class streamer:
         try:
             page_data = client.request(url)
             e = re.findall('(?s)<li class="f1-podium--item\s*">\s*<a\s+href="([^"]+)"[^>]*>.*?class="f1-podium-.*?>([^<]*).*?line\s*">\s*([^<]*)\n', page_data)
-            sort = [(i[0],i[1],i[2]) for i in e in 'vs' in i[2]]
-            return sort
+            return e
         except:
             return
 
