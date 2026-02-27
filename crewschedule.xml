@@ -239,6 +239,8 @@ class streamer:
             elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
 
             elif 'fsportshd' in url: u = self.fsportshd(url)
+            elif 'fsportshd1' in url: u = self.fsportshd(url)
+
 
             return u
         except:

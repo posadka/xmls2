@@ -104,6 +104,7 @@ class streamer:
             elif 'mysports.to' in url: u = self.sportnews(url)
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
             elif 'fsportshd' in url: u = self.fsportshd(url)
+            elif 'fsportshd1' in url: u = self.fsportshd(url)
             elif 'methstreams' in url: u = self.meth(url)
             elif 'roxiestreams' in url: u = self.roxie(url)
             else: u = self.generic(url)
@@ -798,7 +799,7 @@ class streamer:
     def fsportshd(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            headers = {"Referer": "https://fsportshd.xyz/","User-Agent": UA,}
+            headers = {"Referer": "https://fsportshd1.xyz/","User-Agent": UA,}
             page_data = requests.get(url, headers=headers).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             fid = m.group(1)
