@@ -723,11 +723,12 @@ class streamer:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
             m = re.search(r'(?s)<iframe[^>]*allow=[\'"]encrypted-media[^>]*src=[\'"]([^\'"]+)',page_data)
-            if 'wikisport' in m:
-                headers = {"Referer": "https://wikisport.club/","User-Agent": UA,}
-                page_data = requests.get(m).text
+            iframe_url = m.group(1)
+            if 'wikisport' in iframe_url:
+                page_data = requests.get(iframe_url).text
                 m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
                 fid = m.group(1)
+                headers = {"Referer": "https://wikisport.club/","User-Agent": UA,}
                 api_url = 'https://stellarthread.com/wiki.php?player=mobile&live=' + fid
                 r = requests.get(api_url, headers=headers).text
                 m = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
