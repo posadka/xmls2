@@ -722,28 +722,46 @@ class streamer:
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
             page_data = client.request(url)
-            if not page_data:
-                return
             m = re.search(r'(?s)<iframe[^>]*allow=[\'"]encrypted-media[^>]*src=[\'"]([^\'"]+)',page_data)
-            if not m:
-                return
-            iframe_url = m.group(1)
-            iframe_html = client.request(iframe_url)
-            if not iframe_html:
-                return
-            m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
-            if not m:
-                return
-            src = m.group(1)
-            u = urlparse(url)
-            origin = f'{u.scheme}://{u.netloc}'
-            return (
-                f"{src}"
-                f"|User-Agent={UA}"
-                f"&Referer={origin}/"
-                f"&Origin={origin}"
-            )
-        except Exception:
+            if 'wikisport' in m:
+                page_data = requests.get(m).text
+                m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
+                fid = m.group(1)
+                api_url = 'https://stellarthread.com/wiki.php?player=mobile&live=' + fid
+                r = requests.get(api_url, headers=headers).text
+                m = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
+                array_content = m.group(1)
+                chars = re.findall(r'"([^"]+)"', array_content)
+                joined = ''.join(chars).replace(r'\/', '/')
+                for _ in range(3):
+                    joined = joined.replace('https://///', 'https://')
+                    joined = joined.replace('https:////', 'https://')
+                    joined = joined.replace('https:///', 'https://')
+                final_url = joined
+                return (
+                    final_url
+                    + '|Referer=https://stellarthread.com/'
+                    + '&Origin=https://stellarthread.com'
+                    + '&User-Agent=' + UA
+                )
+            else:
+                iframe_url = m.group(1)
+                iframe_html = client.request(iframe_url)
+                if not iframe_html:
+                    return
+                m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
+                if not m:
+                    return
+                src = m.group(1)
+                u = urlparse(url)
+                origin = f'{u.scheme}://{u.netloc}'
+                return (
+                    f"{src}"
+                    f"|User-Agent={UA}"
+                    f"&Referer={origin}/"
+                    f"&Origin={origin}"
+                )
+        except:
             return
 
 
