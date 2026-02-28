@@ -721,10 +721,10 @@ class streamer:
     def volokit(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            headers = {"Referer": "http://volokit.xyz/","User-Agent": UA,}
             page_data = client.request(url)
             m = re.search(r'(?s)<iframe[^>]*allow=[\'"]encrypted-media[^>]*src=[\'"]([^\'"]+)',page_data)
             if 'wikisport' in m:
+                headers = {"Referer": "https://wikisport.club/","User-Agent": UA,}
                 page_data = requests.get(m).text
                 m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
                 fid = m.group(1)
