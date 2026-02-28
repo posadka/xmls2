@@ -264,8 +264,8 @@ class streamer:
             src = m.group(1).replace('\\', '')
             return (
                 f"{src}"
-                f"|Referer=https://givemereddit.link/"
-                f"&Origin=https://givemereddit.link"
+                f"|Referer=https://givemereddit.zip/"
+                f"&Origin=https://givemereddit.zip"
                 f"&User-Agent={UA}"
                 f"&Accept=application/x-mpegURL,*/*"
             )
