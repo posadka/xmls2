@@ -260,7 +260,7 @@ class streamer:
             arg4 = int(m.group(5))
             arg5 = int(m.group(6))
             t = hunter.hunter(arg0, arg1, arg2, arg3, arg4, arg5)
-            m = re.search(r"source:\s*'([^']+)", t)
+            m = re.search(r'streamSrc =\s*"([^"]*)', t)
             src = m.group(1).replace('\\', '')
             return (
                 f"{src}"
