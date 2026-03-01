@@ -875,7 +875,7 @@ class streamer:
                 if not stream_calls:
                     return
                 try:
-                    domain_text = client.request('https://roxiestreams.live/domains.txt')
+                    domain_text = client.request('https://roxiestreams.info/domains.txt')
                     domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
                 except:
                     domains = ['shadow-ran.online']
