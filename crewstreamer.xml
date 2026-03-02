@@ -54,6 +54,7 @@ class streamer:
             elif 'gamehdlive' in url: u = self.solaris(url)
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
+            elif 'streameast.ga' in url: u = self.streameast_ga(url)
             elif 'ertech.work' in url: u = self.skuanet(url)
             elif 'chimxoan.net' in url: u = self.skuanet(url)
             elif 'skuanet' in url: u = self.skuanet(url)
@@ -910,4 +911,38 @@ class streamer:
                 + '&Origin=' + origin
             )
         except:
+            return
+
+    def streameast_ga(self, url):
+        try:
+            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            html = client.request(url)
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', html, re.I)
+            if not m:
+                control.log("streameast: iframe not found")
+                return
+            iframe = m.group(1)
+            iframe_html = client.request(iframe,headers={"Referer": url, "User-Agent": UA})
+            m = re.search(r'input:\s*"([^"]+)"', iframe_html)
+            if not m:
+                control.log("streameast: encrypted token not found")
+                return
+            token = m.group(1)
+            decrypt_url = "https://streams.center/decrypt.php"
+            hls_url = requests.post(
+                decrypt_url,
+                data={"input": token},
+                headers={
+                    "User-Agent": UA,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Referer": iframe
+                },
+                timeout=10
+            ).text.strip()
+            if not hls_url.startswith("http"):
+                control.log("streameast: decrypt invalid response %s" % hls_url)
+                return
+            return hls_url
+        except Exception as e:
+            control.log("streameast ERROR: %s" % e)
             return
