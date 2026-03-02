@@ -865,7 +865,8 @@ class streamer:
     def roxie(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = client.request(url)
+            headers = {"Referer": "https://roxiestreams.info/","User-Agent": UA,}
+            page_data = requests.get(url, headers=headers).text
             if not page_data:
                 return
             if 'getRandomStream' in page_data:
