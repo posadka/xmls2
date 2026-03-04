@@ -915,15 +915,24 @@ class streamer:
 
     def streameast_ga(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            html = requests.get(url).text
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', html, re.I)
-            iframe = m.group(1)
-            iframe_html = requests.get(iframe,headers={"Referer": 'https://streams.center', "User-Agent": UA}).text
-            m = re.search(r'iframe\ssrc="([^"]*)', iframe_html)
-            iframe = 'https:' + m.group(1)
-            iframe_html = requests.get(iframe,headers={"Referer": 'https://streams.center', "User-Agent": UA}).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe_html)
+            if not m:
+                return
+            iframe1 = m.group(1)
+            if iframe1.startswith("//"):
+                iframe1 = "https:" + iframe1
+            iframe1_html = requests.get(iframe1,headers={"Referer": url, "User-Agent": UA}).text
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', iframe1_html, re.I)
+            if not m:
+                return
+            iframe2 = m.group(1)
+            if iframe2.startswith("//"):
+                iframe2 = "https:" + iframe2
+            iframe2_html = requests.get(iframe2,headers={"Referer": iframe1, "User-Agent": UA}).text
+            m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+            if not m:
+                return
             token = m.group(1)
             decrypt_url = "https://streams.center/embed/decrypt.php"
             hls_url = requests.post(
@@ -932,10 +941,11 @@ class streamer:
                 headers={
                     "User-Agent": UA,
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "Referer": iframe
+                    "Referer": iframe2
                 },
                 timeout=10
             ).text.strip()
             return hls_url
+
         except:
             return
