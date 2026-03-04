@@ -144,12 +144,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    import re
+    import re,requests
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    page_data = requests.get('https://v2.streameast.ga/mlb-streams/').text
     r = re.findall('<a href="([^"]+)"\s*class="uefa-card"[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
     return r
 ]]></expres>
-        <page>https://v2.streameast.ga/mlb-streams/</page>
+        <page></page>
     </regex>
     <regex>
         <name>makelist2</name>
