@@ -959,3 +959,38 @@ class streamer:
             )
         except Exception:
             return
+
+    def topstreams(self, url):
+        try:
+            headers = {"User-Agent": UA, "Referer": url}
+            html = client.request(url, headers=headers)
+            m = re.search(r'src=["\'](/js/[a-z0-9]+\.js)["\']', html)
+            if not m:
+                return None
+            js_url = urljoin(url, m.group(1))
+            js = requests.get(js_url, headers=headers).text
+            g = re.search(r'globalurl\s*=\s*[\'"]([^\'"]+)', js)
+            if not g:
+                return None
+            manifest = g.group(1).replace(r'\/','/')
+            import uuid
+            guid = str(uuid.uuid4())
+            manifest = manifest + "&sessionId=" + guid
+            clearkeys = {}
+            ck = re.search(r'masterinf\s*=\s*\{([^}]+)\}', js)
+            if ck:
+                pairs = re.findall(
+                    r'"([0-9a-fA-F]{32})"\s*:\s*"([0-9a-fA-F]{32})"',
+                    ck.group(1)
+                )
+                for kid, key in pairs:
+                    clearkeys[kid.lower()] = key.lower()
+            drm = None
+            if clearkeys:
+                drm = {"type": "clearkey", "keys": clearkeys}
+            return {
+                "url": manifest,
+                "drm": drm
+            }
+        except:
+            return None
