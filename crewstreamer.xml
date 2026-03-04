@@ -916,6 +916,7 @@ class streamer:
     def streameast_ga(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            html = requests.get(url, headers={"User-Agent": UA}).text
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', html, re.I)
             if not m:
                 return
@@ -946,6 +947,5 @@ class streamer:
                 timeout=10
             ).text.strip()
             return hls_url
-
         except:
             return
