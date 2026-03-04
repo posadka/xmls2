@@ -146,7 +146,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('[^>]*href="([^"]+)"[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
+    page_data = page_data.split('MLB',1)[-1]
+    r = re.findall('<a href="([^"]+)"\s*class="uefa-card"[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
     return r
 ]]></expres>
         <page>https://v2.streameast.ga/mlb-streams/</page>
