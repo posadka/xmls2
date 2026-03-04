@@ -917,20 +917,26 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             html = requests.get(url, headers={"User-Agent": UA}).text
-            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', html, re.I)
-            if not m:
+            def get_iframe_src(data):
+                m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', data, re.I)
+                if not m:
+                    return None
+                src = m.group(1).strip()
+                return "https:" + src if src.startswith("//") else src
+            iframe1 = get_iframe_src(html)
+            if not iframe1:
                 return
-            iframe1 = m.group(1)
-            if iframe1.startswith("//"):
-                iframe1 = "https:" + iframe1
-            iframe1_html = requests.get(iframe1,headers={"Referer": url, "User-Agent": UA}).text
-            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', iframe1_html, re.I)
-            if not m:
+            iframe1_html = requests.get(
+                iframe1,
+                headers={"Referer": url, "User-Agent": UA}
+            ).text
+            iframe2 = get_iframe_src(iframe1_html)
+            if not iframe2:
                 return
-            iframe2 = m.group(1)
-            if iframe2.startswith("//"):
-                iframe2 = "https:" + iframe2
-            iframe2_html = requests.get(iframe2,headers={"Referer": iframe1, "User-Agent": UA}).text
+            iframe2_html = requests.get(
+                iframe2,
+                headers={"Referer": iframe1, "User-Agent": UA}
+            ).text
             m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
             if not m:
                 return
@@ -946,6 +952,10 @@ class streamer:
                 },
                 timeout=10
             ).text.strip()
-            return hls_url + '|Referer=https://streams.center/&User-Agent=' + UA
-        except:
+            return (
+                f"{hls_url}"
+                f"|Referer=https://streams.center/"
+                f"&User-Agent={UA}"
+            )
+        except Exception:
             return
