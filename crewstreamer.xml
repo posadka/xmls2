@@ -946,6 +946,6 @@ class streamer:
                 },
                 timeout=10
             ).text.strip()
-            return hls_url
+            return hls_url + '|Referer=https://streams.center/&User-Agent=' + UA
         except:
             return
