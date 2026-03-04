@@ -244,42 +244,6 @@ class streamer:
         except:
             pass
 
-    def btstream(self, url):
-        try:
-            u = client.request(url)
-            e = re.findall('timegmt dtstart"(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', u)
-            return e
-        except:
-            return
-
-    def ripplenba(self, url):
-        try:
-            u = client.request(url)
-            u = ''
-            u += client.request('http://ripple.stream/nbastreams')
-            u += client.request('http://ripple.stream/nbastreams?start=9')
-            u += client.request('http://ripple.stream/nbastreams?start=18')
-            u += client.request('http://ripple.stream/nbastreams?start=27')
-            r = re.findall('(?s)float-left">.*?src="([^"]*).*?href="([^"]*)">([^<]*)', u)
-            sort = [('http://ripple.stream'+i[0],'http://ripple.stream'+i[1],i[2]) for i in r]
-            return sort
-        except:
-            return
-
-    def ripplenfl(self, url):
-        try:
-            u = client.request(url)
-            u = ''
-            u += client.request('http://ripple.stream/nflstreams')
-            u += client.request('http://ripple.stream/nflstreams?start=9')
-            u += client.request('http://ripple.stream/nflstreams?start=18')
-            u += client.request('http://ripple.stream/nflstreams?start=27')
-            r = re.findall('(?s)float-left">.*?src="([^"]*).*?href="([^"]*)">([^<]*)', u)
-            sort = [('http://ripple.stream'+i[0],'http://ripple.stream'+i[1],i[2]) for i in r]
-            return sort
-        except:
-            return
-
     def tvnba(self, url):
         try:
             page_data = client.request(url)
@@ -293,41 +257,6 @@ class streamer:
             html = requests.get(url).text
             games = re.findall(r'<div class="away"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<div class="home"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<a href="([^"]+)',html)
             return games
-        except:
-            return
-
-    def cric(self, url):
-        try:
-            u = client.request(url)
-            r = re.findall('<div class="channels">\s*<a href="([^"]*)', u)
-            r = [(i,i.split('/')[-1]) for i in r]
-            r = [(i[0],i[1].replace('-',' ').replace('live stream s','').replace('live stream','').replace('sp1','').replace('sp2','').replace('bs2','').replace('bs1','').replace('osc','')) for i in r]
-            return r
-        except:
-            return
-
-    def tubsport(self, url):
-        try:
-            u = client.request(url)
-            u = u.split('id="video8"',1)[-1]
-            u = u.split('id="video9"',1)[0]
-            r = re.findall('(?s)<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)" alt="([^"]*)',u)
-            r = [('http://telehub.org'+i[0], 'http://telehub.org'+i[1],i[0].split('/')[1].split('.')[0].replace('-',' ')) for i in r]
-            return r
-        except:
-            return
-
-    def tvnow(self, url):
-        try:
-            u = ''
-            u = client.request(url)
-            u += client.request('http://123tvnow.com/category/united-states-usa/page/2/')
-            u += client.request('http://123tvnow.com/category/united-states-usa/page/3/')
-            u += client.request('http://123tvnow.com/category/united-states-usa/page/4/')
-            u += client.request('http://123tvnow.com/category/united-states-usa/page/5/')
-            r = re.findall('<div class="video-thumb">\s<a href="([^"]*)".\s<img src="([^"]*)" alt="([^"]*)',u)
-            sort = [(i[0],i[1],i[2].replace('#038;','')) for i in r]
-            return sort
         except:
             return
 
@@ -367,43 +296,6 @@ class streamer:
             return r 
         except:
             return
-    
-    def nbacrackstreams(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)<a href=\'([^\']*)(?:.*?heading\'>)([^<]*).*?p>([^<]*)', page_data)
-            return r 
-        except:
-            return
-
-    def giveboxing(self, url):
-        try:
-            u = client.request(url)
-            r = re.findall('(?s)<hr class="mb-4 mt-2">\s*<a href="([^"]*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)="([^"]*)">(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>\s+([^\n]*)', u)
-            r = [(i[0],i[1],client.replaceHTMLCodes(i[2]), i[3]) for i in r if 'png' in i[1]]
-            r = [(i[0],i[1],i[2],i[3]) for i in r if 'All Games' not in i[2]]
-            return r
-        except:
-            return
-
-                
-    def give(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('NFL RedZone',1)[-1]
-            r = re.findall('(?s)<a href="([^"]*).*?name">([^<]*).*?name">([^<]*)', page_data)
-            return r
-        except:
-            return
-
-    def sportsstatsme(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)right" class="hidden-xs"><b>([^<]*).*?17px;">([^<]*).*?left" class="hidden-xs"><b>([^<]*).*?f="([^"]*)', page_data)
-            sort = [(i[0],i[1],i[2],'http://sportsstatsme.net'+i[3]) for i in r]
-            return sort
-        except:
-            return
 
     def skuanet(self, url):
         try:
@@ -429,63 +321,12 @@ class streamer:
             return r
         except:
             return
-            
-    def jumbo(self, url):
-        try:
-            main = client.request(url)
-            main = main.replace('<font color="gold">','')
-            main = main.replace('</p>','')
-            link = zip(re.findall('-------------\s*<p>\D([^<]*)',main), re.findall('<iframe(?:[^=]*)=(?:[^=]*)="([^"]*)',main))
-            link = [(i[0].splitlines(), i[1]) for i in link]
-            link = [[(x, i[1]) for x in i[0]] for i in link]
-            link = sum(link, [])
-            return link 
-        except:
-            return
-
-    def mazy(self, url):
-        try:
-            page_data = client.request(url)
-            u = re.findall('(?s)<tr> <td>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*)(?:[^>]*)>(?:[^>]*)>([^<]*).*?href="([^"]*)', page_data)
-            sort = [(i[0],i[1],i[2],'https://mazymedias.com'+i[3]) for i in u]
-            return sort
-        except:
-            return
-
-    def helena(self, url):
-        try:
-            page_data = client.request(url)
-            e = re.findall('(?s)h4 class="mec-event-title">.*?href="([^"]*)">([^<]*)', page_data)
-            sort = [(i[0],i[1].replace('\xc3\xb4','o').replace('&#8217','').replace('&#038','').replace(';','').replace('s1','').replace('s2','').replace('s3','').replace('s4','').replace('a1','').replace('a2','').replace('A2','').replace('S1','').replace('S2','').replace('a3','').replace('a3','').replace('S3','').replace('z2','').replace('S4','').replace('S5','').replace('A3','').replace('A4','').replace('A1','').replace('t3','').replace('t1','').replace('T1','').replace('T2','').replace('t2','').replace('T3','')) for i in e]
-            return sort
-        except:
-            return
-
-    def ice(self, url):
-        try:
-            page_data = client.request(url)
-            s = re.findall('(?s)<div class="video-title">([^<]*).*?a>([^<]*).*?en\(\'([^\']*)', page_data)
-            sort = [(i[0],i[1],'https://icelz.newsrade.tk/'+i[2]) for i in s]
-            return sort
-        except:
-            return
 
     def ovostreams(self, url):
         try:
             page_data = client.request(url)
             e = re.findall('(?s)a href=\'([^\']*).*?ing\'>([^<]*)', page_data)
             sort = [('https://ovogoaal.com'+i[0],i[1]) for i in e]
-            return sort
-        except:
-            return
-
-    def papahd(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('<div class="clear"',1)[-1]
-            page_data = page_data.split('<div class="clear"',1)[0]
-            r = re.findall('(?s)<p>([^<]*).*?<a href="([^"]*)',page_data)
-            sort = [(i[0].replace('\xc2\xa0',''),i[1]) for i in r]
             return sort
         except:
             return
@@ -507,151 +348,10 @@ class streamer:
         except:
             return
 
-    def tennislive(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)<a class="team" title="(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>.*?f="([^"]*)">([^<]*)', page_data)
-            sort = [('https://live-tennis.stream'+i[0],i[1]) for i in r]
-            return sort
-        except:
-            return
-
-    def nascarlive(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)<a class="teamright.*?f="([^"]*)">([^<]*)', page_data)
-            sort = [('https://nascar-live.stream'+i[0],i[1]) for i in r]
-            return sort
-        except:
-            return
-
-    def solaris(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)f1-podium--item">\s*<a href="([^"]*)".*?ze">([^<]*).*?ih">([^<]*)', page_data)
-            return r
-        except:
-            return
-
-    def sportnews(self, url):
-        try:
-            page_data = client.request(url)
-            l = re.findall('(?s)mec\-event\-image">.*?src="([^"]*)(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"(?:[^"]*)"([^"]*)">([^<]*)', page_data)
-            sort = [(i[0],i[1],i[2].replace('&','').replace('#','').replace('8211','').replace(';','').replace('\xe2\x80\x93','').replace('S1\t\t\t\t','').replace('S2\t\t\t\t','').replace('S3\t\t\t\t','').replace('S4\t\t\t\t','').replace('S5\t\t\t\t','')) for i in l]
-            return sort
-        except:
-            return
-
-    def beast(self, url):
-        try:
-            page_data = client.request(url)
-            s = re.findall('(?s)aria-hidden="true"><\/i>&nbsp([^<]*)(?:.*?f=")([^"]*)', page_data)
-            return s
-        except:
-            return
-
-    def elixx(self, url):
-        try:
-            page_data = client.request(url)
-            s = re.findall('(?s)<button class=.*?>([^<]*).*?href="([^"]*)', page_data)
-            return s
-        except:
-            return
-
-    def worldstreams(self, url):
-        try:
-            page_data = client.request(url)
-            s = re.findall('(?s)<h2 class="textwp-compact-post-title textwp-fp-post-title"><a href="([^"]*)".*?rk">([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
-            return s
-        except:
-            return
-
-    def crackacnfl(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('NFL Regular Season',1)[-1]
-            page_data = page_data.split('Welcome to Crackstreams',1)[0]
-            s = re.findall('(?s)<a href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
-            return s
-        except:
-            return
-
-    def bslivenfl(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('HD 4k Streams',1)[-1]
-            s = re.findall('(?s)a href=[\'"]([^\'"]+).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
-            return s
-        except:
-            return
-
-    def bslivenba(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('NBA Live Streams and Schedule',1)[-1]
-            s = re.findall('(?s)a href=[\'"]([^\'"]+).*?ing\'>([^<]*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
-            return s
-        except:
-            return
-
-    def csnetmma(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('UFC Fight Night: Premium 4k Streams',1)[-1]
-            e = re.findall('(?s)<a href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
-            sort = [('http://crackstreams.net'+i[0],i[1],i[2]) for i in e]
-            return sort
-        except:
-            return
-
-    def csnetnba(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('NBA Premium Streams in 4K',1)[-1]
-            e = re.findall('(?s)href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
-            sort = [('http://crackstreams.net'+i[0],i[1],i[2]) for i in e]
-            return sort
-        except:
-            return
-
-    def csnetnfl(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('NFL Live Streams and Schedule',1)[-1]
-            e = re.findall('(?s)<a href=\'([^\']*)(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=(?:[^=]*)=\'([^\']*)(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>([^<]*)', page_data)
-            return 'http://usman.crackstreams.net/' + e
-        except:
-            return
-
-    def hesgoal(self, url):
-        try:
-            u = client.request(url)
-            r = re.findall('(?s)class="file(?:[^=]*)=(?:[^=]*)="([^"]*)"><img src="([^"]*)(?:.*?alt=")([^"]*)(?:.*?<p>)([^<]*)',u)
-            r = [(i[0],i[1],i[2],i[3]) for i in r if 'vs' in i[2]]
-            return r
-        except:
-            return
-
-    def volokitnfl(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)game">([^<]*)(?:.*?href=")([^"]*)(?:[^>]*)>([^<]*)', page_data)
-            return r
-        except:
-            return
-
     def nflup(self, url):
         try:
             page_data = client.request(url)
             r = re.findall('(?s)fadeIn"><a href="([^"]*).*?rk">([^<]*)', page_data)
-            return r
-        except:
-            return
-
-    def edden(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)<h4 class="mec-event-title">.*?href="([^"]*)".*?r">([^<]*)', page_data)
             return r
         except:
             return
@@ -664,55 +364,11 @@ class streamer:
         except:
             return
 
-    def redsoccer(self, url):
-        try:
-            page_data = client.request(url)
-            e = re.findall('(?s)<h2 class="post-title"><a href="([^"]*)">([^:]*)', page_data)
-            return e
-        except:
-            return
-
     def blacktie(self, url):
         try:
             page_data = client.request(url)
             r = re.findall('(?s)description">\s*([^<]*).*?ef="([^"]*)', page_data)
             sort = [(i[0],'http://blacktiesports.net'+i[1]) for i in r if 'Press' not in i[0]]
-            return sort
-        except:
-            return
-
-    def ufckhabib(self, url):
-        try:
-            page_data = client.request(url)
-            e = re.findall('(?s)href="([^"]*).*?nk">([^<]*)', page_data)
-            sort = [(i[0],i[1].replace('\xc5\x82',' '))for i in e]
-            return sort
-        except:
-            return
-
-    def csbiz(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('Formula 1 Streams',1)[-1]
-            e = re.findall('(?s)<a href="([^"]*).*?ing">([^<]*).*?>.*?>\s*([^<]*)\n', page_data)
-            #sort = [(i[0],i[1].replace('\xc5\x82',' ').replace('&',' ').replace('#',' ').replace('8211',' ').replace(',',' '),i[2])for i in e]
-            return e#sort
-        except:
-            return
-
-    def csis(self, url):
-        try:
-            page_data = client.request(url)
-            e = re.findall('(?s)href=\'([^\']*).*?ing\'>([^<]*).*?p>([^<]*)', page_data)
-            return e
-        except:
-            return
-
-    def csto(self, url):
-        try:
-            page_data = client.request(url)
-            w = re.findall('(?s)div class="media-body">\s*<a href="([^"]*).*?white;">.*?white;">([^<]*)', page_data)
-            sort = [('http://crackstreams.to/'+i[0],i[1]) for i in w]
             return sort
         except:
             return
@@ -753,14 +409,6 @@ class streamer:
         except:
             return
 
-    def recipemam(self, url):
-        try:
-            page_data = client.request(url)
-            s = re.findall('(?s)data-event.*?href="([^"]*)">([^<]*)',page_data)
-            return s
-        except:
-            return
-
     def catchy(self, url):
         try:
             page_data = client.request(url)
@@ -797,43 +445,6 @@ class streamer:
         except:
             return
 
-    def sstwentyfour(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('Today\'s games',1)[-1]
-            page_data = page_data.split('Sport channels',1)[0]
-            r = re.findall('(?s)href="([^"]*).*?me2">([^<]*).*?vs2">([^<]*).*?me2">([^<]*)',page_data)
-            return r
-        except:
-            return
-
-    def thecsnetnfl(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('>NFL Live Streams and Schedule<',1)[-1]
-            r = re.findall('(?s)<a href="([^"]*).*?ing">([^<]*).*?>.*?>\s*([^<]*)\n+',page_data)
-            return r
-        except:
-            return
-
-    def thecsnetboxing(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('BOXING Live Streams and Schedule',1)[-1]
-            r = re.findall('(?s)<a href="([^"]*).*?ing">([^<]*)(?:[^>]*)>(?:[^>]*)>\s*([^<]*)',page_data)
-            return r
-        except:
-            return
-      
-    def ustvtwentyfourseven(self, url):
-        try:
-            page_data = client.request(url)
-            e = re.findall('<li><strong><a href="([^"]*)">([^<]*)', page_data)
-            sort = [(i[0],i[1].replace('amp;','')) for i in e]
-            return sort
-        except:
-            return
-
     def prolive(self, url):
         try:
             page_data = client.request(url)
@@ -859,15 +470,6 @@ class streamer:
         except:
             return
 
-    def maxsport(self, url):
-        try:
-            page_data = client.request(url)
-            s = re.findall('(?s)<div class="grid-item.*?="([^"]*).*?g>([^<]*)',page_data)
-            sort = [(i[0],i[1]) for i in s if 'Polsat' not in i[1] if 'Eleven Sports 1' not in i[1] if 'Eleven Sports 2' not in i[1] if 'Eleven Sports 3' not in i[1]]
-            return sorted(sort,key=lambda thecrew: (thecrew[1]))
-        except:
-            return
-
     def hdrez(self, url):
         try:
             u = requests.get(url).text
@@ -879,16 +481,6 @@ class streamer:
                 srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
             link = re.findall('(?s)kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp)
             return link
-        except:
-            return
-
-    def tvapp(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('<h3>Live TV Channels<',1)[-1]
-            s = re.findall('<a href="([^"]*).*?>([^<]*)',page_data)
-            sort = [('https://thetvapp.to'+i[0],i[1].replace('amp','').replace(';','')) for i in s]
-            return sort
         except:
             return
 
