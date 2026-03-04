@@ -916,19 +916,16 @@ class streamer:
     def streameast_ga(self, url):
         try:
             if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-            html = client.request(url)
+            html = requests.get(url).text
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', html, re.I)
-            if not m:
-                control.log("streameast: iframe not found")
-                return
             iframe = m.group(1)
-            iframe_html = client.request(iframe,headers={"Referer": url, "User-Agent": UA})
+            iframe_html = requests.get(iframe,headers={"Referer": 'https://streams.center', "User-Agent": UA}).text
+            m = re.search(r'iframe\ssrc="([^"]*)', iframe_html)
+            iframe = 'https:' + m.group(1)
+            iframe_html = requests.get(iframe,headers={"Referer": 'https://streams.center', "User-Agent": UA}).text
             m = re.search(r'input:\s*"([^"]+)"', iframe_html)
-            if not m:
-                control.log("streameast: encrypted token not found")
-                return
             token = m.group(1)
-            decrypt_url = "https://streams.center/decrypt.php"
+            decrypt_url = "https://streams.center/embed/decrypt.php"
             hls_url = requests.post(
                 decrypt_url,
                 data={"input": token},
@@ -939,10 +936,6 @@ class streamer:
                 },
                 timeout=10
             ).text.strip()
-            if not hls_url.startswith("http"):
-                control.log("streameast: decrypt invalid response %s" % hls_url)
-                return
             return hls_url
-        except Exception as e:
-            control.log("streameast ERROR: %s" % e)
+        except:
             return
