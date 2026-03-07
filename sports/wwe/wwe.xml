@@ -3,55 +3,42 @@
 <layoutype>fuckOFF</layoutype>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE[/COLOR] [COLOR orchid] LIVE (RS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE LIVE[/COLOR] [COLOR orchid] (RS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[makelist]</link>
 <regex>
-  <name>makelist</name>
+<name>makelist</name>
+<listrepeat><![CDATA[
+    <title>[COLOR orange] [makelist.param2][/COLOR]</title>
+  <link>$doregex[makelist2]</link>
+  <thumbnail></thumbnail>
+]]></listrepeat>
 <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    from resources.lib.modules import control, client
-    import re, xbmcgui
-    from urllib.parse import urlparse
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36'
-    sub_match = re.search(r"getRandomStream\('.*?',\s*'(\d+)'\)", page_data)
-    if not sub_match:
-        return
-    subdomain = sub_match.group(1)
-    streams = re.findall(r"getRandomStream\('([^']+\.m3u8)'", page_data)
-    if not streams:
-        return
-    domains_url = 'https://roxiestreams.info/domains.txt'
-    domains_data = client.request(domains_url)
-    if not domains_data:
-        return
-    domains = [d.strip() for d in domains_data.splitlines() if d.strip()]
-    if not domains:
-        return
-    stream_urls = []
-    for s in streams:
-        domain = domains[0]  # Use first domain (stable)
-        stream_urls.append(f"https://{subdomain}.{domain}/{s}")
-    if len(stream_urls) > 1:
-        labels = [f"Stream {i+1}" for i in range(len(stream_urls))]
-        choice = xbmcgui.Dialog().select("Select Stream", labels)
-        if choice == -1:
-            return
-        stream_url = stream_urls[choice]
-    else:
-        stream_url = stream_urls[0]
-    parsed = urlparse(url)
-    origin = f"{parsed.scheme}://{parsed.netloc}"
-    return (
-        stream_url
-        + '|User-Agent=' + UA
-        + '&Referer=' + url
-        + '&Origin=' + origin
-    )
+    r = re.findall('(?s)<a href="([^"]*)">\s*([^<]*)', page_data)
+    return r
 ]]></expres>
-<page>https://roxiestreams.info/wwe-streams</page>
+<page>https://roxiestreams.info/fighting</page>
+</regex>
+<regex>
+<name>makelist2</name>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc,xbmcgui
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    url = client.external('[makelist.param1]')
+    pDialog.update(65,'The Crew Is Loading Your Event Please Wait....')
+    pDialog.close()
+    if (pDialog.iscanceled()): return
+    return url
+]]></expres>
+<page></page>
 </regex>
 </item>
 
