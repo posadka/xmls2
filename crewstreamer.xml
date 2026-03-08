@@ -193,7 +193,7 @@ class streamer:
 
     def weakspell(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             m = re.search(r'(?is)iframe[^>]*frameborder.*?src="([^"]+)', page_data)
             iframe_url = m.group(1)
@@ -222,7 +222,7 @@ class streamer:
 
     def crackstreams(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={"Referer": url, "User-Agent": UA}).text
             h = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             if 'givemereddit' in h:
@@ -304,7 +304,7 @@ class streamer:
 
     def skuanet(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             r = re.findall('<source src="([^"]*)', page_data)[0]
             return (
@@ -318,7 +318,7 @@ class streamer:
 
     def playoff(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             iframe_source_url = re.findall("embed-responsive-item\" src='([^']*)", page_data)[0]
             iframe_data = requests.get(iframe_source_url, headers={'User-Agent': UA, 'Referer': url}).text
@@ -353,7 +353,7 @@ class streamer:
 
     def seventwenty(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             iframe_source_url = re.findall('(?s)<iframe.*?rc="([^"]*)', page_data)[0]
             iframe_data = requests.get(iframe_source_url, headers={'User-Agent': UA, 'Referer': url}).text
@@ -387,7 +387,7 @@ class streamer:
                 
     def watchkobestreams(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}).text
             iframe_source_url = re.findall('(?s)<iframe.*?rc="([^"]*)', page_data)[0]
             embed_r = requests.get(iframe_source_url, headers={'User-Agent': UA, 'Referer': url}).text
@@ -421,7 +421,7 @@ class streamer:
 
     def nbahdreplay(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             r = re.findall('iframe(?:.*?src=")([^"]*)', page_data)[0]
             r = r.replace('//', 'https://')
@@ -431,7 +431,7 @@ class streamer:
 
     def helena(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             w = re.findall('source: "([^"]*)', page_data)[0]
             return w + '|Referer=' + url
@@ -440,7 +440,7 @@ class streamer:
 
     def papahd(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             r1 = re.findall('(?s)<iframe src="([^"]*)', page_data)[0]
             u2 = requests.get(r1, headers={'User-Agent': UA, 'Referer': url}).text
@@ -456,7 +456,7 @@ class streamer:
 
     def fightpass(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
             return x + '|User-Agent=' + UA + '&Referer=' + url
@@ -465,7 +465,7 @@ class streamer:
 
     def solaris(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
             return r + '|User-Agent=' + UA + '&Referer=' + url
@@ -474,7 +474,7 @@ class streamer:
 
     def sportnews(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             l = re.findall('atob\(\'([^\']*)', page_data)[0]
             l = base64.b64decode(l).decode('utf-8')
@@ -484,7 +484,7 @@ class streamer:
 
     def beast(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             white = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             hat = requests.get(white, headers={'User-Agent': UA, 'Referer': url}).text
@@ -501,7 +501,7 @@ class streamer:
 
     def elixx(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             w = re.findall('(?s)iframe-wrapper">\s*<iframe src="([^"]*)', page_data)[0]
             h = 'http://elixx.xyz' + w
@@ -521,7 +521,7 @@ class streamer:
 
     def worldstreams(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             w = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
             h = requests.get(w, headers={'User-Agent': UA, 'Referer': url}).text
@@ -534,7 +534,7 @@ class streamer:
 
     def nflsportz(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             src = re.findall('iframe.*?src="([^"]*)', page_data)[0]
             src = 'http:' + src if src.startswith('//') else src
@@ -548,7 +548,7 @@ class streamer:
 
     def blacktienba(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             if 'm3u8' in page_data:
                 link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
@@ -596,7 +596,7 @@ class streamer:
 
     def ufckhabib(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             t = re.findall('(?s)iframe f.*?src="([^"]*)', page_data)[0]
             fu = requests.get(t, headers={'User-Agent': UA, 'Referer': url}).text
@@ -608,7 +608,7 @@ class streamer:
 
     def ovostreams(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             hat = re.findall('(?s)player-box">\s*<iframe.*?src="([^"]*)', page_data)[0]
             h = requests.get(
@@ -625,7 +625,7 @@ class streamer:
 
     def techno(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             w = re.findall('iframe\ssrc="([^"]*)', page_data)[0]
             h = client.request(w)
@@ -636,7 +636,7 @@ class streamer:
 
     def dubsstreamz(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             if 'm3u8' in page_data:
                 t = re.findall('var source = \'([^\']*)', page_data)[0]
@@ -652,7 +652,7 @@ class streamer:
 
     def summerlivestream(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             r = re.findall('<iframe.*?src="([^"]*)', page_data)[0]
             murl = r
@@ -703,7 +703,7 @@ class streamer:
 
     def epicmartial(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             headers = {
                 "Referer": "https://castweb.xyz",
                 "User-Agent": UA
@@ -728,7 +728,7 @@ class streamer:
 
     def volokit(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             m = re.search(r'(?s)<iframe[^>]*allow=[\'"]encrypted-media[^>]*src=[\'"]([^\'"]+)',page_data)
             iframe_url = m.group(1)
@@ -777,7 +777,7 @@ class streamer:
 
     def basketballvideo(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             x = re.findall('(?s)style-default" href="([^"]*)', page_data)[0]
             f = client.request(x)
@@ -788,7 +788,7 @@ class streamer:
 
     def nflvideo(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             x = re.findall('(?s)Full Game Replay.*?<iframe.*?src="([^"]*)', page_data)[0]
             return x
@@ -826,7 +826,7 @@ class streamer:
 
     def fsportshd(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             headers = {"Referer": "https://fsportshd1.xyz/","User-Agent": UA,}
             page_data = requests.get(url, headers=headers).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
@@ -853,7 +853,7 @@ class streamer:
 
     def meth(self, url):
         try:
-            if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             m = re.search(r'const allStreams.*?ue":"([^"]+)', page_data, re.S)
             json_url = m.group(1).replace('\\', '')
@@ -970,6 +970,7 @@ class streamer:
 
     def topstreams(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             headers = {"User-Agent": UA, "Referer": url}
             html = client.request(url, headers=headers)
             m = re.search(r'src=["\'](/js/[a-z0-9]+\.js)["\']', html)
