@@ -2,6 +2,12 @@
 
 import re, json, base64, requests, time, random, math, xbmcgui
 try:
+    from Cryptodome.Cipher import AES
+    from Cryptodome.Util import Counter
+except:
+    from Crypto.Cipher import AES
+    from Crypto.Util import Counter
+try:
     from urllib import urlencode, quote_plus, urlparse, urljoin
 except ImportError:
     from urllib.parse import urlencode, quote_plus, urlparse, urljoin
@@ -107,6 +113,8 @@ class streamer:
             elif 'fsportshd' in url: u = self.fsportshd(url)
             elif 'methstreams' in url: u = self.meth(url)
             elif 'roxiestreams' in url: u = self.roxie(url)
+            elif 'trendy47' in url: u = self.trendy(url)
+            elif 'embedsports.top' in url: u = self.embedsports(url)
             else: u = self.generic(url)
 
             return u
@@ -993,4 +1001,62 @@ class streamer:
                 "drm": drm
             }
         except:
-            return None
+            return
+
+    def trendy(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            page_data = crequests.get(url).text
+            m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
+                return
+            iframe = m.group(1)
+            if iframe.startswith('//'):
+                iframe = 'https:' + iframe
+            iframe = iframe.split('#')[0]
+            return self.embedsports(iframe)
+        except:
+            return
+
+    def embedsports(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            parts = url.rstrip('/').split('/')
+            if len(parts) < 3:
+                return
+            stream_sc, stream_id, stream_no = parts[-3:]
+            payload = bytes([
+                0x0A, len(stream_sc), *stream_sc.encode("utf-8"),
+                0x12, len(stream_id), *stream_id.encode("utf-8"),
+                0x1A, len(stream_no), *stream_no.encode("utf-8")
+            ])
+            fetch = requests.post(
+                "https://embedsports.top/fetch",
+                data=payload,
+                headers={"Content-Type": "application/octet-stream"}
+            )
+            cipher_len = fetch.content[1]
+            cipher = fetch.content[-cipher_len:]
+            decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
+            b64 = base64.b64decode(decoded)
+            aes_key = fetch.headers.get("What")
+            if not aes_key:
+                return
+            aes_key = aes_key.encode("utf-8")
+            aes_iv = b"STOPSTOPSTOPSTOP"
+            aes_counter = Counter.new(
+                128,
+                initial_value=int.from_bytes(aes_iv, "big")
+            )
+            aes = AES.new(aes_key, AES.MODE_CTR, counter=aes_counter)
+            decrypted = aes.decrypt(b64).decode("utf-8")
+            xbmc.log(f"[Embedsports] Stream URL: {decrypted}", xbmc.LOGINFO)
+            headers = (
+                f'User-Agent={UA}'
+                f'&Referer={url}'
+                f'&Origin=https://embedsports.top'
+            )
+            return decrypted + "|" + headers
+        except Exception as e:
+            xbmc.log(f"[Embedsports Resolver Error] {e}", xbmc.LOGINFO)
+            return
