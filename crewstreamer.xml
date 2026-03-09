@@ -924,48 +924,69 @@ class streamer:
     def streameast_ga(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            html = requests.get(url, headers={"User-Agent": UA}).text
+            headers = {"User-Agent": UA}
+            mirrors = []
+            try:
+                page = requests.get("https://gostreameast.is", headers=headers, timeout=5).text
+                mirrors = re.findall(r'<div class="link-card">\s*<a\s*href="([^"]*)', page)
+            except:
+                pass
+            if not mirrors:
+                mirrors = ["https://gostreameast.is"]
+            mirrors = list(dict.fromkeys(mirrors))
+            parsed = urlparse(url)
+            path = parsed.path
             def get_iframe_src(data):
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', data, re.I)
                 if not m:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(html)
-            if not iframe1:
-                return
-            iframe1_html = requests.get(
-                iframe1,
-                headers={"Referer": url, "User-Agent": UA}
-            ).text
-            iframe2 = get_iframe_src(iframe1_html)
-            if not iframe2:
-                return
-            iframe2_html = requests.get(
-                iframe2,
-                headers={"Referer": iframe1, "User-Agent": UA}
-            ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
-            if not m:
-                return
-            token = m.group(1)
-            decrypt_url = "https://streams.center/embed/decrypt.php"
-            hls_url = requests.post(
-                decrypt_url,
-                data={"input": token},
-                headers={
-                    "User-Agent": UA,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Referer": iframe2
-                },
-                timeout=10
-            ).text.strip()
-            return (
-                f"{hls_url}"
-                f"|Referer=https://streams.center/"
-                f"&User-Agent={UA}"
-            )
-        except Exception:
+            for mirror in mirrors:
+                try:
+                    test_url = mirror.rstrip("/") + path
+
+                    html = requests.get(test_url, headers=headers, timeout=8).text
+                    iframe1 = get_iframe_src(html)
+                    if not iframe1:
+                        continue
+                    iframe1_html = requests.get(
+                        iframe1,
+                        headers={"Referer": test_url, "User-Agent": UA},
+                        timeout=8
+                    ).text
+                    iframe2 = get_iframe_src(iframe1_html)
+                    if not iframe2:
+                        continue
+                    iframe2_html = requests.get(
+                        iframe2,
+                        headers={"Referer": iframe1, "User-Agent": UA},
+                        timeout=8
+                    ).text
+                    m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+                    if not m:
+                        continue
+                    token = m.group(1)
+                    decrypt_url = "https://streams.center/embed/decrypt.php"
+                    hls_url = requests.post(
+                        decrypt_url,
+                        data={"input": token},
+                        headers={
+                            "User-Agent": UA,
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "Referer": iframe2
+                        },
+                        timeout=10
+                    ).text.strip()
+                    if ".m3u8" in hls_url:
+                        return (
+                            f"{hls_url}"
+                            f"|Referer=https://streams.center/"
+                            f"&User-Agent={UA}"
+                        )
+                except:
+                    continue
+        except:
             return
 
     def topstreams(self, url):
