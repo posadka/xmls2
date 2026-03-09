@@ -921,52 +921,68 @@ class streamer:
         except:
             return
 
-    def streameast_ga(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            html = requests.get(url, headers={"User-Agent": UA}).text
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(html)
-            if not iframe1:
-                return
-            iframe1_html = requests.get(
-                iframe1,
-                headers={"Referer": url, "User-Agent": UA}
-            ).text
-            iframe2 = get_iframe_src(iframe1_html)
-            if not iframe2:
-                return
-            iframe2_html = requests.get(
-                iframe2,
-                headers={"Referer": iframe1, "User-Agent": UA}
-            ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+def streameast_ga(self, url):
+    try:
+        if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+        html = requests.get(url, headers={"User-Agent": UA}).text
+        def get_iframe_src(data):
+            m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
             if not m:
-                return
-            token = m.group(1)
-            decrypt_url = "https://streams.center/embed/decrypt.php"
-            hls_url = requests.post(
-                decrypt_url,
-                data={"input": token},
-                headers={
-                    "User-Agent": UA,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Referer": iframe2
-                },
-                timeout=10
-            ).text.strip()
-            return (
-                f"{hls_url}"
-                f"|Referer=https://streams.center/"
-                f"&User-Agent={UA}"
-            )
-        except Exception:
+                return None
+            src = m.group(1).strip()
+            return "https:" + src if src.startswith("//") else src
+        iframe1 = get_iframe_src(html)
+        if not iframe1:
             return
+        iframe1_html = requests.get(
+            iframe1,
+            headers={"Referer": url, "User-Agent": UA}
+        ).text
+        if 'embedhd' in iframe1:
+            try:
+                fid = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html).group(1)
+                player = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
+                player_html = requests.get(
+                    player,
+                    headers={"Referer": iframe1, "User-Agent": UA}
+                ).text
+                m3u8 = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', player_html).group(1)
+                return (
+                    f"{m3u8}"
+                    f"|Referer={player}"
+                    f"&User-Agent={UA}"
+                )
+            except:
+                return
+        iframe2 = get_iframe_src(iframe1_html)
+        if not iframe2:
+            return
+        iframe2_html = requests.get(
+            iframe2,
+            headers={"Referer": iframe1, "User-Agent": UA}
+        ).text
+        m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+        if not m:
+            return
+        token = m.group(1)
+        decrypt_url = "https://streams.center/embed/decrypt.php"
+        hls_url = requests.post(
+            decrypt_url,
+            data={"input": token},
+            headers={
+                "User-Agent": UA,
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Referer": iframe2
+            },
+            timeout=10
+        ).text.strip()
+        return (
+            f"{hls_url}"
+            f"|Referer=https://streams.center/"
+            f"&User-Agent={UA}"
+        )
+    except Exception:
+        return
 
     def topstreams(self, url):
         try:
