@@ -113,7 +113,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     page_data = ''
     for u in urls:
         try:
-            page_data = requests.get(u, timeout=10).text
+            page_data = requests.get(u, timeout=3).text
             if page_data and '<a href=' in page_data:
                 break
         except:

@@ -23,12 +23,24 @@
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    import re
+    import re,requests
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<a href="([^"]*)">([^<]*).*?d>([^<]*)', page_data)
+    urls = [
+        'https://roxiestreams.info/nfl',
+        'https://roxiestreams.su/nfl'
+    ]
+    page_data = ''
+    for u in urls:
+        try:
+            page_data = requests.get(u, timeout=3).text
+            if page_data and '<a href=' in page_data:
+                break
+        except:
+            continue
+    r = re.findall('(?s)<a href="([^"]*)">\\s*([^<]*)\\n.*?<td>\\s*([^<]*)\\n', page_data)
     return r
 ]]></expres>
-<page>https://roxiestreams.info/nfl</page>
+<page></page>
 </regex>
 <regex>
 <name>makelist2</name>
