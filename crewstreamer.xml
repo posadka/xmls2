@@ -355,7 +355,7 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            iframe_source_url = re.findall('(?s)<iframe.*?rc="([^"]*)', page_data)[0]
+            iframe_source_url = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             iframe_data = requests.get(iframe_source_url, headers={'User-Agent': UA, 'Referer': url}).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
@@ -389,9 +389,9 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}).text
-            iframe_source_url = re.findall('(?s)<iframe.*?rc="([^"]*)', page_data)[0]
+            iframe_source_url = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
             embed_r = requests.get(iframe_source_url, headers={'User-Agent': UA, 'Referer': url}).text
-            embed_stream = re.findall('(?s)<iframe.*?rc="([^"]*)', embed_r)[0]
+            embed_stream = re.findall('(?s)<iframe.*?src="([^"]*)', embed_r)[0]
             iframe_data = requests.get(embed_stream, headers={'User-Agent': UA, 'Referer': iframe_source_url}).text
             pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
             zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
