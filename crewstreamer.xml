@@ -939,48 +939,46 @@ class streamer:
                 headers={"Referer": url, "User-Agent": UA}
             ).text
             if 'embedhd' in iframe1:
-                try:
-                    fid = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html).group(1)
-                    player = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
-                    player_html = requests.get(
-                        player,
-                        headers={"Referer": iframe1, "User-Agent": UA}
-                    ).text
-                    m3u8 = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', player_html).group(1)
-                    return (
-                        f"{m3u8}"
-                        f"|Referer={iframe1}"
-                        f"&User-Agent={UA}"
-                    )
-                except:
+                fid = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html).group(1)
+                player = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
+                player_html = requests.get(
+                    player,
+                    headers={"Referer": iframe1, "User-Agent": UA}
+                ).text
+                m3u8 = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', player_html).group(1)
+                return (
+                    f"{m3u8}"
+                    f"|Referer={iframe1}"
+                    f"&User-Agent={UA}"
+                )
+            else:
+                iframe2 = get_iframe_src(iframe1_html)
+                if not iframe2:
                     return
-            iframe2 = get_iframe_src(iframe1_html)
-            if not iframe2:
-                return
-            iframe2_html = requests.get(
-                iframe2,
-                headers={"Referer": iframe1, "User-Agent": UA}
-            ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
-            if not m:
-                return
-            token = m.group(1)
-            decrypt_url = "https://streams.center/embed/decrypt.php"
-            hls_url = requests.post(
-                decrypt_url,
-                data={"input": token},
-                headers={
-                    "User-Agent": UA,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Referer": iframe2
-                },
-                timeout=10
-            ).text.strip()
-            return (
-                f"{hls_url}"
-                f"|Referer=https://streams.center/"
-                f"&User-Agent={UA}"
-            )
+                iframe2_html = requests.get(
+                    iframe2,
+                    headers={"Referer": iframe1, "User-Agent": UA}
+                ).text
+                m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+                if not m:
+                    return
+                token = m.group(1)
+                decrypt_url = "https://streams.center/embed/decrypt.php"
+                hls_url = requests.post(
+                    decrypt_url,
+                    data={"input": token},
+                    headers={
+                        "User-Agent": UA,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Referer": iframe2
+                    },
+                    timeout=10
+                ).text.strip()
+                return (
+                    f"{hls_url}"
+                    f"|Referer=https://streams.center/"
+                    f"&User-Agent={UA}"
+                )
         except Exception:
             return
 
