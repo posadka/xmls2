@@ -949,7 +949,7 @@ class streamer:
                     m3u8 = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', player_html).group(1)
                     return (
                         f"{m3u8}"
-                        f"|Referer={player}"
+                        f"|Referer={iframe1}"
                         f"&User-Agent={UA}"
                     )
                 except:
