@@ -1007,25 +1007,38 @@ class streamer:
     def trendy(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            headers = {
+                "User-Agent": UA,
+                "Referer": url
+            }
+            page_data = requests.get(url, headers=headers, timeout=10).text
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data, re.I)
             if not m:
                 return
-            iframe = m.group(1)
+            iframe = m.group(1).strip()
             if iframe.startswith('//'):
                 iframe = 'https:' + iframe
+            if not iframe.startswith('http'):
+                iframe = urljoin(url, iframe)
             iframe = iframe.split('#')[0]
             return self.embedsports(iframe)
-        except:
+        except Exception as e:
+            xbmc.log(f"[Trendy Resolver Error] {e}", xbmc.LOGINFO)
             return
 
     def embedsports(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             parts = url.rstrip('/').split('/')
-            if len(parts) < 3:
-                return
-            stream_sc, stream_id, stream_no = parts[-3:]
+            if 'embed' in parts:
+                idx = parts.index('embed')
+                stream_sc = parts[idx + 1]
+                stream_id = parts[idx + 2] if len(parts) > idx + 2 else '1'
+                stream_no = '1'
+            else:
+                if len(parts) < 3:
+                    return
+                stream_sc, stream_id, stream_no = parts[-3:]
             payload = bytes([
                 0x0A, len(stream_sc), *stream_sc.encode("utf-8"),
                 0x12, len(stream_id), *stream_id.encode("utf-8"),
@@ -1034,8 +1047,11 @@ class streamer:
             fetch = requests.post(
                 "https://embedsports.top/fetch",
                 data=payload,
-                headers={"Content-Type": "application/octet-stream"}
+                headers={"Content-Type": "application/octet-stream"},
+                timeout=10
             )
+            if not fetch.content:
+                return
             cipher_len = fetch.content[1]
             cipher = fetch.content[-cipher_len:]
             decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
