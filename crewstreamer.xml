@@ -114,6 +114,7 @@ class streamer:
             elif 'roxiestreams' in url: u = self.roxie(url)
             elif 'trendy47' in url: u = self.trendy(url)
             elif 'embedsports.top' in url: u = self.embedsports(url)
+            elif 'streambtw' in url: u = self.streambtw(url)
             else: u = self.generic(url)
 
             return u
@@ -1089,4 +1090,13 @@ class streamer:
             return decrypted + "|" + headers
         except Exception as e:
             xbmc.log(f"[Embedsports Resolver Error] {e}", xbmc.LOGINFO)
+            return
+
+    def streambtw(self, url):
+        try:
+            html = requests.get(url, headers={'User-Agent': UA}).text
+            encoded = re.search(r'encoded\s*=\s*"([^"]+)"', html).group(1)
+            stream = base64.b64decode(encoded).decode()
+            return stream
+        except:
             return
