@@ -108,7 +108,6 @@ class streamer:
             elif 'streaming4u.org/' in url: u = self.summerlivestream(url)
             elif 'basketball-video' in url: u = self.basketballvideo(url)
             elif 'nfl-video' in url: u = self.nflvideo(url)
-            elif 'mysports.to' in url: u = self.sportnews(url)
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
             elif 'fsportshd' in url: u = self.fsportshd(url)
             elif 'methstreams' in url: u = self.meth(url)
