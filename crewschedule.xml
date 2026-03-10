@@ -236,6 +236,8 @@ class streamer:
 
             elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
 
+            elif 'streambtw' in url: u = self.streambtw(url)
+
             elif 'fsportshd' in url: u = self.fsportshd(url)
             elif 'fsportshd1' in url: u = self.fsportshd(url)
 
@@ -505,6 +507,14 @@ class streamer:
         try:
             page_data = requests.get(url).text
             s = re.findall('(?s)<div class="media-body">\s*<a\s+href="(?P<href>[^"]+)".*?>.*?<h4[^>]*>\s*(?P<title>[^<]+?)\s*<\/h4>',page_data)
+            return s
+        except:
+            return
+
+    def streambtw(self, url):
+        try:
+            page_data = requests.get(url).text
+            s = re.findall('id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"',page_data)
             return s
         except:
             return
