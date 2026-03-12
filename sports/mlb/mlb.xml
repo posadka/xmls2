@@ -107,8 +107,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re,requests
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     urls = [
-        'https://roxiestreams.su/mlb',
-        'https://roxiestreams.info/mlb'
+        'https://roxiestreams.info/mlb',
+        'https://roxiestreams.su/mlb'
     ]
     page_data = ''
     for u in urls:
