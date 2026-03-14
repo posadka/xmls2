@@ -42,8 +42,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
     url = client.external('[makelist.param1]')
     pDialog.update(65, 'The Crew Is Loading Your Event Please Wait....')
+    if (pDialog.iscanceled()): 
+        pDialog.close()
+        return
     pDialog.close()
-    if (pDialog.iscanceled()): return
     return url
 ]]></expres>
 <page>[makelist.param1]</page>
