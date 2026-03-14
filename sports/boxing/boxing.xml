@@ -53,7 +53,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             progress += 2
         pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
+    pDialog.update(100, 'Done!')
     xbmc.sleep(2000)
     pDialog.close()
     return result[0]
