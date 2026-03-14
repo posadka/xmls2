@@ -266,7 +266,7 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('Teams',1)[0]
-            e = re.findall(r'(?s)<li class=\"f1-podium--item\s*\">\s*<a\s+href=\"([^\"]+)\"[^>]*>.*?class=\"f1-podium-.*?>([^<]*).*?line\s*\">\s*([^<]*)\n', page_data)
+            e = re.findall(r'(?s)<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)<\/span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*<\/span>', page_data)
             return e
         except:
             return
