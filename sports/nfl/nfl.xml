@@ -63,10 +63,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Loading Your Event Please Wait....')
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
     pDialog.update(100, 'Done!')
-    xbmc.sleep(300)
+    xbmc.sleep(2000)
     pDialog.close()
     return result[0]
 ]]></expres>
@@ -117,10 +117,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Loading Your Event Please Wait....')
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
     pDialog.update(100, 'Done!')
-    xbmc.sleep(300)
+    xbmc.sleep(2000)
     pDialog.close()
     return result[0]
 ]]></expres>
@@ -171,10 +171,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Loading Your Event Please Wait....')
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
     pDialog.update(100, 'Done!')
-    xbmc.sleep(300)
+    xbmc.sleep(2000)
     pDialog.close()
     return result[0]
 ]]></expres>
@@ -231,10 +231,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Loading Your Event Please Wait....')
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
     pDialog.update(100, 'Done!')
-    xbmc.sleep(300)
+    xbmc.sleep(2000)
     pDialog.close()
     return result[0]
 ]]></expres>
@@ -287,10 +287,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Loading Your Event Please Wait....')
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
     pDialog.update(100, 'Done!')
-    xbmc.sleep(300)
+    xbmc.sleep(2000)
     pDialog.close()
     return result[0]
 ]]></expres>
@@ -342,10 +342,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Loading Your Event Please Wait....')
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
     pDialog.update(100, 'Done!')
-    xbmc.sleep(300)
+    xbmc.sleep(2000)
     pDialog.close()
     return result[0]
 ]]></expres>
@@ -451,10 +451,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Loading Your Event Please Wait....')
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
         xbmc.sleep(200)
     pDialog.update(100, 'Done!')
-    xbmc.sleep(300)
+    xbmc.sleep(2000)
     pDialog.close()
     return result[0]
 ]]></expres>
