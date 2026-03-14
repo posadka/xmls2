@@ -7,7 +7,7 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaab_fanart.jpg</fanart>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAAB LIVE[/COLOR] [COLOR orchid] (CS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaab.png</thumbnail>
