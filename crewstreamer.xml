@@ -861,16 +861,51 @@ class streamer:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
-            m = re.search(r'https:\\/\\/sharkstreams\.net\\/player\.php\?channel=\d+', page)
-            if m:
-                json_url = m.group(0).replace('\\/', '/')
-                json_data = requests.get(json_url, headers={'User-Agent': UA, 'Referer': url}).text
+            matches = list(re.finditer(
+                r'https:\\/\\/(?:sharkstreams\.net\\/player\.php\?channel=\d+|streams\.center\\/embed\\/ch\d+\.php)',
+                page
+            ))
+            if not matches:
+                return
+            links = []
+            for i, m in enumerate(matches, 1):
+                raw = m.group(0).replace('\\/', '/')
+                if 'sharkstreams.net' in raw:
+                    label = 'Link %s - SharkStreams' % i
+                    source = 'shark'
+                elif 'streams.center' in raw:
+                    label = 'Link %s - Streams.center' % i
+                    source = 'streams'
+                else:
+                    continue
+                links.append((label, source, raw))
+            if not links:
+                return
+            if len(links) == 1:
+                choice = 0
+            else:
+                choice = xbmcgui.Dialog().select('Choose Stream', [x[0] for x in links])
+            if choice == -1:
+                return
+            picked = links[choice]
+            source = picked[1]
+            picked_url = picked[2]
+            if source == 'shark':
+                json_url = picked_url
+
+                json_data = requests.get(
+                    json_url,
+                    headers={'User-Agent': UA, 'Referer': url}
+                ).text
                 m = re.search(r"fetch\('([^']+)", json_data)
                 if not m:
                     return
                 fetch_path = m.group(1)
                 api_url = 'https://sharkstreams.net/' + fetch_path
-                api_data = requests.get(api_url, headers={'User-Agent': UA, 'Referer': json_url}).text
+                api_data = requests.get(
+                    api_url,
+                    headers={'User-Agent': UA, 'Referer': json_url}
+                ).text
                 m = re.search(r'\["([^"]+)', api_data)
                 if not m:
                     return
@@ -878,11 +913,8 @@ class streamer:
                 refer = api_url + '/'
                 origin = '/'.join(api_url.split('/', 3)[:3])
                 return f"{final_url}|User-Agent={UA}&Referer={refer}&Origin={origin}"
-
-            m = re.search(r'https:\\/\\/streams\.center\\/embed\\/ch\d+\.php', page)
-            if m:
-                iframe1 = m.group(0).replace('\\/', '/')
-
+            if source == 'streams':
+                iframe1 = picked_url
                 iframe1_html = requests.get(
                     iframe1,
                     headers={'User-Agent': UA, 'Referer': url}
