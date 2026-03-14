@@ -4,9 +4,9 @@ import re,json,base64,requests
 
 from resources.lib.modules import client
 from resources.lib.modules import control
+from resources.lib.modules import site
 from resources.lib.modules import workers
 from resources.lib.modules import jsunpack
-from resources.lib.modules import cloudscraper
 
 class streamer:
     def dodgycodes(s):
@@ -496,12 +496,9 @@ class streamer:
 
     def tvsportslive(self, url):
         try:
-            scraper = cloudscraper.create_scraper(
-                browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
-            )
-            page_data = scraper.get(url, timeout=10).text
-            s = re.findall('<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)<\/a>', page_data)
-            sort = [(i[0], i[1].replace('&#8211', '').replace(';', '')) for i in s]
+            page_data = client.request(url)
+            s = re.findall('<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)<\/a>',page_data)
+            sort = [(i[0],i[1].replace('&#8211','').replace(';','')) for i in s]
             return sort
         except:
             return
