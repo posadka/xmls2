@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re, json, base64, requests
+import re, json, base64, requests, html
 
 from resources.lib.modules import client
 from resources.lib.modules import control
@@ -63,8 +63,8 @@ class streamer:
 
     def topstreams(self, url):
         try:
-            html = requests.get(url).text
-            games = re.findall(r'<div class="away"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<div class="home"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<a href="([^"]+)', html)
+            page_data = requests.get(url).text
+            games = re.findall(r'<div class="away"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<div class="home"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<a href="([^"]+)', page_data)
             return games
         except:
             return
@@ -74,7 +74,8 @@ class streamer:
             page_data = client.request(url)
             page_data = page_data.split('Teams', 1)[0]
             e = re.findall(r'(?s)<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)<\/span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*<\/span>', page_data)
-            return e
+            sort = [(i[0], i[1], html.unescape(i[2])) for i in e]
+            return sort
         except:
             return
 
@@ -93,7 +94,7 @@ class streamer:
             page_data = page_data.split('Article">', 1)[-1]
             page_data = page_data.split('</div></div>', 1)[0]
             e = re.findall('(?s)data-original="([^"]*).*?href="([^"]*)" title="([^"]*)', page_data)
-            sort = [(i[0], i[1], i[2].replace('#038;', '')) for i in e]
+            sort = [(i[0], i[1], html.unescape(i[2])) for i in e]
             return sort
         except:
             return
@@ -179,7 +180,7 @@ class streamer:
         try:
             page_data = client.request(url)
             s = re.findall('<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)<\/a>', page_data)
-            sort = [(i[0], i[1].replace('&#8211', '').replace(';', '')) for i in s]
+            sort = [(i[0], html.unescape(i[1])) for i in s]
             return sort
         except:
             return
