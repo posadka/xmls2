@@ -854,20 +854,63 @@ class streamer:
     def meth(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            m = re.search(r'const allStreams.*?ue":"([^"]+)', page_data, re.S)
-            json_url = m.group(1).replace('\\', '')
-            json_data = requests.get(json_url, headers={'User-Agent': UA, 'Referer': url}).text
-            m = re.search(r"fetch\('([^']+)", json_data)
-            fetch_path = m.group(1)
-            api_url = 'https://sharkstreams.net/' + fetch_path
-            api_data = requests.get(api_url, headers={'User-Agent': UA, 'Referer': json_url}).text
-            m = re.search(r'\["([^"]+)', api_data)
-            final_url = m.group(1).replace('\\', '')
-            refer = api_url + '/'
-            origin = api_url.split('/', 3)[:3]
-            origin = '/'.join(origin)
-            return f"{final_url}|User-Agent={UA}&Referer={refer}&Origin={origin}"
+            page = client.request(url)
+            def get_iframe_src(data):
+                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
+                if not m:
+                    return None
+                src = m.group(1).strip()
+                return "https:" + src if src.startswith("//") else src
+            m = re.search(r'https:\\/\\/sharkstreams\.net\\/player\.php\?channel=\d+', page)
+            if m:
+                json_url = m.group(0).replace('\\/', '/')
+                json_data = requests.get(json_url, headers={'User-Agent': UA, 'Referer': url}).text
+                m = re.search(r"fetch\('([^']+)", json_data)
+                if not m:
+                    return
+                fetch_path = m.group(1)
+                api_url = 'https://sharkstreams.net/' + fetch_path
+                api_data = requests.get(api_url, headers={'User-Agent': UA, 'Referer': json_url}).text
+                m = re.search(r'\["([^"]+)', api_data)
+                if not m:
+                    return
+                final_url = m.group(1).replace('\\', '')
+                refer = api_url + '/'
+                origin = '/'.join(api_url.split('/', 3)[:3])
+                return f"{final_url}|User-Agent={UA}&Referer={refer}&Origin={origin}"
+
+            m = re.search(r'https:\\/\\/streams\.center\\/embed\\/ch\d+\.php', page)
+            if m:
+                iframe1 = m.group(0).replace('\\/', '/')
+
+                iframe1_html = requests.get(
+                    iframe1,
+                    headers={'User-Agent': UA, 'Referer': url}
+                ).text
+                iframe2 = get_iframe_src(iframe1_html)
+                if not iframe2:
+                    return
+                iframe2_html = requests.get(
+                    iframe2,
+                    headers={"Referer": iframe1, "User-Agent": UA}
+                ).text
+                m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+                if not m:
+                    return
+                token = m.group(1)
+                decrypt_url = "https://streams.center/embed/decrypt.php"
+                hls_url = requests.post(
+                    decrypt_url,
+                    data={"input": token},
+                    headers={
+                        "User-Agent": UA,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Referer": iframe2
+                    },
+                    timeout=10
+                ).text.strip()
+                return f"{hls_url}|Referer=https://streams.center/&User-Agent={UA}"
+            return
         except:
             return
 
