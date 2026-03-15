@@ -110,6 +110,7 @@ class streamer:
             elif 'nfl-video' in url: u = self.nflvideo(url)
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
             elif 'fsportshd' in url: u = self.fsportshd(url)
+            elif 'fsportshdz' in url: u = self.fsportshd(url)
             elif 'methstreams' in url: u = self.meth(url)
             elif 'roxiestreams' in url: u = self.roxie(url)
             elif 'trendy47' in url: u = self.trendy(url)

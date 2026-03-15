@@ -48,6 +48,7 @@ class streamer:
             elif 'streambtw' in url:                   u = self.streambtw(url)
             elif 'fsportshd' in url:                   u = self.fsportshd(url)
             elif 'fsportshd1' in url:                  u = self.fsportshd(url)
+            elif 'fsportshdz' in url:                  u = self.fsportshd(url)
 
             return u
         except:
