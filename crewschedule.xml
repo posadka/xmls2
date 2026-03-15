@@ -50,6 +50,9 @@ class streamer:
             if 'fsportshd' in url:
                 return self.fsportshd(url)
 
+            if 'volokit' in url:
+                return self.volokit(url)
+
         except:
             return
 
@@ -57,13 +60,11 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('Teams', 1)[0]
-
             matches = re.findall(
                 r'<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>',
                 page_data,
                 re.S
             )
-
             return [(i[0], i[1], html.unescape(i[2])) for i in matches]
 
         except:
@@ -91,83 +92,75 @@ class streamer:
     def chaturbate(self, url):
         try:
             page_data = client.request(url)
-
             matches = re.findall(
                 r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)',
                 page_data,
                 re.S
             )
-
             hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
-
             return [
                 ('https://chaturbate.com' + i[0], i[1])
                 for i in matches
                 if any(x in i[1] for x in hosts)
             ]
-
         except:
             return
 
     def hdrez(self, url):
         try:
             u = requests.get(url).text
-
             items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', u)[0]
             items = re.findall(r'"(.+?)"', items)
-
             subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', u)[0])
-
             srp = ''
             for item in items:
                 srp += chr(
                     int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem
                 )
-
             return re.findall(
                 r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',
                 srp,
                 re.S
             )
-
         except:
             return
 
     def tvsportslive(self, url):
         try:
             page_data = client.request(url)
-
             matches = re.findall(
                 r'<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)</a>',
                 page_data
             )
-
             return [(i[0], html.unescape(i[1])) for i in matches]
-
         except:
             return
 
     def fsportshd(self, url):
         try:
             page_data = requests.get(url).text
-
             return re.findall(
                 r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',
                 page_data,
                 re.S
             )
-
         except:
             return
 
     def streambtw(self, url):
         try:
             page_data = requests.get(url).text
-
             return re.findall(
                 r'id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"',
                 page_data
             )
+        except:
+            return
 
+    def volokit(self, url):
+        try:
+            page_data = requests.get(url).text
+            r = re.findall('(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
+            return r
         except:
             return
