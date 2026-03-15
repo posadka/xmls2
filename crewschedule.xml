@@ -1,70 +1,55 @@
 # -*- coding: utf-8 -*-
 
-import re, json, base64, requests, html
+import re, json, base64, requests, time, random, math, xbmcgui,xbmc,html
+try:
+    from Cryptodome.Cipher import AES
+    from Cryptodome.Util import Counter
+except:
+    from Crypto.Cipher import AES
+    from Crypto.Util import Counter
+try:
+    from urllib import urlencode, quote_plus, urlparse, urljoin
+except ImportError:
+    from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
-from resources.lib.modules import client
 from resources.lib.modules import control
+from resources.lib.modules import client
 from resources.lib.modules import site
 from resources.lib.modules import workers
 from resources.lib.modules import jsunpack
+from resources.lib.modules import hunter
+
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'
 
 
 class streamer:
+
     def dodgycodes(s):
-        return re.sub('&#(\d+);', '', s)
+        return re.sub(r'&#(\d+);', '', s)
 
     def resolve(self, url):
         try:
-            if 'buffstreamz.com' in url:               u = self.buff(url)
-            elif '6stream.xyz' in url:                 u = self.sixstream(url)
-            elif 'markkystreams' in url:               u = self.sixstream(url)
-            elif '6streams.tv' in url:                 u = self.sixstream(url)
-            elif 'crackstreams.me' in url:             u = self.crackstreams(url)
-            elif 'methstreams' in url:                 u = self.crackstreams(url)
-            elif 'ertech.work' in url:                 u = self.skuanet(url)
-            elif 'skuanet.us' in url:                  u = self.skuanet(url)
-            elif 'chimxoan.net' in url:                u = self.skuanet(url)
-            elif 'viafb.site/' in url:                 u = self.skuanet(url)
-            elif 'azulitostreams.com' in url:          u = self.azulito(url)
-            elif 'fabtech' in url:                     u = self.azulito(url)
-            elif 'freehdgames' in url:                 u = self.hdstreams(url)
-            elif 'hhdstreams.club' in url:             u = self.hdstreams(url)
-            elif 'uhdstreams.club' in url:             u = self.hdstreams(url)
-            elif 'hdstreamss.club' in url:             u = self.hdstreams(url)
-            elif '123tvsports.com/category/nba-streams' in url: u = self.tvnba(url)
-            elif 'streameast' in url:                  u = self.streameast(url)
-            elif 'istreameast' in url:                 u = self.streameast(url)
-            elif 'topstreams.info' in url:             u = self.topstreams(url)
-            elif 'ovostreams.com' in url:              u = self.ovostreams(url)
-            elif 'ovogoaal' in url:                    u = self.ovostreams(url)
-            elif 'ovogoal' in url:                     u = self.ovostreams(url)
-            elif 'ovo-gola' in url:                    u = self.ovostreams(url)
-            elif 'easy-sport.tv' in url:               u = self.ovostreams(url)
-            elif 'chaturbate.com' in url:              u = self.chaturbate(url)
-            elif 'hdrez' in url:                       u = self.hdrez(url)
-            elif 'sporthaze' in url:                   u = self.hdrez(url)
-            elif 'score808.football' in url:           u = self.score(url)
-            elif 'tvsportslive.fr' in url:             u = self.tvsportslive(url)
-            elif 'streambtw' in url:                   u = self.streambtw(url)
-            elif 'fsportshd' in url:                   u = self.fsportshd(url)
+            if 'crackstreams.me' in url or 'methstreams' in url:
+                return self.crackstreams(url)
 
-            return u
-        except:
-            pass
+            if 'streameast' in url or 'istreameast' in url:
+                return self.streameast(url)
 
-    def tvnba(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)title"><a href="([^"]*)(?:[^>]*)>([^<]*)', page_data)
-            return r
-        except:
-            return
+            if any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']):
+                return self.ovostreams(url)
 
-    def topstreams(self, url):
-        try:
-            page_data = requests.get(url).text
-            games = re.findall(r'<div class="away"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<div class="home"[\s\S]*?<div class="name">\s*([^<]+)[\s\S]*?<a href="([^"]+)', page_data)
-            return games
+            if 'chaturbate.com' in url:
+                return self.chaturbate(url)
+
+            if 'tvsportslive.fr' in url:
+                return self.tvsportslive(url)
+
+            if 'streambtw' in url:
+                return self.streambtw(url)
+
+            if 'fsportshd' in url:
+                return self.fsportshd(url)
+
         except:
             return
 
@@ -72,130 +57,117 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('Teams', 1)[0]
-            e = re.findall(r'(?s)<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)<\/span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*<\/span>', page_data)
-            sort = [(i[0], i[1], html.unescape(i[2])) for i in e]
-            return sort
-        except:
-            return
 
-    def buff(self, url):
-        try:
-            u = client.request(url, headers={'user-agent': 'Mozilla/5.0'})
-            items = re.findall('(?s)<div class="col-sm-8">(?:[^>]*)>(?:[^>]*)>(?:[^>]*)>\s*([^<]*)(?:.*?i>)([^<]*)(?:.*?i>)([^<]*)(?:.*?href)="([^"]*)', u)
-            sort = [(i[0], i[1], i[2], i[3]) for i in items]
-            return sort
-        except:
-            return
+            matches = re.findall(
+                r'<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>',
+                page_data,
+                re.S
+            )
 
-    def sixstream(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('Article">', 1)[-1]
-            page_data = page_data.split('</div></div>', 1)[0]
-            e = re.findall('(?s)data-original="([^"]*).*?href="([^"]*)" title="([^"]*)', page_data)
-            sort = [(i[0], i[1], html.unescape(i[2])) for i in e]
-            return sort
+            return [(i[0], i[1], html.unescape(i[2])) for i in matches]
+
         except:
             return
 
     def crackstreams(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall("(?s)<a href='([^']*)(?:.*?heading'>)([^<]*).*?p>([^<]*)", page_data)
-            return r
-        except:
-            return
-
-    def skuanet(self, url):
-        try:
-            page_data = client.request(url)
-            page_data = page_data.split('home-posts home-right', 1)[0]
-            r = re.findall('(?s)<h2 class="home-post-title">\s*<a href="([^"]*)"\s*>([^<]*)', page_data)
-            return r
-        except:
-            return
-
-    def azulito(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('<h3 class="g1-delta g1-delta-1st entry-title"><a href="([^"]*)(?:[^>]*)>([^<]*)', page_data)
-            return r
-        except:
-            return
-
-    def hdstreams(self, url):
-        try:
-            page_data = client.request(url)
-            r = re.findall('(?s)0; text-decoration: underline;">([^<]*)|(?:>|>\s)(\d+:\d+)(?:.*?n>)([^<]*)(?:[^"]*)"([^"]*)', page_data)
-            return r
+            return re.findall(
+                r"<a href='([^']*)(?:.*?heading'>)([^<]*).*?p>([^<]*)",
+                page_data,
+                re.S
+            )
         except:
             return
 
     def ovostreams(self, url):
         try:
             page_data = client.request(url)
-            e = re.findall("(?s)a href='([^']*).*?ing'>([^<]*)", page_data)
-            sort = [('https://ovogoaal.com' + i[0], i[1]) for i in e]
-            return sort
+            matches = re.findall(r"a href='([^']*).*?ing'>([^<]*)", page_data, re.S)
+            return [('https://ovogoaal.com' + i[0], i[1]) for i in matches]
         except:
             return
 
     def chaturbate(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall('(?s)<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data)
+
+            matches = re.findall(
+                r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)',
+                page_data,
+                re.S
+            )
+
             hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
-            e = []
-            for i in r:
-                if any(x for x in hosts if x in i[1]):
-                    e.append(('https://chaturbate.com' + i[0], i[1]))
-            return e
+
+            return [
+                ('https://chaturbate.com' + i[0], i[1])
+                for i in matches
+                if any(x in i[1] for x in hosts)
+            ]
+
         except:
             return
 
     def hdrez(self, url):
         try:
             u = requests.get(url).text
-            items = re.findall('<script>var.*?=\s*(\[[^;]+)', u)[0]
-            items = re.findall('"(.+?)"', items)
+
+            items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', u)[0]
+            items = re.findall(r'"(.+?)"', items)
+
             subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', u)[0])
+
             srp = ''
             for item in items:
-                srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-            link = re.findall('(?s)kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp)
-            return link
-        except:
-            return
+                srp += chr(
+                    int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem
+                )
 
-    def score(self, url):
-        try:
-            page_data = client.request(url)
-            s = re.findall('(?s)k" href="([^"]*).*?2">([^<]*).*?2">([^<]*)', page_data)
-            return s
+            return re.findall(
+                r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',
+                srp,
+                re.S
+            )
+
         except:
             return
 
     def tvsportslive(self, url):
         try:
             page_data = client.request(url)
-            s = re.findall('<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)<\/a>', page_data)
-            sort = [(i[0], html.unescape(i[1])) for i in s]
-            return sort
+
+            matches = re.findall(
+                r'<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)</a>',
+                page_data
+            )
+
+            return [(i[0], html.unescape(i[1])) for i in matches]
+
         except:
             return
 
     def fsportshd(self, url):
         try:
             page_data = requests.get(url).text
-            s = re.findall('(?s)<div class="media-body">\s*<a\s+href="(?P<href>[^"]+)".*?>.*?<h4[^>]*>\s*(?P<title>[^<]+?)\s*<\/h4>', page_data)
-            return s
+
+            return re.findall(
+                r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',
+                page_data,
+                re.S
+            )
+
         except:
             return
 
     def streambtw(self, url):
         try:
             page_data = requests.get(url).text
-            s = re.findall('id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"', page_data)
-            return s
+
+            return re.findall(
+                r'id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"',
+                page_data
+            )
+
         except:
             return
