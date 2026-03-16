@@ -151,9 +151,7 @@ class streamer:
         try:
             page_data = requests.get(url).text
             return re.findall(
-                r'id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"',
-                page_data
-            )
+                r'id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"', page_data)
         except:
             return
 
