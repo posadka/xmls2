@@ -53,6 +53,9 @@ class streamer:
             if 'volokit' in url:
                 return self.volokit(url)
 
+            if 'streameast.ga' in url:
+                return = self.streameast_ga(url)
+
         except:
             return
 
@@ -158,6 +161,14 @@ class streamer:
         try:
             page_data = requests.get(url).text
             r = re.findall('(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
+            return r
+        except:
+            return
+
+    def streameast_ga(self, url):
+        try:
+            page_data = requests.get(url).text
+            r = re.findall('<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
             return r
         except:
             return
