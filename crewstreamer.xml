@@ -951,7 +951,9 @@ class streamer:
     def roxie(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            headers = {"Referer": "https://roxiestreams.info/","User-Agent": UA,}
+            parsed = urlparse(url)
+            referer = f'{parsed.scheme}://{parsed.netloc}/'
+            headers = {"Referer": referer, "User-Agent": UA}
             page_data = requests.get(url, headers=headers).text
             if not page_data:
                 return
