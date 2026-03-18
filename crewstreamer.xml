@@ -827,7 +827,9 @@ class streamer:
     def fsportshd(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            headers = {"Referer": "https://fsportshdz.club/","User-Agent": UA,}
+            parsed = urlparse(url)
+            referer = f'{parsed.scheme}://{parsed.netloc}/'
+            headers = {"Referer": referer, "User-Agent": UA}
             page_data = requests.get(url, headers=headers).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             fid = m.group(1)

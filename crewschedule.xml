@@ -66,7 +66,6 @@ class streamer:
                 re.S
             )
             return [(i[0], i[1], html.unescape(i[2])) for i in matches]
-
         except:
             return
 
