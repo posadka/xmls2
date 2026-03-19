@@ -171,7 +171,7 @@ class streamer:
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?competition-cell-status">([^<]*)', page_data)
-            return [(re.sub(r'\s+', ' ', re.sub(r'(?i)buffstreams', '', self.dodgycodes(i[0]))).strip(),i[1],i[2])for i in r]
+            r = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"', page_data)
+            return [(re.sub(r'\s+', ' ', re.sub(r'(?i)buffstreams', '', self.dodgycodes(i[0]))).strip(),i[1])for i in r]
         except:
             return
