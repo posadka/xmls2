@@ -54,10 +54,10 @@ class streamer:
                 return self.volokit(url)
 
             if 'streameast.ga' in url:
-                return = self.streameast_ga(url)
+                return self.streameast_ga(url)
 
             if 'buffstreams' in url:
-                return = self.buffstreams(url)
+                return self.buffstreams(url)
 
         except:
             return
