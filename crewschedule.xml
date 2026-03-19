@@ -113,7 +113,7 @@ class streamer:
 
     def hdrez(self, url):
         try:
-            u = requests.get(url).text
+            u = client.request(url)
             items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', u)[0]
             items = re.findall(r'"(.+?)"', items)
             subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', u)[0])
@@ -140,21 +140,21 @@ class streamer:
 
     def fsportshd(self, url):
         try:
-            page_data = requests.get(url).text
+            page_data = client.request(url)
             return re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
         except:
             return
 
     def streambtw(self, url):
         try:
-            page_data = requests.get(url).text
+            page_data = client.request(url)
             return re.findall(r'id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"', page_data)
         except:
             return
 
     def volokit(self, url):
         try:
-            page_data = requests.get(url).text
+            page_data = client.request(url)
             r = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
             return r
         except:
@@ -162,7 +162,7 @@ class streamer:
 
     def streameast_ga(self, url):
         try:
-            page_data = requests.get(url).text
+            page_data = client.request(url)
             r = re.findall(r'<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
             return r
         except:
@@ -170,7 +170,7 @@ class streamer:
 
     def buffstreams(self, url):
         try:
-            page_data = requests.get(url).text
+            page_data = client.request(url)
             r = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?competition-cell-status">([^<]*)', page_data)
             return r
         except:
