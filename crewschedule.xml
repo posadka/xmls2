@@ -56,6 +56,9 @@ class streamer:
             if 'streameast.ga' in url:
                 return = self.streameast_ga(url)
 
+            if 'buffstreams' in url:
+                return = self.buffstreams(url)
+
         except:
             return
 
@@ -130,10 +133,7 @@ class streamer:
     def tvsportslive(self, url):
         try:
             page_data = client.request(url)
-            matches = re.findall(
-                r'<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)</a>',
-                page_data
-            )
+            matches = re.findall(r'<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)</a>',page_data)
             return [(i[0], html.unescape(i[1])) for i in matches]
         except:
             return
@@ -141,26 +141,21 @@ class streamer:
     def fsportshd(self, url):
         try:
             page_data = requests.get(url).text
-            return re.findall(
-                r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',
-                page_data,
-                re.S
-            )
+            return re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
         except:
             return
 
     def streambtw(self, url):
         try:
             page_data = requests.get(url).text
-            return re.findall(
-                r'id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"', page_data)
+            return re.findall(r'id\s+"item_[^"]+"\s+title\s+"([^"]+)"\s+url\s+"([^"]+)"', page_data)
         except:
             return
 
     def volokit(self, url):
         try:
             page_data = requests.get(url).text
-            r = re.findall('(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
+            r = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
             return r
         except:
             return
@@ -168,7 +163,15 @@ class streamer:
     def streameast_ga(self, url):
         try:
             page_data = requests.get(url).text
-            r = re.findall('<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
+            r = re.findall(r'<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
+            return r
+        except:
+            return
+
+    def buffstreams(self, url):
+        try:
+            page_data = requests.get(url).text
+            r = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?competition-cell-status">([^<]*)', page_data)
             return r
         except:
             return
