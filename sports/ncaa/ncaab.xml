@@ -15,14 +15,15 @@
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-    <title>[COLOR orange] [makelist.param2][/COLOR] [COLOR dodgerblue] [makelist.param3][/COLOR]</title>
-  <link>$doregex[makelist2]</link>
-  <thumbnail></thumbnail>
+    <title>[COLOR orange] [makelist.param2][/COLOR] [COLOR dodgerblue] [makelist.param3] ET[/COLOR]</title>
+    <link>$doregex[makelist2]</link>
+    <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re,requests
+    from datetime import datetime, timedelta
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     urls = [
         'https://roxiestreams.info/march-madness',
@@ -36,8 +37,17 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
                 break
         except:
             continue
-    r = re.findall('(?s)<a href="([^"]*)">\s*([^<]*)\n.*?<td>\s*([^<]*)\n', page_data)
-    return r
+    r = re.findall(r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>', page_data)
+    out = []
+    for link, name, timestr in r:
+        try:
+            dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
+            dt = dt + timedelta(hours=3)
+            timestr = dt.strftime("%I:%M %p")
+        except:
+            pass
+        out.append((link, name.strip(), timestr.strip()))
+    return out
 ]]></expres>
 <page></page>
 </regex>
