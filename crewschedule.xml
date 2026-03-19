@@ -172,6 +172,7 @@ class streamer:
         try:
             page_data = client.request(url)
             r = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"', page_data)
+            sort = [(i[0].replace('&','').replace('#','').replace('039','').replace(';','').replace('Buffstreams',''),i[1])for i in r]
             return r
         except:
             return
