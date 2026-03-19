@@ -1179,3 +1179,32 @@ class streamer:
             return stream
         except:
             return
+
+    def buffstreams(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            headers = {
+                "User-Agent": UA,
+                "Referer": url
+            }
+            page_data = requests.get(url, headers=headers).text
+            if not page_data:
+                return
+            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not match:
+                return
+            iframe = match.group(1)
+            if iframe.startswith('//'):
+                iframe = 'https:' + iframe
+            headers["Referer"] = iframe
+            page_data = requests.get(iframe, headers=headers).text
+            if not page_data:
+                return
+            match = re.search(r'atob\([\'"]([^\'"]+)', page_data)
+            if not match:
+                return
+            encoded = match.group(1)
+            decoded = base64.b64decode(encoded).decode('utf-8')
+            return decoded + '|User-Agent=' + UA + '&Referer=https://gooz.aapmains.net/&Origin=https://gooz.aapmains.net' 
+        except:
+            return
