@@ -15,7 +15,7 @@
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param1.replace('Buffstreams ','')][/COLOR]</title>
+        <title>[COLOR orange][makelist.param1][/COLOR]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
