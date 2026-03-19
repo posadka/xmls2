@@ -42,7 +42,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for link, name, timestr in r:
         try:
             dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
-            dt = dt + timedelta(hours=2)
+            dt = dt + timedelta(hours=3)
             timestr = dt.strftime("%I:%M %p")
         except:
             pass
