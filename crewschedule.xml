@@ -66,12 +66,8 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('Teams', 1)[0]
-            matches = re.findall(
-                r'<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>',
-                page_data,
-                re.S
-            )
-            return [(i[0], i[1], html.unescape(i[2])) for i in matches]
+            matches = re.findall(r'<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>',page_data,re.S)
+            return [(i[0], html.unescape(i[1]), html.unescape(i[2])) for i in matches]
         except:
             return
 
