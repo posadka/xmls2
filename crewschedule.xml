@@ -116,8 +116,22 @@ class streamer:
 
     def tvsportslive(self, url):
         try:
-            page_data = client.request(url)
-            matches = re.findall(r'<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)</a>',page_data)
+            headers = {
+                "User-Agent": UA,
+                "Referer": url,
+                "Origin": "https://tvsportslive.fr",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5"
+            }
+            time.sleep(1)
+            page_data = self.scraper.get(url, headers=headers).text
+            if not page_data or "blocked" in page_data.lower():
+                control.log('[tvsportslive] blocked, refreshing scraper')
+                self.scraper = cloudscraper.create_scraper(
+                    browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
+                )
+                page_data = self.scraper.get(url, headers=headers).text
+            matches = re.findall(r'<a[^>]*href="([^"]+)"[^>]*rel="bookmark"[^>]*>(.*?)</a>',page_data,re.S)
             return [(i[0], html.unescape(i[1])) for i in matches]
         except:
             return
