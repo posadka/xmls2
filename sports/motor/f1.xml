@@ -303,6 +303,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
+<plugin>
+    <name>Testings</name>
+    <link>plugin://plugin.video.thecrew/?action=developer</link>
+    <thumbnail></thumbnail>
+</plugin>
+
 <dir
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] DIRECTS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/f1.xml</link>

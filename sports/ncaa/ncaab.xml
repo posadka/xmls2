@@ -369,3 +369,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <page>[makelist.param1]</page>
 </regex>
 </item>
+
+<plugin>
+    <name>Testings</name>
+    <link>plugin://plugin.video.thecrew/?action=developer</link>
+    <thumbnail></thumbnail>
+</plugin>
