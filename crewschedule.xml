@@ -66,7 +66,7 @@ class streamer:
         try:
             page_data = client.request(url)
             page_data = page_data.split('Teams', 1)[0]
-            matches = re.findall(r'<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>',page_data,re.S)
+            matches = re.findall(r'<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>', page_data, re.S)
             return [(i[0], html.unescape(i[1]), html.unescape(i[2])) for i in matches]
         except:
             return
@@ -74,11 +74,7 @@ class streamer:
     def crackstreams(self, url):
         try:
             page_data = client.request(url)
-            return re.findall(
-                r"<a href='([^']*)(?:.*?heading'>)([^<]*).*?p>([^<]*)",
-                page_data,
-                re.S
-            )
+            return re.findall(r"<a href='([^']*)(?:.*?heading'>)([^<]*).*?p>([^<]*)", page_data, re.S)
         except:
             return
 
@@ -93,11 +89,7 @@ class streamer:
     def chaturbate(self, url):
         try:
             page_data = client.request(url)
-            matches = re.findall(
-                r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)',
-                page_data,
-                re.S
-            )
+            matches = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
             hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
             return [
                 ('https://chaturbate.com' + i[0], i[1])
@@ -168,7 +160,7 @@ class streamer:
         try:
             page_data = client.request(url)
             r = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"', page_data)
-            sort = [(i[0].replace('&','').replace('#','').replace('039','').replace(';','').replace('Buffstreams',''),i[1])for i in r]
+            sort = [(html.unescape(i[0]).replace('Buffstreams ', '').strip(),i[1])for i in r]
             return sort
         except:
             return
