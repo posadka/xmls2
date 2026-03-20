@@ -140,7 +140,8 @@ class streamer:
         try:
             page_data = client.request(url)
             r = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
-            return r
+            sort = [(html.unescape(i[0]),i[1])for i in r]
+            return sort
         except:
             return
 
