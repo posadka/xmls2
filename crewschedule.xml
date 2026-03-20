@@ -18,11 +18,15 @@ from resources.lib.modules import site
 from resources.lib.modules import workers
 from resources.lib.modules import jsunpack
 from resources.lib.modules import hunter
+from resources.lib.modules import cloudscraper
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'
 
 
 class streamer:
+    scraper = cloudscraper.create_scraper(
+        browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
+    )
     def resolve(self, url):
         try:
             if 'crackstreams.me' in url or 'methstreams' in url:
@@ -104,13 +108,8 @@ class streamer:
             srp = ''
             for item in items:
                 srp += chr(
-                    int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem
-                )
-            return re.findall(
-                r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',
-                srp,
-                re.S
-            )
+                    int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',srp,re.S)
         except:
             return
 
@@ -139,26 +138,22 @@ class streamer:
     def volokit(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
-            sort = [(html.unescape(i[0]),i[1])for i in r]
-            return sort
+            matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
+            return [(html.unescape(i[0]),i[1])for i in matches]
         except:
             return
 
     def streameast_ga(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall(r'<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
-            return r
+            return re.findall(r'<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
         except:
             return
 
     def buffstreams(self, url):
         try:
-            headers = {"User-Agent": UA}
-            page_data = client.request(url, headers=headers)
-            r = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"', page_data)
-            sort = [(html.unescape(i[0]).replace('Buffstreams ', '').strip(),i[1])for i in r]
-            return sort
+            page_data = self.scraper.get(url).text
+            matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',page_data)
+            return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1])for i in matches]
         except:
             return
