@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re, json, base64, requests, time, random, math, xbmcgui,xbmc
+import re, json, base64, requests, time, random, math, xbmcgui, xbmc, html
 try:
     from Cryptodome.Cipher import AES
     from Cryptodome.Util import Counter
@@ -24,9 +24,6 @@ UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
 
 
 class streamer:
-    def dodgycodes(s):
-        return re.sub('&#(\d+);', '', s)
-
     def resolve(self, url):
         try:
             if 'epicmartial' in url: u = self.epicmartial(url)
