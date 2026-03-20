@@ -33,7 +33,7 @@ class streamer:
             if 'crackstreams.me' in url or 'methstreams' in url:
                 return self.crackstreams(url)
 
-            if 'streameast' in url or 'istreameast' in url:
+            if 'istreameast.app' in url:
                 return self.streameast(url)
 
             if any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']):
