@@ -364,7 +364,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)href="(\/nba[^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
+    r = re.findall('(?s)href="([^"]*)"[^=]*="matches"[^=]*="([^"]*)', page_data)
     r = [(i[0],i[1]) for i in r if 'vs' in i[1]]
     return r
 ]]></expres>
