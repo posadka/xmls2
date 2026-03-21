@@ -100,6 +100,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             timestr = dt.strftime("%I:%M %p")
         except:
             pass
+        name = html.unescape(name)
         out.append((link, name.strip(), timestr.strip()))
     return out
 ]]></expres>
