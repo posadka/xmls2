@@ -833,7 +833,7 @@ class streamer:
             fid = m.group(1)
             api_url = 'https://stellarthread.com/footy.php?player=mobile&live=' + fid
             r = requests.get(api_url, headers=headers).text
-            m = re.search(r'return\s*\(\[([^\]]+)\]\.join\(""\)', r)
+            m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', r)
             array_content = m.group(1)
             chars = re.findall(r'"([^"]+)"', array_content)
             joined = ''.join(chars).replace(r'\/', '/')
