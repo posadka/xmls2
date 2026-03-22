@@ -142,18 +142,17 @@ class streamer:
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
-            matches = re.findall(
-                r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?datetime="([^"]+)".*?status">([^<]*)',
-                page_data
-            )
+            matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?datetime="([^"]+)".*?status">([^<]*)',page_data)
             results = []
             for title, link, dt_str, display_time in matches:
                 try:
-                    dt_utc = datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
-                    dt_local = datetime.fromtimestamp(dt_utc.timestamp())
+                    utc = pytz.utc
+                    local_tz = datetime.now().astimezone().tzinfo
+                    dt_utc = utc.localize(datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S"))
+                    dt_local = dt_utc.astimezone(local_tz)
                     fixed_time = dt_local.strftime("%I:%M %p").lstrip("0")
                 except:
-                    fixed_time = display_time
+                    fixed_time = display_time  # fallback
                 clean_title = html.unescape(title).replace('Buffstreams ', '').strip()
                 results.append((clean_title, link, fixed_time))
             return results
