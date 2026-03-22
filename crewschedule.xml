@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re, json, base64, requests, time, random, math, xbmcgui, xbmc, html
+import re, json, base64, requests, time, random, math, xbmcgui, xbmc, html, pytz
 try:
     from Cryptodome.Cipher import AES
     from Cryptodome.Util import Counter
@@ -12,6 +12,7 @@ try:
 except ImportError:
     from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
+from datetime import datetime
 from resources.lib.modules import control
 from resources.lib.modules import client
 from resources.lib.modules import site
@@ -141,7 +142,19 @@ class streamer:
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
-            matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',page_data)
-            return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1])for i in matches]
+            matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?datetime="([^"]+)".*?status">([^<]*)',page_data)
+            results = []
+            for title, link, dt_str, display_time in matches:
+                try:
+                    utc = pytz.utc
+                    local_tz = datetime.now().astimezone().tzinfo
+                    dt_utc = utc.localize(datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S"))
+                    dt_local = dt_utc.astimezone(local_tz)
+                    fixed_time = dt_local.strftime("%I:%M %p").lstrip("0")
+                except:
+                    fixed_time = display_time  # fallback
+                clean_title = html.unescape(title).replace('Buffstreams ', '').strip()
+                results.append((clean_title, link, fixed_time))
+            return results
         except:
             return
