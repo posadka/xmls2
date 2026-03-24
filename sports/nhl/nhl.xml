@@ -23,10 +23,41 @@
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    import re
+    import re,requests,html
+    from datetime import datetime, timedelta
+
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<a href="([^"]*)">\s*([^<]*)', page_data)
-    return r
+    urls = [
+        'https://roxiestreams.info/nhl',
+        'https://roxiestreams.su/nhl'
+    ]
+    page_data = ''
+    for u in urls:
+        try:
+            resp = requests.get(u, timeout=3)
+            page_data = resp.text
+            check = page_data.lower()
+            if any(x in check for x in (
+                'cloudflare','just a moment','attention required',
+                '/cdn-cgi/','cf-browser-verification'
+            )):
+                continue
+            if '<a href=' in page_data:
+                break
+        except:
+            continue
+    r = re.findall(r'(?s)<a href="([^"]+)">\s*([^<]+)<\/a>.*?<td>\s*([^<]+)<\/td>',page_data)
+    out = []
+    for link, name, timestr in r:
+        try:
+            dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
+            dt = dt + timedelta(hours=3)
+            timestr = dt.strftime("%B %d, %Y %I:%M %p")
+        except:
+            pass
+        name = html.unescape(name)
+        out.append((link, name.strip(), timestr.strip()))
+    return out
 ]]></expres>
 <page>https://roxiestreams.info/nhl</page>
 </regex>
