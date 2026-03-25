@@ -25,37 +25,23 @@ UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
 class streamer:
 
     def resolve(self, url):
+        routes = [
+            (['crackstreams.me', 'methstreams'], self.crackstreams),
+            (['istreameast.app'], self.streameast),
+            (['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola'], self.ovostreams),
+            (['chaturbate.com'], self.chaturbate),
+            (['tvsportslive.fr'], self.tvsportslive),
+            (['streambtw'], self.streambtw),
+            (['fsportshd'], self.fsportshd),
+            (['volokit'], self.volokit),
+            (['streameast.ga'], self.streameast_ga),
+            (['buffstreams'], self.buffstreams),
+        ]
+
         try:
-            if 'crackstreams.me' in url or 'methstreams' in url:
-                return self.crackstreams(url)
-
-            if 'istreameast.app' in url:
-                return self.streameast(url)
-
-            if any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']):
-                return self.ovostreams(url)
-
-            if 'chaturbate.com' in url:
-                return self.chaturbate(url)
-
-            if 'tvsportslive.fr' in url:
-                return self.tvsportslive(url)
-
-            if 'streambtw' in url:
-                return self.streambtw(url)
-
-            if 'fsportshd' in url:
-                return self.fsportshd(url)
-
-            if 'volokit' in url:
-                return self.volokit(url)
-
-            if 'streameast.ga' in url:
-                return self.streameast_ga(url)
-
-            if 'buffstreams' in url:
-                return self.buffstreams(url)
-
+            for domains, handler in routes:
+                if any(x in url for x in domains):
+                    return handler(url)
         except:
             return
 
@@ -105,14 +91,14 @@ class streamer:
             for item in items:
                 srp += chr(
                     int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',srp,re.S)
+            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp, re.S)
         except:
             return
 
     def fsportshd(self, url):
         try:
             page_data = client.request(url)
-            return re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
+            return re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>', page_data, re.S)
         except:
             return
 
@@ -127,7 +113,7 @@ class streamer:
         try:
             page_data = client.request(url)
             matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
-            return [(html.unescape(i[0]),i[1])for i in matches]
+            return [(html.unescape(i[0]), i[1]) for i in matches]
         except:
             return
 
@@ -141,7 +127,7 @@ class streamer:
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
-            matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',page_data)
-            return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1])for i in matches]
+            matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"', page_data)
+            return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1]) for i in matches]
         except:
             return
