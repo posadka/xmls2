@@ -24,95 +24,67 @@ UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
 
 class streamer:
 
-    def _bad_page(self, data):
-        if not data:
-            return True
-        d = data.lower()
-        return any(x in d for x in (
-            'cloudflare',
-            'just a moment',
-            'attention required',
-            '/cdn-cgi/',
-            'cf-browser-verification'
-        ))
-
     def resolve(self, url):
         try:
-            url = url.lower()
-
             if 'crackstreams.me' in url or 'methstreams' in url:
                 return self.crackstreams(url)
 
-            elif 'istreameast.app' in url:
+            if 'istreameast.app' in url:
                 return self.streameast(url)
 
-            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']):
+            if any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']):
                 return self.ovostreams(url)
 
-            elif 'chaturbate.com' in url:
+            if 'chaturbate.com' in url:
                 return self.chaturbate(url)
 
-            elif 'tvsportslive.fr' in url:
+            if 'tvsportslive.fr' in url:
                 return self.tvsportslive(url)
 
-            elif 'streambtw' in url:
+            if 'streambtw' in url:
                 return self.streambtw(url)
 
-            elif 'fsportshd' in url:
+            if 'fsportshd' in url:
                 return self.fsportshd(url)
 
-            elif 'volokit' in url:
+            if 'volokit' in url:
                 return self.volokit(url)
 
-            elif 'streameast.ga' in url:
+            if 'streameast.ga' in url:
                 return self.streameast_ga(url)
 
-            elif 'buffstreams' in url:
+            if 'buffstreams' in url:
                 return self.buffstreams(url)
 
         except:
-        return []
+            return
 
     def streameast(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
-            matches = re.findall(
-                r'(?s)<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?'
-                r'<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?'
-                r'<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>',
-                page_data
-            )
+            matches = re.findall(r'(?s)<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>', page_data, re.S)
             return [(i[0], html.unescape(i[1]), html.unescape(i[2])) for i in matches]
         except:
-            return []
+            return
 
     def crackstreams(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
-            return re.findall(r"<a href='([^']*)(?:.*?heading'>)([^<]*).*?p>([^<]*)",page_data, re.S)
+            return re.findall(r"<a href='([^']*)(?:.*?heading'>)([^<]*).*?p>([^<]*)", page_data, re.S)
         except:
-            return []
+            return
 
     def ovostreams(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
             matches = re.findall(r"a href='([^']*).*?ing'>([^<]*)", page_data, re.S)
-            base = urlparse(url).scheme + "://" + urlparse(url).netloc
-            return [(base + i[0], i[1]) for i in matches]
+            return [('https://ovogoaal.com' + i[0], i[1]) for i in matches]
         except:
-            return []
+            return
 
     def chaturbate(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
             matches = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
             hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
             return [
@@ -121,76 +93,55 @@ class streamer:
                 if any(x in i[1] for x in hosts)
             ]
         except:
-            return []
+            return
 
     def hdrez(self, url):
         try:
             u = client.request(url)
-            if self._bad_page(u):
-                return []
-            items_match = re.findall(r'<script>var.*?=\s*(\[[^;]+)', u)
-            sub_match = re.findall(r'\(atob.+?-\s*(\d+)', u)
-            if not items_match or not sub_match:
-                return []
-            items = re.findall(r'"(.+?)"', items_match[0])
-            subitem = int(sub_match[0])
+            items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', u)[0]
+            items = re.findall(r'"(.+?)"', items)
+            subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', u)[0])
             srp = ''
             for item in items:
-                decoded = base64.b64decode(item).decode('utf-8')
-                num = int(re.sub(r'[^\d]', '', decoded))
-                srp += chr(num - subitem)
-            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',srp, re.S)
-        except :
-            return []
+                srp += chr(
+                    int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',srp,re.S)
+        except:
+            return
 
     def fsportshd(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
-            return re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data, re.S)
-        except :
-            return []
+            return re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
+        except:
+            return
 
     def streambtw(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
-            return re.findall(r'id":"item.*?title":"([^"]*)".*?url":"([^"]*)',page_data, re.S)
+            return re.findall(r'(?s)id":"item.*?title":"([^"]*)".*?:"([^"]*)', page_data)
         except:
-            return []
+            return
 
     def volokit(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
-            matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)',page_data)
-            return [(html.unescape(i[0]), i[1]) for i in matches]
+            matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
+            return [(html.unescape(i[0]),i[1])for i in matches]
         except:
-            return []
+            return
 
     def streameast_ga(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
-            return re.findall(
-                r'<a href="([^"]+)"\s*class="uefa-card[\s\S]*?'
-                r'<span class="uefa-name">\s*([^<]+?)\s*</span>[\s\S]*?'
-                r'<span class="uefa-name">\s*([^<]+?)\s*</span>',
-                page_data
-            )
+            return re.findall(r'<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
         except:
-            return []
+            return
 
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
-            if self._bad_page(page_data):
-                return []
             matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',page_data)
             return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1])for i in matches]
         except:
-            return []
+            return
