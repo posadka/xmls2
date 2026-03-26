@@ -18,6 +18,7 @@ from resources.lib.modules import site
 from resources.lib.modules import workers
 from resources.lib.modules import jsunpack
 from resources.lib.modules import hunter
+from datetime import datetime, timedelta
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'
 
@@ -125,5 +126,24 @@ class streamer:
             page_data = client.request(url)
             matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',page_data)
             return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1])for i in matches]
+        except:
+            return
+
+    def roxiestreams(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall(
+                r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>', page_data)
+            out = []
+            for link, name, timestr in r:
+                try:
+                    dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
+                    dt = dt + timedelta(hours=3)
+                    timestr = dt.strftime("%B %d, %Y %I:%M %p")
+                except:
+                    pass
+                name = html.unescape(name)
+                out.append((link, name.strip(), timestr.strip()))
+            return out
         except:
             return
