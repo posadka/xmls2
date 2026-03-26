@@ -26,38 +26,20 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if 'crackstreams.me' in url or 'methstreams' in url:
-                return self.crackstreams(url)
+            if 'crackstreams.me' in url or 'methstreams' in url: u = self.crackstreams(url)
+            elif 'istreameast.app' in url: u = self.streameast(url)
+            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']): u = self.ovostreams(url)
+            elif 'chaturbate.com' in url: u = self.chaturbate(url)
+            elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
+            elif 'streambtw' in url: u = self.streambtw(url)
+            elif 'fsportshd' in url: u = self.fsportshd(url)
+            elif 'volokit' in url: u = self.volokit(url)
+            elif 'streameast.ga' in url: u = self.streameast_ga(url)
+            elif 'buffstreams' in url: u = self.buffstreams(url)
 
-            if 'istreameast.app' in url:
-                return self.streameast(url)
-
-            if any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']):
-                return self.ovostreams(url)
-
-            if 'chaturbate.com' in url:
-                return self.chaturbate(url)
-
-            if 'tvsportslive.fr' in url:
-                return self.tvsportslive(url)
-
-            if 'streambtw' in url:
-                return self.streambtw(url)
-
-            if 'fsportshd' in url:
-                return self.fsportshd(url)
-
-            if 'volokit' in url:
-                return self.volokit(url)
-
-            if 'streameast.ga' in url:
-                return self.streameast_ga(url)
-
-            if 'buffstreams' in url:
-                return self.buffstreams(url)
-
+            return u
         except:
-            return
+            pass
 
     def streameast(self, url):
         try:
