@@ -116,7 +116,7 @@ class streamer:
 
     def streameast_ga(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url).text
             return re.findall(r'<a href="([^"]+)"\s*class="uefa-card[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]*?<span class="uefa-name">\s*([^<]+?)\s*<\/span>[\s\S]', page_data)
         except:
             return
