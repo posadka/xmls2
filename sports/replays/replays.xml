@@ -363,7 +363,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     u = []
     for i in range(1,15): u += [url + str(i)]
     u = page().run(u)
-    items = re.findall('(?s)<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
+    items = re.findall(r'(?s)<div class="poster">\s*<a href="([^"]+)"><img src="([^"]+)"[^>]*></a>.*?<h3><a href="[^"]+">([^<]+)</a>', u)
     sort = [('https://basketball-video.com'+i[0],i[1],i[2]) for i in items]
     return sort
 ]]></expres>
