@@ -990,7 +990,7 @@ class streamer:
             u = urlparse(url)
             origin = f'{u.scheme}://{u.netloc}'
             return (
-                stream_url
+                origin + stream_url
                 + '|User-Agent=' + UA
                 + '&Referer=' + url
                 + '&Origin=' + origin
