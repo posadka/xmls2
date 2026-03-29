@@ -957,11 +957,10 @@ class streamer:
                 return
             if 'getRandomStream' in page_data:
                 pattern = r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)"
+                domain = re.findall('fetch\(\'([^\']*)'', page_data)
                 stream_calls = set(re.findall(pattern, page_data))
-                if not stream_calls:
-                    return
                 try:
-                    domain_text = client.request(f'{referer}domains.txt')
+                    domain_text = client.request(f'{referer}{domain}')
                     domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
                 except:
                     domains = ['shadow-ran.online']
@@ -990,7 +989,7 @@ class streamer:
             u = urlparse(url)
             origin = f'{u.scheme}://{u.netloc}'
             return (
-                origin + stream_url
+                stream_url
                 + '|User-Agent=' + UA
                 + '&Referer=' + url
                 + '&Origin=' + origin
