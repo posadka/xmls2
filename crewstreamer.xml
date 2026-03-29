@@ -957,7 +957,7 @@ class streamer:
                 return
             if 'getRandomStream' in page_data:
                 pattern = r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)"
-                domain = re.findall('fetch\(\'([^\']*)'', page_data)
+                domain = re.findall("fetch\(\'([^\']*)", page_data)
                 stream_calls = set(re.findall(pattern, page_data))
                 try:
                     domain_text = client.request(f'{referer}{domain}')
