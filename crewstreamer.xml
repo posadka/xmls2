@@ -951,33 +951,37 @@ class streamer:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             parsed = urlparse(url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
+            origin = f'{parsed.scheme}://{parsed.netloc}'
             headers = {"Referer": referer, "User-Agent": UA}
             page_data = requests.get(url, headers=headers).text
             if not page_data:
                 return
+            m3u8_list = []
             if 'getRandomStream' in page_data:
                 pattern = r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)"
-                domain = re.findall("fetch\(\'([^\']*)", page_data)
                 stream_calls = set(re.findall(pattern, page_data))
+                fetch_match = re.search(r"fetch\('([^']+)", page_data)
+                domain_path = fetch_match.group(1) if fetch_match else None
                 try:
-                    domain_text = client.request(f'{referer}{domain}')
-                    domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
+                    if domain_path:
+                        domain_url = urljoin(referer, domain_path)
+                        domain_text = client.request(domain_url)
+                        domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
+                    else:
+                        raise Exception()
                 except:
                     domains = ['shadow-ran.online']
-                m3u8_list = []
                 for stream_path, subdomain in stream_calls:
-                    domain = random.choice(domains)
-                    m3u8_list.append(f'https://{subdomain}.{domain}/{stream_path}')
-                if not m3u8_list:
-                    return
-            else:
-                m3u8_list = re.findall(
-                    r'https?://[^\s\'"]+\.m3u8',
-                    page_data,
-                    re.DOTALL
-                )
-                if not m3u8_list:
-                    return
+                    d = random.choice(domains)
+                    m3u8_list.append(f'https://{subdomain}.{d}/{stream_path}')
+            clappr_streams = re.findall(r"showPlayer\(\s*['\"]clappr['\"]\s*,\s*['\"]([^'\"]+\.m3u8)['\"]", page_data)
+            if clappr_streams:
+                m3u8_list.extend(clappr_streams)
+            if not m3u8_list:
+                m3u8_list = re.findall(r'https?://[^\s\'"]+\.m3u8',page_data,re.DOTALL)
+            m3u8_list = list(dict.fromkeys(m3u8_list))
+            if not m3u8_list:
+                return
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
@@ -986,15 +990,12 @@ class streamer:
                 if choice == -1:
                     return
                 stream_url = m3u8_list[choice]
-            u = urlparse(url)
-            origin = f'{u.scheme}://{u.netloc}'
-            return (
-                stream_url
-                + '|User-Agent=' + UA
-                + '&Referer=' + url
-                + '&Origin=' + origin
-            )
-        except:
+            header_options = [
+                f'|User-Agent={UA}&Referer={referer}&Origin={origin}',
+                f'|User-Agent={UA}&Referer={referer}'
+            ]
+            return stream_url + header_options[0]
+        except Exception:
             return
 
     def streameast_ga(self, url):
