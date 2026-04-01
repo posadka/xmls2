@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re, json, base64, requests, time, random, math, xbmcgui, xbmc, html
-try:
-    from Cryptodome.Cipher import AES
-    from Cryptodome.Util import Counter
-except:
-    from Crypto.Cipher import AES
-    from Crypto.Util import Counter
-try:
-    from urllib import urlencode, quote_plus, urlparse, urljoin
-except ImportError:
-    from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
+from Crypto.Cipher import AES
+from Crypto.Util import Counter
+from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 from resources.lib.modules import control
 from resources.lib.modules import client
 from resources.lib.modules import site
@@ -20,7 +13,7 @@ from resources.lib.modules import jsunpack
 from resources.lib.modules import hunter
 from datetime import datetime, timedelta
 
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
 
 class streamer:
