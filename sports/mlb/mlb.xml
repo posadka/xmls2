@@ -199,7 +199,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
     import re, requests, html
-    from datetime import datetime
+    from datetime import datetime, timedelta
     from urllib.parse import urljoin
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     urls = [
