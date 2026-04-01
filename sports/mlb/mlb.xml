@@ -357,12 +357,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from urllib.parse import urljoin
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
     r = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
     results = []
     for href, team1, team2 in r:
-        full_url = urljoin(url, href)
+        full_url = urljoin(base, href)
         results.append((full_url, team1.strip(), team2.strip()))
-
     return results
 ]]></expres>
 <page>https://streameast.gl/mlb</page>
