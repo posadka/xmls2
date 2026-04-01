@@ -357,7 +357,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from urllib.parse import urljoin
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    base = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
+    base = f"{urlparse(page_data).scheme}://{urlparse(page_data).netloc}"
     r = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
     results = []
     for href, team1, team2 in r:
