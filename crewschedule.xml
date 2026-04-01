@@ -20,7 +20,7 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if 'methstreams.ms' in url: u = self.methstreams(url)
+            if 'crackstreams.me' in url or 'methstreams' in url: u = self.crackstreams(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']): u = self.ovostreams(url)
             elif 'chaturbate.com' in url: u = self.chaturbate(url)
@@ -44,18 +44,10 @@ class streamer:
         except:
             return
 
-    def methstreams(self, url):
+    def crackstreams(self, url):
         try:
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            r = re.findall(r'(?s)<a class="card" href="([^"]*).*?title">([^<]*)',page_data)
-            results = []
-            for href, teams in r:
-                full_url = urljoin(base, href)
-                teams = html.unescape(teams).strip()
-                results.append((full_url, teams))
-            return results
+            return re.findall(r"<a href='([^']*)(?:.*?heading'>)([^<]*).*?p>([^<]*)", page_data, re.S)
         except:
             return
 
