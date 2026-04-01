@@ -257,8 +257,26 @@ class streamer:
             page_html = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             m = re.search(r'(?is)iframe\s+class="embed-responsive-item"\s+src="([^"]+)"', page_html)
             iframe_url = m.group(1)
-            iframe_html = requests.get(iframe_url,headers={'Referer': iframe_url, 'User-Agent': UA},timeout=10).text
-            m = re.search(r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^)]+)\)',iframe_html)
+            if iframe_url.startswith('//'):
+                iframe_url = 'https:' + iframe_url
+            parsed = urlparse(iframe_url)
+            referer = f"{parsed.scheme}://{parsed.netloc}/"
+            origin = f"{parsed.scheme}://{parsed.netloc}"
+            iframe_html = requests.get(
+                iframe_url,
+                headers={
+                    'Referer': referer,
+                    'Origin': origin,
+                    'User-Agent': UA
+                },
+                timeout=10
+            ).text
+            m = re.search(
+                r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^)]+)\)',
+                iframe_html
+            )
+            if not m:
+                return
             arg0 = m.group(1)
             arg1 = int(m.group(2))
             arg2 = m.group(3)
@@ -266,16 +284,18 @@ class streamer:
             arg4 = int(m.group(5))
             arg5 = int(m.group(6))
             t = hunter.hunter(arg0, arg1, arg2, arg3, arg4, arg5)
-            m = re.search(r'streamSrc =\s*"([^"]*)', t)
+            m = re.search(r'streamSrc\s*=\s*"([^"]+)', t)
+            if not m:
+                return
             src = m.group(1).replace('\\', '')
             return (
                 f"{src}"
-                f"|Referer=https://givemereddit.zip/"
-                f"&Origin=https://givemereddit.zip"
+                f"|Referer={referer}"
+                f"&Origin={origin}"
                 f"&User-Agent={UA}"
                 f"&Accept=application/x-mpegURL,*/*"
             )
-        except Exception:
+        except Exception as e:
             return
 
     def streameast(self, url):

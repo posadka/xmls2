@@ -722,27 +722,51 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,cache,workers,control
+def GetLSProData(page_data, Cookie_Jar, m, url=''):
+    from resources.lib.modules import client, workers, control
     import re
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    class page:
-        def run(self, r):
-            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
-            for i in r: threads.append(workers.Thread(self.request, i))
-            [i.start() for i in threads] ; [i.join() for i in threads]
-            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
-        def request(self, i):
-            self.r += [(i[0], str(client.request(i[1])))]
+    if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
     def unescape(s):
-        return re.sub('&#(\d+);', '', s)    
-        
-    u = []
-    for i in range(1, 10): u += ['https://watchprowrestlings.live/categorys/wwe/page/' + str(i)]
-    u = page().run(u)
-    u = re.findall('(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)', u)
-    u = [(i[0], i[1], unescape(i[2].replace('&hellip',''))) for i in u if 'watchprowrestling' in i[1]]
-    return u
+        return re.sub(r'&#(\d+);', '', s)
+    class PageFetcher:
+        def __init__(self):
+            self.results = []
+        def fetch(self, urls):
+            threads = []
+            indexed = [(idx, u) for idx, u in enumerate(urls)]
+            for item in indexed:
+                t = workers.Thread(self._request, item)
+                threads.append(t)
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+            return ''.join(
+                str(x[1]) for x in sorted(self.results, key=lambda x: x[0])
+            )
+        def _request(self, item):
+            idx, url = item
+            try:
+                data = client.request(url)
+            except:
+                data = ''
+            self.results.append((idx, data))
+    urls = [
+        f'https://watchprowrestlings.live/categorys/wwe/page/{i}'
+        for i in range(1, 10)
+    ]
+    page_data = PageFetcher().fetch(urls)
+    matches = re.findall(
+        r'(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)',
+        page_data
+    )
+    results = []
+    for link, img, title in matches:
+        if 'watchprowrestling' not in img:
+            continue
+        title = unescape(title.replace('&hellip', ''))
+        results.append((link, img, title))
+    return results
 ]]></expres>
 <page></page>
 </regex>
@@ -755,12 +779,21 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import site
+    from resources.lib.modules import client
     import re
-    main = site.request('[makelist.param1]')
-    r = re.findall('(?s)align-left\'>([^<]*).*?href=\'([^\']*)',main)
-    sort = [(i[0], i[1]) for i in r if 'ydrive.xyz' not in i[0] if 'issuessolution.site' not in i[0]]
-    return sort
+    page_data = client.request('[makelist.param1]')
+    matches = re.findall(r'<a[^>]+href="([^"]+)"[^>]*>\s*([^<]*?(?:APK|OK\.?\s*RU)[^<]*)</a>',page_data,re.I)
+    results = []
+    for link, label in matches:
+        label = label.strip().upper()
+        if 'APK' in label:
+            name = 'DROP APK'
+        elif 'OK' in label:
+            name = 'OK.RU'
+        else:
+            continue
+        results.append((name, link))
+    return results
 ]]></expres>
 <page></page>
 </regex>
