@@ -354,10 +354,16 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
+    from urllib.parse import urljoin
     import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)', page_data)
-    return r
+    r = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
+    results = []
+    for href, team1, team2 in r:
+        full_url = urljoin(url, href)
+        results.append((full_url, team1.strip(), team2.strip()))
+
+    return results
 ]]></expres>
 <page>https://streameast.gl/mlb</page>
 </regex>
@@ -372,7 +378,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://streameast.gl[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
