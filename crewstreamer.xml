@@ -262,15 +262,7 @@ class streamer:
             parsed = urlparse(iframe_url)
             referer = f"{parsed.scheme}://{parsed.netloc}/"
             origin = f"{parsed.scheme}://{parsed.netloc}"
-            iframe_html = requests.get(
-                iframe_url,
-                headers={
-                    'Referer': referer,
-                    'Origin': origin,
-                    'User-Agent': UA
-                },
-                timeout=10
-            ).text
+            iframe_html = requests.get(iframe_url,headers={'Referer': referer,'Origin': origin,'User-Agent': UA},timeout=10).text
             m = re.search(
                 r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^)]+)\)',
                 iframe_html
@@ -284,7 +276,7 @@ class streamer:
             arg4 = int(m.group(5))
             arg5 = int(m.group(6))
             t = hunter.hunter(arg0, arg1, arg2, arg3, arg4, arg5)
-            m = re.search(r'streamSrc\s*=\s*"([^"]+)', t)
+            m = re.search(r'src:\s*"([^"]+\.m3u8)"', t)
             if not m:
                 return
             src = m.group(1).replace('\\', '')
