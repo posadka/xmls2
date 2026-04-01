@@ -645,10 +645,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<a class="card" href="([^"]*).*?le">([^<]*)', page_data)
-    return r
+    url = client.schedule('https://methstreams.ms/league/mlbstreams')
+    return url
 ]]></expres>
 <page>https://methstreams.ms/league/mlbstreams</page>
 </regex>
