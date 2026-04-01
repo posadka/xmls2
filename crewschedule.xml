@@ -47,7 +47,15 @@ class streamer:
     def methstreams(self, url):
         try:
             page_data = client.request(url)
-            return = re.findall('(?s)<a class="card" href="([^"]*).*?le">([^<]*)', page_data)
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            r = re.findall('(?s)<a class="card" href="([^"]*).*?le">([^<]*)', page_data)
+            results = []
+            for href, teams in r:
+                full_url = urljoin(base, href)
+                teams = html.unescape(teams)
+                results.append((full_url, teams.strip()))
+            return results
         except:
             return
 

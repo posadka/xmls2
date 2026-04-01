@@ -114,10 +114,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s)<a class="card" href="([^"]*).*?le">([^<]*)', page_data)
-    return r
+    url = client.schedule('https://methstreams.ms/league/wwestreams')
+    return url
 ]]></expres>
 <page>https://methstreams.ms/league/wwestreams</page>
 </regex>
@@ -132,7 +131,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://methstreams.ms[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
