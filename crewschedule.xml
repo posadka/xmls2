@@ -49,7 +49,7 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            r = re.findall(r'(?s)<a class="card" href="([^"]*).*?le">([^<]*)',page_data)
+            r = re.findall(r'(?s)<a class="card" href="([^"]*).*?title">([^<]*)',page_data)
             results = []
             for href, teams in r:
                 full_url = urljoin(base, href)
