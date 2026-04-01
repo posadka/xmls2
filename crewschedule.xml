@@ -37,6 +37,7 @@ class streamer:
             elif 'volokit' in url: u = self.volokit(url)
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
             elif 'buffstreams' in url: u = self.buffstreams(url)
+            elif 'streameast.gl' in url: u = self.givemereddit(url)
 
             return u
         except:
@@ -145,5 +146,21 @@ class streamer:
                 name = html.unescape(name)
                 out.append((link, name.strip(), timestr.strip()))
             return out
+        except:
+            return
+
+    def givemereddit(self, url):
+        try:
+            page_data = client.request(url)
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            r = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
+            results = []
+            for href, team1, team2 in r:
+                full_url = urljoin(base, href)
+                team1 = html.unescape(team1)
+                team2 = html.unescape(team2)
+                results.append((full_url, team1.strip(), team2.strip()))
+            return results
         except:
             return
