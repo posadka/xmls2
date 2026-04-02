@@ -113,6 +113,7 @@ class streamer:
             elif 'embedsports.top' in url: u = self.embedsports(url)
             elif 'streambtw' in url: u = self.streambtw(url)
             elif 'buffstreams' in url: u = self.buffstreams(url)
+            elif 'shd247' in url: u = self.shd(url)
             else: u = self.generic(url)
 
             return u
@@ -1216,5 +1217,47 @@ class streamer:
             encoded = match.group(1)
             decoded = base64.b64decode(encoded).decode('utf-8')
             return decoded + '|User-Agent=' + UA + '&Referer=https://gooz.aapmains.net/&Origin=https://gooz.aapmains.net' 
+        except:
+            return
+
+    def shd(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            parsed = urlparse(url)
+            referer = f'{parsed.scheme}://{parsed.netloc}/'
+            headers = {"Referer": referer, "User-Agent": UA}
+            page_data = client.request(url, headers=headers)
+            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not match:
+                return
+            iframe = match.group(1)
+            iframe = urljoin(referer, iframe)
+            page_data = requests.get(iframe, headers=headers).text
+            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not match:
+                return
+            iframe = match.group(1)
+            if iframe.startswith('//'):
+                iframe = 'https:' + iframe
+            if not iframe.startswith('http'):
+                iframe = urljoin(referer, iframe)
+            parsed = urlparse(iframe)
+            referer = f'{parsed.scheme}://{parsed.netloc}/'
+            origin = f'{parsed.scheme}://{parsed.netloc}'
+            headers = {"Referer": referer, "Origin": origin, "User-Agent": UA}
+            page_data = requests.get(iframe, headers=headers).text
+            if not page_data:
+                return
+            match = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
+            if not match:
+                return
+            link = match.group(1)
+            return (
+                f"{link}"
+                f"|Referer={referer}"
+                f"&Origin={origin}"
+                f"&User-Agent={UA}"
+                f"&Accept=application/x-mpegURL,*/*"
+            )
         except:
             return
