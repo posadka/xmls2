@@ -20,7 +20,7 @@ from resources.lib.modules import jsunpack
 from resources.lib.modules import hunter
 from datetime import datetime, timedelta
 
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
 
 class streamer:
@@ -38,6 +38,7 @@ class streamer:
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
             elif 'buffstreams' in url: u = self.buffstreams(url)
             elif 'streameast.gl' in url: u = self.givemereddit(url)
+            elif 'methstreams.ms' in url: u = self.methstreams(url)
 
             return u
         except:
