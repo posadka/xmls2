@@ -171,12 +171,12 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            r = re.findall(r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)', page_data)
+            r = re.findall(r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)', page_data)
             results = []
-            for href, teams in r:
+            for href, teams, time in r:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
-                results.append((full_url, teams))
+                results.append((full_url, teams, time.strip()))
             return results
         except:
             return
