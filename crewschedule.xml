@@ -119,8 +119,6 @@ class streamer:
     def streameast_ga(self, url):
         try:
             page_data = requests.get(url).text
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
             r = re.findall(
                 r'(?s)<a href="([^"]+)"\s*class="uefa-card[^>]*data-time="(\d+)".*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
@@ -130,7 +128,6 @@ class streamer:
             results = []
             now = datetime.now().date()
             for href, ts, team1, team2 in r:
-                full_url = urljoin(base, href)
                 dt = datetime.fromtimestamp(int(ts))
                 event_date = dt.date()
                 if event_date == now:
@@ -140,7 +137,7 @@ class streamer:
                 else:
                     label = dt.strftime('%m-%d')
                 time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
-                results.append((full_url, team1.strip(), team2.strip(), time_str))
+                results.append((href, team1.strip(), team2.strip(), time_str))
             return results
         except:
             return
