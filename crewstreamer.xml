@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import re, json, base64, requests, time, random, math, xbmcgui, xbmc, html
+try:
+    from Cryptodome.Cipher import AES
+    from Cryptodome.Util import Counter
+except:
+    from Crypto.Cipher import AES
+    from Crypto.Util import Counter
+try:
+    from urllib import urlencode, quote_plus, urlparse, urljoin
+except ImportError:
+    from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
-from Crypto.Cipher import AES
-from Crypto.Util import Counter
-from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 from resources.lib.modules import control
 from resources.lib.modules import client
 from resources.lib.modules import site

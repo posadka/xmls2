@@ -354,9 +354,17 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
+    from urllib.parse import urljoin,urlparse
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://streameast.gl/mlb')
-    return url
+    parsed = urlparse(url)
+    base = f'{parsed.scheme}://{parsed.netloc}'
+    r = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
+    results = []
+    for href, team1, team2 in r:
+        full_url = urljoin(base, href)
+        results.append((full_url, team1.strip(), team2.strip()))
+    return results
 ]]></expres>
 <page>https://streameast.gl/mlb</page>
 </regex>
