@@ -46,9 +46,23 @@ class streamer:
 
     def streameast(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            matches = re.findall(r'(?s)<li class="f1-podium--item[^"]*">\s*<a\s+href="([^"]+)".*?<span[^>]*f1-podium--rank[^>]*>([^<]+)</span>.*?<span[^>]*d-md-inline[^>]*>\s*([^<]+?)\s*</span>', page_data, re.S)
-            return [(i[0], html.unescape(i[1]), html.unescape(i[2])) for i in matches]
+            matches = re.findall(
+                r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
+                r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
+                r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
+                r'data-zaman="(\d+)"',
+                page_data
+            )
+            results = []
+            for href, league, teams, timestamp in matches:
+                href = href.strip()
+                league = html.unescape(league).strip()
+                teams = html.unescape(teams).strip()
+                timestamp = timestamp.strip()
+                results.append((href, league, teams, timestamp))
+            return results
         except:
             return
 
