@@ -27,7 +27,7 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if 'crackstreams.me' in url or 'methstreams' in url: u = self.crackstreams(url)
+            if 'crackstreams.me' in url : u = self.crackstreams(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']): u = self.ovostreams(url)
             elif 'chaturbate.com' in url: u = self.chaturbate(url)
