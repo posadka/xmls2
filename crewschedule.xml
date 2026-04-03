@@ -244,5 +244,5 @@ class streamer:
                 title = f"{event} ({league}) - {time_str}"
                 results.append((full_url, title))
             return results
-                except:
-                    return
+        except:
+            return
