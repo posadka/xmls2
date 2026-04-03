@@ -39,7 +39,7 @@ class streamer:
             elif 'buffstreams' in url: u = self.buffstreams(url)
             elif 'streameast.gl' in url: u = self.givemereddit(url)
             elif 'methstreams.ms' in url: u = self.methstreams(url)
-
+            elif 'shd247' in url: u = self.shd(url)
             return u
         except:
             pass
@@ -217,3 +217,32 @@ class streamer:
             return results
         except:
             return
+    
+    def shd(self, url):
+        try:
+            page_data = client.request(url)
+            r = re.findall(
+                r'(?s)<tr>\s*'
+                r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
+                r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
+                r'<td[^>]*><strong>([^<]+)</strong></td>.*?' 
+                r'.*?<a href="([^"]+)"',                      
+                page_data
+            )
+            results = []
+            for event, league, gmt_time, link in r:
+                if not ':' in gmt_time:
+                    continue
+                try:
+                    dt = datetime.strptime(gmt_time.strip(), "%H:%M")
+                    offset = datetime.now() - datetime.utcnow()
+                    local_dt = dt + offset
+                    time_str = local_dt.strftime("%I:%M %p")
+                except:
+                    time_str = gmt_time.strip()
+                full_url = urljoin(url, link)
+                title = f"{event} ({league}) - {time_str}"
+                results.append((full_url, title))
+            return results
+                except:
+                    return
