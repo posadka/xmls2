@@ -220,30 +220,27 @@ class streamer:
     
     def shd(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             page_data = client.request(url)
-            r = re.findall(
-                r'(?s)<tr>\s*'
-                r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
-                r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
-                r'<td[^>]*><strong>([^<]+)</strong></td>.*?' 
-                r'.*?<a href="([^"]+)"',                      
-                page_data
-            )
+            if not page_data:
+                return
+            r = re.findall(r'(?s)<tr>\s*<td[^>]*><strong>([^<]+)<\/strong><\/td>.*?<td[^>]*><strong>([^<]+)<\/strong><\/td>.*?<td[^>]*><strong>([^<]+)<\/strong><\/td>.*?.*?<a href="([^"]+)"',page_data)
             results = []
             for event, league, gmt_time, link in r:
-                if not ':' in gmt_time:
+                if ':' not in gmt_time:
                     continue
                 try:
-                    dt = datetime.strptime(gmt_time.strip(), "%H:%M")
+                    gmt_time_clean = gmt_time.replace('GMT', '').strip()
+                    dt = datetime.strptime(gmt_time_clean, "%H:%M")
                     offset = datetime.now() - datetime.utcnow()
                     local_dt = dt + offset
                     time_str = local_dt.strftime("%I:%M %p")
                 except:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, link)
-                title = f"{event} ({league}) - {time_str}"
+                title = f"{event.strip()} ({league.strip()}) - {time_str}"
                 results.append((full_url, title))
             return results
         except:
