@@ -220,6 +220,8 @@ class streamer:
     
     def shd(self, url):
         try:
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
             page_data = client.request(url)
             r = re.findall(
                 r'(?s)<tr>\s*'
@@ -240,7 +242,7 @@ class streamer:
                     time_str = local_dt.strftime("%I:%M %p")
                 except:
                     time_str = gmt_time.strip()
-                full_url = urljoin(url, link)
+                full_url = urljoin(base, link)
                 title = f"{event} ({league}) - {time_str}"
                 results.append((full_url, title))
             return results
