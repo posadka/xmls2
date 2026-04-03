@@ -222,11 +222,18 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
+            base = f'{parsed.scheme}://{parsed.netloc}/'
             page_data = client.request(url)
             if not page_data:
                 return
-            r = re.findall(r'(?s)<tr>\s*<td[^>]*><strong>([^<]+)<\/strong><\/td>.*?<td[^>]*><strong>([^<]+)<\/strong><\/td>.*?<td[^>]*><strong>([^<]+)<\/strong><\/td>.*?.*?<a href="([^"]+)"',page_data)
+            r = re.findall(
+                r'(?s)<tr>\s*'
+                r'<td[^>]*><strong>([^<]+)</strong></td>\s*'
+                r'<td[^>]*><strong>([^<]+)</strong></td>\s*'
+                r'<td[^>]*><strong>(\d{1,2}:\d{2})\s*GMT</strong></td>.*?'
+                r'<a href="([^"]+)"',
+                page_data
+            )
             results = []
             for event, league, gmt_time, link in r:
                 if ':' not in gmt_time:
