@@ -751,8 +751,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (SHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
-    <thumbnail>https://pbs.twimg.com/profile_images/1689371789842067457/-MgYODie.jpg</thumbnail>
-    <fanart>https://pbs.twimg.com/profile_images/1689371789842067457/-MgYODie.jpg</fanart>
+    <thumbnail></thumbnail>
+    <fanart></fanart>
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
