@@ -228,9 +228,9 @@ class streamer:
                 return
             r = re.findall(
                 r'(?s)<tr>\s*'
-                r'<td[^>]*><strong>([^<]+)</strong></td>\s*'
-                r'<td[^>]*><strong>([^<]+)</strong></td>\s*'
-                r'<td[^>]*><strong>(\d{1,2}:\d{2})\s*GMT</strong></td>.*?'
+                r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
+                r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
+                r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
                 r'<a href="([^"]+)"',
                 page_data
             )
