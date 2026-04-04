@@ -236,8 +236,6 @@ class streamer:
             )
             results = []
             for event, league, gmt_time, link in r:
-                if ':' not in gmt_time:
-                    continue
                 try:
                     gmt_time_clean = gmt_time.replace('GMT', '').strip()
                     dt = datetime.strptime(gmt_time_clean, "%H:%M")
@@ -247,8 +245,7 @@ class streamer:
                 except:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, link)
-                title = f"{event.strip()} ({league.strip()}) - {time_str}"
-                results.append((full_url, title))
+                results.append((full_url, league, event, gmt_time))
             return results
         except:
             return
