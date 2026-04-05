@@ -1144,9 +1144,9 @@ class streamer:
                 return
             iframe = match.group(1)
             iframe = urljoin(referer, iframe)
-            headers = {"Referer": iframe, "User-Agent": UA}
             page_data = requests.get(iframe, headers=headers).text
             match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            headers = {"Referer": iframe, "User-Agent": UA}
             if not match:
                 return
             iframe = match.group(1)
