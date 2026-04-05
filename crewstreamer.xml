@@ -331,34 +331,8 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            iframe_source_url = re.findall("embed-responsive-item\" src='([^']*)", page_data)[0]
-            iframe_data = requests.get(iframe_source_url, headers={'User-Agent': UA, 'Referer': url}).text
-            pdettxt = re.findall('pdettxt = "([^"]*)', iframe_data)[0]
-            zmid = re.findall('zmid = "([^"]*)', iframe_data)[0]
-            pid = re.findall("pid = ([0-9])", iframe_data)[0]
-            edm = re.findall('edm = "([^"]*)', iframe_data)[0]
-            embed_script_url = re.findall('<script\\W*async\\W*src="([^"]*)', iframe_data)[0]
-            url = "https://" + edm + "/sd0embed?v=" + zmid
-            embed_source_data = requests.post(
-                url,
-                headers={
-                    "Origin": "https://embedstream.me",
-                    "Referer": "https://embedstream.me/",
-                    "User-Agent": UA
-                }
-            ).text
-            i = re.compile(
-                r'decodeURIComponent\(escape.*\("(.+?)",(\d+),"(.+?)",(\d+),(\d+),(\d+)'
-            ).findall(embed_source_data)[0]
-            t = hunter.hunter(i[0], int(i[1]), i[2], int(i[3]), int(i[4]), int(i[5]))
-            m3u8 = re.findall('const vdoUrl = \'([^\']*)', t)[0]
-            m3u8 = base64.b64decode(m3u8).decode("UTF-8")
-            unique_id = re.findall(r"const unqiueId = \'([^\']*)", t)[0]
-            scode = re.findall(r'sCode = \'([^\']*)', t)[0]
-            ts = re.findall(r'Ts = ([0-9]{10})', t)[0]
-            key = 'https://key.seckeyserv.me/?stream=' + unique_id + '&scode=' + scode + '&expires=' + ts
-            authUrl = {'User-Agent': UA, 'Origin': 'https://www.nolive.me', 'Referer': 'https://www.nolive.me/sd0embed'}
-            return m3u8 + '|{0}'.format(urlencode(authUrl))
+            iframe = re.findall("embed-responsive-item\" src='([^']*)", page_data)[0]
+            return self.embedsports(iframe)
         except:
             return
 
@@ -1047,42 +1021,6 @@ class streamer:
         except Exception:
             return
 
-    def topstreams(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            headers = {"User-Agent": UA, "Referer": url}
-            html = client.request(url, headers=headers)
-            m = re.search(r'src=["\'](/js/[a-z0-9]+\.js)["\']', html)
-            if not m:
-                return None
-            js_url = urljoin(url, m.group(1))
-            js = requests.get(js_url, headers=headers).text
-            g = re.search(r'globalurl\s*=\s*[\'"]([^\'"]+)', js)
-            if not g:
-                return None
-            manifest = g.group(1).replace(r'\/','/')
-            import uuid
-            guid = str(uuid.uuid4())
-            manifest = manifest + "&sessionId=" + guid
-            clearkeys = {}
-            ck = re.search(r'masterinf\s*=\s*\{([^}]+)\}', js)
-            if ck:
-                pairs = re.findall(
-                    r'"([0-9a-fA-F]{32})"\s*:\s*"([0-9a-fA-F]{32})"',
-                    ck.group(1)
-                )
-                for kid, key in pairs:
-                    clearkeys[kid.lower()] = key.lower()
-            drm = None
-            if clearkeys:
-                drm = {"type": "clearkey", "keys": clearkeys}
-            return {
-                "url": manifest,
-                "drm": drm
-            }
-        except:
-            return
-
     def trendy(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
@@ -1107,7 +1045,8 @@ class streamer:
 
     def embedsports(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
+                return
             parts = url.rstrip('/').split('/')
             if 'embed' in parts:
                 idx = parts.index('embed')
@@ -1123,12 +1062,15 @@ class streamer:
                 0x12, len(stream_id), *stream_id.encode("utf-8"),
                 0x1A, len(stream_no), *stream_no.encode("utf-8")
             ])
-            fetch = requests.post(
-                "https://embedsports.top/fetch",
-                data=payload,
-                headers={"Content-Type": "application/octet-stream"},
-                timeout=10
-            )
+            parsed = urlparse(url)
+            fetch_url = f"{parsed.scheme}://{parsed.netloc}/fetch"
+            headers = {
+                "Content-Type": "application/octet-stream",
+                "Origin": f"{parsed.scheme}://{parsed.netloc}",
+                "Referer": url,
+                "User-Agent": UA
+            }
+            fetch = requests.post(fetch_url, data=payload, headers=headers, timeout=10)
             if not fetch.content:
                 return
             cipher_len = fetch.content[1]
@@ -1138,21 +1080,14 @@ class streamer:
             aes_key = fetch.headers.get("What")
             if not aes_key:
                 return
-            aes_key = aes_key.encode("utf-8")
-            aes_iv = b"STOPSTOPSTOPSTOP"
-            aes_counter = Counter.new(
-                128,
-                initial_value=int.from_bytes(aes_iv, "big")
+            aes = AES.new(
+                aes_key.encode(),
+                AES.MODE_CTR,
+                counter=Counter.new(128, initial_value=int.from_bytes(b"STOPSTOPSTOPSTOP", "big"))
             )
-            aes = AES.new(aes_key, AES.MODE_CTR, counter=aes_counter)
             decrypted = aes.decrypt(b64).decode("utf-8")
             xbmc.log(f"[Embedsports] Stream URL: {decrypted}", xbmc.LOGINFO)
-            headers = (
-                f'User-Agent={UA}'
-                f'&Referer={url}'
-                f'&Origin=https://embedsports.top'
-            )
-            return decrypted + "|" + headers
+            return decrypted + f"|User-Agent={UA}&Referer={url}&Origin={parsed.scheme}://{parsed.netloc}"
         except Exception as e:
             xbmc.log(f"[Embedsports Resolver Error] {e}", xbmc.LOGINFO)
             return
