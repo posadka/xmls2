@@ -333,10 +333,7 @@ class streamer:
                 return
             headers = {'User-Agent': UA}
             page_data = requests.get(url, headers=headers).text
-            iframe = re.findall(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
-            if not iframe:
-                return
-            iframe_url = urljoin(url, iframe[0])
+            iframe = re.findall(r'<iframe[^>]+src=["\']([^"\']+)', page_data)[0]
             return self.embedsports(iframe_url)
         except:
             return
