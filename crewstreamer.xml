@@ -35,18 +35,8 @@ class streamer:
             if 'epicmartial' in url: u = self.epicmartial(url)
             elif 'castweb' in url: u = self.epicmartial(url)
             elif 'elixx.xyz' in url: u = self.elixx(url)
-            elif 'eddensports.com' in url: u = self.solaris(url)
-            elif 'redsoccer.info' in url: u = self.solaris(url)
             elif 'worldstreams.net' in url: u = self.worldstreams(url)
-            elif 'papahd' in url: u = self.papahd(url)
             elif 'bfst.xyz' in url: u = self.beast(url)
-            elif 'fightpass.site' in url: u = self.fightpass(url)
-            elif 'allsportsmedia.live' in url: u = self.fightpass(url)
-            elif 'nbaweb.site' in url: u = self.helena(url)
-            elif 'nbaweb.xyz' in url: u = self.skuanet(url)
-            elif 'sportsnest.co' in url: u = self.sportsnest(url)
-            elif 'dofusports' in url: u = self.sportsnest(url)
-            elif 'bestreamsports.org' in url: u = self.sportsnest(url)
             elif 'telechargementfilmhd.com' in url: u = self.nbahdreplay(url)
             elif 'volokit' in url: u = self.volokit(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
@@ -59,34 +49,9 @@ class streamer:
             elif 'givemenbastreams' in url: u = self.givemereddit(url)
             elif 'givememmastreams' in url: u = self.givemereddit(url)
             elif 'givemeredditstreams' in url: u = self.givemereddit(url)
-            elif 'gameshdlive' in url: u = self.solaris(url)
-            elif 'gamehdlive' in url: u = self.solaris(url)
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
-            elif 'ertech.work' in url: u = self.skuanet(url)
-            elif 'chimxoan.net' in url: u = self.skuanet(url)
-            elif 'skuanet' in url: u = self.skuanet(url)
-            elif 'harumu.me/' in url: u = self.skuanet(url)
-            elif 'viafb.site/' in url: u = self.skuanet(url)
-            elif 'fnew.tech' in url: u = self.skuanet(url)
-            elif 'psm.wtf' in url: u = self.skuanet(url)
-            elif 'fabtech.work' in url: u = self.skuanet(url)
-            elif 'ruapa.com/' in url: u = self.skuanet(url)
-            elif 'gardener101.work' in url: u = self.skuanet(url)
-            elif 'jmutech.xyz' in url: u = self.skuanet(url)
-            elif 'aas.works' in url: u = self.skuanet(url)
-            elif 'kimta' in url: u = self.skuanet(url)
-            elif 'sagoad.com/' in url: u = self.skuanet(url)
-            elif 'anhdepmoingay.com/' in url: u = self.skuanet(url)
-            elif 'ustvgo.cc' in url: u = self.skuanet(url)
-            elif 'hinhnenhd.info' in url: u = self.skuanet(url)
-            elif 'bubofitness.com' in url: u = self.skuanet(url)
-            elif 'midcoastplanning.org' in url: u = self.skuanet(url)
-            elif 'fxmagicmusic' in url: u = self.skuanet(url)
-            elif 'ftheanh.tech' in url: u = self.skuanet(url)
-            elif 'azulitostreams.com' in url: u = self.skuanet(url)
-            elif 'banknotewiki.com' in url: u = self.skuanet(url)
             elif 'sportnews.to' in url: u = self.sportnews(url)
             elif 'mysports.to' in url: u = self.sportnews(url)
             elif 'footy.to' in url: u = self.sportnews(url)
@@ -103,8 +68,6 @@ class streamer:
             elif 'ovo-gola' in url: u = self.ovostreams(url)
             elif 'techoreels.com' in url: u = self.techno(url)
             elif 'techclips.net' in url: u = self.techno(url)
-            elif 'torridplay.com' in url: u = self.skuanet(url)
-            elif 'sportinglive.co' in url: u = self.skuanet(url)
             elif 'dubsstreamz.com' in url: u = self.dubsstreamz(url)
             elif 'dubzstreams.com' in url: u = self.dubsstreamz(url)
             elif 'summerlivestream.com' in url: u = self.summerlivestream(url)
@@ -319,20 +282,6 @@ class streamer:
         except Exception:
             return
 
-    def skuanet(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            r = re.findall('<source src="([^"]*)', page_data)[0]
-            return (
-                r
-                + '?&connection=keepalive'
-                + '|User-Agent=' + UA
-                + '&Referer=' + url
-            )
-        except:
-            return
-
     def playoff(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
@@ -394,49 +343,6 @@ class streamer:
             r = re.findall('iframe(?:.*?src=")([^"]*)', page_data)[0]
             r = r.replace('//', 'https://')
             return r
-        except:
-            return
-
-    def helena(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            w = re.findall('source: "([^"]*)', page_data)[0]
-            return w + '|Referer=' + url
-        except:
-            return
-
-    def papahd(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            r1 = re.findall('(?s)<iframe src="([^"]*)', page_data)[0]
-            u2 = requests.get(r1, headers={'User-Agent': UA, 'Referer': url}).text
-            fid = re.findall('fid="([^"]*)', u2)[0]
-            r3 = re.findall('(?s)fid.*?src="([^"]*)', u2)[0]
-            u3 = requests.get('https:' + r3, headers={'User-Agent': UA, 'Referer': r1}).text
-            embedded = re.findall('(?s)embedded .*?: "([^"]*)', u3)[0]
-            link = re.findall('(?s).*?src="([^=]*)', u3)[0]
-            final_link = link + '=' + embedded + '&live=' + fid
-            return final_link + '|User-Agent=' + UA + '&Referer=' + r1
-        except:
-            return
-
-    def fightpass(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            x = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return x + '|User-Agent=' + UA + '&Referer=' + url
-        except:
-            return
-
-    def solaris(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            r = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
-            return r + '|User-Agent=' + UA + '&Referer=' + url
         except:
             return
 
