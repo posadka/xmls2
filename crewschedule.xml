@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
 
-import re, json, base64, requests, time, random, math, xbmcgui, xbmc, html
+import re
+import json
+import base64
+import time
+import random
+import math
+import html
+from datetime import datetime, timedelta
+
+import requests
+import xbmc
+import xbmcgui
+
 try:
     from Cryptodome.Cipher import AES
     from Cryptodome.Util import Counter
 except:
     from Crypto.Cipher import AES
     from Crypto.Util import Counter
+
 try:
     from urllib import urlencode, quote_plus, urlparse, urljoin
 except ImportError:
     from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
-from resources.lib.modules import control
-from resources.lib.modules import client
-from resources.lib.modules import site
-from resources.lib.modules import workers
-from resources.lib.modules import jsunpack
-from resources.lib.modules import hunter
-from datetime import datetime, timedelta
+from resources.lib.modules import control, client, site, workers, jsunpack, hunter
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
@@ -27,7 +34,7 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if 'crackstreams.me' in url : u = self.crackstreams(url)
+            if 'crackstreams.me' in url: u = self.crackstreams(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']): u = self.ovostreams(url)
             elif 'chaturbate.com' in url: u = self.chaturbate(url)
