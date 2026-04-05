@@ -137,7 +137,7 @@ class streamer:
         try:
             page_data = client.request(url)
             matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
-            return [(html.unescape(i[0]),i[1])for i in matches]
+            return [(html.unescape(i[0]).strip(),i[1])for i in matches]
         except:
             return
 
