@@ -245,7 +245,7 @@ class streamer:
                 except:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, link)
-                results.append((full_url, league, event, gmt_time))
+                results.append((full_url, league, event, time_str))
             return results
         except:
             return
