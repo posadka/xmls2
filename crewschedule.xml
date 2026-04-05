@@ -25,10 +25,9 @@ try:
 except ImportError:
     from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
-from resources.lib.modules import control, client, site, workers, jsunpack, hunter
+from resources.lib.modules import control, client, workers, jsunpack, hunter
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
-
 
 class streamer:
 
