@@ -1144,6 +1144,7 @@ class streamer:
                 return
             iframe = match.group(1)
             iframe = urljoin(referer, iframe)
+            headers = {"Referer": iframe, "User-Agent": UA}
             page_data = requests.get(iframe, headers=headers).text
             match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
             if not match:
@@ -1153,11 +1154,11 @@ class streamer:
                 iframe = 'https:' + iframe
             if not iframe.startswith('http'):
                 iframe = urljoin(referer, iframe)
+            page_data = requests.get(iframe, headers=headers).text
             parsed = urlparse(iframe)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             origin = f'{parsed.scheme}://{parsed.netloc}'
             headers = {"Referer": referer, "Origin": origin, "User-Agent": UA}
-            page_data = requests.get(iframe, headers=headers).text
             if not page_data:
                 return
             match = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
