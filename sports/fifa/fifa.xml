@@ -116,7 +116,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://fsportshdz.club/footballstreams.php')
+    url = client.schedule('https://fsportshds.xyz//footballstreams.php')
     return url
 ]]></expres>
         <page></page>
@@ -132,7 +132,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://fsportshdz.club/[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()

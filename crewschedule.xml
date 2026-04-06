@@ -121,7 +121,15 @@ class streamer:
     def fsportshd(self, url):
         try:
             page_data = client.request(url)
-            return re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            r = re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
+            results = []
+            for href, teams in r:
+                full_url = urljoin(base, href)
+                teams = html.unescape(teams).strip()
+                results.append((full_url, teams))
+            return results
         except:
             return
 
