@@ -85,7 +85,9 @@ class streamer:
             )
             results = []
             for link, team1, team2 in r:
-                title = f"{team1.strip()} vs {team2.strip()}"
+                team1 = html.unescape(team1).strip()
+                team2 = html.unescape(team2).strip()
+                title = f"{team1} vs {team2}"
                 results.append((link, title))
             return results
         except:
