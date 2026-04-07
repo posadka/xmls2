@@ -34,7 +34,7 @@ class streamer:
     def resolve(self, url):
         try:
             if 'istreameast.app' in url: u = self.streameast(url)
-            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top']): u = self.ovostreams(url)
+            elif 'orbixa.top' in url: u = self.ovostreams(url)
             elif 'chaturbate.com' in url: u = self.chaturbate(url)
             elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
             elif 'streambtw' in url: u = self.streambtw(url)
