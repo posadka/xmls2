@@ -78,8 +78,16 @@ class streamer:
     def ovostreams(self, url):
         try:
             page_data = client.request(url)
-            matches = re.findall(r"a href='([^']*).*?ing'>([^<]*)", page_data, re.S)
-            return [('https://ovogoaal.com' + i[0], i[1]) for i in matches]
+
+            r = re.findall(
+                r'<a href="([^"]+)" class="match">.*?class="team">.*?>([^<]+).*?class="team right">([^<]+)',
+                page_data, re.S
+            )
+            results = []
+            for link, team1, team2 in r:
+                title = f"{team1.strip()} vs {team2.strip()}"
+                results.append((link, title))
+            return results
         except:
             return
 
