@@ -34,7 +34,6 @@ class streamer:
     def resolve(self, url):
         try:
             if 'istreameast.app' in url: u = self.streameast(url)
-            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top']): u = self.ovostreams(url)
             elif 'chaturbate.com' in url: u = self.chaturbate(url)
             elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
             elif 'streambtw' in url: u = self.streambtw(url)
@@ -42,9 +41,10 @@ class streamer:
             elif 'volokit' in url: u = self.volokit(url)
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
             elif 'buffstreams' in url: u = self.buffstreams(url)
-            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
-            elif 'methstreams.ms' in url: u = self.methstreams(url)
             elif 'shd247' in url: u = self.shd(url)
+            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
+            elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
+            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top']): u = self.ovostreams(url)
             return u
         except:
             pass
