@@ -35,16 +35,12 @@ class streamer:
             if 'epicmartial' in url: u = self.epicmartial(url)
             elif 'castweb' in url: u = self.epicmartial(url)
             elif 'elixx.xyz' in url: u = self.elixx(url)
-            elif 'telechargementfilmhd.com' in url: u = self.nbahdreplay(url)
             elif 'volokit' in url: u = self.volokit(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
-            elif 'sportnews.to' in url: u = self.sportnews(url)
-            elif 'mysports.to' in url: u = self.sportnews(url)
-            elif 'footy.to' in url: u = self.sportnews(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']): u = self.ovostreams(url)
             elif 'basketball-video' in url: u = self.basketballvideo(url)
             elif 'nfl-video' in url: u = self.nflvideo(url)
@@ -212,33 +208,6 @@ class streamer:
             r = re.findall('iframe(?:.*?src=")([^"]*)', page_data)[0]
             r = r.replace('//', 'https://')
             return r
-        except:
-            return
-
-    def sportnews(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            l = re.findall('atob\(\'([^\']*)', page_data)[0]
-            l = base64.b64decode(l).decode('utf-8')
-            return l + '|User-Agent=' + UA + '&Referer=' + url
-        except:
-            return
-
-    def beast(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            white = re.findall('(?s)<iframe.*?src="([^"]*)', page_data)[0]
-            hat = requests.get(white, headers={'User-Agent': UA, 'Referer': url}).text
-            items = re.findall('=\\s*(\\[[^;]+)', hat)[0]
-            items = re.findall('"(.+?)"', items)
-            subitem = int(re.findall('atob.+?-\\s*(\\d+)', hat)[0])
-            srp = ''
-            for item in items:
-                srp += chr(int(re.sub(r'[^\\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-            link = re.findall("source: '([^']*)", srp)[0]
-            return link + '|User-Agent=' + UA + '&Referer=' + url
         except:
             return
 
