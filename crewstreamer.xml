@@ -41,7 +41,7 @@ class streamer:
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
-            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola']): u = self.ovostreams(url)
+            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top']): u = self.ovostreams(url)
             elif 'basketball-video' in url: u = self.basketballvideo(url)
             elif 'nfl-video' in url: u = self.nflvideo(url)
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
