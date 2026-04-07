@@ -224,10 +224,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://methstreams.ms/league/nbastreams')
+    url = client.schedule('https://crackstreams.ms/league/nhlstreams')
     return url
 ]]></expres>
-<page>https://crackstreams.ms/league/nhlstreams</page>
+<page></page>
 </regex>
 <regex>
   <name>makelist2</name>
