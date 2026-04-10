@@ -503,7 +503,6 @@ class streamer:
             picked_url = picked[2]
             if source == 'shark':
                 json_url = picked_url
-
                 json_data = requests.get(
                     json_url,
                     headers={'User-Agent': UA, 'Referer': url}
