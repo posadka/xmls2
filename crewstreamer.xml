@@ -179,30 +179,26 @@ class streamer:
                 return
             iframe_url = m.group(1)
             iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
-            m = re.search(r"atob\('([^']+)", iframe_html)
-            if m:
-                try:
-                    encoded = m.group(1)
-                    decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
-                    referer = 'https://gooz.aapmains.net/'
-                    origin = 'https://gooz.aapmains.net'
-                    return (
-                        f"{decoded}"
-                        f"|User-Agent={UA}"
-                        f"&Referer={referer}"
-                        f"&Origin={origin}"
-                    )
-                except:
-                    pass
-            m = re.search(r'const\s+source\s*=\s*"([^"]+)', iframe_html)
-            if m:
+            referer = 'https://gooz.aapmains.net/'
+            origin = 'https://gooz.aapmains.net'
+            if 'atob' in iframe_html:
+                m = re.search(r"atob\('([^']+)", iframe_html)
+                if not m:
+                    return
+                encoded = m.group(1)
+                decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
+                source = decoded
+            else:
+                m = re.search(r'const\s+source\s*=\s*"([^"]+)', iframe_html)
+                if not m:
+                    return
                 source = m.group(1)
-                return (
-                    f"{source}"
-                    f"|User-Agent={UA}"
-                    f"&Referer={referer}"
-                    f"&Origin={origin}"
-                )
+            return (
+                f"{source}"
+                f"|User-Agent={UA}"
+                f"&Referer={referer}"
+                f"&Origin={origin}"
+            )
         except Exception:
             return
 
