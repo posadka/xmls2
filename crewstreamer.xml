@@ -376,7 +376,7 @@ class streamer:
                     + '&Origin=https://stellarthread.com'
                     + '&User-Agent=' + UA
                 )
-            else:
+            elif:
                 iframe_url = m.group(1)
                 iframe_html = client.request(iframe_url)
                 if not iframe_html:
@@ -393,6 +393,8 @@ class streamer:
                     f"&Referer={origin}/"
                     f"&Origin={origin}"
                 )
+            else:
+                return self.embedsports(iframe_url)
         except:
             return
 
