@@ -277,7 +277,6 @@ class streamer:
 
     def supersurge(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, timeout=5).json()
             results = []
             for i in page_data:
