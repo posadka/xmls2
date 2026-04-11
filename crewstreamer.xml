@@ -765,30 +765,35 @@ class streamer:
     def buffstreams(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            headers = {
-                "User-Agent": UA,
-                "Referer": url
-            }
-            page_data = requests.get(url, headers=headers).text
-            if not page_data:
+            headers = {'User-Agent': UA, 'Referer': url}
+            page_data = requests.get(url, headers=headers, timeout=10).text
+            m = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
                 return
-            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
-            if not match:
-                return
-            iframe = match.group(1)
-            if iframe.startswith('//'):
-                iframe = 'https:' + iframe
-            headers["Referer"] = iframe
-            page_data = requests.get(iframe, headers=headers).text
-            if not page_data:
-                return
-            match = re.search(r'atob\([\'"]([^\'"]+)', page_data)
-            if not match:
-                return
-            encoded = match.group(1)
-            decoded = base64.b64decode(encoded).decode('utf-8')
-            return decoded + '|User-Agent=' + UA + '&Referer=https://gooz.aapmains.net/&Origin=https://gooz.aapmains.net' 
-        except:
+            iframe_url = m.group(1)
+            iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
+            parsed = urlparse(iframe_url)
+            referer = f"{parsed.scheme}://{parsed.netloc}/"
+            origin = f"{parsed.scheme}://{parsed.netloc}"
+            if 'atob' in iframe_html:
+                m = re.search(r"atob\('([^']+)", iframe_html)
+                if not m:
+                    return
+                encoded = m.group(1)
+                decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
+                source = decoded
+            else:
+                m = re.search(r'const\s+source\s*=\s*"([^"]+)', iframe_html)
+                if not m:
+                    return
+                source = m.group(1)
+            return (
+                f"{source}"
+                f"|User-Agent={UA}"
+                f"&Referer={referer}"
+                f"&Origin={origin}"
+            )
+        except Exception:
             return
 
     def shd(self, url):
