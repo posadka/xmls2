@@ -7,7 +7,7 @@ import time
 import random
 import math
 import html
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 import xbmc
@@ -285,8 +285,9 @@ class streamer:
                 video = i.get("videoUrl") or ""
                 start = i.get("beginPartie") or ""
                 try:
-                    t = datetime.fromisoformat(start)
-                    start = t.strftime("%I:%M %p")
+                    t = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
+                    local = t.astimezone()
+                    start = local.strftime("%I:%M %p")
                 except:
                     pass
                 title = f"{start} - {name}" if start else name
