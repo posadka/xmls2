@@ -179,8 +179,9 @@ class streamer:
                 return
             iframe_url = m.group(1)
             iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
-            referer = 'https://gooz.aapmains.net/'
-            origin = 'https://gooz.aapmains.net'
+            parsed = urlparse(iframe_url)
+            referer = f"{parsed.scheme}://{parsed.netloc}/"
+            origin = f"{parsed.scheme}://{parsed.netloc}"
             if 'atob' in iframe_html:
                 m = re.search(r"atob\('([^']+)", iframe_html)
                 if not m:
