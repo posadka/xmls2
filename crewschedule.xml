@@ -273,3 +273,28 @@ class streamer:
             return results
         except:
             return
+
+    def supersurge(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            page_data = requests.get(url, timeout=5).json()
+            results = []
+            for i in page_data:
+                name = i.get("name") or i.get("gameName") or "Unknown"
+                video = i.get("videoUrl") or ""
+                start = i.get("beginPartie") or ""
+                try:
+                    t = datetime.fromisoformat(start)
+                    start = t.strftime("%I:%M %p")
+                except:
+                    pass
+                title = f"{start} - {name}" if start else name
+                for n, u in enumerate(video.split(';'), 1):
+                    href = u.split('<')[0].strip()
+                    if not href:
+                        continue
+                    label = title if n == 1 else f"{title} (Stream {n})"
+                    results.append((href, label))
+            return results
+        except:
+            return
