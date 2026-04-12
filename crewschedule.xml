@@ -162,9 +162,7 @@ class streamer:
     def streameast_ga(self, url):
         try:
             page_data = requests.get(url).text
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
+            r = re.findall(
                 r'(?s)<a href="([^"]+)"\s*class="uefa-card[^>]*data-time="(\d+)".*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>',
@@ -172,27 +170,19 @@ class streamer:
             )
             results = []
             now = datetime.now().date()
-            tomorrow = now + timedelta(days=1)
-            for href, ts, team1, team2 in matches:
-                full_url = urljoin(base, href)
+            for href, ts, team1, team2 in r:
                 dt = datetime.fromtimestamp(int(ts))
                 event_date = dt.date()
                 if event_date == now:
                     label = 'Today'
-                elif event_date == tomorrow:
+                elif event_date == now.replace(day=now.day + 1):
                     label = 'Tomorrow'
                 else:
                     label = dt.strftime('%m-%d')
                 time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
-                results.append((
-                    full_url,
-                    team1.strip(),
-                    team2.strip(),
-                    time_str
-                ))
+                results.append((href, team1.strip(), team2.strip(), time_str))
             return results
-        except Exception as e:
-            log(f'streameast_ga list failed | {e}', xbmc.LOGERROR)
+        except:
             return
 
     def buffstreams(self, url):
