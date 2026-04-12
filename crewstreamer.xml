@@ -76,7 +76,7 @@ class streamer:
 
             if not s: s = re.findall("\(\w+\(\"([^\"]*)", r) + re.findall("\(\w+\(\'([^\']*)", r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
-            
+
             if not s: s = re.findall('\"\w+\":"([^"]*)', r) + re.findall('\'\w+\':\'([^\']*)', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
 
@@ -103,13 +103,13 @@ class streamer:
 
             if not s: s = re.findall('\w*:\s*\"(http.+?)\"', r) + re.findall('\w*:\s*\'(http.+?)\'', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
-            
+
             if not s: s = re.findall('\w*=\'([^\']*)', r) + re.findall('\w*=\"([^\"]*)', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
-            
+
             if not s: s = re.findall('\w*\s*=\s*\'([^\']*)', r) + re.findall('\w*\s*=\s*\"([^\"]*)', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
-            
+
             if not s: s = re.findall('(?s)<file>([^<]*)', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
 
@@ -224,9 +224,11 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            r = re.findall('iframe(?:.*?src=")([^"]*)', page_data)[0]
-            r = r.replace('//', 'https://')
-            return r
+            m = re.search(r'iframe(?:.*?src=")([^"]*)', page_data)
+            if not m:
+                return
+            iframe_url = m.group(1).replace('//', 'https://')
+            return iframe_url
         except Exception as e:
             log(f'nbahdreplay failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -234,19 +236,33 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            w = re.findall('(?s)iframe-wrapper">\s*<iframe src="([^"]*)', page_data)[0]
-            h = 'http://elixx.xyz' + w
-            i = requests.get(h, headers={'User-Agent': UA, 'Referer': url}).text
-            t = re.findall('<iframe src="([^"]*)', i)[0]
-            white = 'https:' + t
-            e = requests.get(white, headers={'User-Agent': UA, 'Referer': t}).text
-            z = re.findall('(?s)<iframe.*?src="([^"]*)', e)[0]
-            hat = 'https:' + z
-            pink = requests.get(hat, headers={'User-Agent': UA, 'Referer': t}).text
-            find = re.findall('eval\(function(.+?m3u8.+)', pink)[0]
-            the = jsunpack.unpack(find)
-            crew = re.findall('src=\s*"([^"]*)', the)[0]
-            return crew + '|User-Agent=' + UA + '&Referer=' + h
+            m = re.search(r'(?s)iframe-wrapper">\s*<iframe src="([^"]*)', page_data)
+            if not m:
+                return
+            iframe_path = m.group(1)
+            iframe_url = 'http://elixx.xyz' + iframe_path
+            iframe_html = requests.get(iframe_url, headers={'User-Agent': UA, 'Referer': url}).text
+            m = re.search(r'<iframe src="([^"]*)', iframe_html)
+            if not m:
+                return
+            iframe2_path = m.group(1)
+            iframe2_url = 'https:' + iframe2_path
+            iframe2_html = requests.get(iframe2_url, headers={'User-Agent': UA, 'Referer': iframe2_path}).text
+            m = re.search(r'(?s)<iframe.*?src="([^"]*)', iframe2_html)
+            if not m:
+                return
+            iframe3_path = m.group(1)
+            iframe3_url = 'https:' + iframe3_path
+            iframe3_html = requests.get(iframe3_url, headers={'User-Agent': UA, 'Referer': iframe2_path}).text
+            m = re.search(r'eval\(function(.+?m3u8.+)', iframe3_html)
+            if not m:
+                return
+            unpacked = jsunpack.unpack(m.group(1))
+            m = re.search(r'src=\s*"([^"]*)', unpacked)
+            if not m:
+                return
+            source = m.group(1)
+            return source + '|User-Agent=' + UA + '&Referer=' + iframe_url
         except Exception as e:
             log(f'elixx failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -254,13 +270,20 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            src = re.findall('iframe.*?src="([^"]*)', page_data)[0]
+            m = re.search(r'iframe.*?src="([^"]*)', page_data)
+            if not m:
+                return
+            src = m.group(1)
             src = 'http:' + src if src.startswith('//') else src
-            fu = requests.get(src, headers={'User-Agent': UA, 'Referer': url}).text
-            hat = re.findall('eval\(function(.+?m3u8.+)', fu)[0]
-            the = jsunpack.unpack(hat)
-            crew = re.findall('var\s*src="([^"]*)', the)[0]
-            return crew + '|User-Agent=' + UA + '&Referer=' + url
+            iframe_html = requests.get(src, headers={'User-Agent': UA, 'Referer': url}).text
+            m = re.search(r'eval\(function(.+?m3u8.+)', iframe_html)
+            if not m:
+                return
+            unpacked = jsunpack.unpack(m.group(1))
+            m = re.search(r'var\s*src="([^"]*)', unpacked)
+            if not m:
+                return
+            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + url
         except Exception as e:
             log(f'nflsportz failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -277,31 +300,34 @@ class streamer:
                     + '&Referer=' + url
                 )
             elif 'php' in page_data:
-                r = re.findall('(?s)<iframe id="stream.*?src="([^"]*)', page_data)[0]
-                u = client.request(r)
-                items = re.findall('<script>var.*?=\s*(\[[^;]+)', u)[0]
+                m = re.search(r'(?s)<iframe id="stream.*?src="([^"]*)', page_data)
+                if not m:
+                    return
+                iframe_url = m.group(1)
+                iframe_html = client.request(iframe_url)
+                items = re.findall('<script>var.*?=\s*(\[[^;]+)', iframe_html)[0]
                 items = re.findall('"(.+?)"', items)
-                subitem = int(re.findall('\(atob.+?-\s*(\d+)', u)[0])
-                srp = ''
+                subitem = int(re.findall('\(atob.+?-\s*(\d+)', iframe_html)[0])
+                decoded = ''
                 for item in items:
-                    srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-                link = re.findall('atob\(\'([^\']*)', srp)[0]
+                    decoded += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+                link = re.findall('atob\(\'([^\']*)', decoded)[0]
                 link = link.replace(' ', '')
                 link = base64.b64decode(link).decode('utf-8')
                 return (
                     link
                     + '|User-Agent=' + UA
                     + '&Origin=http://blacktiesports.net'
-                    + '&Referer=' + r
+                    + '&Referer=' + iframe_url
                 )
             else:
                 items = re.findall('<script>var.*?=\s*(\[[^;]+)', page_data)[0]
                 items = re.findall('"(.+?)"', items)
                 subitem = int(re.findall('\(atob.+?-\s*(\d+)', page_data)[0])
-                srp = ''
+                decoded = ''
                 for item in items:
-                    srp += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-                link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', srp)[0]
+                    decoded += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
+                link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', decoded)[0]
                 link = link.replace(' ', '')
                 return (
                     link
@@ -316,16 +342,18 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            hat = re.findall('(?s)player-box">\s*<iframe.*?src="([^"]*)', page_data)[0]
-            h = requests.get(
-                hat,
-                headers={
-                    'User-Agent': UA,
-                    'Referer': 'https://sportstvnow.org/'
-                }
+            m = re.search(r'(?s)player-box">\s*<iframe.*?src="([^"]*)', page_data)
+            if not m:
+                return
+            iframe_url = m.group(1)
+            iframe_html = requests.get(
+                iframe_url,
+                headers={'User-Agent': UA, 'Referer': 'https://sportstvnow.org/'}
             ).text
-            s = re.findall('source\s*[:=]\s*[\'"]([^\'"]+)', h)[0]
-            return s + '|User-Agent=' + UA + '&Referer=' + hat
+            m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
+            if not m:
+                return
+            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + iframe_url
         except Exception as e:
             log(f'ovostreams failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -337,16 +365,20 @@ class streamer:
                 "User-Agent": UA
             }
             page_data = requests.get(url, headers=headers).text
-            fid = re.findall(r'fid\s*=\s*"([^"]+)"', page_data)[0]
-            x = 'https://processbigger.com/maestrohd1.php?player=mobile&live=' + fid
-            r = requests.get(x, headers=headers).text
-            match = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
-            array_content = match.group(1)
-            chars = re.findall(r'"([^"]+)"', array_content)
-            joined = ''.join(chars).replace(r'\/', '/')
-            joined = joined.replace('https://///', 'https://').replace('https:////', 'https://').replace('https:///', 'https://')
+            m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                return
+            fid = m.group(1)
+            api_url = 'https://processbigger.com/maestrohd1.php?player=mobile&live=' + fid
+            api_html = requests.get(api_url, headers=headers).text
+            m = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', api_html)
+            if not m:
+                return
+            chars = re.findall(r'"([^"]+)"', m.group(1))
+            source = ''.join(chars).replace(r'\/', '/')
+            source = source.replace('https://///', 'https://').replace('https:////', 'https://').replace('https:///', 'https://')
             return (
-                joined
+                source
                 + '|Referer=https://processbigger.com/'
                 + '&Origin=https://processbigger.com'
                 + '&User-Agent=' + UA
@@ -379,13 +411,13 @@ class streamer:
                 if not m:
                     return
                 chars = re.findall(r'"([^"]+)"', m.group(1))
-                joined = ''.join(chars).replace(r'\/', '/')
+                source = ''.join(chars).replace(r'\/', '/')
                 for _ in range(3):
-                    joined = joined.replace('https://///', 'https://')
-                    joined = joined.replace('https:////', 'https://')
-                    joined = joined.replace('https:///', 'https://')
+                    source = source.replace('https://///', 'https://')
+                    source = source.replace('https:////', 'https://')
+                    source = source.replace('https:///', 'https://')
                 return (
-                    f"{joined}"
+                    f"{source}"
                     f"|User-Agent={UA}"
                     f"&Referer=https://stellarthread.com/"
                     f"&Origin=https://stellarthread.com"
@@ -426,10 +458,14 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            x = re.findall('(?s)style-default" href="([^"]*)', page_data)[0]
-            f = client.request(x)
-            s = re.findall('(?s)<iframe.*?src="([^"]*)', f)[0]
-            return s
+            m = re.search(r'(?s)style-default" href="([^"]*)', page_data)
+            if not m:
+                return
+            iframe_html = client.request(m.group(1))
+            m = re.search(r'(?s)<iframe.*?src="([^"]*)', iframe_html)
+            if not m:
+                return
+            return m.group(1)
         except Exception as e:
             log(f'basketballvideo failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -437,18 +473,20 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
-            x = re.findall('(?s)Full Game Replay.*?<iframe.*?src="([^"]*)', page_data)[0]
-            return x
+            m = re.search(r'(?s)Full Game Replay.*?<iframe.*?src="([^"]*)', page_data)
+            if not m:
+                return
+            return m.group(1)
         except Exception as e:
             log(f'nflvideo failed for {url} | {e}', xbmc.LOGERROR)
 
     def naughtyblog(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            html = requests.get(url).text
-            if not html:
+            page_data = requests.get(url).text
+            if not page_data:
                 return
-            part = html.split('<strong>Download:', 1)
+            part = page_data.split('<strong>Download:', 1)
             if len(part) < 2:
                 return
             segment = part[1]
@@ -478,20 +516,22 @@ class streamer:
             headers = {"Referer": referer, "User-Agent": UA}
             page_data = requests.get(url, headers=headers).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                return
             fid = m.group(1)
             api_url = 'https://stellarthread.com/footy.php?player=mobile&live=' + fid
-            r = requests.get(api_url, headers=headers).text
-            m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', r)
-            array_content = m.group(1)
-            chars = re.findall(r'"([^"]+)"', array_content)
-            joined = ''.join(chars).replace(r'\/', '/')
+            api_html = requests.get(api_url, headers=headers).text
+            m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
+            if not m:
+                return
+            chars = re.findall(r'"([^"]+)"', m.group(1))
+            source = ''.join(chars).replace(r'\/', '/')
             for _ in range(3):
-                joined = joined.replace('https://///', 'https://')
-                joined = joined.replace('https:////', 'https://')
-                joined = joined.replace('https:///', 'https://')
-            final_url = joined
+                source = source.replace('https://///', 'https://')
+                source = source.replace('https:////', 'https://')
+                source = source.replace('https:///', 'https://')
             return (
-                final_url
+                source
                 + '|Referer=https://stellarthread.com/'
                 + '&Origin=https://stellarthread.com'
                 + '&User-Agent=' + UA
@@ -556,10 +596,10 @@ class streamer:
                 m = re.search(r'\["([^"]+)', api_data)
                 if not m:
                     return
-                final_url = m.group(1).replace('\\', '')
+                source = m.group(1).replace('\\', '')
                 refer = api_url + '/'
                 origin = '/'.join(api_url.split('/', 3)[:3])
-                return f"{final_url}|User-Agent={UA}&Referer={refer}&Origin={origin}"
+                return f"{source}|User-Agent={UA}&Referer={refer}&Origin={origin}"
             if source == 'streams':
                 iframe1 = picked_url
                 iframe1_html = requests.get(
@@ -644,14 +684,14 @@ class streamer:
     def streameast_ga(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            html = requests.get(url, headers={"User-Agent": UA}).text
+            page_data = requests.get(url, headers={"User-Agent": UA}).text
             def get_iframe_src(data):
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']+streams\.center[^"\']+)', data, re.I)
                 if not m:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(html)
+            iframe1 = get_iframe_src(page_data)
             if not iframe1:
                 return
             iframe1_html = requests.get(
@@ -773,8 +813,8 @@ class streamer:
 
     def streambtw(self, url):
         try:
-            html = requests.get(url, headers={'User-Agent': UA}).text
-            encoded = re.search(r'encoded\s*=\s*"([^"]+)"', html).group(1)
+            page_data = requests.get(url, headers={'User-Agent': UA}).text
+            encoded = re.search(r'encoded\s*=\s*"([^"]+)"', page_data).group(1)
             stream = base64.b64decode(encoded).decode()
             return stream
         except Exception as e:
@@ -821,34 +861,32 @@ class streamer:
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             headers = {"Referer": referer, "User-Agent": UA}
             page_data = client.request(url, headers=headers)
-            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
-            if not match:
+            m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
                 return
-            iframe = match.group(1)
-            iframe = urljoin(referer, iframe)
-            page_data = requests.get(iframe, headers=headers).text
-            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
-            headers = {"Referer": iframe, "User-Agent": UA}
-            if not match:
+            iframe_url = urljoin(referer, m.group(1))
+            page_data = requests.get(iframe_url, headers=headers).text
+            headers = {"Referer": iframe_url, "User-Agent": UA}
+            m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
                 return
-            iframe = match.group(1)
-            if iframe.startswith('//'):
-                iframe = 'https:' + iframe
-            if not iframe.startswith('http'):
-                iframe = urljoin(referer, iframe)
-            page_data = requests.get(iframe, headers=headers).text
-            parsed = urlparse(iframe)
+            iframe2_url = m.group(1)
+            if iframe2_url.startswith('//'):
+                iframe2_url = 'https:' + iframe2_url
+            if not iframe2_url.startswith('http'):
+                iframe2_url = urljoin(referer, iframe2_url)
+            page_data = requests.get(iframe2_url, headers=headers).text
+            parsed = urlparse(iframe2_url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             origin = f'{parsed.scheme}://{parsed.netloc}'
-            headers = {"Referer": referer, "Origin": origin, "User-Agent": UA}
             if not page_data:
                 return
-            match = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
-            if not match:
+            m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
+            if not m:
                 return
-            link = match.group(1)
+            source = m.group(1)
             return (
-                f"{link}"
+                f"{source}"
                 f"|Referer={referer}"
                 f"&Origin={origin}"
                 f"&User-Agent={UA}"
@@ -860,14 +898,14 @@ class streamer:
     def supersurge(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            html = requests.get(url, headers={"User-Agent": UA}).text
+            page_data = requests.get(url, headers={"User-Agent": UA}).text
             def get_iframe_src(data):
                 m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
                 if not m:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(html)
+            iframe1 = get_iframe_src(page_data)
             if not iframe1:
                 return
             iframe1_html = requests.get(
