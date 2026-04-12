@@ -646,7 +646,7 @@ class streamer:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             html = requests.get(url, headers={"User-Agent": UA}).text
             def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
+                m = re.search(r'<iframe[^>]+src=["\']([^"\']+streams\.center[^"\']+)', data, re.I)
                 if not m:
                     return None
                 src = m.group(1).strip()
