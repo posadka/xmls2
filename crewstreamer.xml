@@ -66,6 +66,13 @@ class streamer:
         except Exception as e:
             log(f'resolve failed for {url} | {e}', xbmc.LOGERROR)
 
+    def _get_iframe_src(self, data):
+        m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
+        if not m:
+            return None
+        src = m.group(1).strip()
+        return "https:" + src if src.startswith("//") else src
+
     def generic(self, url):
         try:
             r = client.request(url)
@@ -503,12 +510,6 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page = client.request(url)
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
             matches = list(re.finditer(
                 r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
                 page
@@ -566,7 +567,7 @@ class streamer:
                     iframe1,
                     headers={'User-Agent': UA, 'Referer': url}
                 ).text
-                iframe2 = get_iframe_src(iframe1_html)
+                iframe2 = self._get_iframe_src(iframe1_html)
                 if not iframe2:
                     return
                 iframe2_html = requests.get(
@@ -645,13 +646,7 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             html = requests.get(url, headers={"User-Agent": UA}).text
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(html)
+            iframe1 = self._get_iframe_src(html)
             if not iframe1:
                 return
             iframe1_html = requests.get(
@@ -672,7 +667,7 @@ class streamer:
                     f"&User-Agent={UA}"
                 )
             else:
-                iframe2 = get_iframe_src(iframe1_html)
+                iframe2 = self._get_iframe_src(iframe1_html)
                 if not iframe2:
                     return
                 iframe2_html = requests.get(
@@ -862,13 +857,7 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             html = requests.get(url, headers={"User-Agent": UA}).text
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(html)
+            iframe1 = self._get_iframe_src(html)
             if not iframe1:
                 return
             iframe1_html = requests.get(
