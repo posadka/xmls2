@@ -75,30 +75,6 @@ class streamer:
         src = m.group(1).strip()
         return "https:" + src if src.startswith("//") else src
 
-    def _streams_center(self, iframe_url, referer):
-        try:
-            iframe_html = requests.get(
-                iframe_url,
-                headers={"Referer": referer, "User-Agent": UA}
-            ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe_html)
-            if not m:
-                return None
-            token = m.group(1)
-            hls_url = requests.post(
-                "https://streams.center/embed/decrypt.php",
-                data={"input": token},
-                headers={
-                    "User-Agent": UA,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Referer": iframe_url
-                },
-                timeout=10
-            ).text.strip()
-            return f"{hls_url}|Referer=https://streams.center/&User-Agent={UA}"
-        except Exception as e:
-            log(f'_streams_center failed for {iframe_url} | {e}', xbmc.LOGERROR)
-
     def generic(self, url):
         try:
             r = client.request(url)
@@ -658,12 +634,33 @@ class streamer:
                 return f"{final_url}|User-Agent={UA}&Referer={refer}&Origin={origin}"
             if source == 'streams':
                 iframe1 = picked_url
-                iframe2 = self._get_iframe_src(
-                    requests.get(iframe1, headers={'User-Agent': UA, 'Referer': url}).text
-                )
+                iframe1_html = requests.get(
+                    iframe1,
+                    headers={'User-Agent': UA, 'Referer': url}
+                ).text
+                iframe2 = self._get_iframe_src(iframe1_html)
                 if not iframe2:
                     return
-                return self._streams_center(iframe2, iframe1)
+                iframe2_html = requests.get(
+                    iframe2,
+                    headers={"Referer": iframe1, "User-Agent": UA}
+                ).text
+                m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+                if not m:
+                    return
+                token = m.group(1)
+                decrypt_url = "https://streams.center/embed/decrypt.php"
+                hls_url = requests.post(
+                    decrypt_url,
+                    data={"input": token},
+                    headers={
+                        "User-Agent": UA,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Referer": iframe2
+                    },
+                    timeout=10
+                ).text.strip()
+                return f"{hls_url}|Referer=https://streams.center/&User-Agent={UA}"
             return
         except Exception as e:
             log(f'methstreams failed for {url} | {e}', xbmc.LOGERROR)
@@ -750,7 +747,30 @@ class streamer:
                 iframe2 = self._get_iframe_src(iframe1_html)
                 if not iframe2:
                     return
-                return self._streams_center(iframe2, iframe1)
+                iframe2_html = requests.get(
+                    iframe2,
+                    headers={"Referer": iframe1, "User-Agent": UA}
+                ).text
+                m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
+                if not m:
+                    return
+                token = m.group(1)
+                decrypt_url = "https://streams.center/embed/decrypt.php"
+                hls_url = requests.post(
+                    decrypt_url,
+                    data={"input": token},
+                    headers={
+                        "User-Agent": UA,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Referer": iframe2
+                    },
+                    timeout=10
+                ).text.strip()
+                return (
+                    f"{hls_url}"
+                    f"|Referer=https://streams.center/"
+                    f"&User-Agent={UA}"
+                )
         except Exception as e:
             log(f'streameast_ga failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -923,9 +943,32 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={"User-Agent": UA}).text
-            iframe_url = self._get_iframe_src(page_data)
-            if not iframe_url:
+            iframe1 = self._get_iframe_src(page_data)
+            if not iframe1:
                 return
-            return self._streams_center(iframe_url, url)
+            iframe1_html = requests.get(
+                iframe1,
+                headers={"Referer": url, "User-Agent": UA}
+            ).text
+            m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
+            if not m:
+                return
+            token = m.group(1)
+            decrypt_url = "https://streams.center/embed/decrypt.php"
+            hls_url = requests.post(
+                decrypt_url,
+                data={"input": token},
+                headers={
+                    "User-Agent": UA,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Referer": iframe1
+                },
+                timeout=10
+            ).text.strip()
+            return (
+                f"{hls_url}"
+                f"|Referer=https://streams.center/"
+                f"&User-Agent={UA}"
+            )
         except Exception as e:
             log(f'supersurge failed for {url} | {e}', xbmc.LOGERROR)
