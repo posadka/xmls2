@@ -496,7 +496,7 @@ class streamer:
         except:
             return
 
-    def meth(self, url):
+    def methstreams(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page = client.request(url)
