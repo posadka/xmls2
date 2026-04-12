@@ -773,6 +773,7 @@ class streamer:
 
     def streambtw(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             html = requests.get(url, headers={'User-Agent': UA}).text
             encoded = re.search(r'encoded\s*=\s*"([^"]+)"', html).group(1)
             stream = base64.b64decode(encoded).decode()
