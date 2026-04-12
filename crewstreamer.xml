@@ -29,6 +29,12 @@ from resources.lib.modules import control, client, workers, jsunpack, hunter
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
+TAG = '[Streamer]'
+
+def log(msg, level=xbmc.LOGINFO):
+    xbmc.log(f'{TAG} {msg}', level)
+
+
 class streamer:
     def resolve(self, url):
         try:
@@ -57,8 +63,8 @@ class streamer:
             else: u = self.generic(url)
 
             return u
-        except:
-            pass
+        except Exception as e:
+            log(f'resolve failed for {url} | {e}', xbmc.LOGERROR)
 
     def generic(self, url):
         try:
@@ -127,8 +133,8 @@ class streamer:
             u = sorted(self.u, key=lambda x: x[1])[::-1]
             u = client.request(u[0][0], output='geturl', Referer=url)
             return u
-        except:
-            pass
+        except Exception as e:
+            log(f'generic failed for {url} | {e}', xbmc.LOGERROR)
 
     def givemereddit(self, url):
         try:
@@ -167,7 +173,7 @@ class streamer:
                 f"&Accept=application/x-mpegURL,*/*"
             )
         except Exception as e:
-            return
+            log(f'givemereddit failed for {url} | {e}', xbmc.LOGERROR)
 
     def streameast(self, url):
         try:
@@ -200,8 +206,8 @@ class streamer:
                 f"&Referer={referer}"
                 f"&Origin={origin}"
             )
-        except Exception:
-            return
+        except Exception as e:
+            log(f'streameast failed for {url} | {e}', xbmc.LOGERROR)
 
     def playoff(self, url):
         try:
@@ -210,9 +216,9 @@ class streamer:
             headers = {'User-Agent': UA}
             page_data = requests.get(url, headers=headers).text
             iframe = re.findall(r'<iframe[^>]+src=["\']([^"\']+)', page_data)[0]
-            return self.embedsports(iframe_url)
-        except:
-            return
+            return self.embedsports(iframe)
+        except Exception as e:
+            log(f'playoff failed for {url} | {e}', xbmc.LOGERROR)
 
     def nbahdreplay(self, url):
         try:
@@ -221,8 +227,8 @@ class streamer:
             r = re.findall('iframe(?:.*?src=")([^"]*)', page_data)[0]
             r = r.replace('//', 'https://')
             return r
-        except:
-            return
+        except Exception as e:
+            log(f'nbahdreplay failed for {url} | {e}', xbmc.LOGERROR)
 
     def elixx(self, url):
         try:
@@ -241,8 +247,8 @@ class streamer:
             the = jsunpack.unpack(find)
             crew = re.findall('src=\s*"([^"]*)', the)[0]
             return crew + '|User-Agent=' + UA + '&Referer=' + h
-        except:
-            return
+        except Exception as e:
+            log(f'elixx failed for {url} | {e}', xbmc.LOGERROR)
 
     def nflsportz(self, url):
         try:
@@ -255,8 +261,8 @@ class streamer:
             the = jsunpack.unpack(hat)
             crew = re.findall('var\s*src="([^"]*)', the)[0]
             return crew + '|User-Agent=' + UA + '&Referer=' + url
-        except:
-            return
+        except Exception as e:
+            log(f'nflsportz failed for {url} | {e}', xbmc.LOGERROR)
 
     def blacktienba(self, url):
         try:
@@ -303,8 +309,8 @@ class streamer:
                     + '&Origin=http://blacktiesports.net'
                     + '&Referer=' + url
                 )
-        except:
-            return
+        except Exception as e:
+            log(f'blacktienba failed for {url} | {e}', xbmc.LOGERROR)
 
     def ovostreams(self, url):
         try:
@@ -320,8 +326,8 @@ class streamer:
             ).text
             s = re.findall('source\s*[:=]\s*[\'"]([^\'"]+)', h)[0]
             return s + '|User-Agent=' + UA + '&Referer=' + hat
-        except:
-            return
+        except Exception as e:
+            log(f'ovostreams failed for {url} | {e}', xbmc.LOGERROR)
 
     def epicmartial(self, url):
         try:
@@ -345,8 +351,8 @@ class streamer:
                 + '&Origin=https://processbigger.com'
                 + '&User-Agent=' + UA
             )
-        except:
-            return
+        except Exception as e:
+            log(f'epicmartial failed for {url} | {e}', xbmc.LOGERROR)
 
     def volokit(self, url):
         try:
@@ -395,7 +401,6 @@ class streamer:
                 m = re.search(r'atob\([\'"]([^\'"]+)', iframe_html)
                 if m:
                     decoded = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
-
                     return (
                         f"{decoded}"
                         f"|User-Agent={UA}"
@@ -414,9 +419,8 @@ class streamer:
                     f"&Origin={origin}"
                 )
             return self.embedsports(iframe_url)
-        except:
-            return
-
+        except Exception as e:
+            log(f'volokit failed for {url} | {e}', xbmc.LOGERROR)
 
     def basketballvideo(self, url):
         try:
@@ -426,8 +430,8 @@ class streamer:
             f = client.request(x)
             s = re.findall('(?s)<iframe.*?src="([^"]*)', f)[0]
             return s
-        except:
-            return
+        except Exception as e:
+            log(f'basketballvideo failed for {url} | {e}', xbmc.LOGERROR)
 
     def nflvideo(self, url):
         try:
@@ -435,8 +439,8 @@ class streamer:
             page_data = requests.get(url).text
             x = re.findall('(?s)Full Game Replay.*?<iframe.*?src="([^"]*)', page_data)[0]
             return x
-        except:
-            return
+        except Exception as e:
+            log(f'nflvideo failed for {url} | {e}', xbmc.LOGERROR)
 
     def naughtyblog(self, url):
         try:
@@ -463,9 +467,8 @@ class streamer:
                     clean_label = label.replace('Direct Link', '').strip()
                     results.append((clean_url, clean_label))
             return results or None
-        except:
-            return
-
+        except Exception as e:
+            log(f'naughtyblog failed for {url} | {e}', xbmc.LOGERROR)
 
     def fsportshd(self, url):
         try:
@@ -493,8 +496,8 @@ class streamer:
                 + '&Origin=https://stellarthread.com'
                 + '&User-Agent=' + UA
             )
-        except:
-            return
+        except Exception as e:
+            log(f'fsportshd failed for {url} | {e}', xbmc.LOGERROR)
 
     def methstreams(self, url):
         try:
@@ -587,8 +590,8 @@ class streamer:
                 ).text.strip()
                 return f"{hls_url}|Referer=https://streams.center/&User-Agent={UA}"
             return
-        except:
-            return
+        except Exception as e:
+            log(f'methstreams failed for {url} | {e}', xbmc.LOGERROR)
 
     def roxie(self, url):
         try:
@@ -634,13 +637,9 @@ class streamer:
                 if choice == -1:
                     return
                 stream_url = m3u8_list[choice]
-            header_options = [
-                f'|User-Agent={UA}&Referer={referer}&Origin={origin}',
-                f'|User-Agent={UA}&Referer={referer}'
-            ]
-            return stream_url + header_options[0]
-        except Exception:
-            return
+            return stream_url + f'|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            log(f'roxie failed for {url} | {e}', xbmc.LOGERROR)
 
     def streameast_ga(self, url):
         try:
@@ -700,8 +699,8 @@ class streamer:
                     f"|Referer=https://streams.center/"
                     f"&User-Agent={UA}"
                 )
-        except Exception:
-            return
+        except Exception as e:
+            log(f'streameast_ga failed for {url} | {e}', xbmc.LOGERROR)
 
     def trendy(self, url):
         try:
@@ -722,8 +721,7 @@ class streamer:
             iframe = iframe.split('#')[0]
             return self.embedsports(iframe)
         except Exception as e:
-            xbmc.log(f"[Trendy Resolver Error] {e}", xbmc.LOGINFO)
-            return
+            log(f'trendy failed for {url} | {e}', xbmc.LOGERROR)
 
     def embedsports(self, url):
         try:
@@ -768,11 +766,10 @@ class streamer:
                 counter=Counter.new(128, initial_value=int.from_bytes(b"STOPSTOPSTOPSTOP", "big"))
             )
             decrypted = aes.decrypt(b64).decode("utf-8")
-            xbmc.log(f"[Embedsports] Stream URL: {decrypted}", xbmc.LOGINFO)
+            log(f'embedsports stream URL: {decrypted}')
             return decrypted + f"|User-Agent={UA}&Referer={url}&Origin={parsed.scheme}://{parsed.netloc}"
         except Exception as e:
-            xbmc.log(f"[Embedsports Resolver Error] {e}", xbmc.LOGINFO)
-            return
+            log(f'embedsports failed for {url} | {e}', xbmc.LOGERROR)
 
     def streambtw(self, url):
         try:
@@ -780,8 +777,8 @@ class streamer:
             encoded = re.search(r'encoded\s*=\s*"([^"]+)"', html).group(1)
             stream = base64.b64decode(encoded).decode()
             return stream
-        except:
-            return
+        except Exception as e:
+            log(f'streambtw failed for {url} | {e}', xbmc.LOGERROR)
 
     def buffstreams(self, url):
         try:
@@ -814,8 +811,8 @@ class streamer:
                 f"&Referer={referer}"
                 f"&Origin={origin}"
             )
-        except Exception:
-            return
+        except Exception as e:
+            log(f'buffstreams failed for {url} | {e}', xbmc.LOGERROR)
 
     def shd(self, url):
         try:
@@ -857,8 +854,8 @@ class streamer:
                 f"&User-Agent={UA}"
                 f"&Accept=application/x-mpegURL,*/*"
             )
-        except:
-            return
+        except Exception as e:
+            log(f'shd failed for {url} | {e}', xbmc.LOGERROR)
 
     def supersurge(self, url):
         try:
@@ -897,5 +894,5 @@ class streamer:
                 f"|Referer=https://streams.center/"
                 f"&User-Agent={UA}"
             )
-        except Exception:
-            return
+        except Exception as e:
+            log(f'supersurge failed for {url} | {e}', xbmc.LOGERROR)
