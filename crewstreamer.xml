@@ -725,15 +725,21 @@ class streamer:
                 headers={"Referer": url, "User-Agent": UA}
             ).text
             if 'embedhd' in iframe1:
-                fid = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html).group(1)
-                player = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
-                player_html = requests.get(
-                    player,
+                m = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html)
+                if not m:
+                    return
+                fid = m.group(1)
+                api_url = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
+                api_html = requests.get(
+                    api_url,
                     headers={"Referer": iframe1, "User-Agent": UA}
                 ).text
-                m3u8 = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', player_html).group(1)
+                m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
+                if not m:
+                    return
+                source = m.group(1)
                 return (
-                    f"{m3u8}"
+                    f"{source}"
                     f"|Referer={iframe1}"
                     f"&User-Agent={UA}"
                 )
@@ -899,34 +905,32 @@ class streamer:
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             headers = {"Referer": referer, "User-Agent": UA}
             page_data = client.request(url, headers=headers)
-            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
-            if not match:
+            m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
                 return
-            iframe = match.group(1)
-            iframe = urljoin(referer, iframe)
-            page_data = requests.get(iframe, headers=headers).text
-            match = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
-            headers = {"Referer": iframe, "User-Agent": UA}
-            if not match:
+            iframe_url = urljoin(referer, m.group(1))
+            page_data = requests.get(iframe_url, headers=headers).text
+            headers = {"Referer": iframe_url, "User-Agent": UA}
+            m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
                 return
-            iframe = match.group(1)
-            if iframe.startswith('//'):
-                iframe = 'https:' + iframe
-            if not iframe.startswith('http'):
-                iframe = urljoin(referer, iframe)
-            page_data = requests.get(iframe, headers=headers).text
-            parsed = urlparse(iframe)
+            iframe2_url = m.group(1)
+            if iframe2_url.startswith('//'):
+                iframe2_url = 'https:' + iframe2_url
+            if not iframe2_url.startswith('http'):
+                iframe2_url = urljoin(referer, iframe2_url)
+            page_data = requests.get(iframe2_url, headers=headers).text
+            parsed = urlparse(iframe2_url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             origin = f'{parsed.scheme}://{parsed.netloc}'
-            headers = {"Referer": referer, "Origin": origin, "User-Agent": UA}
             if not page_data:
                 return
-            match = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
-            if not match:
+            m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
+            if not m:
                 return
-            link = match.group(1)
+            source = m.group(1)
             return (
-                f"{link}"
+                f"{source}"
                 f"|Referer={referer}"
                 f"&Origin={origin}"
                 f"&User-Agent={UA}"
