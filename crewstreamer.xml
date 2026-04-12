@@ -57,6 +57,8 @@ class streamer:
             elif 'buffstreams' in url: u = self.buffstreams(url)
             elif 'shd247' in url: u = self.shd(url)
             elif 'streams.center' in url: u = self.supersurge(url)
+            elif 'nbahdreplay' in url: u = self.nbahdreplay(url)
+            elif 'blacktiesports' in url: u = self.blacktienba(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top']): u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
@@ -147,8 +149,16 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_html = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            m = re.search(r'(?is)iframe\s+class="embed-responsive-item"\s+src="([^"]+)"', page_html)
-            iframe_url = m.group(1)
+            m = re.search(
+                r'(?im)<iframe[^>]+(?:'
+                r'class=["\']embed-responsive-item["\'][^>]+(?:src|data-src)=["\']([^"\']+)["\']'
+                r'|(?:src|data-src)=["\']([^"\']+)["\'][^>]+class=["\']embed-responsive-item["\']'
+                r')',
+                page_html
+            )
+            if not m:
+                return
+            iframe_url = m.group(1) or m.group(2)
             if iframe_url.startswith('//'):
                 iframe_url = 'https:' + iframe_url
             parsed = urlparse(iframe_url)
@@ -770,7 +780,10 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             html = requests.get(url, headers={'User-Agent': UA}).text
-            encoded = re.search(r'encoded\s*=\s*"([^"]+)"', html).group(1)
+            m = re.search(r'encoded\s*=\s*"([^"]+)"', html)
+            if not m:
+                return
+            encoded = m.group(1)
             stream = base64.b64decode(encoded).decode()
             return stream
         except Exception as e:
