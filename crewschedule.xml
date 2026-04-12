@@ -162,8 +162,8 @@ class streamer:
     def streameast_ga(self, url):
         try:
             page_data = requests.get(url).text
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
+            base_match = re.search(r'<base href="([^"]+)"', page_data)
+            base = base_match.group(1) if base_match else url
             matches = re.findall(
                 r'(?s)<a href="([^"]+)"\s*class="uefa-card[^>]*data-time="(\d+)".*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
@@ -184,12 +184,7 @@ class streamer:
                 else:
                     label = dt.strftime('%m-%d')
                 time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
-                results.append((
-                    full_url,
-                    team1.strip(),
-                    team2.strip(),
-                    time_str
-                ))
+                results.append((full_url, team1.strip(), team2.strip(), time_str))
             return results
         except Exception as e:
             log(f'streameast_ga list failed | {e}', xbmc.LOGERROR)
