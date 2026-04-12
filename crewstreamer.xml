@@ -69,7 +69,7 @@ class streamer:
             log(f'resolve failed for {url} | {e}', xbmc.LOGERROR)
 
     def _get_iframe_src(self, data):
-        m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
+        m = re.search(r'<iframe[\s\S]+?src=["\']([^"\']*streams\.center[^"\']+)["\']', iframe1_html, re.I)
         if not m:
             return None
         src = m.group(1).strip()
