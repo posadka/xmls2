@@ -406,8 +406,8 @@ class streamer:
                     "User-Agent": UA
                 }
                 api_url = f'https://stellarthread.com/wiki.php?player=mobile&live={fid}'
-                r = requests.get(api_url, headers=api_headers, timeout=10).text
-                m = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', r)
+                api_html = requests.get(api_url, headers=api_headers, timeout=10).text
+                m = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', api_html)
                 if not m:
                     return
                 chars = re.findall(r'"([^"]+)"', m.group(1))
