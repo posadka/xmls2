@@ -507,7 +507,7 @@ class streamer:
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
             matches = list(re.finditer(
-                r'https:\\/\\/(?:sharkstreams\.net\\/player\.php\?channel=\d+|streams\.center\\/embed\\/ch\d+\.php)',
+                r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
                 page
             ))
             if not matches:
