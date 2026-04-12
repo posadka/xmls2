@@ -792,6 +792,15 @@ class streamer:
     def embedsports(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            if 'embedsports.top' not in url:
+                page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=10).text
+                m = re.search(r'<iframe[^>]+src=["\']([^"\']*embedsports\.top[^"\']*)["\']', page_data, re.I)
+                if not m:
+                    log(f'embedsports could not find embedsports.top iframe in {url}', xbmc.LOGERROR)
+                    return
+                url = m.group(1)
+                if url.startswith('//'):
+                    url = 'https:' + url
             parts = url.rstrip('/').split('/')
             if 'embed' in parts:
                 idx = parts.index('embed')
