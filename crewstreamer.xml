@@ -344,6 +344,7 @@ class streamer:
             page_data = requests.get(url).text
             parsed = urlparse(url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
+            origin = f'{parsed.scheme}://{parsed.netloc}'
             m = re.search(r'(?s)player-box">\s*<iframe.*?src="([^"]*)', page_data)
             if not m:
                 return
@@ -355,7 +356,7 @@ class streamer:
             m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
             if not m:
                 return
-            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + referer
+            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + referer + '&Origin=' + origin
         except Exception as e:
             log(f'ovostreams failed for {url} | {e}', xbmc.LOGERROR)
 
