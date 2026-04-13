@@ -342,18 +342,20 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
+            parsed = urlparse(url)
+            referer = f'{parsed.scheme}://{parsed.netloc}/'
             m = re.search(r'(?s)player-box">\s*<iframe.*?src="([^"]*)', page_data)
             if not m:
                 return
             iframe_url = m.group(1)
             iframe_html = requests.get(
                 iframe_url,
-                headers={'User-Agent': UA, 'Referer': 'https://sportstvnow.org/'}
+                headers={'User-Agent': UA, 'Referer': referer}
             ).text
             m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
             if not m:
                 return
-            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + iframe_url
+            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + referer
         except Exception as e:
             log(f'ovostreams failed for {url} | {e}', xbmc.LOGERROR)
 
