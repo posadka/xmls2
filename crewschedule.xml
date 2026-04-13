@@ -119,7 +119,7 @@ class streamer:
             page_data = client.request(url)
             items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', page_data)[0]
             items = re.findall(r'"(.+?)"', items)
-            subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', u)[0])
+            subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', page_data)[0])
             srp = ''
             for item in items:
                 srp += chr(
