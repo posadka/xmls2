@@ -345,6 +345,7 @@ class streamer:
             page_data = requests.get(url, headers=headers).text
             parsed = urlparse(url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
+            origin = f'{parsed.scheme}://{parsed.netloc}'
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
             if not m:
                 return
@@ -356,10 +357,15 @@ class streamer:
             m = re.search(r'var\s+source\s*=\s*"([^"]+)', iframe_html)
             if not m:
                 return
+            php_url = m.group(1)
+            php = requests.get(
+                php_url,
+                headers={'User-Agent': UA, 'Referer': iframe_url}
+            ).text
+            m = re.search(r'(https?://[^\s\'"]+\.m3u8)', php)
+            if not m:
+                return
             source = m.group(1)
-            parsed_iframe = urlparse(source)
-            origin = f'{parsed_iframe.scheme}://{parsed_iframe.netloc}'
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
             return (
                 source
                 + '|User-Agent=' + UA
