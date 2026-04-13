@@ -79,17 +79,28 @@ class streamer:
     def ovostreams(self, url):
         try:
             page_data = client.request(url)
-
-            r = re.findall(
-                r'<a href="([^"]+)" class="match">.*?class="team">.*?>([^<]+).*?class="team right">([^<]+)',
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            rows = re.findall(
+                r'<div class="stream-row".*?>(.*?)</div>\s*</div>',
                 page_data, re.S
             )
             results = []
-            for link, team1, team2 in r:
-                team1 = html.unescape(team1).strip()
-                team2 = html.unescape(team2).strip()
-                title = f"{team1} vs {team2}"
-                results.append((link, title))
+            for row in rows:
+                team_match = re.search(
+                    r'class="stream-info">.*?<img[^>]+>\s*([^<]+)',
+                    row, re.S
+                )
+                link_match = re.search(
+                    r"window\.location\.href='([^']+)'",
+                    row
+                )
+                if not team_match or not link_match:
+                    continue
+                title = html.unescape(team_match.group(1)).strip()
+                link = link_match.group(1)
+                full_url = urljoin(base, link)
+                results.append((full_url, title))
             return results
         except:
             return
