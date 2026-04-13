@@ -216,7 +216,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     <regex>
         <name>crewschedule</name>
         <listrepeat><![CDATA[
-<title>[COLOR orange][crewschedule.param2][/COLOR] [COLOR orange][crewschedule.param1][/COLOR]</title>
+<title>[COLOR orange][crewschedule.param2][/COLOR]</title>
 <link>$doregex[play]</link>
         <thumbnail></thumbnail>
         ]]></listrepeat>
@@ -240,7 +240,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('[makelist.param1]')
+        result[0] = client.external('[crewschedule.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
