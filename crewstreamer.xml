@@ -139,8 +139,8 @@ class streamer:
     def givemereddit(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_html = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            m = re.search(r'(?is)iframe\s+class="embed-responsive-item"\s+src="([^"]+)"', page_html)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            m = re.search(r'(?is)iframe\s+class="embed-responsive-item"\s+src="([^"]+)"', page_data)
             iframe_url = m.group(1)
             if iframe_url.startswith('//'):
                 iframe_url = 'https:' + iframe_url
@@ -160,8 +160,8 @@ class streamer:
             arg3 = int(m.group(4))
             arg4 = int(m.group(5))
             arg5 = int(m.group(6))
-            t = hunter.hunter(arg0, arg1, arg2, arg3, arg4, arg5)
-            m = re.search(r'src:\s*"([^"]+\.m3u8)"', t)
+            unpacked = hunter.hunter(arg0, arg1, arg2, arg3, arg4, arg5)
+            m = re.search(r'src:\s*"([^"]+\.m3u8)"', unpacked)
             if not m:
                 return
             src = m.group(1).replace('\\', '')
@@ -597,9 +597,9 @@ class streamer:
                 if not m:
                     return
                 source = m.group(1).replace('\\', '')
-                refer = api_url + '/'
+                referer = api_url + '/'
                 origin = '/'.join(api_url.split('/', 3)[:3])
-                return f"{source}|User-Agent={UA}&Referer={refer}&Origin={origin}"
+                return f"{source}|User-Agent={UA}&Referer={referer}&Origin={origin}"
             if source == 'streams':
                 iframe1 = picked_url
                 iframe1_html = requests.get(
@@ -699,15 +699,21 @@ class streamer:
                 headers={"Referer": url, "User-Agent": UA}
             ).text
             if 'embedhd' in iframe1:
-                fid = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html).group(1)
-                player = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
-                player_html = requests.get(
-                    player,
+                m = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html)
+                if not m:
+                    return
+                fid = m.group(1)
+                api_url = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
+                api_html = requests.get(
+                    api_url,
                     headers={"Referer": iframe1, "User-Agent": UA}
                 ).text
-                m3u8 = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', player_html).group(1)
+                m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
+                if not m:
+                    return
+                source = m.group(1)
                 return (
-                    f"{m3u8}"
+                    f"{source}"
                     f"|Referer={iframe1}"
                     f"&User-Agent={UA}"
                 )
@@ -753,13 +759,13 @@ class streamer:
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data, re.I)
             if not m:
                 return
-            iframe = m.group(1).strip()
-            if iframe.startswith('//'):
-                iframe = 'https:' + iframe
-            if not iframe.startswith('http'):
-                iframe = urljoin(url, iframe)
-            iframe = iframe.split('#')[0]
-            return self.embedsports(iframe)
+            iframe_url = m.group(1).strip()
+            if iframe_url.startswith('//'):
+                iframe_url = 'https:' + iframe_url
+            if not iframe_url.startswith('http'):
+                iframe_url = urljoin(url, iframe_url)
+            iframe_url = iframe_url.split('#')[0]
+            return self.embedsports(iframe_url)
         except Exception as e:
             log(f'trendy failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -815,8 +821,8 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}).text
             encoded = re.search(r'encoded\s*=\s*"([^"]+)"', page_data).group(1)
-            stream = base64.b64decode(encoded).decode()
-            return stream
+            source = base64.b64decode(encoded).decode()
+            return source
         except Exception as e:
             log(f'streambtw failed for {url} | {e}', xbmc.LOGERROR)
 
