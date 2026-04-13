@@ -519,7 +519,7 @@ class streamer:
             if not m:
                 return
             fid = m.group(1)
-            api_url = 'https://stellarthread.com/footy.php?player=mobile&live=' + fid
+            api_url = 'https://executeandship.com/premiumcr.php?player=mobile&live=' + fid
             api_html = requests.get(api_url, headers=headers).text
             m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
             if not m:
