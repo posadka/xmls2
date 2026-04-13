@@ -116,8 +116,8 @@ class streamer:
 
     def hdrez(self, url):
         try:
-            u = client.request(url)
-            items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', u)[0]
+            page_data = client.request(url)
+            items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', page_data)[0]
             items = re.findall(r'"(.+?)"', items)
             subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', u)[0])
             srp = ''
@@ -202,7 +202,7 @@ class streamer:
             return results
         except Exception as e:
             log(TAG, f'streameast_ga error: {e}')
-            return []
+            return None
 
     def buffstreams(self, url):
         try:
