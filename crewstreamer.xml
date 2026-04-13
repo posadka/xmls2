@@ -341,11 +341,11 @@ class streamer:
     def ovostreams(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
+            headers = {'User-Agent': UA}
+            page_data = requests.get(url, headers=headers).text
             parsed = urlparse(url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
-            origin = f'{parsed.scheme}://{parsed.netloc}'
-            m = re.search(r'(?s)player-box">\s*<iframe.*?src="([^"]*)', page_data)
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
             if not m:
                 return
             iframe_url = m.group(1)
@@ -353,10 +353,19 @@ class streamer:
                 iframe_url,
                 headers={'User-Agent': UA, 'Referer': referer}
             ).text
-            m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
+            m = re.search(r'var\s+source\s*=\s*"([^"]+)', iframe_html)
             if not m:
                 return
-            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + referer + '&Origin=' + origin
+            source = m.group(1)
+            parsed_iframe = urlparse(source)
+            origin = f'{parsed_iframe.scheme}://{parsed_iframe.netloc}'
+            referer = f'{parsed.scheme}://{parsed.netloc}/'
+            return (
+                source
+                + '|User-Agent=' + UA
+                + '&Referer=' + referer
+                + '&Origin=' + origin
+            )
         except Exception as e:
             log(f'ovostreams failed for {url} | {e}', xbmc.LOGERROR)
 
