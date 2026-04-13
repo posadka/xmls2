@@ -81,29 +81,18 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            rows = re.findall(
-                r'<div class="stream-row".*?>(.*?)</div>',
-                page_data, re.S
-            )
             results = []
-            for row in rows:
-                title_match = re.search(
-                    r'<div class="stream-info">.*?<img[^>]+>\s*([^<]+)',
-                    row, re.S
-                )
-                link_match = re.search(
-                    r'onclick="window\.location\.href=\'([^\']+)\'"',
-                    row
-                )
-                if not title_match or not link_match:
-                    continue
-                title = html.unescape(title_match.group(1)).strip()
-                link = link_match.group(1)
-                full_url = urljoin(base, link)
+            for match in re.finditer(
+                r'class="stream-info"[^>]*>.*?<img[^>]+>\s*([^<]+).*?href=\'([^\']+)\'',
+                page_data, re.S
+            ):
+                title = html.unescape(match.group(1)).strip()
+                full_url = urljoin(base, match.group(2))
                 results.append((full_url, title))
-            return results
-        except:
-            return
+            return results if results else None
+        except Exception as e:
+            log(self.TAG, f'ovostreams error: {e}')
+            return None
 
     def chaturbate(self, url):
         try:
