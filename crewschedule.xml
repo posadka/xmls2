@@ -29,6 +29,11 @@ from resources.lib.modules import control, client, workers, jsunpack, hunter
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
+TAG = 'schedule'
+
+def log(tag, msg):
+    xbmc.log(f'[{tag}] {msg}', xbmc.LOGDEBUG)
+
 class streamer:
 
     def resolve(self, url):
@@ -73,8 +78,9 @@ class streamer:
                     time_str = timestamp
                 results.append((href, league, teams, time_str))
             return results
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'streameast error: {e}')
+            return None
 
     def ovostreams(self, url):
         try:
@@ -91,7 +97,7 @@ class streamer:
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
-            log(self.TAG, f'ovostreams error: {e}')
+            log(TAG, f'ovostreams error: {e}')
             return None
 
     def chaturbate(self, url):
@@ -104,8 +110,9 @@ class streamer:
                 for i in matches
                 if any(x in i[1] for x in hosts)
             ]
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'chaturbate error: {e}')
+            return None
 
     def hdrez(self, url):
         try:
@@ -118,23 +125,25 @@ class streamer:
                 srp += chr(
                     int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
             return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',srp,re.S)
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'hdrez error: {e}')
+            return None
 
     def fsportshd(self, url):
         try:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            r = re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
+            matches = re.findall(r'<div class="media-body">\s*<a\s+href="([^"]+)".*?>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>',page_data,re.S)
             results = []
-            for href, teams in r:
+            for href, teams in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
                 results.append((full_url, teams))
             return results
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'fsportshd error: {e}')
+            return None
 
     def streambtw(self, url):
         try:
@@ -148,16 +157,18 @@ class streamer:
                     if title and link:
                         results.append((title, link))
             return results
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'streambtw error: {e}')
+            return None
 
     def volokit(self, url):
         try:
             page_data = client.request(url)
             matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
-            return [(html.unescape(i[0]).strip(),i[1])for i in matches]
-        except:
-            return
+            return [(html.unescape(i[0]).strip(), i[1]) for i in matches]
+        except Exception as e:
+            log(TAG, f'volokit error: {e}')
+            return None
 
     def streameast_ga(self, url):
         try:
@@ -187,29 +198,28 @@ class streamer:
                 team1 = html.unescape(team1).strip()
                 team2 = html.unescape(team2).strip()
                 title = f"{team1} vs {team2} {time_str}"
-                results.append((
-                    full_url,
-                    title
-                ))
+                results.append((full_url, title))
             return results
         except Exception as e:
+            log(TAG, f'streameast_ga error: {e}')
             return []
 
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
             matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',page_data)
-            return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1])for i in matches]
-        except:
-            return
+            return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1]) for i in matches]
+        except Exception as e:
+            log(TAG, f'buffstreams error: {e}')
+            return None
 
     def roxiestreams(self, url):
         try:
             page_data = client.request(url)
-            r = re.findall(
+            matches = re.findall(
                 r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>', page_data)
-            out = []
-            for link, name, timestr in r:
+            results = []
+            for link, name, timestr in matches:
                 try:
                     dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
                     dt = dt + timedelta(hours=3)
@@ -217,42 +227,45 @@ class streamer:
                 except:
                     pass
                 name = html.unescape(name)
-                out.append((link, name.strip(), timestr.strip()))
-            return out
-        except:
-            return
+                results.append((link, name.strip(), timestr.strip()))
+            return results
+        except Exception as e:
+            log(TAG, f'roxiestreams error: {e}')
+            return None
 
     def givemereddit(self, url):
         try:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            r = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
+            matches = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
             results = []
-            for href, team1, team2 in r:
+            for href, team1, team2 in matches:
                 full_url = urljoin(base, href)
                 team1 = html.unescape(team1)
                 team2 = html.unescape(team2)
                 results.append((full_url, team1.strip(), team2.strip()))
             return results
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'givemereddit error: {e}')
+            return None
 
     def methstreams(self, url):
         try:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            r = re.findall(r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)', page_data)
+            matches = re.findall(r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)', page_data)
             results = []
-            for href, teams, time in r:
+            for href, teams, time in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
                 results.append((full_url, teams, time.strip()))
             return results
-        except:
-            return
-    
+        except Exception as e:
+            log(TAG, f'methstreams error: {e}')
+            return None
+
     def shd(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
@@ -261,7 +274,7 @@ class streamer:
             page_data = client.request(url)
             if not page_data:
                 return
-            r = re.findall(
+            matches = re.findall(
                 r'(?s)<tr>\s*'
                 r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
                 r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
@@ -270,7 +283,7 @@ class streamer:
                 page_data
             )
             results = []
-            for event, league, gmt_time, link in r:
+            for event, league, gmt_time, link in matches:
                 try:
                     gmt_time_clean = gmt_time.replace('GMT', '').strip()
                     dt = datetime.strptime(gmt_time_clean, "%H:%M")
@@ -282,8 +295,9 @@ class streamer:
                 full_url = urljoin(base, link)
                 results.append((full_url, league, event, time_str))
             return results
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'shd error: {e}')
+            return None
 
     def supersurge(self, url):
         try:
@@ -307,5 +321,6 @@ class streamer:
                     label = title if n == 1 else f"{title} (Stream {n})"
                     results.append((href, label))
             return results
-        except:
-            return
+        except Exception as e:
+            log(TAG, f'supersurge error: {e}')
+            return None
