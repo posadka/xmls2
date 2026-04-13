@@ -82,22 +82,22 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             rows = re.findall(
-                r'<div class="stream-row".*?>(.*?)</div>\s*</div>',
+                r'<div class="stream-row".*?>(.*?)</div>',
                 page_data, re.S
             )
             results = []
             for row in rows:
-                team_match = re.search(
-                    r'class="stream-info">.*?<img[^>]+>\s*([^<]+)',
+                title_match = re.search(
+                    r'<div class="stream-info">.*?<img[^>]+>\s*([^<]+)',
                     row, re.S
                 )
                 link_match = re.search(
-                    r"window\.location\.href='([^']+)'",
+                    r'onclick="window\.location\.href=\'([^\']+)\'"',
                     row
                 )
-                if not team_match or not link_match:
+                if not title_match or not link_match:
                     continue
-                title = html.unescape(team_match.group(1)).strip()
+                title = html.unescape(title_match.group(1)).strip()
                 link = link_match.group(1)
                 full_url = urljoin(base, link)
                 results.append((full_url, title))
