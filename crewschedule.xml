@@ -207,8 +207,18 @@ class streamer:
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
-            matches = re.findall(r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',page_data)
-            return [(html.unescape(i[0]).replace('Buffstreams ', '').strip(), i[1]) for i in matches]
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            matches = re.findall(
+                r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',
+                page_data
+            )
+            results = []
+            for teams, href in matches:
+                title = html.unescape(teams).replace('Buffstreams ', '').strip()
+                full_url = urljoin(base, href)
+                results.append((full_url, title))
+            return results
         except Exception as e:
             log(TAG, f'buffstreams error: {e}')
             return None
