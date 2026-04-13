@@ -519,7 +519,17 @@ class streamer:
             if not m:
                 return
             fid = m.group(1)
-            api_url = 'https://executeandship.com/premiumcr.php?player=mobile&live=' + fid
+            m = re.search(r'(?s)fid\s*=\s*.*?src="([^"]+)"', page_data)
+            if not m:
+                return
+            js_src = m.group(1).replace('//','')
+            full_url = urljoin(referer, js_src)
+            page_data = requests.get(full_url, headers=headers).text
+            m = re.search(r'src="([^\']*)', page_data)
+            if not m:
+                return
+            api = m.group(1)
+            api_url = api + 'mobile&live=' + fid
             api_html = requests.get(api_url, headers=headers).text
             m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
             if not m:
