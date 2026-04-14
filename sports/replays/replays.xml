@@ -722,51 +722,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    from resources.lib.modules import client, workers, control
-    import re
-    if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-    def unescape(s):
-        return re.sub(r'&#(\d+);', '', s)
-    class PageFetcher:
-        def __init__(self):
-            self.results = []
-        def fetch(self, urls):
-            threads = []
-            indexed = [(idx, u) for idx, u in enumerate(urls)]
-            for item in indexed:
-                t = workers.Thread(self._request, item)
-                threads.append(t)
-            for t in threads:
-                t.start()
-            for t in threads:
-                t.join()
-            return ''.join(
-                str(x[1]) for x in sorted(self.results, key=lambda x: x[0])
-            )
-        def _request(self, item):
-            idx, url = item
-            try:
-                data = client.request(url)
-            except:
-                data = ''
-            self.results.append((idx, data))
-    urls = [
-        f'https://watchprowrestlings.live/categorys/wwe/page/{i}'
-        for i in range(1, 10)
-    ]
-    page_data = PageFetcher().fetch(urls)
-    matches = re.findall(
-        r'(?s)<div class="post-card">.*?href="([^"]*).*?src="([^"]*).*?alt="([^"]*)',
-        page_data
-    )
-    results = []
-    for link, img, title in matches:
-        if 'watchprowrestling' not in img:
-            continue
-        title = unescape(title.replace('&hellip', ''))
-        results.append((link, img, title))
-    return results
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    url = client.schedule('https://watchprowrestlings.live/categorys/wwe/')
+    return url
 ]]></expres>
 <page></page>
 </regex>
@@ -775,25 +735,34 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <listrepeat><![CDATA[
         <title>[playurl.param1]</title>
         <link>[playurl.param2]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
-    import re
-    page_data = client.request('[makelist.param1]')
-    matches = re.findall(r'<a[^>]+href="([^"]+)"[^>]*>\s*([^<]*?(?:APK|OK\.?\s*RU)[^<]*)</a>',page_data,re.I)
-    results = []
-    for link, label in matches:
-        label = label.strip().upper()
-        if 'APK' in label:
-            name = 'DROP APK'
-        elif 'OK' in label:
-            name = 'OK.RU'
-        else:
-            continue
-        results.append((name, link))
-    return results
+    import xbmc, xbmcgui, threading
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    result = [None]
+    done = [False]
+    def fetch():
+        result[0] = client.external('[makelist.param1]')
+        done[0] = True
+    t = threading.Thread(target=fetch)
+    t.start()
+    progress = 0
+    while not done[0]:
+        if pDialog.iscanceled():
+            pDialog.close()
+            return
+        if progress < 90:
+            progress += 2
+        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        xbmc.sleep(200)
+    pDialog.update(100, 'Done!')
+    xbmc.sleep(2000)
+    pDialog.close()
+    return result[0]
 ]]></expres>
 <page></page>
 </regex>

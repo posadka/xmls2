@@ -48,6 +48,7 @@ class streamer:
             elif 'buffstreams' in url: u = self.buffstreams(url)
             elif 'shd247' in url: u = self.shd(url)
             elif 'streamcenter' in url: u = self.supersurge(url)
+            elif 'watchprowrestling' in url: u = self.watchprowrestling(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
@@ -333,4 +334,26 @@ class streamer:
             return results
         except Exception as e:
             log(TAG, f'supersurge error: {e}')
+            return None
+
+    def watchprowrestling(self, url):
+        try:
+            results = []
+            for page in range(1, 11):  # first 10 pages
+                if page == 1:
+                    page_url = url
+                else:
+                    page_url = f"{url.rstrip('/')}/page/{page}/"
+                page_data = client.request(page_url)
+                matches = re.findall(
+                    r'<h2[^>]*class="[^"]*entry-title[^"]*"[^>]*>\s*'
+                    r'<a[^>]+href="([^"]+)"[^>]*>([^<]+)</a>',
+                    page_data
+                )
+                for href, title in matches:
+                    title = html.unescape(title).strip()
+                    results.append((href, title))
+            return results
+        except Exception as e:
+            log(TAG, f'watchprowrestling error: {e}')
             return None

@@ -57,6 +57,7 @@ class streamer:
             elif 'buffstreams' in url: u = self.buffstreams(url)
             elif 'shd247' in url: u = self.shd(url)
             elif 'streams.center' in url: u = self.supersurge(url)
+            elif 'watchprowrestling' in url: u = self.watchprowrestling(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
@@ -977,3 +978,20 @@ class streamer:
             )
         except Exception as e:
             log(f'supersurge failed for {url} | {e}', xbmc.LOGERROR)
+
+    def watchprowrestling(self, url):
+        try:
+            page_data = client.request(url)
+            matches = re.findall(
+                r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
+                page_data,
+                re.I | re.S
+            )
+            results = []
+            for href, name in matches:
+                name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
+                if href and name:
+                    results.append((href, name))
+            return results
+        except Exception as e:
+            log(f'Wathcprowrestling failed for {url} | {e}', xbmc.LOGERROR)
