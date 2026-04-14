@@ -978,30 +978,3 @@ class streamer:
             )
         except Exception as e:
             log(f'supersurge failed for {url} | {e}', xbmc.LOGERROR)
-
-    def watchprowrestling(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            matches = re.findall(
-                r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-                page_data,
-                re.I | re.S
-            )
-            results = []
-            for href, name in matches:
-                name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-                if href and name:
-                    results.append((href, name))
-            if not results:
-                log(f'watchprowrestling: no buttons found on {url}', xbmc.LOGWARNING)
-                return
-            if len(results) == 1:
-                choice = 0
-            else:
-                choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-            if choice == -1:
-                return
-            return results[choice][0]
-        except Exception as e:
-            log(f'watchprowrestling failed for {url} | {e}', xbmc.LOGERROR)
