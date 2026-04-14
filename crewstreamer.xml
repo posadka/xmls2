@@ -981,6 +981,7 @@ class streamer:
 
     def watchprowrestling(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             matches = re.findall(
                 r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
@@ -992,6 +993,14 @@ class streamer:
                 name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
                 if href and name:
                     results.append((href, name))
-            return results
+            if not results:
+                return
+            if len(results) == 1:
+                choice = 0
+            else:
+                choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
+            if choice == -1:
+                return
+            return results[choice][0]
         except Exception as e:
-            log(f'Wathcprowrestling failed for {url} | {e}', xbmc.LOGERROR)
+            log(f'watchprowrestling failed for {url} | {e}', xbmc.LOGERROR)
