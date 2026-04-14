@@ -46,8 +46,6 @@ class streamer:
             elif 'nflsportz.com' in url: u = self.nflsportz(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
-            elif 'basketball-video' in url: u = self.basketballvideo(url)
-            elif 'nfl-video' in url: u = self.nflvideo(url)
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
             elif 'fsportshd' in url: u = self.fsportshd(url)
             elif 'roxiestreams' in url: u = self.roxie(url)
@@ -472,32 +470,6 @@ class streamer:
             return self.embedsports(iframe_url)
         except Exception as e:
             log(f'volokit failed for {url} | {e}', xbmc.LOGERROR)
-
-    def basketballvideo(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            m = re.search(r'(?s)style-default" href="([^"]*)', page_data)
-            if not m:
-                return
-            iframe_html = client.request(m.group(1))
-            m = re.search(r'(?s)<iframe.*?src="([^"]*)', iframe_html)
-            if not m:
-                return
-            return m.group(1)
-        except Exception as e:
-            log(f'basketballvideo failed for {url} | {e}', xbmc.LOGERROR)
-
-    def nflvideo(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            m = re.search(r'(?s)Full Game Replay.*?<iframe.*?src="([^"]*)', page_data)
-            if not m:
-                return
-            return m.group(1)
-        except Exception as e:
-            log(f'nflvideo failed for {url} | {e}', xbmc.LOGERROR)
 
     def naughtyblog(self, url):
         try:

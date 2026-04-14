@@ -3,61 +3,6 @@
 <layoutype>fuckOFF</layoutype>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]BOXING REPLAYS[/COLOR] [COLOR orchid] (BR)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-<link>$doregex[makelist]</link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
-<regex>
-<name>makelist</name>
-<listrepeat><![CDATA[
-<title>[makelist.param2]</title>
-<link>$doregex[crewstreamer]</link>
-<thumbnail>[makelist.param1]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import cache,client,workers,control
-    import re,xbmc,xbmcgui
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    class page:
-        def run(self, r):
-            threads = [] ; self.r = [] ; r = [(r.index(i)+1, i) for i in r]
-            for i in r: threads.append(workers.Thread(self.request, i))
-            [i.start() for i in threads] ; [i.join() for i in threads]
-            return ''.join([str(i[1]) for i in sorted(self.r, key=lambda x: x[0])])
-        def request(self, i):
-            self.r += [(i[0], client.request(i[1]))]
-    def dodgycodes(s):
-        return re.sub('&#(\d+);', '', s)
-    url = 'https://boxingfightsvideos.com/category/boxeo/page/'
-    u = []
-    for i in range(1,8): u += [url + str(i)]
-    u = page().run(u)
-    items = re.findall('(?s)<div class="post-des">\s*<h6>\s*<a href="([^"]*)">([^<]*)', u)
-    return items
-]]></expres>
-<page></page>
-</regex>
-<regex>
-<name>crewstreamer</name>
-<listrepeat><![CDATA[
-<title>[crewstreamer.param2]</title>
-<link>[crewstreamer.param1]</link>
-<thumbnail>[makelist.param1]</thumbnail>
-]]></listrepeat>
-<expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = '[makelist.param1]'):
-    from resources.lib.modules import client
-    url = client.external('[makelist.param1]')
-    return url
-]]></expres>
-<page></page>
-</regex>
-</item>
-
-
-
-<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]BOXING HD REPLAYS SCRAPER[/COLOR] [COLOR orchid] (WP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -175,11 +120,33 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
-    import re
-    r = re.findall(r'(?is)<b>\s*Server\s*#2\s*</b>.*?<a[^>]+href="([^"]+)"',page_data)[0]
-    s = requests.get(r).text
-    t = re.findall(r'(?s)div class="entry__article.*?src="([^"]*)',s)[0]
-    return t
+    import re, html
+    matches = re.findall(
+        r'<a\s[^>]*class="su-button[^"]*"[^>]*href="([^"]+)"[^>]*>.*?<span[^>]*>([^<]+)</span>',
+        page_data,
+        re.I | re.S
+    )
+    results = []
+    for href, name in matches:
+        name = html.unescape(name).strip()
+        if href and name:
+            results.append((href, name))
+    if not results:
+        log(f'nflvideo no buttons found for {url}', xbmc.LOGERROR)
+        return
+    if len(results) == 1:
+        choice = 0
+    else:
+        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
+    if choice == -1:
+        return
+    href, name = results[choice]
+    iframe_html = requests.get(href).text
+    m = re.search(r'<iframe[^>]+src="([^"]+)"', iframe_html, re.I)
+    if not m:
+        log(f'nflvideo no iframe found at {href}', xbmc.LOGERROR)
+        return
+    return m.group(1)
 ]]></expres>
 <page>[makelist.param1]</page>
 <referer></referer>
