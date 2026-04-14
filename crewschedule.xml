@@ -339,20 +339,23 @@ class streamer:
     def watchprowrestling(self, url):
         try:
             results = []
-            for page in range(1, 11):  # first 10 pages
-                if page == 1:
-                    page_url = url
-                else:
-                    page_url = f"{url.rstrip('/')}/page/{page}/"
-                page_data = client.request(page_url)
+            for page in range(1, 6):
+                page_url = url if page == 1 else f'{base}page/{page}/'
+                data = client.request(page_url)
                 matches = re.findall(
-                    r'<h2[^>]*class="[^"]*entry-title[^"]*"[^>]*>\s*'
-                    r'<a[^>]+href="([^"]+)"[^>]*>([^<]+)</a>',
-                    page_data
+                    r'<h2 class="blog-entry-title">\s*<a href="([^"]+)".*?>(.*?)</a>',
+                    data, re.S
                 )
-                for href, title in matches:
+                if not matches:
+                    break
+                for link, title in matches:
                     title = html.unescape(title).strip()
-                    results.append((href, title))
+                    # thumbnail
+                    thumb = ''
+                    t = re.search(r'<img[^>]+src="([^"]+)"', data)
+                    if t:
+                        thumb = t.group(1)
+                    results.append((link, thumb, title))
             return results
         except Exception as e:
             log(TAG, f'watchprowrestling error: {e}')
