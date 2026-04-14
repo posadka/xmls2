@@ -950,3 +950,58 @@ class streamer:
             )
         except Exception as e:
             log(f'supersurge failed for {url} | {e}', xbmc.LOGERROR)
+
+    def waatk(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            parsed = urlparse(url)
+            referer = f'{parsed.scheme}://{parsed.netloc}'
+            headers = {
+                "Referer": referer,
+                "User-Agent": UA
+            }
+            page_data = requests.get(url, headers=headers).text
+            m = re.search(r'(?s)<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
+                return
+            iframe = m.group(1)
+            page_data = requests.get(iframe, headers=headers).text
+            m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                return
+            fid = m.group(1)
+            m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page_data)
+            if not m:
+                return
+            js_src = m.group(1)
+            full_url = 'https:' + js_src if js_src.startswith('//') else js_src
+            parsed = urlparse(full_url)
+            referer = f'{parsed.scheme}://{parsed.netloc}'
+            page_data = requests.get(full_url, headers=headers).text
+            m = re.search(r'src=["\']([^"\']+)', page_data)
+            if not m:
+                return
+            api = m.group(1)
+            if api.startswith('//'):
+                api = 'https:' + api
+            elif api.startswith('/'):
+                api = urljoin(referer, api)
+            api_url = api + 'mobile&live=' + fid
+            api_html = requests.get(api_url, headers=headers).text
+            m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
+            if not m:
+                return
+            chars = re.findall(r'"([^"]+)"', m.group(1))
+            source = ''.join(chars).replace(r'\/', '/')
+            for _ in range(3):
+                source = source.replace('https://///', 'https://')
+                source = source.replace('https:////', 'https://')
+                source = source.replace('https:///', 'https://')
+            return (
+                source
+                + '|Referer=' + quote_plus(referer + '/')
+                + '&Origin=' + quote_plus(referer)
+                + '&User-Agent=' + quote_plus(UA)
+            )
+        except Exception as e:
+            log(f'waatk failed for {url} | {e}', xbmc.LOGERROR)
