@@ -946,7 +946,7 @@ class streamer:
                 log(TAG, f'waatk no fid at {iframe_url}')
                 return
             fid = m.group(1)
-            m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page_data)
+            m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', iframe_html)
             if not m:
                 log(TAG, f'waatk no js src at {iframe_url}')
                 return
@@ -968,21 +968,14 @@ class streamer:
                 api = urljoin(js_referer, api)
             api_url = api + 'mobile&live=' + fid
             api_html = requests.get(api_url, headers=js_headers).text
-            m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
+            m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
             if not m:
                 log(TAG, f'waatk no join array in api response')
                 return
-            chars = re.findall(r'"([^"]+)"', m.group(1))
-            source = ''.join(chars).replace(r'\/', '/')
-            for _ in range(3):
-                source = source.replace('https://///', 'https://')
-                source = source.replace('https:////', 'https://')
-                source = source.replace('https:///', 'https://')
+            source = m.group(1)
             return (
                 source
                 + '|Referer=' + quote_plus(js_referer + '/')
                 + '&Origin=' + quote_plus(js_referer)
                 + '&User-Agent=' + quote_plus(UA)
             )
-        except Exception as e:
-            log(TAG, f'waatk failed for {url} | {e}')
