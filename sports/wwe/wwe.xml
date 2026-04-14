@@ -279,7 +279,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE RAW[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE RAW[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -298,7 +298,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE SMACKDOWN[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE SMACKDOWN[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -317,7 +317,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE SPECIAL[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE SPECIAL[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -336,7 +336,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE NXT[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE NXT[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -355,7 +355,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE MAIN EVENT[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE MAIN EVENT[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -374,7 +374,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW Dynamite[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW Dynamite[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -393,7 +393,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW Collision[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW Collision[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -412,7 +412,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE EVOLVE[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE EVOLVE[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>
@@ -431,7 +431,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 </item>
 
 <item>
-<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]TNA IMPACT[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]TNA IMPACT[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
 <link>$doregex[dir]</link>

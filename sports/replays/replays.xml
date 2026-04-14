@@ -119,8 +119,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <name>m3u</name>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import re, html, requests
+    import re, html, xbmc, xbmcgui, requests
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     matches = re.findall(
         r'<a\s[^>]*class="su-button[^"]*"[^>]*href="([^"]+)"[^>]*>.*?<span[^>]*>([^<]+)</span>',
         page_data,
@@ -132,7 +133,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         if href and name:
             results.append((href, name))
     if not results:
-        log(f'nflvideo no buttons found for {url}', xbmc.LOGERROR)
+        xbmc.log('nflvideo: no buttons found', xbmc.LOGERROR)
         return
     if len(results) == 1:
         choice = 0
@@ -144,7 +145,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     iframe_html = requests.get(href).text
     m = re.search(r'<iframe[^>]+src="([^"]+)"', iframe_html, re.I)
     if not m:
-        log(f'nflvideo no iframe found at {href}', xbmc.LOGERROR)
+        xbmc.log(f'nflvideo: no iframe found at {href}', xbmc.LOGERROR)
         return
     return m.group(1)
 ]]></expres>
@@ -1307,6 +1308,177 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         return
     href, name = results[choice]
     return [(href, name)]
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE RAW[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/WWE%20Monday%20Night%20Raw.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE SMACKDOWN[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/WWE%20SmackDown.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE SPECIAL[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/WWE%20SPECIAL.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE NXT[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/WWE%20NXT.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE MAIN EVENT[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/WWE%20Main.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW Dynamite[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/AEW%20Dynamite.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]AEW Collision[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/AEW%20Collision.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]WWE EVOLVE[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/WWE%20EVOLVE.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
+
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]TNA IMPACT[/COLOR] [COLOR orchid]DIRECT REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/wwe_network.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/wwe-network_fanart.png</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/TNA%20Impact.xml'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
 ]]></expres>
 <page></page>
 </regex>
