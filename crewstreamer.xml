@@ -994,6 +994,7 @@ class streamer:
                 if href and name:
                     results.append((href, name))
             if not results:
+                log(f'watchprowrestling: no buttons found on {url}', xbmc.LOGWARNING)
                 return
             if len(results) == 1:
                 choice = 0
