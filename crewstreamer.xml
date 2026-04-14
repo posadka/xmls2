@@ -55,7 +55,7 @@ class streamer:
             elif 'buffstreams' in url: u = self.buffstreams(url)
             elif 'shd247' in url: u = self.shd(url)
             elif 'streams.center' in url: u = self.supersurge(url)
-            elif 'watchprowrestling' in url: u = self.watchprowrestling(url)
+            elif 'waatk' in url: u = self.waatk(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
