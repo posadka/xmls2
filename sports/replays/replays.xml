@@ -89,7 +89,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <listrepeat><![CDATA[
   <title>[COLOR snow][makelist.param3][/COLOR]</title>
   <link>$doregex[m3u]</link>
-  <thumbnail>https://nfl-video.com/[makelist.param2]</thumbnail>
+  <thumbnail>[makelist.param2]</thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
@@ -111,8 +111,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for i in range(1,15): u += [url + str(i)]
     u = page().run(u)
     items = re.findall('(?s)<div class="poster">\s*<a href="([^"]*)"><img src="([^"]*).*?>.*?>.*?>.*?>.*?>.*?>([^<]*)', u)
-    sort = [('https://nfl-video.com'+i[0],i[1],i[2]) for i in items]
-    return sort
+    return items
 ]]></expres>
 <page></page>
 </regex>
