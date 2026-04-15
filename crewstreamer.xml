@@ -1029,28 +1029,60 @@ class streamer:
             embed_url = f"https://{edm}/sd0embed/{game_cat}?" + urlencode(params)
             embed_headers = {
                 'User-Agent': UA,
-                'Referer': origin + '/',
+                'Referer': url,
                 'Origin': origin
             }
             embed_html = requests.get(embed_url, headers=embed_headers, timeout=10).text
-            m = re.search(r"const videoUrl = '([^']+)'", embed_html)
+            m = re.search(r'const videoSource=bota\(decodeSr\(\[([^\]]+)\]\)\)', embed_html)
             if not m:
-                log(f'embedme no videoUrl at {embed_url}', xbmc.LOGERROR)
+                log(f'embedme no videoSource at {embed_url}', xbmc.LOGERROR)
                 return
-            stream_url = base64.b64decode(base64.b64decode(m.group(1)).decode('utf-8')).decode('utf-8')
-            m = re.search(r"const secTokenUrl = '([^']+)'", embed_html)
+            char_codes = [int(x.strip()) for x in m.group(1).split(',')]
+            decoded_str = ''.join(chr(c) for c in char_codes)
+            stream_url = base64.b64decode(base64.b64decode(decoded_str).decode('utf-8')).decode('utf-8')
+            m = re.search(r'const sCode=decodeSr\(\[([^\]]+)\]\)', embed_html)
+            if not m:
+                log(f'embedme no sCode at {embed_url}', xbmc.LOGERROR)
+                return
+            scode_chars = [int(x.strip()) for x in m.group(1).split(',')]
+            scode = ''.join(chr(c) for c in scode_chars)
+            m = re.search(r'const secTokenUrl=bota\("([^"]+)"\)', embed_html)
             if not m:
                 log(f'embedme no secTokenUrl at {embed_url}', xbmc.LOGERROR)
                 return
             auth_base = base64.b64decode(m.group(1)).decode('utf-8')
-            m_scode = re.search(r"const sCode = '([^']+)'", embed_html)
-            m_ts = re.search(r"const expireTs = ([^;]+);", embed_html)
-            m_uid = re.search(r"const strUnqId = '([^']+)'", embed_html)
-            if not (m_scode and m_ts and m_uid):
-                log(f'embedme missing auth params at {embed_url}', xbmc.LOGERROR)
+            m = re.search(r'const expireTs=parseInt\("([^"]+)"', embed_html)
+            if not m:
+                log(f'embedme no expireTs at {embed_url}', xbmc.LOGERROR)
                 return
-            auth_url = f"{auth_base}/?stream={m_uid.group(1)}&scode={m_scode.group(1)}&expires={m_ts.group(1)}"
-            requests.get(auth_url, headers={'Referer': embed_url, 'User-Agent': UA}, timeout=10)
+            expire_ts = m.group(1)
+            m = re.search(r'const strUnqId="([^"]+)"', embed_html)
+            if not m:
+                log(f'embedme no strUnqId at {embed_url}', xbmc.LOGERROR)
+                return
+            str_unq_id = m.group(1)
+            m = re.search(r'const edgeHostId="([^"]+)"', embed_html)
+            edge_host_id = m.group(1) if m else 's-b1'
+            m = re.search(r'const playerId="([^"]+)"', embed_html)
+            player_id = m.group(1) if m else str_unq_id
+            auth_url = (
+                f"{auth_base}?scode={requests.utils.quote(scode)}"
+                f"&stream={requests.utils.quote(str_unq_id)}"
+                f"&expires={expire_ts}"
+                f"&u_id={player_id}"
+                f"&host_id={edge_host_id}"
+            )
+            m = re.search(r'const csrftoken="([^"]+)"', embed_html)
+            csrf_token = ''
+            if m:
+                csrf_token = base64.b64decode(m.group(1)).decode('utf-8')
+            auth_headers = {
+                'User-Agent': UA,
+                'Referer': embed_url,
+                'Accept': 'application/json',
+                'X-CSRF-Auth': base64.b64encode(csrf_token.encode()).decode() if csrf_token else ''
+            }
+            requests.get(auth_url, headers=auth_headers, timeout=10)
             log(f'embedme stream URL: {stream_url}')
             return (
                 stream_url
