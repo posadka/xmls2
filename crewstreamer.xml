@@ -242,6 +242,17 @@ class streamer:
         except Exception as e:
             log(f'elixx failed for {url} | {e}', xbmc.LOGERROR)
 
+    def playoff(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
+                return
+            headers = {'User-Agent': UA}
+            page_data = requests.get(url, headers=headers).text
+            iframe = re.findall(r'<iframe[^>]+src=["\']([^"\']+)', page_data)[0]
+            return self.embedsports(iframe)
+        except Exception as e:
+            log(f'playoff failed for {url} | {e}', xbmc.LOGERROR)
+
     def nflsportz(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
