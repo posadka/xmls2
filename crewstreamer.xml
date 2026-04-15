@@ -1082,6 +1082,7 @@ class streamer:
                 'X-CSRF-Auth': base64.b64encode(csrf_token.encode()).decode() if csrf_token else ''
             }
             auth_response = requests.get(auth_url, headers=auth_headers, timeout=10)
+            log(f'embedme auth status: {auth_response.status_code} body: {auth_response.text[:200]}')
             auth_data = auth_response.json()
             if not auth_data.get('success'):
                 log(f'embedme auth failed at {auth_url}', xbmc.LOGERROR)
