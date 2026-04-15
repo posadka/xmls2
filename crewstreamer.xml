@@ -1002,14 +1002,16 @@ class streamer:
                 log(f'embedme no gameCat at {url}', xbmc.LOGERROR)
                 return
             game_cat = m.group(1)
-            reliabletv = 'https://reliabletv.me'
-            embed_url = f"{reliabletv}/sd0embed/{game_cat}"
+            m = re.search(r'\bpid\s*=\s*(\d+)', page_data)
+            pid = m.group(1) if m else '5'
+            ninguno = 'https://ninguno.net'
+            embed_url = f"{ninguno}/sd0embed/{game_cat}"
             embed_headers = {
                 'User-Agent': UA,
                 'Referer': origin + '/',
                 'Origin': origin
             }
-            embed_html = requests.get(embed_url, headers=embed_headers, params={'v': zmid}, timeout=10).text
+            embed_html = requests.get(embed_url, headers=embed_headers, params={'v': zmid, 'pid': pid}, timeout=10).text
             m = re.search(r"const videoUrl = '([^']+)'", embed_html)
             if not m:
                 log(f'embedme no videoUrl at {embed_url}', xbmc.LOGERROR)
@@ -1032,8 +1034,8 @@ class streamer:
             return (
                 stream_url
                 + f"|User-Agent={UA}"
-                + f"&Referer={reliabletv}/sd0embed"
-                + f"&Origin={reliabletv}"
+                + f"&Referer={ninguno}/sd0embed"
+                + f"&Origin={ninguno}"
             )
         except Exception as e:
             log(f'embedme failed for {url} | {e}', xbmc.LOGERROR)
