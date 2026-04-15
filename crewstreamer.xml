@@ -25,7 +25,7 @@ try:
 except ImportError:
     from urllib.parse import urlencode, quote_plus, urlparse, urljoin
 
-from resources.lib.modules import control, client, workers, jsunpack, hunter
+from resources.lib.modules import control, client, workers, jsunpack, hunter, cloudscraper
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
@@ -1082,7 +1082,8 @@ class streamer:
                 'Accept': 'application/json',
                 'X-CSRF-Auth': base64.b64encode(csrf_token.encode()).decode() if csrf_token else ''
             }
-            auth_response = requests.get(auth_url, headers=auth_headers, timeout=10)
+            scraper = cloudscraper.create_scraper()
+            auth_response = scraper.get(auth_url, headers=auth_headers, timeout=10)
             log(f'embedme auth status: {auth_response.status_code} body: {auth_response.text[:200]}')
             if auth_response.status_code == 200:
                 try:
