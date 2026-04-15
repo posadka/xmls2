@@ -1088,6 +1088,7 @@ class streamer:
                 stream_url
                 + f"|User-Agent={UA}"
                 + f"&Referer={embed_url}"
+                + f"&Origin=https://{edm}"
             )
         except Exception as e:
             log(f'embedme failed for {url} | {e}', xbmc.LOGERROR)
