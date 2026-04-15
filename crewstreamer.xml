@@ -1004,14 +1004,35 @@ class streamer:
             game_cat = m.group(1)
             m = re.search(r'\bpid\s*=\s*(\d+)', page_data)
             pid = m.group(1) if m else '5'
-            ninguno = 'https://ninguno.net'
-            embed_url = f"{ninguno}/sd0embed/{game_cat}"
+            m = re.search(r'\bedm\s*=\s*"([^"]+)"', page_data)
+            edm = m.group(1) if m else 'ninguno.net'
+            m = re.search(r'const siteConfig\s*=\s*(\{[^;]+\})', page_data)
+            if not m:
+                log(f'embedme no siteConfig at {url}', xbmc.LOGERROR)
+                return
+            site_config = json.loads(m.group(1))
+            csrf = site_config.get('csrf')
+            csrf_ip = site_config.get('csrf_ip')
+            if not csrf or not csrf_ip:
+                log(f'embedme no csrf at {url}', xbmc.LOGERROR)
+                return
+            m = re.search(r'gameText\s*=\s*"([^"]+)"', page_data)
+            game_text = m.group(1) if m else ''
+            params = {
+                'pid': pid,
+                'gacat': game_text,
+                'gatxt': game_cat,
+                'v': zmid,
+                'csrf': csrf,
+                'csrf_ip': csrf_ip
+            }
+            embed_url = f"https://{edm}/sd0embed/{game_cat}?" + urlencode(params)
             embed_headers = {
                 'User-Agent': UA,
                 'Referer': origin + '/',
                 'Origin': origin
             }
-            embed_html = requests.get(embed_url, headers=embed_headers, params={'v': zmid, 'pid': pid}, timeout=10).text
+            embed_html = requests.get(embed_url, headers=embed_headers, timeout=10).text
             m = re.search(r"const videoUrl = '([^']+)'", embed_html)
             if not m:
                 log(f'embedme no videoUrl at {embed_url}', xbmc.LOGERROR)
@@ -1034,8 +1055,8 @@ class streamer:
             return (
                 stream_url
                 + f"|User-Agent={UA}"
-                + f"&Referer={ninguno}/sd0embed"
-                + f"&Origin={ninguno}"
+                + f"&Referer=https://{edm}/sd0embed"
+                + f"&Origin=https://{edm}"
             )
         except Exception as e:
             log(f'embedme failed for {url} | {e}', xbmc.LOGERROR)
