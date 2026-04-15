@@ -1039,7 +1039,9 @@ class streamer:
                 return
             char_codes = [int(x.strip()) for x in m.group(1).split(',')]
             decoded_str = ''.join(chr(c) for c in char_codes)
-            stream_url = base64.b64decode(base64.b64decode(decoded_str).decode('utf-8')).decode('utf-8')
+            video_source = base64.b64decode(decoded_str).decode('utf-8')
+            url_source = base64.b64decode(video_source).decode('utf-8')
+            stream_url = base64.b64decode(url_source).decode('utf-8')
             m = re.search(r'const sCode=decodeSr\(\[([^\]]+)\]\)', embed_html)
             if not m:
                 log(f'embedme no sCode at {embed_url}', xbmc.LOGERROR)
@@ -1065,6 +1067,8 @@ class streamer:
             edge_host_id = m.group(1) if m else 's-b1'
             m = re.search(r'const playerId="([^"]+)"', embed_html)
             player_id = m.group(1) if m else str_unq_id
+            m = re.search(r'const csrftoken="([^"]+)"', embed_html)
+            csrf_token = base64.b64decode(m.group(1)).decode('utf-8') if m else ''
             auth_url = (
                 f"{auth_base}?scode={requests.utils.quote(scode)}"
                 f"&stream={requests.utils.quote(str_unq_id)}"
@@ -1072,23 +1076,22 @@ class streamer:
                 f"&u_id={player_id}"
                 f"&host_id={edge_host_id}"
             )
-            m = re.search(r'const csrftoken="([^"]+)"', embed_html)
-            csrf_token = ''
-            if m:
-                csrf_token = base64.b64decode(m.group(1)).decode('utf-8')
             auth_headers = {
                 'User-Agent': UA,
                 'Referer': embed_url,
                 'Accept': 'application/json',
                 'X-CSRF-Auth': base64.b64encode(csrf_token.encode()).decode() if csrf_token else ''
             }
-            requests.get(auth_url, headers=auth_headers, timeout=10)
+            auth_session = requests.Session()
+            auth_session.get(auth_url, headers=auth_headers, timeout=10)
+            cookies = '; '.join([f'{k}={v}' for k, v in auth_session.cookies.items()])
             log(f'embedme stream URL: {stream_url}')
             return (
                 stream_url
                 + f"|User-Agent={UA}"
                 + f"&Referer={embed_url}"
                 + f"&Origin=https://{edm}"
+                + (f"&Cookie={cookies}" if cookies else "")
             )
         except Exception as e:
             log(f'embedme failed for {url} | {e}', xbmc.LOGERROR)
