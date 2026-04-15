@@ -968,14 +968,17 @@ class streamer:
                 api = urljoin(js_referer, api)
             api_url = api + 'mobile&live=' + fid
             api_html = requests.get(api_url, headers=js_headers).text
-            m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
+            m = re.search(r'function\s+\w+\s*\(\s*\)\s*\{\s*return\s*\(\[([^\]]+)\]\.join\(""\)', api_html)
             if not m:
                 log(TAG, f'waatk no join array in api response')
                 return
-            source = m.group(1)
+            chars = re.findall(r'"([^"]*)"', m.group(1))
+            source = ''.join(chars).replace(r'\/', '/')
             return (
                 source
                 + '|Referer=' + quote_plus(js_referer + '/')
                 + '&Origin=' + quote_plus(js_referer)
                 + '&User-Agent=' + quote_plus(UA)
             )
+        except Exception as e:
+            log(TAG, f'waatk failed for {url} | {e}', xbmc.LOGERROR)
