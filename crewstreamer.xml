@@ -242,17 +242,6 @@ class streamer:
         except Exception as e:
             log(f'elixx failed for {url} | {e}', xbmc.LOGERROR)
 
-    def playoff(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
-                return
-            headers = {'User-Agent': UA}
-            page_data = requests.get(url, headers=headers).text
-            iframe = re.findall(r'<iframe[^>]+src=["\']([^"\']+)', page_data)[0]
-            return self.embedsports(iframe)
-        except Exception as e:
-            log(f'playoff failed for {url} | {e}', xbmc.LOGERROR)
-
     def nflsportz(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
@@ -995,3 +984,71 @@ class streamer:
             )
         except Exception as e:
             log(f'waatk failed for {url} | {e}', xbmc.LOGERROR)
+
+    def embedme(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
+                return
+            parsed = urlparse(url)
+            origin = f"{parsed.scheme}://{parsed.netloc}"
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            m = re.search(r'zmid\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                log(f'embedme no zmid at {url}', xbmc.LOGERROR)
+                return
+            zmid = m.group(1)
+            m = re.search(r'gameCat\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                log(f'embedme no gameCat at {url}', xbmc.LOGERROR)
+                return
+            game_cat = m.group(1)
+            reliabletv = 'https://reliabletv.me'
+            embed_url = f"{reliabletv}/sd0embed/{game_cat}"
+            embed_headers = {
+                'User-Agent': UA,
+                'Referer': origin + '/',
+                'Origin': origin
+            }
+            embed_html = requests.get(embed_url, headers=embed_headers, params={'v': zmid}, timeout=10).text
+            m = re.search(r"const videoUrl = '([^']+)'", embed_html)
+            if not m:
+                log(f'embedme no videoUrl at {embed_url}', xbmc.LOGERROR)
+                return
+            stream_url = base64.b64decode(base64.b64decode(m.group(1)).decode('utf-8')).decode('utf-8')
+            m = re.search(r"const secTokenUrl = '([^']+)'", embed_html)
+            if not m:
+                log(f'embedme no secTokenUrl at {embed_url}', xbmc.LOGERROR)
+                return
+            auth_base = base64.b64decode(m.group(1)).decode('utf-8')
+            m_scode = re.search(r"const sCode = '([^']+)'", embed_html)
+            m_ts = re.search(r"const expireTs = ([^;]+);", embed_html)
+            m_uid = re.search(r"const strUnqId = '([^']+)'", embed_html)
+            if not (m_scode and m_ts and m_uid):
+                log(f'embedme missing auth params at {embed_url}', xbmc.LOGERROR)
+                return
+            auth_url = f"{auth_base}/?stream={m_uid.group(1)}&scode={m_scode.group(1)}&expires={m_ts.group(1)}"
+            requests.get(auth_url, headers={'Referer': embed_url, 'User-Agent': UA}, timeout=10)
+            log(f'embedme stream URL: {stream_url}')
+            return (
+                stream_url
+                + f"|User-Agent={UA}"
+                + f"&Referer={reliabletv}/sd0embed"
+                + f"&Origin={reliabletv}"
+            )
+        except Exception as e:
+            log(f'embedme failed for {url} | {e}', xbmc.LOGERROR)
+
+    def playoff(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
+                return
+            headers = {'User-Agent': UA}
+            page_data = requests.get(url, headers=headers, timeout=10).text
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
+            if not m:
+                log(f'playoff no iframe at {url}', xbmc.LOGERROR)
+                return
+            iframe = m.group(1)
+            return self.embedme(iframe)
+        except Exception as e:
+            log(f'playoff failed for {url} | {e}', xbmc.LOGERROR)
