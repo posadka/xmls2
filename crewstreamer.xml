@@ -1077,17 +1077,21 @@ class streamer:
             )
             auth_headers = {
                 'User-Agent': UA,
-                'Referer': embed_url,
+                'Referer': f'https://{edm}/',
+                'Origin': f'https://{edm}',
                 'Accept': 'application/json',
                 'X-CSRF-Auth': base64.b64encode(csrf_token.encode()).decode() if csrf_token else ''
             }
             auth_response = requests.get(auth_url, headers=auth_headers, timeout=10)
             log(f'embedme auth status: {auth_response.status_code} body: {auth_response.text[:200]}')
-            auth_data = auth_response.json()
-            if not auth_data.get('success'):
-                log(f'embedme auth failed at {auth_url}', xbmc.LOGERROR)
-                return
-            device_id = auth_data.get('device_id', player_id)
+            if auth_response.status_code == 200:
+                try:
+                    auth_data = auth_response.json()
+                    device_id = auth_data.get('device_id', player_id)
+                except Exception:
+                    device_id = player_id
+            else:
+                device_id = player_id
             validated_stream_url = f"{stream_url}?u_id={device_id}"
             log(f'embedme stream URL: {validated_stream_url}')
             return (
