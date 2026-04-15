@@ -49,6 +49,7 @@ class streamer:
             elif 'shd247' in url: u = self.shd(url)
             elif 'streamcenter' in url: u = self.supersurge(url)
             elif 'waatk' in url: u = self.waatk(url)
+            elif 'playoffsstream' in url: u = self.playoff(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
@@ -353,4 +354,32 @@ class streamer:
             return results
         except Exception as e:
             log(TAG, f'waatk error: {e}')
+            return None
+
+    def playoff(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            matches = re.findall(
+                r'(?s)<a class="btn btn-info btn-block"[^>]+href="([^"]+)"[^>]*>'
+                r'.*?<div class="text-center">([^<]*)</div>'
+                r'.*?<div[^>]+d-none d-md-inline[^>]*>([^<]+)</div>',
+                page_data
+            )
+            results = []
+            for href, time_str, teams in matches:
+                full_url = urljoin(base, href)
+                time_str = time_str.strip()
+                teams = html.unescape(teams).strip()
+                try:
+                    dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M ET')
+                    time_str = dt.strftime('%I:%M %p ET').lstrip('0')
+                except:
+                    pass
+                title = f'{teams} {time_str}'.strip()
+                results.append((full_url, title))
+            return results if results else None
+        except Exception as e:
+            log(TAG, f'playoff error: {e}')
             return None
