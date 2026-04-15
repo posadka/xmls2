@@ -1081,16 +1081,19 @@ class streamer:
                 'Accept': 'application/json',
                 'X-CSRF-Auth': base64.b64encode(csrf_token.encode()).decode() if csrf_token else ''
             }
-            auth_session = requests.Session()
-            auth_session.get(auth_url, headers=auth_headers, timeout=10)
-            cookies = '; '.join([f'{k}={v}' for k, v in auth_session.cookies.items()])
-            log(f'embedme stream URL: {stream_url}')
+            auth_response = requests.get(auth_url, headers=auth_headers, timeout=10)
+            auth_data = auth_response.json()
+            if not auth_data.get('success'):
+                log(f'embedme auth failed at {auth_url}', xbmc.LOGERROR)
+                return
+            device_id = auth_data.get('device_id', player_id)
+            validated_stream_url = f"{stream_url}?u_id={device_id}"
+            log(f'embedme stream URL: {validated_stream_url}')
             return (
-                stream_url
+                validated_stream_url
                 + f"|User-Agent={UA}"
                 + f"&Referer={embed_url}"
                 + f"&Origin=https://{edm}"
-                + (f"&Cookie={cookies}" if cookies else "")
             )
         except Exception as e:
             log(f'embedme failed for {url} | {e}', xbmc.LOGERROR)
