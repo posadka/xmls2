@@ -50,6 +50,7 @@ class streamer:
             elif 'streamcenter' in url: u = self.supersurge(url)
             elif 'waatk' in url: u = self.waatk(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
+            elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
@@ -382,4 +383,24 @@ class streamer:
             return results if results else None
         except Exception as e:
             log(TAG, f'playoff error: {e}')
+            return None
+
+    def crackstreams(self, url):
+        try:
+            page = client.request(url)
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            matches = re.findall(
+                r'<a href="([^"]+)"[^>]+title="Watch ([^"]+?) Live Stream',
+                page
+            )
+            results = []
+            for href, title in matches:
+                full = urljoin(base, href)
+                title = html.unescape(title).strip()
+                title = f'{title}'
+                results.append((full, title))
+            return results
+        except Exception as e:
+            log(TAG, f'crackstreams error: {e}')
             return None

@@ -56,9 +56,11 @@ class streamer:
             elif 'shd247' in url: u = self.shd(url)
             elif 'streams.center' in url: u = self.supersurge(url)
             elif 'waatk' in url: u = self.waatk(url)
+            elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
+            elif 'blacktiesports' in url: u = self.blacktienba(url)
             else: u = self.generic(url)
 
             return u
@@ -211,7 +213,7 @@ class streamer:
     def elixx(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
+            page_data = requests.get(url, headers={'User-Agent': UA}).text
             m = re.search(r'(?s)iframe-wrapper">\s*<iframe src="([^"]*)', page_data)
             if not m:
                 return
@@ -245,7 +247,7 @@ class streamer:
     def nflsportz(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
+            page_data = requests.get(url, headers={'User-Agent': UA}).text
             m = re.search(r'iframe.*?src="([^"]*)', page_data)
             if not m:
                 return
@@ -266,9 +268,12 @@ class streamer:
     def blacktienba(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
+            page_data = requests.get(url, headers={'User-Agent': UA}).text
             if 'm3u8' in page_data:
-                link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)[0]
+                m = re.search(r'(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)
+                if not m:
+                    return
+                link = m.group(1)
                 return (
                     link
                     + '|User-Agent=' + UA
@@ -281,14 +286,21 @@ class streamer:
                     return
                 iframe_url = m.group(1)
                 iframe_html = client.request(iframe_url)
-                items = re.findall('<script>var.*?=\s*(\[[^;]+)', iframe_html)[0]
-                items = re.findall('"(.+?)"', items)
-                subitem = int(re.findall('\(atob.+?-\s*(\d+)', iframe_html)[0])
+                m = re.search(r'<script>var.*?=\s*(\[[^;]+)', iframe_html)
+                if not m:
+                    return
+                items = re.findall('"(.+?)"', m.group(1))
+                m = re.search(r'\(atob.+?-\s*(\d+)', iframe_html)
+                if not m:
+                    return
+                subitem = int(m.group(1))
                 decoded = ''
                 for item in items:
                     decoded += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-                link = re.findall('atob\(\'([^\']*)', decoded)[0]
-                link = link.replace(' ', '')
+                m = re.search(r'atob\(\'([^\']*)', decoded)
+                if not m:
+                    return
+                link = m.group(1).replace(' ', '')
                 link = base64.b64decode(link).decode('utf-8')
                 return (
                     link
@@ -297,14 +309,21 @@ class streamer:
                     + '&Referer=' + iframe_url
                 )
             else:
-                items = re.findall('<script>var.*?=\s*(\[[^;]+)', page_data)[0]
-                items = re.findall('"(.+?)"', items)
-                subitem = int(re.findall('\(atob.+?-\s*(\d+)', page_data)[0])
+                m = re.search(r'<script>var.*?=\s*(\[[^;]+)', page_data)
+                if not m:
+                    return
+                items = re.findall('"(.+?)"', m.group(1))
+                m = re.search(r'\(atob.+?-\s*(\d+)', page_data)
+                if not m:
+                    return
+                subitem = int(m.group(1))
                 decoded = ''
                 for item in items:
                     decoded += chr(int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-                link = re.findall('(?:source|src|file):\s*[\'"]([^\'"]+)', decoded)[0]
-                link = link.replace(' ', '')
+                m = re.search(r'(?:source|src|file):\s*[\'"]([^\'"]+)', decoded)
+                if not m:
+                    return
+                link = m.group(1).replace(' ', '')
                 return (
                     link
                     + '|User-Agent=' + UA
@@ -639,7 +658,7 @@ class streamer:
                 try:
                     if domain_path:
                         domain_url = urljoin(referer, domain_path)
-                        domain_text = client.request(domain_url)
+                        domain_text = requests.get(domain_url, headers=headers).text
                         domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
                     else:
                         raise Exception()
@@ -760,6 +779,16 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
                 return
+            if 'embedsports.top' not in url:
+                headers = {'User-Agent': UA, 'Referer': url}
+                page_data = requests.get(url, headers=headers, timeout=10).text
+                m = re.search(r'<iframe[^>]+src=["\']([^"\']*embedsports\.top[^"\']+)', page_data, re.I)
+                if not m:
+                    log(f'embedsports no embedsports.top iframe found at {url}', xbmc.LOGERROR)
+                    return
+                url = m.group(1).strip()
+                if url.startswith('//'):
+                    url = 'https:' + url
             parts = url.rstrip('/').split('/')
             if 'embed' in parts:
                 idx = parts.index('embed')
@@ -787,7 +816,13 @@ class streamer:
             if not fetch.content:
                 log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                 return
+            if len(fetch.content) < 2:
+                log(f'embedsports response too short for {url}', xbmc.LOGERROR)
+                return
             cipher_len = fetch.content[1]
+            if len(fetch.content) < cipher_len:
+                log(f'embedsports response shorter than cipher_len for {url}', xbmc.LOGERROR)
+                return
             cipher = fetch.content[-cipher_len:]
             decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
             b64 = base64.b64decode(decoded)
@@ -808,8 +843,12 @@ class streamer:
 
     def streambtw(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}).text
-            encoded = re.search(r'encoded\s*=\s*"([^"]+)"', page_data).group(1)
+            m = re.search(r'encoded\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                return
+            encoded = m.group(1)
             source = base64.b64decode(encoded).decode()
             return source
         except Exception as e:
@@ -984,3 +1023,29 @@ class streamer:
             )
         except Exception as e:
             log(f'waatk failed for {url} | {e}', xbmc.LOGERROR)
+
+    def crackstreams(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            def xor_decode(data, key):
+                return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
+            page = client.request(url)
+            m = re.search(r'var _k="([^"]+)"', page)
+            if not m:
+                return
+            key = m.group(1)
+            m = re.search(r'var _raw="([^"]+)"', page)
+            if not m:
+                return
+            raw = m.group(1)
+            d = base64.b64decode(raw).decode()
+            xd = xor_decode(d, key)
+            mid = len(xd) // 2
+            j = base64.b64decode(base64.b64encode(xd[:mid].encode())).decode() + \
+                base64.b64decode(base64.b64encode(xd[mid:].encode())).decode()
+            final = xor_decode(j, key)
+            parsed = urlparse(url)
+            base = f"{parsed.scheme}://{parsed.netloc}"
+            return base + final
+        except Exception as e:
+            log(f'crackstreams failed for {url} | {e}', xbmc.LOGERROR)
