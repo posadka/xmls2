@@ -785,7 +785,7 @@ class streamer:
                     page_data = requests.get(url, headers=headers, timeout=10).text
                     m = re.search(r'<iframe[^>]+src=["\']([^"\']*embedsports\.top[^"\']+)', page_data, re.I)
                     if not m:
-                        log(TAG, f'embedsports no iframe found at {url}')
+                        log(f'embedsports no iframe found at {url}')
                         return
                     url = m.group(1).strip()
                     if url.startswith('//'):
@@ -816,14 +816,14 @@ class streamer:
                 }
                 fetch = requests.post(fetch_url, data=payload, headers=headers, timeout=10)
                 if not fetch.content:
-                    log(TAG, f'embedsports empty response for {url}')
+                    log(f'embedsports empty response for {url}')
                     return
                 if len(fetch.content) < 2:
-                    log(TAG, f'embedsports response too short for {url}')
+                    log(f'embedsports response too short for {url}')
                     return
                 cipher_len = fetch.content[1]
                 if len(fetch.content) < cipher_len:
-                    log(TAG, f'embedsports response shorter than cipher_len for {url}')
+                    log(f'embedsports response shorter than cipher_len for {url}')
                     return
                 cipher = fetch.content[-cipher_len:]
                 decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
@@ -838,10 +838,10 @@ class streamer:
                     counter=Counter.new(128, initial_value=int.from_bytes(b"STOPSTOPSTOPSTOP", "big"))
                 )
                 decrypted = aes.decrypt(b64).decode("utf-8")
-                log(TAG, f'embedsports stream URL: {decrypted}')
+                log(f'embedsports stream URL: {decrypted}')
                 return decrypted + f"|User-Agent={UA}&Referer={url}&Origin={parsed.scheme}://{parsed.netloc}"
             except Exception as e:
-                log(TAG, f'embedsports error: {e}')
+                log(f'embedsports error: {e}')
 
     def streambtw(self, url):
         try:
