@@ -413,27 +413,18 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
-                r'(?s)<article class="game-card.*?>.*?'
-                r'<a href="([^"]+)".*?>.*?'
-                r'<div class="team">\s*([^<]+)\s*</div>.*?'
-                r'<div class="team">\s*([^<]+)\s*</div>.*?'
-                r'(LIVE NOW)?',
+                r'(?s)<article class="game-card.*?>.*?<a href="([^"]+)".*?>.*?'
+                r'<div class="team">\s*([^<]+)\s*<\/div>.*?'
+                r'<div class="team">\s*([^<]+)',
                 page_data
             )
             results = []
-            for link, team1, team2, live in matches:
+            for href, team1, team2 in matches:
+                full_url = urljoin(base, href)
+                team1 = html.unescape(team1).strip()
+                team2 = html.unescape(team2).strip()
                 title = f'{team1} vs {team2}'
-                if live:
-                    color = 'lime'
-                    status = 'LIVE'
-                else:
-                    color = 'white'
-                    status = ''
-                label = f'[COLOR orange][B]{title}[/B][/COLOR]'
-                if status:
-                    label += f' [COLOR {color}]({status})[/COLOR]'
-                full_url = urljoin(base, link)
-                results.append((full_url, label))
+                results.append((full_url, title))
             return results
         except Exception as e:
             log(TAG, f'gstream error: {e}')
