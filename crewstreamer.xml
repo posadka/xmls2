@@ -816,6 +816,7 @@ class streamer:
                     "User-Agent": UA
                 }
                 fetch = requests.post(fetch_url, data=payload, headers=headers, timeout=10)
+                log(f'embedsports raw content={fetch.content.hex()}')
                 if not fetch.content:
                     log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                     return
