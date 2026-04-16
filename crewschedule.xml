@@ -51,6 +51,7 @@ class streamer:
             elif 'waatk' in url: u = self.waatk(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
+            elif 'gstream24' in url: u = self.gstream(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
@@ -404,3 +405,34 @@ class streamer:
         except Exception as e:
             log(TAG, f'crackstreams error: {e}')
             return None
+
+    def gstream(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            page_data = client.request(url)
+            rows = re.findall(
+                r'(?s)<tr>\s*<td>([^<]+)</td>.*?'
+                r'<td>.*?</td>.*?'
+                r'<td>([^<]+)</td>.*?'
+                r'<td>\s*([^<]+)\s*</td>.*?'
+                r'<td[^>]*>([^<]+)</td>.*?'
+                r'<a href="([^"]+)"',
+                page_data
+            )
+            results = []
+            for date, event, time, status, link in rows:
+                title = html.unescape(event).strip()
+                time = time.strip()
+                status = status.strip()
+                if 'Live' in status:
+                    color = 'lime'
+                elif 'SOON' in status.upper():
+                    color = 'yellow'
+                else:
+                    color = 'white'
+                label = f'[B]{title}[/B] [COLOR {color}]({time})[/COLOR]'
+                results.append((link, label))
+            return results
+        except Exception as e:
+            log(TAG f'gstream24_schedule', str(e))
+            return []
