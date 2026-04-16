@@ -410,28 +410,28 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            rows = re.findall(
-                r'(?s)<tr>\s*<td>([^<]+)</td>.*?'
-                r'<td>.*?</td>.*?'
-                r'<td>([^<]+)</td>.*?'
-                r'<td>\s*([^<]+)\s*</td>.*?'
-                r'<td[^>]*>([^<]+)</td>.*?'
-                r'<a href="([^"]+)"',
+            matches = re.findall(
+                r'(?s)<article class="game-card.*?>.*?'
+                r'<a href="([^"]+)".*?>.*?'
+                r'<div class="team">\s*([^<]+)\s*</div>.*?'
+                r'<div class="team">\s*([^<]+)\s*</div>.*?'
+                r'(LIVE NOW)?',
                 page_data
             )
             results = []
-            for date, event, time, status, link in rows:
-                title = html.unescape(event).strip()
-                time = time.strip()
-                status = status.strip()
-                if 'Live' in status:
+            for link, team1, team2, live in matches:
+                title = f'{team1} vs {team2}'
+                if live:
                     color = 'lime'
-                elif 'SOON' in status.upper():
-                    color = 'yellow'
+                    status = 'LIVE'
                 else:
                     color = 'white'
-                label = f'[COLOR orange][B]{title}[/B][/COLOR] [COLOR {color}]({time})[/COLOR]'
-                results.append((link, label))
+                    status = ''
+                label = f'[COLOR orange][B]{title}[/B][/COLOR]'
+                if status:
+                    label += f' [COLOR {color}]({status})[/COLOR]'
+                full_url = urljoin(url, link)
+                results.append((full_url, label))
             return results
         except Exception as e:
             log(TAG, f'gstream error: {e}')
