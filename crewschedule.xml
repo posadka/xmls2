@@ -430,7 +430,7 @@ class streamer:
                     color = 'yellow'
                 else:
                     color = 'white'
-                label = f'[B]{title}[/B] [COLOR {color}]({time})[/COLOR]'
+                label = f'[COLOR orange][B]{title}[/B][/COLOR] [COLOR {color}]({time})[/COLOR]'
                 results.append((link, label))
             return results
         except Exception as e:
