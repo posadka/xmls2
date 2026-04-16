@@ -1027,14 +1027,20 @@ class streamer:
     def crackstreams(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            def get_iframe_src(data):
+                m = re.search(r'<iframe[^>]+src=["\']([^"\']+streams\.center[^"\']+)', data, re.I)
+                if not m:
+                    return None
+                src = m.group(1).strip()
+                return "https:" + src if src.startswith("//") else src
             def xor_decode(data, key):
                 return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
-            page = client.request(url)
-            m = re.search(r'var _k="([^"]+)"', page)
+            page_data = client.request(url)
+            m = re.search(r'var _k="([^"]+)"', page_data)
             if not m:
                 return
             key = m.group(1)
-            m = re.search(r'var _raw="([^"]+)"', page)
+            m = re.search(r'var _raw="([^"]+)"', page_data)
             if not m:
                 return
             raw = m.group(1)
@@ -1046,6 +1052,34 @@ class streamer:
             final = xor_decode(j, key)
             parsed = urlparse(url)
             base = f"{parsed.scheme}://{parsed.netloc}"
-            return base + final
+            link = base + final
+            page_data = client.request(link)
+            iframe1 = get_iframe_src(page_data)
+            if not iframe1:
+                return
+            iframe1_html = requests.get(
+                iframe1,
+                headers={"Referer": url, "User-Agent": UA}
+            ).text
+            m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
+            if not m:
+                return
+            token = m.group(1)
+            decrypt_url = "https://streams.center/embed/decrypt.php"
+            hls_url = requests.post(
+                decrypt_url,
+                data={"input": token},
+                headers={
+                    "User-Agent": UA,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Referer": iframe1
+                },
+                timeout=10
+            ).text.strip()
+            return (
+                f"{hls_url}"
+                f"|Referer=https://streams.center/"
+                f"&User-Agent={UA}"
+            )
         except Exception as e:
             log(f'crackstreams failed for {url} | {e}', xbmc.LOGERROR)
