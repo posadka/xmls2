@@ -816,7 +816,6 @@ class streamer:
                     "User-Agent": UA
                 }
                 fetch = requests.post(fetch_url, data=payload, headers=headers, timeout=10)
-                log(f'embedsports fetch status={fetch.status_code} headers={dict(fetch.headers)} content={fetch.content[:64]}')
                 if not fetch.content:
                     log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                     return
@@ -831,9 +830,9 @@ class streamer:
                 decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
                 decoded += b'=' * (-len(decoded) % 4)
                 b64 = base64.b64decode(decoded)
-                aes_key = fetch.headers.get("What")
+                aes_key = fetch.headers.get("Goat")
                 if not aes_key:
-                    log(f'embedsports missing What header for {url}', xbmc.LOGERROR)
+                    log(f'embedsports missing Goat header for {url}', xbmc.LOGERROR)
                     return
                 aes = AES.new(
                     aes_key.encode(),
