@@ -434,5 +434,5 @@ class streamer:
                 results.append((link, label))
             return results
         except Exception as e:
-            log(TAG f'gstream24_schedule', str(e))
-            return []
+            log(TAG, f'gstream error: {e}')
+            return None
