@@ -1027,26 +1027,21 @@ class streamer:
     def crackstreams(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-
             def xor_decode(data, key):
                 return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
-
             def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+src=["\']([^"\']+streams\.center[^"\']+)', data, re.I)
+                m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', data, re.I)
                 if not m:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
-
             page_data = client.request(url)
-            m = re.search(r'var _k="([^"]+)"', page_data)
-            if not m:
+            key = re.search(r'var _k="([^"]+)"', page_data)
+            raw = re.search(r'var _raw="([^"]+)"', page_data)
+            if not key or not raw:
                 return
-            key = m.group(1)
-            m = re.search(r'var _raw="([^"]+)"', page_data)
-            if not m:
-                return
-            raw = m.group(1)
+            key = key.group(1)
+            raw = raw.group(1)
             d = base64.b64decode(raw).decode()
             xd = xor_decode(d, key)
             mid = len(xd) // 2
@@ -1055,14 +1050,18 @@ class streamer:
             final = xor_decode(j, key)
             parsed = urlparse(url)
             base = f"{parsed.scheme}://{parsed.netloc}"
-            link = base + final
-            page_data = requests.get(link)
-            iframe1 = get_iframe_src(page_data)
+            embed_url = base + final
+            embed_html = requests.get(
+                embed_url,
+                headers={"User-Agent": UA, "Referer": url},
+                timeout=10
+            ).text
+            iframe1 = get_iframe_src(embed_html)
             if not iframe1:
                 return
             iframe1_html = requests.get(
                 iframe1,
-                headers={"Referer": url, "User-Agent": UA},
+                headers={"Referer": embed_url, "User-Agent": UA},
                 timeout=10
             ).text
             m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
@@ -1080,6 +1079,8 @@ class streamer:
                 },
                 timeout=10
             ).text.strip()
+            if not hls_url or not hls_url.startswith("http"):
+                return
             return (
                 f"{hls_url}"
                 f"|Referer=https://streams.center/"
