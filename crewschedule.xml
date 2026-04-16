@@ -408,9 +408,8 @@ class streamer:
 
     def gstream(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
             rows = re.findall(
                 r'(?s)<tr>\s*<td>([^<]+)</td>.*?'
                 r'<td>.*?</td>.*?'
@@ -423,7 +422,6 @@ class streamer:
             results = []
             for date, event, time, status, link in rows:
                 title = html.unescape(event).strip()
-                full = urljoin(base, link)
                 time = time.strip()
                 status = status.strip()
                 if 'Live' in status:
@@ -433,7 +431,7 @@ class streamer:
                 else:
                     color = 'white'
                 label = f'[COLOR orange][B]{title}[/B][/COLOR] [COLOR {color}]({time})[/COLOR]'
-                results.append((full, label))
+                results.append((link, label))
             return results
         except Exception as e:
             log(TAG, f'gstream error: {e}')
