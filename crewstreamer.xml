@@ -828,6 +828,7 @@ class streamer:
                     return
                 cipher = fetch.content[-cipher_len:]
                 decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
+                decoded += b'=' * (-len(decoded) % 4)
                 b64 = base64.b64decode(decoded)
                 aes_key = fetch.headers.get("What")
                 if not aes_key:
