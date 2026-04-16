@@ -410,6 +410,8 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
                 r'(?s)<article class="game-card.*?>.*?'
                 r'<a href="([^"]+)".*?>.*?'
@@ -430,7 +432,7 @@ class streamer:
                 label = f'[COLOR orange][B]{title}[/B][/COLOR]'
                 if status:
                     label += f' [COLOR {color}]({status})[/COLOR]'
-                full_url = urljoin(url, link)
+                full_url = urljoin(base, link)
                 results.append((full_url, label))
             return results
         except Exception as e:
