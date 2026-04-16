@@ -1027,14 +1027,17 @@ class streamer:
     def crackstreams(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+
             def xor_decode(data, key):
                 return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
+
             def get_iframe_src(data):
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', data, re.I)
                 if not m:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
+
             page_data = client.request(url)
             key = re.search(r'var _k="([^"]+)"', page_data)
             raw = re.search(r'var _raw="([^"]+)"', page_data)
@@ -1064,7 +1067,15 @@ class streamer:
                 headers={"Referer": embed_url, "User-Agent": UA},
                 timeout=10
             ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
+            iframe2 = get_iframe_src(iframe1_html)
+            if not iframe2:
+                return
+            iframe2_html = requests.get(
+                iframe2,
+                headers={"Referer": iframe1, "User-Agent": UA},
+                timeout=10
+            ).text
+            m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
             if not m:
                 return
             token = m.group(1)
@@ -1075,7 +1086,7 @@ class streamer:
                 headers={
                     "User-Agent": UA,
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "Referer": iframe1
+                    "Referer": iframe2
                 },
                 timeout=10
             ).text.strip()
