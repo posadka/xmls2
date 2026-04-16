@@ -1027,14 +1027,17 @@ class streamer:
     def crackstreams(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+
+            def xor_decode(data, key):
+                return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
+
             def get_iframe_src(data):
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']+streams\.center[^"\']+)', data, re.I)
                 if not m:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
-            def xor_decode(data, key):
-                return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
+
             page_data = client.request(url)
             m = re.search(r'var _k="([^"]+)"', page_data)
             if not m:
@@ -1053,13 +1056,14 @@ class streamer:
             parsed = urlparse(url)
             base = f"{parsed.scheme}://{parsed.netloc}"
             link = base + final
-            page_data = client.request(link)
+            page_data = requests.get(link)
             iframe1 = get_iframe_src(page_data)
             if not iframe1:
                 return
             iframe1_html = requests.get(
                 iframe1,
-                headers={"Referer": url, "User-Agent": UA}
+                headers={"Referer": url, "User-Agent": UA},
+                timeout=10
             ).text
             m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
             if not m:
