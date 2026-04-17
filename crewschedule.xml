@@ -14,6 +14,13 @@ import xbmc
 import xbmcgui
 
 try:
+    from Cryptodome.Cipher import AES
+    from Cryptodome.Util import Counter
+except:
+    from Crypto.Cipher import AES
+    from Crypto.Util import Counter
+
+try:
     from urllib import urlencode, quote_plus, urlparse, urljoin
 except ImportError:
     from urllib.parse import urlencode, quote_plus, urlparse, urljoin
