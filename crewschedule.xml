@@ -408,7 +408,6 @@ class streamer:
 
     def gstream(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
