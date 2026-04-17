@@ -61,7 +61,6 @@ class streamer:
 
     def streameast(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             matches = re.findall(
                 r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
@@ -282,7 +281,6 @@ class streamer:
 
     def shd(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}/'
             page_data = client.request(url)
