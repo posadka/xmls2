@@ -819,7 +819,6 @@ class streamer:
             if not fetch.content:
                 log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                 return
-            # parse protobuf varint length prefix: 0x0a <varint> <cipher...>
             i = 1
             cipher_len = 0
             shift = 0
@@ -831,7 +830,7 @@ class streamer:
                 if not (b & 0x80):
                     break
             cipher = fetch.content[i:i + cipher_len]
-            decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
+            decoded = bynbjvknmktes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
             decoded += b'=' * (-len(decoded) % 4)
             b64 = base64.b64decode(decoded)
             aes_key = fetch.headers.get("Goat")
