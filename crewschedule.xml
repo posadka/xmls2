@@ -29,10 +29,10 @@ from resources.lib.modules import control, client, workers, jsunpack, hunter
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
 
-TAG = 'schedule'
+TAG = 'streamer'
 
-def log(msg):
-    xbmc.log(f'[{TAG}] {msg}', xbmc.LOGDEBUG)
+def log(msg, level=xbmc.LOGINFO):
+    xbmc.log(f'{TAG} {msg}', level)
 
 class streamer:
 
