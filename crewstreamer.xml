@@ -430,9 +430,11 @@ class streamer:
                 m = re.search(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', api_html)
                 if m:
                     source = m.group(1)
+                    parsed = urlparse(api_url)
+                    api_origin = f"{parsed.scheme}://{parsed.netloc}"
                     return (
                         f"{source}"
-                        f"|Referer={iframe_url}"
+                        f"|Referer={api_url}"
                         f"&User-Agent={UA}"
                     )
                 m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
@@ -467,7 +469,6 @@ class streamer:
                         f"&User-Agent={UA}"
                         f"&Origin={iframe_origin}"
                     )
-
                 return
             elif 'wikisport' in iframe_url:
                 page_data = requests.get(iframe_url, headers=headers, timeout=10).text
