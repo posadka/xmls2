@@ -1197,7 +1197,7 @@ class streamer:
                 "Referer": embed_referer
             }
             page_data = requests.get(embed, headers=headers).text
-            m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
+            m = re.search(r'(https?://([^"\']+\.m3u8[^"\']*)', page_data)
             if not m:
                 return
             source = m.group(1).replace('\\/', '/')
