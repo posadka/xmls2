@@ -424,7 +424,7 @@ class streamer:
                 api_url = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
                 api_html = requests.get(
                     api_url,
-                    headers={"Referer": iframe_url, "User-Agent": UA}  # BUG FIX: was undefined `iframe1`
+                    headers={"Referer": iframe_url, "User-Agent": UA}
                 ).text
                 m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
                 if not m:
