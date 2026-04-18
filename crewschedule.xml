@@ -463,7 +463,7 @@ class streamer:
                     time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
                 except:
                     time_str = ''
-                title = f'{teams} [{league}] {time_str}'.strip()
+                title = f'{teams} {league} {time_str}'.strip()
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
