@@ -9,6 +9,13 @@
 </item>
 
 <item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR lime]REFRESH PAGE[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>$execute[Container.Refresh]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
+</item>
+
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (RS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ufc_fanart.jpg</fanart>
@@ -170,7 +177,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://fsportshdd.club/mmastreams.php')
+    url = client.schedule('https://fsportshds.xyz/mmastreams.php')
     return url
 ]]></expres>
         <page></page>

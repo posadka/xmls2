@@ -9,6 +9,13 @@
 </item>
 
 <item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR lime]REFRESH PAGE[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>$execute[Container.Refresh]</link>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/fifa_fanart.jpg</fanart>
+</item>
+
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (RS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/fifa_fanart.jpg</fanart>
