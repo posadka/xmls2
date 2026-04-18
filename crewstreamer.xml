@@ -427,6 +427,8 @@ class streamer:
                     headers={"Referer": iframe_url, "User-Agent": UA},
                     timeout=10
                 ).text
+                parsed = urlparse(api_url)
+                api_origin = f"{parsed.scheme}://{parsed.netloc}"
                 m = re.search(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', api_html)
                 if m:
                     source = m.group(1)
@@ -434,7 +436,7 @@ class streamer:
                     api_origin = f"{parsed.scheme}://{parsed.netloc}"
                     return (
                         f"{source}"
-                        f"|Referer={api_url}"
+                        f"|Referer={api_origin}"
                         f"&User-Agent={UA}"
                     )
                 m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
@@ -444,9 +446,9 @@ class streamer:
                     source = re.sub(r'https:/{3,}', 'https://', source)
                     return (
                         f"{source}"
-                        f"|Referer={iframe_origin}/"
+                        f"|Referer={api_origin}/"
                         f"&User-Agent={UA}"
-                        f"&Origin={iframe_origin}"
+                        f"|Referer={api_origin}"
                     )
                 m = re.search(r'atob\([\'"]([^\'"]+)[\'"]', api_html)
                 if m:
@@ -465,9 +467,9 @@ class streamer:
                         source = decoded
                     return (
                         f"{source}"
-                        f"|Referer={iframe_origin}/"
+                        f"|Referer={api_origin}/"
                         f"&User-Agent={UA}"
-                        f"&Origin={iframe_origin}"
+                        f"|Referer={api_origin}"
                     )
                 return
             elif 'wikisport' in iframe_url:
