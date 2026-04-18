@@ -1186,6 +1186,7 @@ class streamer:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             headers = {"User-Agent": UA}
             page_data = requests.get(url, headers=headers).text
+            page_data = html.unescape(page_data)
             m = re.search(r'"embedUrl":"([^"]+)"', page_data)
             if not m:
                 return
