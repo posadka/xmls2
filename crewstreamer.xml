@@ -1183,28 +1183,34 @@ class streamer:
 
     def deportesenvivo(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
+                log(f'deportesenvivo blocked - wrong plugin', xbmc.LOGINFO)
+                return
+            log(f'deportesenvivo fetching match page: {url}', xbmc.LOGINFO)
             headers = {"User-Agent": UA}
             page_data = requests.get(url, headers=headers).text
             page_data = html.unescape(page_data)
             m = re.search(r'"embedUrl":"([^"]+)"', page_data)
             if not m:
+                log(f'deportesenvivo no embedUrl found at {url}', xbmc.LOGERROR)
+                log(f'deportesenvivo page snippet: {page_data[:500]}', xbmc.LOGINFO)
                 return
             embed = m.group(1).replace('\\/', '/')
+            log(f'deportesenvivo embed url: {embed}', xbmc.LOGINFO)
             parsed = urlparse(embed)
             embed_referer = f'{parsed.scheme}://{parsed.netloc}/'
-            headers = {
-                "User-Agent": UA,
-                "Referer": embed_referer
-            }
+            headers = {"User-Agent": UA, "Referer": embed_referer}
             page_data = requests.get(embed, headers=headers).text
             m = re.search(r'(https?://[^\s"\'>]+\.m3u8[^\s"\'>]*)', page_data)
             if not m:
+                log(f'deportesenvivo no m3u8 found at {embed}', xbmc.LOGERROR)
+                log(f'deportesenvivo embed snippet: {page_data[:500]}', xbmc.LOGINFO)
                 return
             source = m.group(1).replace('\\/', '/')
             parsed = urlparse(source)
             stream_referer = f'{parsed.scheme}://{parsed.netloc}/'
             stream_origin = f'{parsed.scheme}://{parsed.netloc}'
+            log(f'deportesenvivo resolved: {source}', xbmc.LOGINFO)
             return (
                 f"{source}"
                 f"|Referer={stream_referer}"
