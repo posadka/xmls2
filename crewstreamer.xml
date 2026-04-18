@@ -57,8 +57,6 @@ class streamer:
             elif 'streams.center' in url: u = self.supersurge(url)
             elif 'waatk' in url: u = self.waatk(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
-            elif 'gstream24' in url: u = self.gstream(url)
-            elif 'deportesenvivo' in url: u = self.deportesenvivo(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
@@ -1167,46 +1165,3 @@ class streamer:
             )
         except Exception as e:
             log(f'crackstreams failed for {url} | {e}', xbmc.LOGERROR)
-
-    def gstream(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, timeout=10).text
-            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
-            if not m:
-                log(f'gstream no iframe at {url}', xbmc.LOGERROR)
-                return
-            iframe = m.group(1)
-            return self.embedsports(iframe)
-        except Exception as e:
-            log(f'gstream failed for {url} | {e}', xbmc.LOGERROR)
-
-    def deportesenvivo(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            parsed = urlparse(url)
-            slug = parsed.path.rstrip('/').split('/')[-1]
-            slug = re.sub(r'-s\d+$', '', slug)
-            SUPABASE_URL = 'https://cwxcpqwqypcgvxfchccm.supabase.co'
-            SUPABASE_KEY = 'sb_publishable_qk446pkZuU6Gu256Zx4NwA_7r9mGHxQ'
-            headers = {
-                'apikey': SUPABASE_KEY,
-                'Authorization': f'Bearer {SUPABASE_KEY}',
-                'Content-Type': 'application/json',
-                'User-Agent': UA
-            }
-            api_url = f'{SUPABASE_URL}/rest/v1/matches?slug=eq.{slug}&select=stream_url,embed_url,server_urls'
-            resp = requests.get(api_url, headers=headers, timeout=10)
-            log(f'deportesenvivo supabase status: {resp.status_code}', xbmc.LOGINFO)
-            log(f'deportesenvivo supabase response: {resp.text[:500]}', xbmc.LOGINFO)
-            if resp.status_code != 200 or not resp.json():
-                return
-            data = resp.json()[0]
-            stream_url = data.get('stream_url') or data.get('embed_url')
-            if not stream_url:
-                return
-            if '.m3u8' in stream_url:
-                return f"{stream_url}|User-Agent={UA}&Referer=https://deportesenvivo.live/"
-            return self.resolve(stream_url)
-        except Exception as e:
-            log(f'deportesenvivo failed for {url} | {e}', xbmc.LOGERROR)

@@ -51,8 +51,6 @@ class streamer:
             elif 'waatk' in url: u = self.waatk(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
-            elif 'deportesenvivo' in url: u = self.deportesenvivo(url)
-            elif 'gstream24' in url: u = self.gstream(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
@@ -403,69 +401,4 @@ class streamer:
             return results
         except Exception as e:
             log(f'crackstreams error: {e}')
-            return None
-
-    def gstream(self, url):
-        try:
-            page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
-                r'(?s)<tr>\s*'
-                r'<td>([^<]+)</td>\s*'
-                r'<td>.*?</td>\s*'
-                r'<td>([^<]+)</td>\s*'
-                r'<td>\s*([^<]+?)\s*</td>\s*'
-                r'<td[^>]*>.*?</td>\s*'
-                r'<td>.*?href="([^"]+)"',
-                page_data
-            )
-            results = []
-            for date, event, time_str, href in matches:
-                full_url = urljoin(base, href)
-                event = html.unescape(event).strip()
-                date = date.strip()
-                title = f'{event} {date} {time_str}'
-                results.append((full_url, title))
-            return results
-        except Exception as e:
-            log(f'gstream error: {e}')
-            return None
-
-    def deportesenvivo(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
-                r'(?s)<span class="teams-text"[^>]*>([^<]+)</span>.*?'
-                r'<div class="card-league"[^>]*>([^<]+)</div>.*?'
-                r'<time class="match-time"[^>]*data-ts="(\d+)"[^>]*>.*?</time>.*?'
-                r'<a href="([^"]+)" class="btn btn-primary card-btn"',
-                page_data
-            )
-            results = []
-            now = datetime.now().date()
-            tomorrow = now + timedelta(days=1)
-            for teams, league, ts, href in matches:
-                teams = html.unescape(teams).strip()
-                league = html.unescape(league).strip()
-                full_url = urljoin(base, href.split('?')[0])
-                try:
-                    dt = datetime.fromtimestamp(int(ts))
-                    event_date = dt.date()
-                    if event_date == now:
-                        label = 'Today'
-                    elif event_date == tomorrow:
-                        label = 'Tomorrow'
-                    else:
-                        label = dt.strftime('%m-%d')
-                    time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
-                except:
-                    time_str = ''
-                title = f'{teams} {league} {time_str}'.strip()
-                results.append((full_url, title))
-            return results if results else None
-        except Exception as e:
-            log(f'deportesenvivo error: {e}')
             return None
