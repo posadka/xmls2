@@ -40,10 +40,8 @@ class streamer:
         try:
             if 'epicmartial' in url: u = self.epicmartial(url)
             elif 'castweb' in url: u = self.epicmartial(url)
-            elif 'elixx.xyz' in url: u = self.elixx(url)
             elif 'volokit' in url: u = self.volokit(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
-            elif 'nflsportz.com' in url: u = self.nflsportz(url)
             elif 'istreameast.app' in url: u = self.streameast(url)
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
             elif 'naughtyblog' in url: u = self.naughtyblog(url)
@@ -209,61 +207,6 @@ class streamer:
             )
         except Exception as e:
             log(f'streameast failed for {url} | {e}', xbmc.LOGERROR)
-
-    def elixx(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={'User-Agent': UA}).text
-            m = re.search(r'(?s)iframe-wrapper">\s*<iframe src="([^"]*)', page_data)
-            if not m:
-                return
-            iframe_path = m.group(1)
-            iframe_url = 'http://elixx.xyz' + iframe_path
-            iframe_html = requests.get(iframe_url, headers={'User-Agent': UA, 'Referer': url}).text
-            m = re.search(r'<iframe src="([^"]*)', iframe_html)
-            if not m:
-                return
-            iframe2_path = m.group(1)
-            iframe2_url = 'https:' + iframe2_path
-            iframe2_html = requests.get(iframe2_url, headers={'User-Agent': UA, 'Referer': iframe2_path}).text
-            m = re.search(r'(?s)<iframe.*?src="([^"]*)', iframe2_html)
-            if not m:
-                return
-            iframe3_path = m.group(1)
-            iframe3_url = 'https:' + iframe3_path
-            iframe3_html = requests.get(iframe3_url, headers={'User-Agent': UA, 'Referer': iframe2_path}).text
-            m = re.search(r'eval\(function(.+?m3u8.+)', iframe3_html)
-            if not m:
-                return
-            unpacked = jsunpack.unpack(m.group(1))
-            m = re.search(r'src=\s*"([^"]*)', unpacked)
-            if not m:
-                return
-            source = m.group(1)
-            return source + '|User-Agent=' + UA + '&Referer=' + iframe_url
-        except Exception as e:
-            log(f'elixx failed for {url} | {e}', xbmc.LOGERROR)
-
-    def nflsportz(self, url):
-        try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={'User-Agent': UA}).text
-            m = re.search(r'iframe.*?src="([^"]*)', page_data)
-            if not m:
-                return
-            src = m.group(1)
-            src = 'http:' + src if src.startswith('//') else src
-            iframe_html = requests.get(src, headers={'User-Agent': UA, 'Referer': url}).text
-            m = re.search(r'eval\(function(.+?m3u8.+)', iframe_html)
-            if not m:
-                return
-            unpacked = jsunpack.unpack(m.group(1))
-            m = re.search(r'var\s*src="([^"]*)', unpacked)
-            if not m:
-                return
-            return m.group(1) + '|User-Agent=' + UA + '&Referer=' + url
-        except Exception as e:
-            log(f'nflsportz failed for {url} | {e}', xbmc.LOGERROR)
 
     def blacktienba(self, url):
         try:
