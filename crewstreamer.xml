@@ -424,17 +424,51 @@ class streamer:
                 api_url = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
                 api_html = requests.get(
                     api_url,
-                    headers={"Referer": iframe_url, "User-Agent": UA}
+                    headers={"Referer": iframe_url, "User-Agent": UA},
+                    timeout=10
                 ).text
-                m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
-                if not m:
-                    return
-                source = m.group(1)
-                return (
-                    f"{source}"
-                    f"|Referer={iframe_url}"
-                    f"&User-Agent={UA}"
-                )
+                m = re.search(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', api_html)
+                if m:
+                    source = m.group(1)
+                    return (
+                        f"{source}"
+                        f"|Referer={iframe_url}"
+                        f"&User-Agent={UA}"
+                    )
+                m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
+                if m:
+                    chars = re.findall(r'"([^"]*)"', m.group(1))
+                    source = ''.join(chars).replace(r'\/', '/')
+                    source = re.sub(r'https:/{3,}', 'https://', source)
+                    return (
+                        f"{source}"
+                        f"|Referer={iframe_origin}/"
+                        f"&User-Agent={UA}"
+                        f"&Origin={iframe_origin}"
+                    )
+                m = re.search(r'atob\([\'"]([^\'"]+)[\'"]', api_html)
+                if m:
+                    decoded = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
+                    if decoded.startswith('/'):
+                        base_m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
+                        if base_m:
+                            base_chars = re.findall(r'"([^"]*)"', base_m.group(1))
+                            base_url = ''.join(base_chars).replace(r'\/', '/')
+                            parsed_base = urlparse(base_url)
+                            stream_origin = f"{parsed_base.scheme}://{parsed_base.netloc}"
+                            source = stream_origin + decoded
+                        else:
+                            source = iframe_origin + decoded
+                    else:
+                        source = decoded
+                    return (
+                        f"{source}"
+                        f"|Referer={iframe_origin}/"
+                        f"&User-Agent={UA}"
+                        f"&Origin={iframe_origin}"
+                    )
+
+                return
             elif 'wikisport' in iframe_url:
                 page_data = requests.get(iframe_url, headers=headers, timeout=10).text
                 m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
