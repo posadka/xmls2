@@ -432,7 +432,7 @@ class streamer:
                 source = m.group(1)
                 return (
                     f"{source}"
-                    f"|Referer={iframe_url}"   # BUG FIX: was undefined `iframe1`
+                    f"|Referer={iframe_url}"
                     f"&User-Agent={UA}"
                 )
             elif 'wikisport' in iframe_url:
