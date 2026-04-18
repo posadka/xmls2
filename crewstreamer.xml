@@ -409,7 +409,33 @@ class streamer:
             if not m:
                 return
             iframe_url = m.group(1)
-            if 'wikisport' in iframe_url:
+            if 'embedhd' in iframe_url:
+                iframe1_html = requests.get(
+                    iframe_url,
+                    headers={"Referer": url, "User-Agent": UA},
+                    timeout=10
+                ).text
+                m = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html)
+                if not m:
+                    return
+                fid = m.group(1)
+                parsed = urlparse(iframe_url)
+                iframe_origin = f"{parsed.scheme}://{parsed.netloc}"
+                api_url = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
+                api_html = requests.get(
+                    api_url,
+                    headers={"Referer": iframe_url, "User-Agent": UA}  # BUG FIX: was undefined `iframe1`
+                ).text
+                m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
+                if not m:
+                    return
+                source = m.group(1)
+                return (
+                    f"{source}"
+                    f"|Referer={iframe_url}"   # BUG FIX: was undefined `iframe1`
+                    f"&User-Agent={UA}"
+                )
+            elif 'wikisport' in iframe_url:
                 page_data = requests.get(iframe_url, headers=headers, timeout=10).text
                 m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
                 if not m:
@@ -426,10 +452,7 @@ class streamer:
                     return
                 chars = re.findall(r'"([^"]+)"', m.group(1))
                 source = ''.join(chars).replace(r'\/', '/')
-                for _ in range(3):
-                    source = source.replace('https://///', 'https://')
-                    source = source.replace('https:////', 'https://')
-                    source = source.replace('https:///', 'https://')
+                source = re.sub(r'https:/{3,}', 'https://', source)
                 return (
                     f"{source}"
                     f"|User-Agent={UA}"
@@ -443,6 +466,8 @@ class streamer:
             iframe_html = requests.get(iframe_url, headers=iframe_headers, timeout=10).text
             if not iframe_html:
                 return
+            parsed = urlparse(iframe_url)
+            origin = f"{parsed.scheme}://{parsed.netloc}"
             if 'atob' in iframe_html:
                 m = re.search(r'atob\([\'"]([^\'"]+)', iframe_html)
                 if m:
@@ -450,14 +475,12 @@ class streamer:
                     return (
                         f"{decoded}"
                         f"|User-Agent={UA}"
-                        f"&Referer=https://gooz.aapmains.net/"
-                        f"&Origin=https://gooz.aapmains.net"
+                        f"&Referer={origin}/"
+                        f"&Origin={origin}"
                     )
             m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
             if m:
                 src = m.group(1)
-                parsed = urlparse(iframe_url)
-                origin = f"{parsed.scheme}://{parsed.netloc}"
                 return (
                     f"{src}"
                     f"|User-Agent={UA}"
