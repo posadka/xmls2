@@ -213,7 +213,6 @@ class streamer:
             return None
 
     def streameast_ga(self, url):
-        # uses r_request: needs session + modern browser headers, urllib2 fails here
         try:
             page_data = client.r_request(url)
             if not page_data:
@@ -368,7 +367,6 @@ class streamer:
             return None
 
     def supersurge(self, url):
-        # uses r_request: endpoint returns JSON and needs session headers, urllib2 fails here
         try:
             page_data = client.r_request(url)
             if not page_data:
@@ -419,7 +417,6 @@ class streamer:
             return None
 
     def playoff(self, url):
-        # uses r_request: site requires modern UA + session, urllib2 fails here
         try:
             page_data = client.r_request(url)
             if not page_data:
