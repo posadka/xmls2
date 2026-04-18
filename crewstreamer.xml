@@ -58,6 +58,7 @@ class streamer:
             elif 'waatk' in url: u = self.waatk(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
             elif 'gstream24' in url: u = self.gstream(url)
+            elif 'deportesenvivo' in url: u = self.deportesenvivo(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
@@ -1179,3 +1180,35 @@ class streamer:
             return self.embedsports(iframe)
         except Exception as e:
             log(f'gstream failed for {url} | {e}', xbmc.LOGERROR)
+
+    def deportesenvivo(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            headers = {"User-Agent": UA}
+            page_data = requests.get(url, headers=headers).text
+            m = re.search(r'"embedUrl":"([^"]+)"', page_data)
+            if not m:
+                return
+            embed = m.group(1).replace('\\/', '/')
+            parsed = urlparse(embed)
+            embed_referer = f'{parsed.scheme}://{parsed.netloc}/'
+            headers = {
+                "User-Agent": UA,
+                "Referer": embed_referer
+            }
+            page_data = requests.get(embed, headers=headers).text
+            m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
+            if not m:
+                return
+            source = m.group(1).replace('\\/', '/')
+            parsed = urlparse(source)
+            stream_referer = f'{parsed.scheme}://{parsed.netloc}/'
+            stream_origin = f'{parsed.scheme}://{parsed.netloc}'
+            return (
+                f"{source}"
+                f"|Referer={stream_referer}"
+                f"&Origin={stream_origin}"
+                f"&User-Agent={UA}"
+            )
+        except Exception as e:
+            log(f'deportesenvivo failed for {url} | {e}', xbmc.LOGERROR)
