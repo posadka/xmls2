@@ -250,13 +250,14 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)',page_data)
+            matches = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)', page_data)
             results = []
             for href, team1, team2 in matches:
                 full_url = urljoin(base, href)
-                team1 = html.unescape(team1)
-                team2 = html.unescape(team2)
-                results.append((full_url, team1.strip(), team2.strip()))
+                team1 = html.unescape(team1).strip()
+                team2 = html.unescape(team2).strip()
+                title = f'{team1} vs {team2}'
+                results.append((full_url, title))
             return results
         except Exception as e:
             log(f'givemereddit error: {e}')
