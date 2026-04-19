@@ -347,7 +347,7 @@ class streamer:
             )
             results = []
             for match, league, href in matches:
-                title = f'{match.strip()} [{league.strip()}]'
+                title = f'{match.strip()} {league.strip()}'
                 full_url = urljoin(base, href)
                 results.append((full_url, title))
             return results
