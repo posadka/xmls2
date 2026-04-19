@@ -298,13 +298,16 @@ class streamer:
                 try:
                     gmt_time_clean = gmt_time.replace('GMT', '').strip()
                     dt = datetime.strptime(gmt_time_clean, "%H:%M")
-                    offset = datetime.now() - datetime.utcnow()
+                    now = datetime.now()
+                    utc_now = datetime.now(timezone.utc).replace(tzinfo=None)
+                    offset = now - utc_now
                     local_dt = dt + offset
-                    time_str = local_dt.strftime("%I:%M %p")
+                    time_str = local_dt.strftime("%I:%M %p").lstrip('0')
                 except:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, link)
-                results.append((full_url, league, event, time_str))
+                title = f'{event.strip()} - {league.strip()} {time_str}'
+                results.append((full_url, title))
             return results
         except Exception as e:
             log(f'shd error: {e}')
@@ -396,7 +399,6 @@ class streamer:
             for href, title in matches:
                 full = urljoin(base, href)
                 title = html.unescape(title).strip()
-                title = f'{title}'
                 results.append((full, title))
             return results
         except Exception as e:
