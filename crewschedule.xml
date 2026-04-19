@@ -264,7 +264,7 @@ class streamer:
 
     def methstreams(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)', page_data)
@@ -272,16 +272,7 @@ class streamer:
             for href, teams, time_str in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
-                try:
-                    dt = datetime.strptime(time_str.strip(), "%I:%M %p")
-                    now = datetime.now()
-                    utc_now = datetime.now(timezone.utc).replace(tzinfo=None)
-                    offset = now - utc_now
-                    local_dt = dt + offset
-                    time_str = local_dt.strftime("%I:%M %p").lstrip('0')
-                except:
-                    time_str = time_str.strip()
-                title = f'{teams} {time_str}'
+                title = f'{teams} {time_str.strip()}'
                 results.append((full_url, title))
             return results
         except Exception as e:
