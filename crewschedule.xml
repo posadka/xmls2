@@ -269,10 +269,20 @@ class streamer:
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)', page_data)
             results = []
-            for href, teams, time in matches:
+            for href, teams, time_str in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
-                results.append((full_url, teams, time.strip()))
+                try:
+                    dt = datetime.strptime(time_str.strip(), "%I:%M %p")
+                    now = datetime.now()
+                    utc_now = datetime.now(timezone.utc).replace(tzinfo=None)
+                    offset = now - utc_now
+                    local_dt = dt + offset
+                    time_str = local_dt.strftime("%I:%M %p").lstrip('0')
+                except:
+                    time_str = time_str.strip()
+                title = f'{teams} {time_str}'
+                results.append((full_url, title))
             return results
         except Exception as e:
             log(f'methstreams error: {e}')
