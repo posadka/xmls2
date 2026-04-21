@@ -178,7 +178,7 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
-                r'(?s)<a href="([^"]+)"\s*class="uefa-card[^>]*data-time="(\d+)".*?'
+                r'(?s)<a href="([^"]+)"\s+class="uefa-card"[^>]*data-time="(\d+)"[^>]*>.*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>',
                 page_data
