@@ -718,9 +718,16 @@ class streamer:
                     headers={"Referer": iframe1, "User-Agent": UA}
                 ).text
                 m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
-                if not m:
-                    return
-                source = m.group(1)
+                if m:
+                    source = m.group(1)
+                else:
+                    m = re.search(r'\[([^\]]+)\]\.join\(""\)', api_html)
+                    if not m:
+                        return
+                    chars = re.findall(r'"([^"]*)"', m.group(1))
+                    source = ''.join(chars)
+                    if not source.startswith('http') or '.m3u8' not in source:
+                        return
                 return (
                     f"{source}"
                     f"|Referer={iframe1}"
