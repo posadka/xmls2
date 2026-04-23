@@ -178,7 +178,7 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
-                r'(?s)<a href="([^"]+)"\s+class="uefa-card"[^>]*data-time="(\d+)"[^>]*>.*?'
+                r'(?s)<a href="([^"]+)"[^>]*class="uefa-card[^"]*"[^>]*data-time="(\d+)"[^>]*>.*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>',
                 page_data
@@ -201,6 +201,30 @@ class streamer:
                 team2 = html.unescape(team2).strip()
                 title = f"{team1} vs {team2} {time_str}"
                 results.append((full_url, title))
+            if not matches:
+                log('streameast_ga: primary regex found no matches, trying single-event fallback')
+                single_matches = re.findall(
+                    r'(?s)<a href="([^"]+)"[^>]*class="uefa-card[^"]*"[^>]*data-time="(\d+)"[^>]*>.*?'
+                    r'<span class="uefa-name">\s*([^<]+?)\s*</span>',
+                    page_data
+                )
+                for href, ts, title_text in single_matches:
+                    full_url = urljoin(base, href)
+                    dt = datetime.fromtimestamp(int(ts))
+                    event_date = dt.date()
+                    if event_date == now:
+                        label = 'Today'
+                    elif event_date == tomorrow:
+                        label = 'Tomorrow'
+                    else:
+                        label = dt.strftime('%m-%d')
+                    time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
+                    title_text = html.unescape(title_text).strip()
+                    title = f"{title_text} {time_str}"
+                    results.append((full_url, title))
+            if not results:
+                log('streameast_ga: both regexes failed, no matches found')
+                return None
             return results
         except Exception as e:
             log(f'streameast_ga error: {e}')
