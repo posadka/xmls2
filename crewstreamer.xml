@@ -705,7 +705,8 @@ class streamer:
                 return
             iframe1_html = requests.get(
                 iframe1,
-                headers={"Referer": url, "User-Agent": UA}
+                headers={"Referer": url, "User-Agent": UA},
+                timeout=10
             ).text
             if 'embedhd' in iframe1:
                 m = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html)
@@ -715,31 +716,37 @@ class streamer:
                 api_url = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
                 api_html = requests.get(
                     api_url,
-                    headers={"Referer": iframe1, "User-Agent": UA}
+                    headers={"Referer": iframe1, "User-Agent": UA},
+                    timeout=10
                 ).text
-                m = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', api_html)
+                parsed = urlparse(api_url)
+                api_origin = f"{parsed.scheme}://{parsed.netloc}"
+                m = re.search(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', api_html)
                 if m:
                     source = m.group(1)
-                else:
-                    m = re.search(r'\[([^\]]+)\]\.join\(""\)', api_html)
-                    if not m:
-                        return
+                    return (
+                        f"{source}"
+                        f"|Referer={api_origin}"
+                        f"&User-Agent={UA}"
+                    )
+                m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
+                if m:
                     chars = re.findall(r'"([^"]*)"', m.group(1))
-                    source = ''.join(chars)
-                    if not source.startswith('http') or '.m3u8' not in source:
-                        return
-                return (
-                    f"{source}"
-                    f"|Referer={iframe1}"
-                    f"&User-Agent={UA}"
-                )
+                    source = ''.join(chars).replace(r'\/', '/')
+                    source = re.sub(r'https:/{3,}', 'https://', source)
+                    return (
+                        f"{source}"
+                        f"|Referer={api_origin}"
+                        f"&User-Agent={UA}"
+                    )
             else:
                 iframe2 = get_iframe_src(iframe1_html)
                 if not iframe2:
                     return
                 iframe2_html = requests.get(
                     iframe2,
-                    headers={"Referer": iframe1, "User-Agent": UA}
+                    headers={"Referer": iframe1, "User-Agent": UA},
+                    timeout=10
                 ).text
                 m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
                 if not m:
