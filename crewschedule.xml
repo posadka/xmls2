@@ -373,7 +373,7 @@ class streamer:
             )
             results = []
             for match, league, href in matches:
-                title = f'{match.strip()} {league.strip()}'
+                title = f'[COLOR orange]{match.strip()}[/COLOR] [COLOR dodgerblue]{league.strip()}[/COLOR]'
                 full_url = urljoin(base, href)
                 results.append((full_url, title))
             return results
@@ -402,7 +402,7 @@ class streamer:
                     time_str = dt.strftime('%I:%M %p ET').lstrip('0')
                 except:
                     pass
-                title = f'{teams} {time_str}'.strip()
+                title = f'[COLOR orange]{teams}[/COLOR] [COLOR orange]{time_str}[/COLOR]'.strip()
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
