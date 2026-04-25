@@ -420,9 +420,9 @@ class streamer:
             )
             results = []
             for href, title in matches:
-                full = urljoin(base, href)
+                full_url = urljoin(base, href)
                 title = html.unescape(title).strip()
-                results.append((full, title))
+                results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
             return results
         except Exception as e:
             log(f'crackstreams error: {e}')
