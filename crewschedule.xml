@@ -253,14 +253,27 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
-                r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)"',
+                r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?'
+                r'(?:<b>([^<]+)</b>|<time[^>]+datetime="([^"]+)"[^>]*>)',
                 page_data
             )
             results = []
-            for teams, href in matches:
+            for teams, href, live_status, dt_str in matches:
                 title = html.unescape(teams).replace('Buffstreams ', '').strip()
                 full_url = urljoin(base, href)
-                results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
+                if live_status:
+                    time_str = live_status.strip()
+                elif dt_str:
+                    try:
+                        dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+                        dt = dt.replace(tzinfo=timezone.utc).astimezone()
+                        time_str = dt.strftime('%I:%M %p').lstrip('0')
+                    except:
+                        time_str = ''
+                else:
+                    time_str = ''
+                title = f'[COLOR orange]{title}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
+                results.append((full_url, title))
             return results
         except Exception as e:
             log(f'buffstreams error: {e}')
