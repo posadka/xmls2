@@ -290,19 +290,18 @@ class streamer:
             base = f'{parsed.scheme}://{parsed.netloc}'
             results = []
             blocks = re.findall(
-                r'<a href="([^"]+)" class="matches".*?</a>',
+                r'<a href="([^"]+)" class="matches"[^>]*>(.*?)</a>',
                 page_data, re.S
             )
-            for block in blocks:
-                href_m = re.search(r'href="([^"]+)"', block)
-                team_m = re.findall(r'team-name">([^<]+)', block)
+            for href, block in blocks:
+                teams = re.findall(r'<span class="team-name">([^<]+)</span>', block)
+                if len(teams) < 2:
+                    continue
+                team1 = html.unescape(teams[0]).strip()
+                team2 = html.unescape(teams[1]).strip()
+                full_url = urljoin(base, href)
                 dt_m = re.search(r"moment\('([^']+)'\)", block)
                 live_m = re.search(r'status-badge[^>]*>([^<]+)</span>', block)
-                if not href_m or len(team_m) < 2:
-                    continue
-                full_url = urljoin(base, href_m.group(1))
-                team1 = html.unescape(team_m[0]).strip()
-                team2 = html.unescape(team_m[1]).strip()
                 if live_m:
                     time_str = live_m.group(1).strip()
                 elif dt_m:
