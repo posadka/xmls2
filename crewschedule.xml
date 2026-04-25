@@ -138,7 +138,7 @@ class streamer:
             for href, teams in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
-                results.append((full_url, teams))
+                results.append((full_url, f'[COLOR orange]{teams}[/COLOR]))
             return results
         except Exception as e:
             log(f'fsportshd error: {e}')
