@@ -93,7 +93,7 @@ class streamer:
             ):
                 title = html.unescape(match.group(1)).strip()
                 full_url = urljoin(base, match.group(2))
-                results.append((full_url, f'[COLOR orange]{title}[/COLOR]))
+                results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
             return results if results else None
         except Exception as e:
             log(f'ovostreams error: {e}')
@@ -138,7 +138,7 @@ class streamer:
             for href, teams in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
-                results.append((full_url, f'[COLOR orange]{teams}[/COLOR]))
+                results.append((full_url, f'[COLOR orange]{teams}[/COLOR]'))
             return results
         except Exception as e:
             log(f'fsportshd error: {e}')
@@ -154,7 +154,7 @@ class streamer:
                     title = item.get("title")
                     link = item.get("url")
                     if title and link:
-                        results.append((link, f'[COLOR orange]{title}[/COLOR]))
+                        results.append((link, f'[COLOR orange]{title}[/COLOR]'))
             return results
         except Exception as e:
             log(f'streambtw error: {e}')
@@ -259,8 +259,9 @@ class streamer:
                     timestr = dt.strftime("%B %d, %Y %I:%M %p")
                 except:
                     pass
-                name = html.unescape(name)
-                results.append((link, name.strip(), timestr.strip()))
+                name = html.unescape(name).strip()
+                title = f'[COLOR orange]{name}[/COLOR] [COLOR dodgerblue]{timestr.strip()}[/COLOR]'
+                results.append((link, title))
             return results
         except Exception as e:
             log(f'roxiestreams error: {e}')
@@ -402,7 +403,7 @@ class streamer:
                     time_str = dt.strftime('%I:%M %p ET').lstrip('0')
                 except:
                     pass
-                title = f'[COLOR orange]{teams}[/COLOR] [COLOR orange]{time_str}[/COLOR]'.strip()
+                title = f'[COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'.strip()
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
