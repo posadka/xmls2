@@ -294,7 +294,7 @@ class streamer:
             for href, teams, time_str in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
-                title = f'{teams} {time_str.strip()}'
+                title = f'[COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{time_str.strip()}[/COLOR]'
                 results.append((full_url, title))
             return results
         except Exception as e:
