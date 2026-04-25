@@ -220,7 +220,7 @@ class streamer:
                         label = dt.strftime('%m-%d')
                     time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
                     title_text = html.unescape(title_text).strip()
-                    title = f"{title_text} {time_str}"
+                    title = f"[COLOR orange]{title_text} {time_str}[/COLOR]"
                     results.append((full_url, title))
             if not results:
                 log('streameast_ga: both regexes failed, no matches found')
