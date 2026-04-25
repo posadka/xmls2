@@ -288,22 +288,26 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
-                r'<a href="([^"]+)" class="matches".*?'
-                r'team-name">([^<]+).*?team-name">([^<]+).*?'
-                r'(?:moment\(\'([^\']+)\'\)|status-badge[^>]*>([^<]+)</span>)',
+            results = []
+            blocks = re.findall(
+                r'<a href="([^"]+)" class="matches".*?</a>',
                 page_data, re.S
             )
-            results = []
-            for href, team1, team2, dt_str, live_status in matches:
-                full_url = urljoin(base, href)
-                team1 = html.unescape(team1).strip()
-                team2 = html.unescape(team2).strip()
-                if live_status:
-                    time_str = live_status.strip()
-                elif dt_str:
+            for block in blocks:
+                href_m = re.search(r'href="([^"]+)"', block)
+                team_m = re.findall(r'team-name">([^<]+)', block)
+                dt_m = re.search(r"moment\('([^']+)'\)", block)
+                live_m = re.search(r'status-badge[^>]*>([^<]+)</span>', block)
+                if not href_m or len(team_m) < 2:
+                    continue
+                full_url = urljoin(base, href_m.group(1))
+                team1 = html.unescape(team_m[0]).strip()
+                team2 = html.unescape(team_m[1]).strip()
+                if live_m:
+                    time_str = live_m.group(1).strip()
+                elif dt_m:
                     try:
-                        dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%MZ')
+                        dt = datetime.strptime(dt_m.group(1), '%Y-%m-%dT%H:%MZ')
                         dt = dt.replace(tzinfo=timezone.utc).astimezone()
                         time_str = dt.strftime('%I:%M %p').lstrip('0')
                     except:
