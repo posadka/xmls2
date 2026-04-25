@@ -277,7 +277,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://streameast.gl/mlb')
+    url = client.schedule('https://streameast.gl/nfl')
     return url
 ]]></expres>
 <page>https://streameast.gl/nfl</page>
