@@ -701,7 +701,6 @@ class streamer:
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
             iframe1 = get_iframe_src(page_data)
-            log(f'streameast_ga iframe1: {iframe1}', xbmc.LOGWARNING)
             if not iframe1:
                 return
             iframe1_html = requests.get(
@@ -711,36 +710,30 @@ class streamer:
             ).text
             if 'embedhd' in iframe1:
                 m = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html)
-                log(f'streameast_ga fid match: {m}', xbmc.LOGWARNING)
                 if not m:
                     return
                 fid = m.group(1)
-                log(f'streameast_ga fid: {fid}', xbmc.LOGWARNING)
                 api_url = "https://exposestrat.com/maestrohd1.php?player=embedded&live=" + fid
                 api_html = requests.get(
                     api_url,
                     headers={"Referer": iframe1, "User-Agent": UA},
                     timeout=10
                 ).text
-                log(f'streameast_ga api_html snippet: {api_html[:300]}', xbmc.LOGWARNING)
                 parsed = urlparse(api_url)
                 api_origin = f"{parsed.scheme}://{parsed.netloc}"
                 m = re.search(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', api_html)
                 if m:
                     source = m.group(1)
-                    log(f'streameast_ga source (direct): {source}', xbmc.LOGWARNING)
                     return (
                         f"{source}"
                         f"|Referer={api_origin}"
                         f"&User-Agent={UA}"
                     )
                 m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
-                log(f'streameast_ga char-array match: {m}', xbmc.LOGWARNING)
                 if m:
                     chars = re.findall(r'"([^"]*)"', m.group(1))
                     source = ''.join(chars).replace(r'\/', '/')
                     source = re.sub(r'https:/{3,}', 'https://', source)
-                    log(f'streameast_ga source (char-array): {source}', xbmc.LOGWARNING)
                     return (
                         f"{source}"
                         f"|Referer={api_origin}"
@@ -754,7 +747,6 @@ class streamer:
                     src = m.group(1).strip()
                     return "https:" + src if src.startswith("//") else src
                 iframe2 = get_iframe_src(iframe1_html)
-                log(f'streameast_ga iframe2: {iframe2}', xbmc.LOGWARNING)
                 if not iframe2:
                     return
                 iframe2_html = requests.get(
@@ -763,7 +755,6 @@ class streamer:
                     timeout=10
                 ).text
                 m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
-                log(f'streameast_ga token match: {m}', xbmc.LOGWARNING)
                 if not m:
                     return
                 token = m.group(1)
@@ -778,7 +769,6 @@ class streamer:
                     },
                     timeout=10
                 ).text.strip()
-                log(f'streameast_ga hls_url: {hls_url}', xbmc.LOGWARNING)
                 return (
                     f"{hls_url}"
                     f"|Referer=https://streams.center/"
@@ -862,7 +852,7 @@ class streamer:
                 if not (b & 0x80):
                     break
             cipher = fetch.content[i:i + cipher_len]
-            decoded = bynbjvknmktes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
+            decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
             decoded += b'=' * (-len(decoded) % 4)
             b64 = base64.b64decode(decoded)
             aes_key = fetch.headers.get("Goat")
