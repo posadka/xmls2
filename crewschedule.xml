@@ -277,7 +277,7 @@ class streamer:
                 full_url = urljoin(base, href)
                 team1 = html.unescape(team1).strip()
                 team2 = html.unescape(team2).strip()
-                title = f'{team1} vs {team2}'
+                title = f'[COLOR orange]{team1} vs {team2}[/COLOR]'
                 results.append((full_url, title))
             return results
         except Exception as e:

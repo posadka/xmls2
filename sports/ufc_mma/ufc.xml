@@ -216,17 +216,16 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     <regex>
         <name>makelist</name>
         <listrepeat><![CDATA[
-        <title>[COLOR orange][makelist.param2][/COLOR]</title>
+        <title>[makelist.param2]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail>[makelist.param1]</thumbnail>
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    r = re.findall('(?s);" href="(\/mma[^"]*).*?5rem;">([^<]*)', page_data)
-    return r
+    url = client.schedule('https://streameast.gl/mma')
+    return url
 ]]></expres>
         <page>https://streameast.gl/mma</page>
     </regex>
@@ -241,7 +240,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://streameast.gl[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
