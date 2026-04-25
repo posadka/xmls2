@@ -154,7 +154,7 @@ class streamer:
                     title = item.get("title")
                     link = item.get("url")
                     if title and link:
-                        results.append((title, link))
+                        results.append((link, f'[COLOR orange]{title}[/COLOR]))
             return results
         except Exception as e:
             log(f'streambtw error: {e}')
