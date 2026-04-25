@@ -86,13 +86,14 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            results = []
-            for match in re.finditer(
+            matches = re.findall(
                 r'class="stream-info"[^>]*>.*?<img[^>]+>\s*([^<]+).*?href=\'([^\']+)\'',
                 page_data, re.S
-            ):
-                title = html.unescape(match.group(1)).strip()
-                full_url = urljoin(base, match.group(2))
+            )
+            results = []
+            for title, href in matches:
+                title = html.unescape(title).strip()
+                full_url = urljoin(base, href)
                 results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
             return results if results else None
         except Exception as e:
@@ -105,9 +106,9 @@ class streamer:
             matches = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
             hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
             return [
-                ('https://chaturbate.com' + i[0], i[1])
-                for i in matches
-                if any(x in i[1] for x in hosts)
+                ('https://chaturbate.com' + href, title)
+                for href, title in matches
+                if any(x in title for x in hosts)
             ]
         except Exception as e:
             log(f'chaturbate error: {e}')
@@ -123,7 +124,7 @@ class streamer:
             for item in items:
                 srp += chr(
                     int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',srp,re.S)
+            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp, re.S)
         except Exception as e:
             log(f'hdrez error: {e}')
             return None
@@ -133,12 +134,12 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            results = []
-            blocks = re.findall(
+            matches = re.findall(
                 r'<a href=["\']([^"\']+)["\'][^>]*>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>(.*?)</a>',
                 page_data, re.S
             )
-            for href, teams, block in blocks:
+            results = []
+            for href, teams, block in matches:
                 if 'Click Here' in teams:
                     continue
                 teams = html.unescape(teams).strip()
@@ -180,7 +181,10 @@ class streamer:
         try:
             page_data = client.request(url)
             matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
-            return [(html.unescape(i[0]).strip(), i[1]) for i in matches]
+            results = []
+            for title, href in matches:
+                results.append((href, html.unescape(title).strip()))
+            return results
         except Exception as e:
             log(f'volokit error: {e}')
             return None
@@ -288,25 +292,25 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            results = []
-            blocks = re.findall(
+            matches = re.findall(
                 r'<a href="([^"]+)" class="matches"[^>]*>(.*?)</a>',
                 page_data, re.S
             )
-            for href, block in blocks:
+            results = []
+            for href, block in matches:
                 teams = re.findall(r'<span class="team-name">([^<]+)</span>', block)
                 if len(teams) < 2:
                     continue
                 team1 = html.unescape(teams[0]).strip()
                 team2 = html.unescape(teams[1]).strip()
                 full_url = urljoin(base, href)
-                dt_m = re.search(r"moment\('([^']+)'\)", block)
-                live_m = re.search(r'status-badge[^>]*>([^<]+)</span>', block)
-                if live_m:
-                    time_str = live_m.group(1).strip()
-                elif dt_m:
+                dt_match = re.search(r"moment\('([^']+)'\)", block)
+                live_match = re.search(r'status-badge[^>]*>([^<]+)</span>', block)
+                if live_match:
+                    time_str = live_match.group(1).strip()
+                elif dt_match:
                     try:
-                        dt = datetime.strptime(dt_m.group(1), '%Y-%m-%dT%H:%MZ')
+                        dt = datetime.strptime(dt_match.group(1), '%Y-%m-%dT%H:%MZ')
                         dt = dt.replace(tzinfo=timezone.utc).astimezone()
                         time_str = dt.strftime('%I:%M %p').lstrip('0')
                     except:
@@ -353,7 +357,7 @@ class streamer:
                 page_data
             )
             results = []
-            for event, league, gmt_time, link in matches:
+            for event, league, gmt_time, href in matches:
                 try:
                     gmt_time_clean = gmt_time.replace('GMT', '').strip()
                     dt = datetime.strptime(gmt_time_clean, "%H:%M")
@@ -364,7 +368,7 @@ class streamer:
                     time_str = local_dt.strftime("%I:%M %p").lstrip('0')
                 except:
                     time_str = gmt_time.strip()
-                full_url = urljoin(base, link)
+                full_url = urljoin(base, href)
                 title = f'[COLOR orange]{event.strip()} - {league.strip()}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
                 results.append((full_url, title))
             return results
@@ -376,10 +380,10 @@ class streamer:
         try:
             page_data = requests.get(url, timeout=5).json()
             results = []
-            for i in page_data:
-                name = i.get("name") or i.get("gameName") or "Unknown"
-                video = i.get("videoUrl") or ""
-                start = i.get("beginPartie") or ""
+            for item in page_data:
+                name = item.get("name") or item.get("gameName") or "Unknown"
+                video = item.get("videoUrl") or ""
+                start = item.get("beginPartie") or ""
                 try:
                     t = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
                     local = t.astimezone()
@@ -395,7 +399,7 @@ class streamer:
                     results.append((href, label))
             return results
         except Exception as e:
-            log(f'supersurge error: {e}')
+            log(f'streamcenter error: {e}')
             return None
 
     def waatk(self, url):
@@ -447,12 +451,12 @@ class streamer:
 
     def crackstreams(self, url):
         try:
-            page = client.request(url)
+            page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
                 r'<a href="([^"]+)"[^>]+title="Watch ([^"]+?) Live Stream',
-                page
+                page_data
             )
             results = []
             for href, title in matches:
