@@ -65,7 +65,7 @@ class streamer:
                 r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
                 r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
                 r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
-                r'data-zaman="(\d+)"',
+                r'data.*?>([^<]*)',
                 page_data
             )
             results = []
@@ -73,12 +73,8 @@ class streamer:
                 href = href.strip()
                 league = html.unescape(league).strip()
                 teams = html.unescape(teams).strip()
-                title = f'[COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{teams}[/COLOR]'
-                try:
-                    t = datetime.fromtimestamp(int(timestamp))
-                    time_str = t.strftime('%I:%M %p')
-                except:
-                    time_str = timestamp
+                timestamp = html.unescape(timestamp).strip()
+                title = f'[COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{timestamp}[/COLOR]'
                 results.append((href, title))
             return results
         except Exception as e:
