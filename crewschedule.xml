@@ -240,7 +240,7 @@ class streamer:
             for teams, href in matches:
                 title = html.unescape(teams).replace('Buffstreams ', '').strip()
                 full_url = urljoin(base, href)
-                results.append((full_url, title))
+                results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
             return results
         except Exception as e:
             log(f'buffstreams error: {e}')
