@@ -196,7 +196,7 @@ class streamer:
                 time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
                 team1 = html.unescape(team1).strip()
                 team2 = html.unescape(team2).strip()
-                title = f"[COLOR orange]{team1} vs {team2} {time_str}[/COLOR]"
+                title = f"[COLOR orange]{team1} vs {team2}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]"
                 results.append((full_url, title))
             if not matches:
                 log('streameast_ga: primary regex found no matches, trying single-event fallback')
