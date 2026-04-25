@@ -507,7 +507,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-        <title>[COLOR dodgerblue][makelist.param2][/COLOR] [COLOR orange][makelist.param3][/COLOR]</title>
+        <title>[makelist.param2]</title>
         <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
 ]]></listrepeat>
