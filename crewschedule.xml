@@ -329,7 +329,7 @@ class streamer:
                 except:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, link)
-                title = f'{event.strip()} - {league.strip()} {time_str}'
+                title = f'[COLOR orange]{event.strip()} - {league.strip()}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
                 results.append((full_url, title))
             return results
         except Exception as e:
