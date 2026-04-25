@@ -747,6 +747,12 @@ class streamer:
                         f"&User-Agent={UA}"
                     )
             else:
+                def get_iframe_src(data):
+                    m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
+                    if not m:
+                        return None
+                    src = m.group(1).strip()
+                    return "https:" + src if src.startswith("//") else src
                 iframe2 = get_iframe_src(iframe1_html)
                 log(f'streameast_ga iframe2: {iframe2}', xbmc.LOGWARNING)
                 if not iframe2:
