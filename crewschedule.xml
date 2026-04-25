@@ -93,7 +93,7 @@ class streamer:
             ):
                 title = html.unescape(match.group(1)).strip()
                 full_url = urljoin(base, match.group(2))
-                results.append((full_url, title))
+                results.append((full_url, f'[COLOR orange]{title}[/COLOR]))
             return results if results else None
         except Exception as e:
             log(f'ovostreams error: {e}')

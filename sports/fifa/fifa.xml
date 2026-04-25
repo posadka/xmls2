@@ -216,7 +216,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     <regex>
         <name>crewschedule</name>
         <listrepeat><![CDATA[
-<title>[COLOR orange][crewschedule.param2][/COLOR]</title>
+<title>[crewschedule.param2]</title>
 <link>$doregex[play]</link>
         <thumbnail></thumbnail>
         ]]></listrepeat>
