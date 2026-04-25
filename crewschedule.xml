@@ -289,13 +289,29 @@ class streamer:
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(r'(?s)<a href="([^"]+)" class="matches".*?team-name">([^<]+).*?team-name">([^<]+)', page_data)
+            matches = re.findall(
+                r'<a href="([^"]+)" class="matches".*?'
+                r'team-name">([^<]+).*?team-name">([^<]+).*?'
+                r'(?:moment\(\'([^\']+)\'\)|status-badge[^>]*>([^<]+)</span>)',
+                page_data, re.S
+            )
             results = []
-            for href, team1, team2 in matches:
+            for href, team1, team2, dt_str, live_status in matches:
                 full_url = urljoin(base, href)
                 team1 = html.unescape(team1).strip()
                 team2 = html.unescape(team2).strip()
-                title = f'[COLOR orange]{team1} vs {team2}[/COLOR]'
+                if live_status:
+                    time_str = live_status.strip()
+                elif dt_str:
+                    try:
+                        dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%MZ')
+                        dt = dt.replace(tzinfo=timezone.utc).astimezone()
+                        time_str = dt.strftime('%I:%M %p').lstrip('0')
+                    except:
+                        time_str = ''
+                else:
+                    time_str = ''
+                title = f'[COLOR orange]{team1} vs {team2}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
                 results.append((full_url, title))
             return results
         except Exception as e:
