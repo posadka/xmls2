@@ -135,19 +135,18 @@ class streamer:
             base = f'{parsed.scheme}://{parsed.netloc}'
             results = []
             blocks = re.findall(
-                r'<a href=["\']([^"\']+)["\'].*?'
-                r'<h4[^>]*>\s*([^<]+?)\s*</h4>.*?'
-                r'(?:timeTo\(new Date\(\'([^\']+)\'\)|<button[^>]*>\s*Live\s*</button>)',
+                r'<a href=["\']([^"\']+)["\'][^>]*>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>(.*?)</a>',
                 page_data, re.S
             )
-            for href, teams, dt_str in blocks:
+            for href, teams, block in blocks:
                 if 'Click Here' in teams:
                     continue
                 teams = html.unescape(teams).strip()
                 full_url = urljoin(base, href)
-                if dt_str:
+                dt_match = re.search(r"timeTo\(new Date\('([^']+)'\)", block)
+                if dt_match:
                     try:
-                        dt = datetime.strptime(dt_str, '%b %d %Y %H:%M:%S +00:00')
+                        dt = datetime.strptime(dt_match.group(1), '%b %d %Y %H:%M:%S +00:00')
                         dt = dt.replace(tzinfo=timezone.utc).astimezone()
                         time_str = dt.strftime('%I:%M %p').lstrip('0')
                     except:
