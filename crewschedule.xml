@@ -47,7 +47,7 @@ class streamer:
             elif 'streameast.ga' in url: u = self.streameast_ga(url)
             elif 'buffstreams' in url: u = self.buffstreams(url)
             elif 'shd247' in url: u = self.shd(url)
-            elif 'streamcenter' in url: u = self.supersurge(url)
+            elif 'streamcenter' in url: u = self.streamcenter(url)
             elif 'waatk' in url: u = self.waatk(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
@@ -340,7 +340,7 @@ class streamer:
             log(f'shd error: {e}')
             return None
 
-    def supersurge(self, url):
+    def streamcenter(self, url):
         try:
             page_data = requests.get(url, timeout=5).json()
             results = []
