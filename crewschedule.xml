@@ -350,7 +350,7 @@ class streamer:
                     start = local.strftime("%I:%M %p")
                 except:
                     pass
-                title = f"{start} - {name}" if start else name
+                title = f"[COLOR dodgerblue]{start}[/COLOR] [COLOR orange]{name}[/COLOR]" if start else name
                 for n, u in enumerate(video.split(';'), 1):
                     href = u.split('<')[0].strip()
                     if not href:
