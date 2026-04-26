@@ -40,7 +40,6 @@ class streamer:
         try:
             if 'istreameast.app' in url: u = self.streameast(url)
             elif 'chaturbate.com' in url: u = self.chaturbate(url)
-            elif 'tvsportslive.fr' in url: u = self.tvsportslive(url)
             elif 'streambtw' in url: u = self.streambtw(url)
             elif 'fsportshd' in url: u = self.fsportshd(url)
             elif 'volokit' in url: u = self.volokit(url)
@@ -56,8 +55,8 @@ class streamer:
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
             return u
-        except:
-            pass
+        except Exception as e:
+            log(f'resolve failed for {url} | {e}', xbmc.LOGERROR)
 
     def streameast(self, url):
         try:
@@ -68,7 +67,7 @@ class streamer:
                 r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
                 r'data.*?>([^<]*)',
                 page_data
-            )
+            ) 
             results = []
             for href, league, teams, timestamp in matches:
                 href = href.strip()
@@ -145,7 +144,6 @@ class streamer:
                     continue
                 teams = html.unescape(teams).strip()
                 full_url = urljoin(base, href)
-                log('fsports: ful url')
                 dt_match = re.search(r"timeTo\(new Date\('([^']+)'\)", block)
                 if dt_match:
                     try:
