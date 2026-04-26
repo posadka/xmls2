@@ -401,7 +401,7 @@ class streamer:
                 start = item.get("beginPartie") or ""
                 try:
                     t = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
-                    local = t.astimezone()
+                    local = t.astimezone() - timedelta(hours=1)
                     start = local.strftime("%I:%M %p")
                 except:
                     pass
