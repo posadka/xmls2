@@ -36,6 +36,19 @@ def log(msg, level=xbmc.LOGINFO):
 
 
 class streamer:
+
+    def _get_iframe_src(self, data, require_id=False):
+        pattern = (
+            r'<iframe\s*id="iframe[^>]+(?:src|data-src)=["\']([^"\']+)'
+            if require_id else
+            r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)'
+        )
+        m = re.search(pattern, data, re.I)
+        if not m:
+            return None
+        src = m.group(1).strip()
+        return "https:" + src if src.startswith("//") else src
+
     def resolve(self, url):
         try:
             if 'epicmartial' in url: u = self.epicmartial(url)
@@ -61,7 +74,6 @@ class streamer:
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif 'blacktiesports' in url: u = self.blacktienba(url)
             else: u = self.generic(url)
-
             return u
         except Exception as e:
             log(f'resolve failed for {url} | {e}', xbmc.LOGERROR)
@@ -114,23 +126,23 @@ class streamer:
             if not s: s = re.findall('(?s)<file>([^<]*)', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
 
-            if not s: s = client.parseDOM(r, 'source', ret='src', attrs = {'type': 'video.+?'})
+            if not s: s = client.parseDOM(r, 'source', ret='src', attrs={'type': 'video.+?'})
             s = ['http:' + i if i.startswith('//') else i for i in s]
             s = [urljoin(url, i) if not i.startswith('http') else i for i in s]
-            s = [x for y,x in enumerate(s) if x not in s[:y]]
+            s = [x for y, x in enumerate(s) if x not in s[:y]]
 
             self.u = []
             def request(i):
                 try:
-                    i = i.replace(' ','%20')
+                    i = i.replace(' ', '%20')
                     c = client.request(i, output='headers')
-                    checks = ['video','mpegurl','html','octet-stream']
+                    checks = ['video', 'mpegurl', 'html', 'octet-stream']
                     if any(f for f in checks if f in c['Content-Type']): self.u.append((i, int(c['Content-Length'])))
                 except:
                     pass
             threads = []
             for i in s: threads.append(workers.Thread(request, i))
-            [i.start() for i in threads] ; [i.join() for i in threads]
+            [i.start() for i in threads]; [i.join() for i in threads]
             u = sorted(self.u, key=lambda x: x[1])[::-1]
             u = client.request(u[0][0], output='geturl', Referer=url)
             return u
@@ -142,6 +154,8 @@ class streamer:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             m = re.search(r'(?is)iframe\s+class="embed-responsive-item"\s+src="([^"]+)"', page_data)
+            if not m:
+                return
             iframe_url = m.group(1)
             if iframe_url.startswith('//'):
                 iframe_url = 'https:' + iframe_url
@@ -194,8 +208,7 @@ class streamer:
                 if not m:
                     return
                 encoded = m.group(1)
-                decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
-                source = decoded
+                source = base64.b64decode(encoded).decode('utf-8', 'ignore')
             else:
                 m = re.search(r'const\s+source\s*=\s*"([^"]+)', iframe_html)
                 if not m:
@@ -213,7 +226,7 @@ class streamer:
     def blacktienba(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={'User-Agent': UA}).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             if 'm3u8' in page_data:
                 m = re.search(r'(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)
                 if not m:
@@ -282,7 +295,7 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             headers = {'User-Agent': UA}
-            page_data = requests.get(url, headers=headers).text
+            page_data = requests.get(url, headers=headers, timeout=10).text
             parsed = urlparse(url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             origin = f'{parsed.scheme}://{parsed.netloc}'
@@ -292,7 +305,8 @@ class streamer:
             iframe_url = m.group(1)
             iframe_html = requests.get(
                 iframe_url,
-                headers={'User-Agent': UA, 'Referer': referer}
+                headers={'User-Agent': UA, 'Referer': referer},
+                timeout=10
             ).text
             m = re.search(r'var\s+source\s*=\s*"([^"]+)', iframe_html)
             if not m:
@@ -300,7 +314,8 @@ class streamer:
             php_url = m.group(1)
             php = requests.get(
                 php_url,
-                headers={'User-Agent': UA, 'Referer': iframe_url}
+                headers={'User-Agent': UA, 'Referer': iframe_url},
+                timeout=10
             ).text
             m = re.search(r'(https?://[^\s\'"]+\.m3u8)', php)
             if not m:
@@ -322,13 +337,13 @@ class streamer:
                 "Referer": "https://castweb.xyz",
                 "User-Agent": UA
             }
-            page_data = requests.get(url, headers=headers).text
+            page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             if not m:
                 return
             fid = m.group(1)
             api_url = 'https://processbigger.com/maestrohd1.php?player=mobile&live=' + fid
-            api_html = requests.get(api_url, headers=headers).text
+            api_html = requests.get(api_url, headers=headers, timeout=10).text
             m = re.search(r'return\(\[([^\]]+)\]\.join\(""\)', api_html)
             if not m:
                 return
@@ -440,11 +455,11 @@ class streamer:
                     f"&Referer=https://stellarthread.com/"
                     f"&Origin=https://stellarthread.com"
                 )
-            iframe_headers = {
-                "User-Agent": UA,
-                "Referer": url
-            }
-            iframe_html = requests.get(iframe_url, headers=iframe_headers, timeout=10).text
+            iframe_html = requests.get(
+                iframe_url,
+                headers={"User-Agent": UA, "Referer": url},
+                timeout=10
+            ).text
             if not iframe_html:
                 return
             parsed = urlparse(iframe_url)
@@ -461,9 +476,9 @@ class streamer:
                     )
             m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
             if m:
-                src = m.group(1)
+                source = m.group(1)
                 return (
-                    f"{src}"
+                    f"{source}"
                     f"|User-Agent={UA}"
                     f"&Referer={origin}/"
                     f"&Origin={origin}"
@@ -475,7 +490,7 @@ class streamer:
     def naughtyblog(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
+            page_data = requests.get(url, timeout=10).text
             if not page_data:
                 return
             part = page_data.split('<strong>Download:', 1)
@@ -516,7 +531,7 @@ class streamer:
                 "Referer": referer,
                 "User-Agent": UA
             }
-            page_data = requests.get(url, headers=headers).text
+            page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             if not m:
                 return
@@ -528,7 +543,7 @@ class streamer:
             full_url = 'https:' + js_src if js_src.startswith('//') else js_src
             parsed = urlparse(full_url)
             referer = f'{parsed.scheme}://{parsed.netloc}'
-            page_data = requests.get(full_url, headers=headers).text
+            page_data = requests.get(full_url, headers=headers, timeout=10).text
             m = re.search(r'src=["\']([^"\']+)', page_data)
             if not m:
                 return
@@ -538,7 +553,7 @@ class streamer:
             elif api.startswith('/'):
                 api = urljoin(referer, api)
             api_url = api + 'mobile&live=' + fid
-            api_html = requests.get(api_url, headers=headers).text
+            api_html = requests.get(api_url, headers=headers, timeout=10).text
             m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
             if not m:
                 return
@@ -558,12 +573,6 @@ class streamer:
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page = client.request(url)
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
             matches = list(re.finditer(
                 r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
                 page
@@ -597,7 +606,8 @@ class streamer:
                 json_url = picked_url
                 json_data = requests.get(
                     json_url,
-                    headers={'User-Agent': UA, 'Referer': url}
+                    headers={'User-Agent': UA, 'Referer': url},
+                    timeout=10
                 ).text
                 m = re.search(r"fetch\('([^']+)", json_data)
                 if not m:
@@ -606,7 +616,8 @@ class streamer:
                 api_url = 'https://sharkstreams.net/' + fetch_path
                 api_data = requests.get(
                     api_url,
-                    headers={'User-Agent': UA, 'Referer': json_url}
+                    headers={'User-Agent': UA, 'Referer': json_url},
+                    timeout=10
                 ).text
                 m = re.search(r'\["([^"]+)', api_data)
                 if not m:
@@ -619,22 +630,23 @@ class streamer:
                 iframe1 = picked_url
                 iframe1_html = requests.get(
                     iframe1,
-                    headers={'User-Agent': UA, 'Referer': url}
+                    headers={'User-Agent': UA, 'Referer': url},
+                    timeout=10
                 ).text
-                iframe2 = get_iframe_src(iframe1_html)
+                iframe2 = self._get_iframe_src(iframe1_html)
                 if not iframe2:
                     return
                 iframe2_html = requests.get(
                     iframe2,
-                    headers={"Referer": iframe1, "User-Agent": UA}
+                    headers={"Referer": iframe1, "User-Agent": UA},
+                    timeout=10
                 ).text
                 m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
                 if not m:
                     return
                 token = m.group(1)
-                decrypt_url = "https://streams.center/embed/decrypt.php"
                 hls_url = requests.post(
-                    decrypt_url,
+                    "https://streams.center/embed/decrypt.php",
                     data={"input": token},
                     headers={
                         "User-Agent": UA,
@@ -643,6 +655,8 @@ class streamer:
                     },
                     timeout=10
                 ).text.strip()
+                if not hls_url or not hls_url.startswith("http"):
+                    return
                 return f"{hls_url}|Referer=https://streams.center/&User-Agent={UA}"
             return
         except Exception as e:
@@ -655,7 +669,7 @@ class streamer:
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             origin = f'{parsed.scheme}://{parsed.netloc}'
             headers = {"Referer": referer, "User-Agent": UA}
-            page_data = requests.get(url, headers=headers).text
+            page_data = requests.get(url, headers=headers, timeout=10).text
             if not page_data:
                 return
             m3u8_list = []
@@ -667,7 +681,7 @@ class streamer:
                 try:
                     if domain_path:
                         domain_url = urljoin(referer, domain_path)
-                        domain_text = requests.get(domain_url, headers=headers).text
+                        domain_text = requests.get(domain_url, headers=headers, timeout=10).text
                         domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
                     else:
                         raise Exception()
@@ -699,14 +713,8 @@ class streamer:
     def streameast_ga(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={"User-Agent": UA}).text
-            def get_iframe_src(data):
-                m = re.search(r'<iframe\s*id="iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(page_data)
+            page_data = requests.get(url, headers={"User-Agent": UA}, timeout=10).text
+            iframe1 = self._get_iframe_src(page_data, require_id=True)
             if not iframe1:
                 return
             iframe1_html = requests.get(
@@ -746,13 +754,7 @@ class streamer:
                         f"&User-Agent={UA}"
                     )
             else:
-                def get_iframe_src(data):
-                    m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                    if not m:
-                        return None
-                    src = m.group(1).strip()
-                    return "https:" + src if src.startswith("//") else src
-                iframe2 = get_iframe_src(iframe1_html)
+                iframe2 = self._get_iframe_src(iframe1_html)
                 if not iframe2:
                     return
                 iframe2_html = requests.get(
@@ -764,9 +766,8 @@ class streamer:
                 if not m:
                     return
                 token = m.group(1)
-                decrypt_url = "https://streams.center/embed/decrypt.php"
                 hls_url = requests.post(
-                    decrypt_url,
+                    "https://streams.center/embed/decrypt.php",
                     data={"input": token},
                     headers={
                         "User-Agent": UA,
@@ -775,6 +776,8 @@ class streamer:
                     },
                     timeout=10
                 ).text.strip()
+                if not hls_url or not hls_url.startswith("http"):
+                    return
                 return (
                     f"{hls_url}"
                     f"|Referer=https://streams.center/"
@@ -879,7 +882,7 @@ class streamer:
     def streambtw(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={'User-Agent': UA}).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             m = re.search(r'encoded\s*=\s*"([^"]+)"', page_data)
             if not m:
                 return
@@ -907,8 +910,7 @@ class streamer:
                 if not m:
                     return
                 encoded = m.group(1)
-                decoded = base64.b64decode(encoded).decode('utf-8', 'ignore')
-                source = decoded
+                source = base64.b64decode(encoded).decode('utf-8', 'ignore')
             else:
                 m = re.search(r'const\s+source\s*=\s*"([^"]+)', iframe_html)
                 if not m:
@@ -934,7 +936,7 @@ class streamer:
             if not m:
                 return
             iframe_url = urljoin(referer, m.group(1))
-            page_data = requests.get(iframe_url, headers=headers).text
+            page_data = requests.get(iframe_url, headers=headers, timeout=10).text
             headers = {"Referer": iframe_url, "User-Agent": UA}
             m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
             if not m:
@@ -944,7 +946,7 @@ class streamer:
                 iframe2_url = 'https:' + iframe2_url
             if not iframe2_url.startswith('http'):
                 iframe2_url = urljoin(referer, iframe2_url)
-            page_data = requests.get(iframe2_url, headers=headers).text
+            page_data = requests.get(iframe2_url, headers=headers, timeout=10).text
             parsed = urlparse(iframe2_url)
             referer = f'{parsed.scheme}://{parsed.netloc}/'
             origin = f'{parsed.scheme}://{parsed.netloc}'
@@ -967,27 +969,21 @@ class streamer:
     def streamcenter(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={"User-Agent": UA}).text
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
-            iframe1 = get_iframe_src(page_data)
+            page_data = requests.get(url, headers={"User-Agent": UA}, timeout=10).text
+            iframe1 = self._get_iframe_src(page_data)
             if not iframe1:
                 return
             iframe1_html = requests.get(
                 iframe1,
-                headers={"Referer": url, "User-Agent": UA}
+                headers={"Referer": url, "User-Agent": UA},
+                timeout=10
             ).text
             m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
             if not m:
                 return
             token = m.group(1)
-            decrypt_url = "https://streams.center/embed/decrypt.php"
             hls_url = requests.post(
-                decrypt_url,
+                "https://streams.center/embed/decrypt.php",
                 data={"input": token},
                 headers={
                     "User-Agent": UA,
@@ -996,6 +992,8 @@ class streamer:
                 },
                 timeout=10
             ).text.strip()
+            if not hls_url or not hls_url.startswith("http"):
+                return
             return (
                 f"{hls_url}"
                 f"|Referer=https://streams.center/"
@@ -1010,13 +1008,13 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             headers = {'Referer': base, 'User-Agent': UA}
-            page_data = requests.get(url, headers=headers).text
+            page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r'<iframe[^>]+src="([^"]+)"', page_data, re.I)
             if not m:
                 log(f'waatk no iframe at {url}', xbmc.LOGERROR)
                 return
             iframe_url = m.group(1)
-            iframe_html = requests.get(iframe_url, headers=headers).text
+            iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', iframe_html)
             if not m:
                 log(f'waatk no fid at {iframe_url}', xbmc.LOGERROR)
@@ -1032,7 +1030,7 @@ class streamer:
             parsed_js = urlparse(js_src)
             js_referer = f'{parsed_js.scheme}://{parsed_js.netloc}'
             js_headers = {'Referer': js_referer, 'User-Agent': UA}
-            js_html = requests.get(js_src, headers=js_headers).text
+            js_html = requests.get(js_src, headers=js_headers, timeout=10).text
             m = re.search(r'src=["\']([^"\']+)["\']', js_html)
             if not m:
                 log(f'waatk no api src in js', xbmc.LOGERROR)
@@ -1043,7 +1041,7 @@ class streamer:
             elif api.startswith('/'):
                 api = urljoin(js_referer, api)
             api_url = api + 'mobile&live=' + fid
-            api_html = requests.get(api_url, headers=js_headers).text
+            api_html = requests.get(api_url, headers=js_headers, timeout=10).text
             m = re.search(r'function\s+\w+\s*\(\s*\)\s*\{\s*return\s*\(\[([^\]]+)\]\.join\(""\)', api_html)
             if not m:
                 log(f'waatk no join array in api response', xbmc.LOGERROR)
@@ -1066,12 +1064,6 @@ class streamer:
             def xor_decode(data, key):
                 return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
 
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
             page_data = client.request(url)
             key = re.search(r'var _k="([^"]+)"', page_data)
             raw = re.search(r'var _raw="([^"]+)"', page_data)
@@ -1093,7 +1085,7 @@ class streamer:
                 headers={"User-Agent": UA, "Referer": url},
                 timeout=10
             ).text
-            iframe1 = get_iframe_src(embed_html)
+            iframe1 = self._get_iframe_src(embed_html)
             if not iframe1:
                 return
             iframe1_html = requests.get(
@@ -1101,7 +1093,7 @@ class streamer:
                 headers={"Referer": embed_url, "User-Agent": UA},
                 timeout=10
             ).text
-            iframe2 = get_iframe_src(iframe1_html)
+            iframe2 = self._get_iframe_src(iframe1_html)
             if not iframe2:
                 return
             iframe2_html = requests.get(
@@ -1113,9 +1105,8 @@ class streamer:
             if not m:
                 return
             token = m.group(1)
-            decrypt_url = "https://streams.center/embed/decrypt.php"
             hls_url = requests.post(
-                decrypt_url,
+                "https://streams.center/embed/decrypt.php",
                 data={"input": token},
                 headers={
                     "User-Agent": UA,
@@ -1137,14 +1128,8 @@ class streamer:
     def flyembed(self, url):
         try:
             if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url, headers={"User-Agent": UA}).text
-            def get_iframe_src(data):
-                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
-                if not m:
-                    return None
-                src = m.group(1).strip()
-                return "https:" + src if src.startswith("//") else src
-            embed_url = get_iframe_src(page_data)
+            page_data = requests.get(url, headers={"User-Agent": UA}, timeout=10).text
+            embed_url = self._get_iframe_src(page_data)
             if not embed_url:
                 return
             parsed = urlparse(embed_url)
@@ -1152,7 +1137,8 @@ class streamer:
             referer = f"{origin}/"
             embed_html = requests.get(
                 embed_url,
-                headers={"Referer": url, "User-Agent": UA}
+                headers={"Referer": url, "User-Agent": UA},
+                timeout=10
             ).text
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if not m:
