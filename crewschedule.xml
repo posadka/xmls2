@@ -48,6 +48,7 @@ class streamer:
             elif 'shd247' in url: u = self.shd(url)
             elif 'streamcenter' in url: u = self.streamcenter(url)
             elif 'waatk' in url: u = self.waatk(url)
+            elif 'roxiestreams' in url: u = self.roxiestreams(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
             elif 'flyembed' in url: u = self.flyembed(url)
@@ -67,7 +68,7 @@ class streamer:
                 r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
                 r'data.*?>([^<]*)',
                 page_data
-            ) 
+            )
             results = []
             for href, league, teams, timestamp in matches:
                 href = href.strip()
@@ -76,9 +77,9 @@ class streamer:
                 timestamp = html.unescape(timestamp).strip()
                 title = f'[COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{timestamp}[/COLOR]'
                 results.append((href, title))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'streameast error: {e}')
+            log(f'streameast error: {e}', xbmc.LOGERROR)
             return None
 
     def ovostreams(self, url):
@@ -97,7 +98,7 @@ class streamer:
                 results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
             return results if results else None
         except Exception as e:
-            log(f'ovostreams error: {e}')
+            log(f'ovostreams error: {e}', xbmc.LOGERROR)
             return None
 
     def chaturbate(self, url):
@@ -105,13 +106,14 @@ class streamer:
             page_data = client.request(url)
             matches = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
             hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
-            return [
+            results = [
                 ('https://chaturbate.com' + href, title)
                 for href, title in matches
                 if any(x in title for x in hosts)
             ]
+            return results if results else None
         except Exception as e:
-            log(f'chaturbate error: {e}')
+            log(f'chaturbate error: {e}', xbmc.LOGERROR)
             return None
 
     def hdrez(self, url):
@@ -124,9 +126,10 @@ class streamer:
             for item in items:
                 srp += chr(
                     int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-            return re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp, re.S)
+            results = re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp, re.S)
+            return results if results else None
         except Exception as e:
-            log(f'hdrez error: {e}')
+            log(f'hdrez error: {e}', xbmc.LOGERROR)
             return None
 
     def fsportshd(self, url):
@@ -156,9 +159,9 @@ class streamer:
                     time_str = 'Live'
                 title = f'[COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
                 results.append((full_url, title))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'fsportshd error: {e}')
+            log(f'fsportshd error: {e}', xbmc.LOGERROR)
             return None
 
     def streambtw(self, url):
@@ -172,9 +175,9 @@ class streamer:
                     link = item.get("url")
                     if title and link:
                         results.append((link, f'[COLOR orange]{title}[/COLOR]'))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'streambtw error: {e}')
+            log(f'streambtw error: {e}', xbmc.LOGERROR)
             return None
 
     def volokit(self, url):
@@ -184,9 +187,9 @@ class streamer:
             results = []
             for title, href in matches:
                 results.append((href, f'[COLOR orange]{html.unescape(title).strip()}[/COLOR]'))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'volokit error: {e}')
+            log(f'volokit error: {e}', xbmc.LOGERROR)
             return None
 
     def streameast_ga(self, url):
@@ -240,11 +243,11 @@ class streamer:
                     title = f"[COLOR orange]{title_text}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]"
                     results.append((full_url, title))
             if not results:
-                log('streameast_ga: both regexes failed, no matches found')
+                log('streameast_ga: both regexes failed, no matches found', xbmc.LOGERROR)
                 return None
             return results
         except Exception as e:
-            log(f'streameast_ga error: {e}')
+            log(f'streameast_ga error: {e}', xbmc.LOGERROR)
             return None
 
     def buffstreams(self, url):
@@ -274,18 +277,21 @@ class streamer:
                     time_str = ''
                 title = f'[COLOR orange]{title}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
                 results.append((full_url, title))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'buffstreams error: {e}')
+            log(f'buffstreams error: {e}', xbmc.LOGERROR)
             return None
 
     def roxiestreams(self, url):
         try:
             page_data = client.request(url)
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
                 r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>', page_data)
             results = []
-            for link, name, timestr in matches:
+            for href, name, timestr in matches:
+                full_url = urljoin(base, href)
                 try:
                     dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
                     dt = dt + timedelta(hours=3)
@@ -294,10 +300,10 @@ class streamer:
                     pass
                 name = html.unescape(name).strip()
                 title = f'[COLOR orange]{name}[/COLOR] [COLOR dodgerblue]{timestr.strip()}[/COLOR]'
-                results.append((link, title))
-            return results
+                results.append((full_url, title))
+            return results if results else None
         except Exception as e:
-            log(f'roxiestreams error: {e}')
+            log(f'roxiestreams error: {e}', xbmc.LOGERROR)
             return None
 
     def givemereddit(self, url):
@@ -332,9 +338,9 @@ class streamer:
                     time_str = ''
                 title = f'[COLOR orange]{team1} vs {team2}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
                 results.append((full_url, title))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'givemereddit error: {e}')
+            log(f'givemereddit error: {e}', xbmc.LOGERROR)
             return None
 
     def methstreams(self, url):
@@ -349,18 +355,18 @@ class streamer:
                 teams = html.unescape(teams).strip()
                 title = f'[COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{time_str.strip()}[/COLOR]'
                 results.append((full_url, title))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'methstreams error: {e}')
+            log(f'methstreams error: {e}', xbmc.LOGERROR)
             return None
 
     def shd(self, url):
         try:
             parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}/'
+            base = f'{parsed.scheme}://{parsed.netloc}'
             page_data = client.request(url)
             if not page_data:
-                return
+                return None
             matches = re.findall(
                 r'(?s)<tr>\s*'
                 r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
@@ -372,7 +378,6 @@ class streamer:
             results = []
             for event, league, gmt_time, href in matches:
                 try:
-                    gmt_time_clean = gmt_time.replace('GMT', '').strip()
                     dt = datetime.strptime(gmt_time_clean, "%H:%M")
                     now = datetime.now()
                     utc_now = datetime.now(timezone.utc).replace(tzinfo=None)
@@ -384,9 +389,9 @@ class streamer:
                 full_url = urljoin(base, href)
                 title = f'[COLOR orange]{event.strip()} - {league.strip()}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
                 results.append((full_url, title))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'shd error: {e}')
+            log(f'shd error: {e}', xbmc.LOGERROR)
             return None
 
     def streamcenter(self, url):
@@ -410,16 +415,16 @@ class streamer:
                         continue
                     label = title if n == 1 else f"{title} (Stream {n})"
                     results.append((href, label))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'streamcenter error: {e}')
+            log(f'streamcenter error: {e}', xbmc.LOGERROR)
             return None
 
     def waatk(self, url):
         try:
             page_data = client.request(url)
             parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}/'
+            base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
                 r'(?s)<div class="match">([^<]+)</div>.*?<div class="league">([^<]+)</div>.*?<a class="watchbtn"\s+href="([^"]+)"',
                 page_data
@@ -429,9 +434,9 @@ class streamer:
                 title = f'[COLOR orange]{match.strip()}[/COLOR] [COLOR dodgerblue]{league.strip()}[/COLOR]'
                 full_url = urljoin(base, href)
                 results.append((full_url, title))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'waatk error: {e}')
+            log(f'waatk error: {e}', xbmc.LOGERROR)
             return None
 
     def playoff(self, url):
@@ -459,7 +464,7 @@ class streamer:
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
-            log(f'playoff error: {e}')
+            log(f'playoff error: {e}', xbmc.LOGERROR)
             return None
 
     def crackstreams(self, url):
@@ -476,9 +481,9 @@ class streamer:
                 full_url = urljoin(base, href)
                 title = html.unescape(title).strip()
                 results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'crackstreams error: {e}')
+            log(f'crackstreams error: {e}', xbmc.LOGERROR)
             return None
 
     def flyembed(self, url):
@@ -512,7 +517,7 @@ class streamer:
                         f'[COLOR orange]{clean_title}[/COLOR]'
                     )
                     results.append((full_url, label))
-            return results
+            return results if results else None
         except Exception as e:
-            log(f'flyembed_schedule error: {e}')
+            log(f'flyembed_schedule error: {e}', xbmc.LOGERROR)
             return None
