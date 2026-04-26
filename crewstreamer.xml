@@ -55,6 +55,7 @@ class streamer:
             elif 'streams.center' in url: u = self.streamcenter(url)
             elif 'waatk' in url: u = self.waatk(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
+            elif 'flyembed' in url: u = self.flyembed(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
@@ -1124,3 +1125,36 @@ class streamer:
             )
         except Exception as e:
             log(f'crackstreams failed for {url} | {e}', xbmc.LOGERROR)
+
+    def flyembed(self, url):
+        try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
+            page_data = requests.get(url, headers={"User-Agent": UA}).text
+            def get_iframe_src(data):
+                m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
+                if not m:
+                    return None
+                src = m.group(1).strip()
+                return "https:" + src if src.startswith("//") else src
+            embed_url = get_iframe_src(page_data)
+            if not embed_url:
+                return
+            parsed = urlparse(embed_url)
+            origin = f"{parsed.scheme}://{parsed.netloc}"
+            referer = f"{origin}/"
+            embed_html = requests.get(
+                embed_url,
+                headers={"Referer": referer, "User-Agent": UA}
+            ).text
+            m = re.search(r'src\s*=\s*"([^"]*)', embed_html)
+            if not m:
+                return
+            hls_url = m.group(1)
+            return (
+                f"{hls_url}"
+                f"|Referer={referer}"
+                f"&Origin={origin}"
+                f"&User-Agent={UA}"
+            )
+        except Exception as e:
+            log(f'flyembed failed for {url} | {e}', xbmc.LOGERROR)
