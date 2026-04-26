@@ -395,14 +395,17 @@ class streamer:
         try:
             page_data = requests.get(url, timeout=5).json()
             results = []
+            eastern = pytz.timezone('America/New_York')
+            local_tz = datetime.now().astimezone().tzinfo
             for item in page_data:
                 name = item.get("name") or item.get("gameName") or "Unknown"
                 video = item.get("videoUrl") or ""
                 start = item.get("beginPartie") or ""
                 try:
-                    t = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
-                    local = t.astimezone()
-                    start = local.strftime("%I:%M %p")
+                    t = datetime.fromisoformat(start)
+                    t = eastern.localize(t)
+                    local = t.astimezone(local_tz)
+                    start = local.strftime("%I:%M %p").lstrip("0")
                 except:
                     pass
                 title = f"[COLOR dodgerblue]{start}[/COLOR] [COLOR orange]{name}[/COLOR]" if start else name
