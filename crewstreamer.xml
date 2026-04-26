@@ -68,6 +68,7 @@ class streamer:
 
     def generic(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             r = client.request(url)
             r = r.replace('\\', '')
 
@@ -89,10 +90,10 @@ class streamer:
             if not s: s = re.findall('\s*\(\s*\"(http.+?)\"', r) + re.findall('\s*\(\s*\'(http.+?)\'', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
 
-            if not s:s = re.findall('\s*:\s*\"(//.+?)\"', r) + re.findall('\s*:\s*\'(//.+?)\'', r)
+            if not s: s = re.findall('\s*:\s*\"(//.+?)\"', r) + re.findall('\s*:\s*\'(//.+?)\'', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
 
-            if not s:s = re.findall('\:\"(\.+?)\"', r) + re.findall('\:\'(\.+?)\'', r)
+            if not s: s = re.findall('\:\"(\.+?)\"', r) + re.findall('\:\'(\.+?)\'', r)
             s = [i for i in s if (urlparse(i).path).strip('/').split('/')[-1].split('.')[-1] in ['mp4', 'flv', 'm3u8']]
 
             if not s: s = re.findall('\s*\(\s*\"(//.+?)\"', r) + re.findall('\s*\(\s*\'(//.+?)\'', r)
@@ -493,9 +494,16 @@ class streamer:
             for href, label in links:
                 if any(h in href for h in hosts):
                     clean_url = href.strip()
-                    clean_label = label.replace('Direct Link', '').strip()
+                    clean_label = f'[COLOR orange]{html.unescape(label.replace("Direct Link", "")).strip()}[/COLOR]'
                     results.append((clean_url, clean_label))
-            return results or None
+            if not results:
+                return
+            if len(results) == 1:
+                return results[0][0]
+            choice = xbmcgui.Dialog().select('Choose Source', [r[1] for r in results])
+            if choice == -1:
+                return
+            return results[choice][0]
         except Exception as e:
             log(f'naughtyblog failed for {url} | {e}', xbmc.LOGERROR)
 
@@ -1005,18 +1013,18 @@ class streamer:
             page_data = requests.get(url, headers=headers).text
             m = re.search(r'<iframe[^>]+src="([^"]+)"', page_data, re.I)
             if not m:
-                log(f'waatk no iframe at {url}')
+                log(f'waatk no iframe at {url}', xbmc.LOGERROR)
                 return
             iframe_url = m.group(1)
             iframe_html = requests.get(iframe_url, headers=headers).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', iframe_html)
             if not m:
-                log(f'waatk no fid at {iframe_url}')
+                log(f'waatk no fid at {iframe_url}', xbmc.LOGERROR)
                 return
             fid = m.group(1)
             m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', iframe_html)
             if not m:
-                log(f'waatk no js src at {iframe_url}')
+                log(f'waatk no js src at {iframe_url}', xbmc.LOGERROR)
                 return
             js_src = m.group(1)
             if js_src.startswith('//'):
@@ -1027,7 +1035,7 @@ class streamer:
             js_html = requests.get(js_src, headers=js_headers).text
             m = re.search(r'src=["\']([^"\']+)["\']', js_html)
             if not m:
-                log(f'waatk no api src in js')
+                log(f'waatk no api src in js', xbmc.LOGERROR)
                 return
             api = m.group(1)
             if api.startswith('//'):
@@ -1038,7 +1046,7 @@ class streamer:
             api_html = requests.get(api_url, headers=js_headers).text
             m = re.search(r'function\s+\w+\s*\(\s*\)\s*\{\s*return\s*\(\[([^\]]+)\]\.join\(""\)', api_html)
             if not m:
-                log(f'waatk no join array in api response')
+                log(f'waatk no join array in api response', xbmc.LOGERROR)
                 return
             chars = re.findall(r'"([^"]*)"', m.group(1))
             source = ''.join(chars).replace(r'\/', '/')
