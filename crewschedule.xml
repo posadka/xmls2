@@ -51,6 +51,7 @@ class streamer:
             elif 'waatk' in url: u = self.waatk(url)
             elif 'playoffsstream' in url: u = self.playoff(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
+            elif 'flyembed' in url: u = self.flyembed(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
@@ -479,4 +480,29 @@ class streamer:
             return results
         except Exception as e:
             log(f'crackstreams error: {e}')
+            return None
+
+    def flyembed(self, url):
+        try:
+            page_data = client.request(url)
+            parsed = urlparse(url)
+            base = f'{parsed.scheme}://{parsed.netloc}'
+            results = []
+            current_section = ""
+            sections = re.split(r'<div[^>]+class=["\']section-title["\'][^>]*>(.*?)</div>', page_data, flags=re.I | re.S)
+            for i, chunk in enumerate(sections):
+                if i % 2 == 1:
+                    current_section = chunk.strip()
+                    continue
+                matches = re.findall(
+                    r'<strong>(.*?)</strong>.*?<a[^>]+href=["\']([^"\']+)["\']',
+                    chunk, re.S | re.I
+                )
+                for title, link in matches:
+                    full_url = urljoin(base, link.strip())
+                    title = f'[COLOR dodgerblue]{current_section}[/COLOR] - [COLOR orange]{html.unescape(title).strip()}[/COLOR]'
+                    results.append((full_url, title))
+            return results
+        except Exception as e:
+            log(f'flyembed_schedule error: {e}')
             return None
