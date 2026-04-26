@@ -145,6 +145,7 @@ class streamer:
                     continue
                 teams = html.unescape(teams).strip()
                 full_url = urljoin(base, href)
+                log('fsports: ful url')
                 dt_match = re.search(r"timeTo\(new Date\('([^']+)'\)", block)
                 if dt_match:
                     try:
