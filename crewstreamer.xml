@@ -1146,7 +1146,7 @@ class streamer:
                 embed_url,
                 headers={"Referer": referer, "User-Agent": UA}
             ).text
-            m = re.search(r'src\s*=\s*"([^"]*)', embed_html)
+            m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if not m:
                 return
             hls_url = m.group(1)
