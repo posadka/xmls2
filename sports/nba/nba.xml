@@ -57,7 +57,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         link = urljoin(base + '/', link)
         try:
             dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
-            dt = dt + timedelta(hours=2)
+            #dt = dt + timedelta(hours=2)
             timestr = dt.strftime("%B %d, %Y %I:%M %p")
         except:
             pass
@@ -222,9 +222,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
+    from resources.lib.modules import client, control
+    import re
+    from urllib.parse import urljoin
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://fsportshdd.club/nbastreams.php')
+    sport = 'nbastreams.php'
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/fsports_base.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    full_url = urljoin(base, sport)
+    url = client.schedule(full_url)
     return url
 ]]></expres>
 <page></page>
