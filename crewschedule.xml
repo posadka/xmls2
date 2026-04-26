@@ -490,19 +490,30 @@ class streamer:
             base = f'{parsed.scheme}://{parsed.netloc}'
             results = []
             current_section = ""
-            sections = re.split(r'<div[^>]+class=["\']section-title["\'][^>]*>(.*?)</div>', page_data, flags=re.I | re.S)
+            sections = re.split(
+                r'<div[^>]+class=["\']section-title["\'][^>]*>(.*?)</div>',
+                page_data,
+                flags=re.I | re.S
+            )
             for i, chunk in enumerate(sections):
                 if i % 2 == 1:
-                    current_section = chunk.strip()
+                    current_section = html.unescape(chunk).strip()
                     continue
                 matches = re.findall(
-                    r'<strong>(.*?)</strong>.*?<a[^>]+href=["\']([^"\']+)["\']',
-                    chunk, re.S | re.I
+                    r'<div[^>]+class=["\']match["\'][^>]*>.*?'
+                    r'<strong>(.*?)</strong>.*?'
+                    r'<a[^>]+href=["\']([^"\']+)["\']',
+                    chunk,
+                    re.S | re.I
                 )
                 for title, link in matches:
                     full_url = urljoin(base, link.strip())
-                    title = f'[COLOR dodgerblue]{current_section}[/COLOR] - [COLOR orange]{html.unescape(title).strip()}[/COLOR]'
-                    results.append((full_url, title))
+                    clean_title = html.unescape(title).strip()
+                    label = (
+                        f'[COLOR dodgerblue]{current_section}[/COLOR] - '
+                        f'[COLOR orange]{clean_title}[/COLOR]'
+                    )
+                    results.append((full_url, label))
             return results
         except Exception as e:
             log(f'flyembed_schedule error: {e}')
