@@ -1139,13 +1139,13 @@ class streamer:
             embed_url = get_iframe_src(page_data)
             if not embed_url:
                 return
-            parsed = urlparse(embed_url)
-            origin = f"{parsed.scheme}://{parsed.netloc}"
-            referer = f"{origin}/"
             embed_html = requests.get(
                 embed_url,
-                headers={"Referer": referer, "User-Agent": UA}
+                headers={"Referer": embed_url, "User-Agent": UA}
             ).text
+            parsed = urlparse(embed_html)
+            origin = f"{parsed.scheme}://{parsed.netloc}"
+            referer = f"{origin}/"
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if not m:
                 return
