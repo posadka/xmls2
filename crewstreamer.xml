@@ -16,7 +16,7 @@ import xbmcgui
 try:
     from Cryptodome.Cipher import AES
     from Cryptodome.Util import Counter
-except:
+except ImportError:
     from Crypto.Cipher import AES
     from Crypto.Util import Counter
 
@@ -332,7 +332,7 @@ class streamer:
                 return
             chars = re.findall(r'"([^"]+)"', m.group(1))
             source = ''.join(chars).replace(r'\/', '/')
-            source = source.replace('https://///', 'https://').replace('https:////', 'https://').replace('https:///', 'https://')
+            source = re.sub(r'(https://)/{1,}', r'\1', source)
             return (
                 source
                 + '|Referer=https://processbigger.com/'
@@ -385,12 +385,12 @@ class streamer:
                 if m:
                     chars = re.findall(r'"([^"]*)"', m.group(1))
                     source = ''.join(chars).replace(r'\/', '/')
-                    source = re.sub(r'https:/{3,}', 'https://', source)
+                    source = re.sub(r'(https://)/{1,}', r'\1', source)
                     return (
                         f"{source}"
                         f"|Referer={api_origin}/"
+                        f"&Origin={api_origin}"
                         f"&User-Agent={UA}"
-                        f"|Referer={api_origin}"
                     )
                 m = re.search(r'atob\([\'"]([^\'"]+)[\'"]', api_html)
                 if m:
@@ -410,8 +410,8 @@ class streamer:
                     return (
                         f"{source}"
                         f"|Referer={api_origin}/"
+                        f"&Origin={api_origin}"
                         f"&User-Agent={UA}"
-                        f"|Referer={api_origin}"
                     )
                 return
             elif 'wikisport' in iframe_url:
@@ -431,7 +431,7 @@ class streamer:
                     return
                 chars = re.findall(r'"([^"]+)"', m.group(1))
                 source = ''.join(chars).replace(r'\/', '/')
-                source = re.sub(r'https:/{3,}', 'https://', source)
+                source = re.sub(r'(https://)/{1,}', r'\1', source)
                 return (
                     f"{source}"
                     f"|User-Agent={UA}"
@@ -535,10 +535,7 @@ class streamer:
                 return
             chars = re.findall(r'"([^"]+)"', m.group(1))
             source = ''.join(chars).replace(r'\/', '/')
-            for _ in range(3):
-                source = source.replace('https://///', 'https://')
-                source = source.replace('https:////', 'https://')
-                source = source.replace('https:///', 'https://')
+            source = re.sub(r'(https://)/{1,}', r'\1', source)
             return (
                 source
                 + '|Referer=' + quote_plus(referer + '/')
@@ -733,7 +730,7 @@ class streamer:
                 if m:
                     chars = re.findall(r'"([^"]*)"', m.group(1))
                     source = ''.join(chars).replace(r'\/', '/')
-                    source = re.sub(r'https:/{3,}', 'https://', source)
+                    source = re.sub(r'(https://)/{1,}', r'\1', source)
                     return (
                         f"{source}"
                         f"|Referer={api_origin}"
@@ -996,7 +993,7 @@ class streamer:
                 f"&User-Agent={UA}"
             )
         except Exception as e:
-            log(f'supersurge failed for {url} | {e}', xbmc.LOGERROR)
+            log(f'streamcenter failed for {url} | {e}', xbmc.LOGERROR)
 
     def waatk(self, url):
         try:
@@ -1066,7 +1063,6 @@ class streamer:
                     return None
                 src = m.group(1).strip()
                 return "https:" + src if src.startswith("//") else src
-
             page_data = client.request(url)
             key = re.search(r'var _k="([^"]+)"', page_data)
             raw = re.search(r'var _raw="([^"]+)"', page_data)
