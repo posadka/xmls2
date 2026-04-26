@@ -8,7 +8,6 @@ import random
 import math
 import html
 from datetime import datetime, timedelta, timezone
-import pytz
 
 import requests
 import xbmc
