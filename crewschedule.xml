@@ -97,9 +97,9 @@ class streamer:
                 title    = html.unescape(title).strip()
                 time_str = time_str.strip()
                 try:
-                    now = datetime.utcnow()
                     t = datetime.strptime(time_str, '%H:%M')
-                    t = t.replace(year=now.year, month=now.month, day=now.day)
+                    now_local = datetime.now()
+                    t = t.replace(year=now_local.year, month=now_local.month, day=now_local.day)
                     import calendar
                     utc_ts = calendar.timegm(t.timetuple())
                     local_t = datetime.fromtimestamp(utc_ts)

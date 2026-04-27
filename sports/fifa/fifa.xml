@@ -244,8 +244,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     <regex>
         <name>crewschedule</name>
         <listrepeat><![CDATA[
-<title>[crewschedule.param2]</title>
-<link>$doregex[play]</link>
+        <title>[crewschedule.param2]</title>
+        <link>$doregex[play]</link>
         <thumbnail></thumbnail>
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
