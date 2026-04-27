@@ -97,11 +97,13 @@ class streamer:
                 title    = html.unescape(title).strip()
                 time_str = time_str.strip()
                 try:
+                    import time
                     t = datetime.strptime(time_str, '%H:%M')
-                    now_local = datetime.now()
-                    t = t.replace(year=now_local.year, month=now_local.month, day=now_local.day)
-                    utc_offset = (datetime.utcnow() - datetime.now()).seconds // 3600
-                    local_t = t - timedelta(hours=utc_offset)
+                    now = datetime.now()
+                    t = t.replace(year=now.year, month=now.month, day=now.day)
+                    utc_ts = (t - datetime(1970, 1, 1)).total_seconds()
+                    offset = time.altzone if time.daylight else time.timezone
+                    local_t = datetime.fromtimestamp(utc_ts - offset)
                     time_str = local_t.strftime('%I:%M %p').lstrip('0')
                 except:
                     pass
