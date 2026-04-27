@@ -535,7 +535,7 @@ class streamer:
                         continue
                     try:
                         local_dt  = datetime.fromtimestamp(ts)
-                        time_part = local_dt.strftime('%I:%M %p').lstrip('0')
+                        time_part = local_dt.strftime('%m/%d %I:%M %p').lstrip('0')
                     except:
                         time_part = ''
                     if status == 'LIVE':
