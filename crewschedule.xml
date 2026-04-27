@@ -403,7 +403,7 @@ class streamer:
                 try:
                     t = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
                     local = t.astimezone() - timedelta(hours=1)
-                    start = local.strftime("%I:%M %p")
+                    start = local.strftime("%m/%d %I:%M %p").lstrip('0')
                 except:
                     pass
                 title = f"[COLOR dodgerblue]{start}[/COLOR] [COLOR orange]{name}[/COLOR]" if start else name
