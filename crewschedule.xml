@@ -52,7 +52,7 @@ class streamer:
             elif 'playoffsstream' in url: u = self.playoff(url)
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
             elif 'flyembed' in url: u = self.flyembed(url)
-            elif 'embedhd.org' in url: u = self.embedhd(url)
+            elif 'embedhd' in url: u = self.embedhd(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
