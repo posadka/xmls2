@@ -522,22 +522,26 @@ class streamer:
 
     def embedhd(self, url):
         try:
-            page_data = requests.get( url, timeout=10).json()
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).json()
             results = []
             for day in page_data.get('days', []):
                 for event in day.get('items', []):
-                    title  = event.get('title', '')
-                    league = event.get('league', '').upper()
-                    status = event.get('status', '')
-                    when   = event.get('when_et', '')
+                    title   = event.get('title', '')
+                    league  = event.get('league', '').upper()
+                    status  = event.get('status', '')
+                    ts      = event.get('ts_et', 0)
                     streams = event.get('streams', [])
                     if not streams:
                         continue
-                    time_part = when.split(' ')[-1] if ' ' in when else when
+                    try:
+                        local_dt  = datetime.fromtimestamp(ts)
+                        time_part = local_dt.strftime('%I:%M %p').lstrip('0')
+                    except:
+                        time_part = ''
                     if status == 'LIVE':
                         label = f'[COLOR red][LIVE][/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
                     else:
-                        label = f'[COLOR dodgerblue]{league} {time_part} ET[/COLOR] [COLOR orange]{title}[/COLOR]'
+                        label = f'[COLOR dodgerblue]{league} {time_part}[/COLOR] [COLOR orange]{title}[/COLOR]'
                     link = streams[0].get('link', '')
                     if link:
                         results.append((link, label))
