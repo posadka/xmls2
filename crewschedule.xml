@@ -552,7 +552,7 @@ class streamer:
                     except:
                         time_part = ''
                     if status == 'LIVE':
-                        label = f'[COLOR red][LIVE][/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                        label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
                     else:
                         label = f'[COLOR dodgerblue]{league} {time_part}[/COLOR] [COLOR orange]{title}[/COLOR]'
                     link = streams[0].get('link', '')
