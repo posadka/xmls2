@@ -16,54 +16,33 @@
 <regex>
 <name>makelist</name>
 <listrepeat><![CDATA[
-    <title>[COLOR orange] [makelist.param2][/COLOR] [COLOR dodgerblue] [makelist.param3][/COLOR]</title>
+    <title>[makelist.param2]</title>
   <link>$doregex[makelist2]</link>
   <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data, Cookie_Jar, m, url=''):
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client, control
-    import re, requests, html
-    from datetime import datetime, timedelta
+    import re, requests
     from urllib.parse import urljoin
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    urls = [
-        'https://roxiestreams.info/nba',
-        'https://roxiestreams.su/nba'
-    ]
-    page_data = ''
-    base = ''
-    for u in urls:
+    sport = 'nba'
+    try:
+        base_url = requests.get('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/roxie_bases').text
+    except:
+        return None
+    bases = re.findall('"([^"]*)', base_url)
+    results = []
+    for base in bases:
         try:
-            resp = requests.get(u, timeout=3)
-            html_text = resp.text
-            check = html_text.lower()
-            if any(x in check for x in (
-                'cloudflare', 'just a moment', 'attention required',
-                '/cdn-cgi/', 'cf-browser-verification'
-            )):
-                continue
-            if '<a href=' in html_text:
-                page_data = html_text
-                base = u.rstrip('/')
-                break
+            full_url = urljoin(base, sport)
+            requests.get(full_url, timeout=3)
+            urls = client.schedule(full_url)
+            if urls:
+                results.extend(urls)
         except:
             continue
-    if not page_data:
-        return []
-    r = re.findall(r'(?s)<a href="([^"]+)">\s*([^<]+)</a>\s*</td>\s*<td>\s*([^<]+)</td>',page_data)
-    out = []
-    for link, name, timestr in r:
-        link = urljoin(base + '/', link)
-        try:
-            dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
-            dt = dt + timedelta(hours=2)
-            timestr = dt.strftime("%B %d, %Y %I:%M %p")
-        except:
-            pass
-        name = html.unescape(name).strip()
-        out.append((link, name, timestr.strip()))
-    return out
+    return results if results else None
 ]]></expres>
 <page></page>
 </regex>
