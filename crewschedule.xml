@@ -89,26 +89,25 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
-                r'<div class="stream-time">([^<]+)</div>.*?<div class="stream-info">.*?<img[^>]+>([^<]+)</div>.*?onclick="window\.location\.href=.([^"\']+)',
-                page_data, re.S
+                r'(?s)<div class="stream-time">([^<]+)</div>.*?'
+                r'<div class="stream-info">.*?<img[^>]+>\s*([^<]+)</div>.*?'
+                r'onclick="window\.location\.href=[\'"]([^\'"]+)',
+                page_data
             )
             results = []
             for time_str, title, href in matches:
-                title    = html.unescape(title).strip()
+                title = html.unescape(title).strip()
                 time_str = time_str.strip()
                 try:
-                    import time
                     t = datetime.strptime(time_str, '%H:%M')
-                    now = datetime.now()
-                    t = t.replace(year=now.year, month=now.month, day=now.day)
-                    utc_ts = (t - datetime(1970, 1, 1)).total_seconds()
-                    offset = time.altzone if time.daylight else time.timezone
-                    local_t = datetime.fromtimestamp(utc_ts - offset)
-                    time_str = local_t.strftime('%I:%M %p').lstrip('0')
+                    time_str = t.strftime('%I:%M %p').lstrip('0')
                 except:
                     pass
                 full_url = urljoin(base, href)
-                label    = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                label = (
+                    f'[COLOR dodgerblue]{time_str}[/COLOR] '
+                    f'[COLOR orange]{title}[/COLOR]'
+                )
                 results.append((full_url, label))
             return results if results else None
         except Exception as e:
