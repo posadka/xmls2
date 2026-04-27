@@ -75,7 +75,7 @@ class streamer:
                 league = html.unescape(league).strip()
                 teams = html.unescape(teams).strip()
                 timestamp = html.unescape(timestamp).strip()
-                title = f'[COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{timestamp}[/COLOR]'
+                title = f'[COLOR dodgerblue]{league} {timestamp}[/COLOR] [COLOR orange]{teams}[/COLOR]'
                 results.append((href, title))
             return results if results else None
         except Exception as e:
@@ -157,7 +157,7 @@ class streamer:
                         time_str = ''
                 else:
                     time_str = 'Live'
-                title = f'[COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
+                title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{teams}[/COLOR]'
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
@@ -219,7 +219,7 @@ class streamer:
                 time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
                 team1 = html.unescape(team1).strip()
                 team2 = html.unescape(team2).strip()
-                title = f"[COLOR orange]{team1} vs {team2}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]"
+                title = f"[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]"
                 results.append((full_url, title))
             if not matches:
                 log('streameast_ga: primary regex found no matches, trying single-event fallback')
@@ -240,7 +240,7 @@ class streamer:
                         label = dt.strftime('%m-%d')
                     time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
                     title_text = html.unescape(title_text).strip()
-                    title = f"[COLOR orange]{title_text}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]"
+                    title = f"[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title_text}[/COLOR]"
                     results.append((full_url, title))
             if not results:
                 log('streameast_ga: both regexes failed, no matches found', xbmc.LOGERROR)
@@ -275,7 +275,7 @@ class streamer:
                         time_str = ''
                 else:
                     time_str = ''
-                title = f'[COLOR orange]{title}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
+                title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
@@ -299,7 +299,7 @@ class streamer:
                 except:
                     pass
                 name = html.unescape(name).strip()
-                title = f'[COLOR orange]{name}[/COLOR] [COLOR dodgerblue]{timestr.strip()}[/COLOR]'
+                title = f'[COLOR dodgerblue]{timestr.strip()}[/COLOR] [COLOR orange]{name}[/COLOR]'
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
@@ -336,7 +336,7 @@ class streamer:
                         time_str = ''
                 else:
                     time_str = ''
-                title = f'[COLOR orange]{team1} vs {team2}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'
+                title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
@@ -353,7 +353,7 @@ class streamer:
             for href, teams, time_str in matches:
                 full_url = urljoin(base, href)
                 teams = html.unescape(teams).strip()
-                title = f'[COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{time_str.strip()}[/COLOR]'
+                title = f'[COLOR dodgerblue]{time_str.strip()}[/COLOR] [COLOR orange]{teams}[/COLOR]'
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
@@ -384,7 +384,7 @@ class streamer:
                 except:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, href)
-                title = f'[COLOR orange]{event.strip()}[/COLOR] - [COLOR dodgerblue]{league.strip()} {time_str}[/COLOR]'
+                title = f'[COLOR dodgerblue]{league.strip()} {time_str}[/COLOR] - [COLOR orange]{event.strip()}[/COLOR]'
                 results.append((full_url, title))
             return results if results else None
         except Exception as e:
