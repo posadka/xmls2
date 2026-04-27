@@ -322,26 +322,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client, control
-    import re, requests
+    import re
     from urllib.parse import urljoin
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     sport = 'mlb'
-    try:
-        base_url = requests.get('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/roxie_bases').text
-    except:
-        return None
-    bases = re.findall('"([^"]*)', base_url)
-    results = []
-    for base in bases:
-        try:
-            full_url = urljoin(base, sport)
-            requests.get(full_url, timeout=3)
-            urls = client.schedule(full_url)
-            if urls:
-                results.extend(urls)
-        except:
-            continue
-    return results if results else None
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/roxie_bases.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    full_url = urljoin(base, sport)
+    url = client.schedule(full_url)
+    return url
 ]]></expres>
         <page></page>
     </regex>
