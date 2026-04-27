@@ -450,7 +450,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     url = client.schedule('https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=100&categoryId=13')
     return url
 ]]></expres>
-        <page>https://streameast.gl/mlb</page>
+        <page></page>
     </regex>
     <regex>
         <name>makelist2</name>
