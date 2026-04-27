@@ -100,13 +100,8 @@ class streamer:
                 time_str = time_str.strip()
                 try:
                     t = datetime.strptime(time_str, '%H:%M')
-                    t = t.replace(
-                        year=datetime.utcnow().year,
-                        month=datetime.utcnow().month,
-                        day=datetime.utcnow().day
-                    )
-                    local_t = datetime.fromtimestamp(t.timestamp())
-                    time_str = local_t.strftime('%I:%M %p').lstrip('0')
+                    t = t - timedelta(hours=7)
+                    time_str = t.strftime('%I:%M %p').lstrip('0')
                 except:
                     pass
                 full_url = urljoin(base, href)
