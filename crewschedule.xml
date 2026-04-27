@@ -271,7 +271,7 @@ class streamer:
                     try:
                         dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
                         dt = dt.replace(tzinfo=timezone.utc).astimezone()
-                        time_str = dt.strftime('%I:%M %p').lstrip('0')
+                        time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
                     except:
                         time_str = ''
                 else:
