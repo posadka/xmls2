@@ -100,8 +100,8 @@ class streamer:
                     t = datetime.strptime(time_str, '%H:%M')
                     now_local = datetime.now()
                     t = t.replace(year=now_local.year, month=now_local.month, day=now_local.day)
-                    offset = (datetime.now() - datetime.utcnow()).seconds // 3600
-                    local_t = t - timedelta(hours=offset)
+                    utc_offset = (datetime.utcnow() - datetime.now()).seconds // 3600
+                    local_t = t - timedelta(hours=utc_offset)
                     time_str = local_t.strftime('%I:%M %p').lstrip('0')
                 except:
                     pass
