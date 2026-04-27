@@ -89,14 +89,26 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
-                r'class="stream-info"[^>]*>.*?<img[^>]+>\s*([^<]+).*?href=\'([^\']+)\'',
+                r'class="stream-time">([^<]+)</div>\s*<div class="stream-info">[^>]*>.*?<img[^>]+>\s*([^<]+).*?href=\'([^\']+)\'',
                 page_data, re.S
             )
             results = []
-            for title, href in matches:
-                title = html.unescape(title).strip()
+            for time_str, title, href in matches:
+                title    = html.unescape(title).strip()
+                time_str = time_str.strip()
+                try:
+                    now = datetime.utcnow()
+                    t = datetime.strptime(time_str, '%H:%M')
+                    t = t.replace(year=now.year, month=now.month, day=now.day)
+                    import calendar
+                    utc_ts = calendar.timegm(t.timetuple())
+                    local_t = datetime.fromtimestamp(utc_ts)
+                    time_str = local_t.strftime('%I:%M %p').lstrip('0')
+                except:
+                    pass
                 full_url = urljoin(base, href)
-                results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
+                label    = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                results.append((full_url, label))
             return results if results else None
         except Exception as e:
             log(f'ovostreams error: {e}', xbmc.LOGERROR)
