@@ -152,7 +152,7 @@ class streamer:
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             matches = re.findall(
-                r'<a href=["\']([^"\']+)["\'][^>]*>.*?<h4[^>]*>\s*([^<]+?)\s*</h4>(.*?)</a>',
+                r'<div class="media-body">\s*<a href=["\']([^"\']+)["\'][^>]*>.*?<h4[^>]*>\s*([^<]+?)\s*<\/h4>(.*?)<\/a>',
                 page_data, re.S
             )
             results = []
