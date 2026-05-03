@@ -566,48 +566,29 @@ class streamer:
 
     def sportssonline(self, url):
         try:
-            log(f'sportssonline: fetching url={url}')
-            response = requests.get(url, headers={'User-Agent': UA}, timeout=10)
-            log(f'sportssonline: status_code={response.status_code}')
-            log(f'sportssonline: response headers={dict(response.headers)}')
-            page_data = response.text
-            log(f'sportssonline: page_data length={len(page_data)}')
-            log(f'sportssonline: page_data preview={repr(page_data[:500])}')
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             results = []
             lines = page_data.splitlines()
-            log(f'sportssonline: total lines={len(lines)}')
             for i, line in enumerate(lines):
                 line = line.strip()
                 if not line:
                     continue
-                log(f'sportssonline: line[{i}]={repr(line)}')
                 m = re.match(r'^(\d{1,2}:\d{2})\s+(.+?)\s*\|\s*(https?://\S+)', line)
                 if not m:
-                    log(f'sportssonline: line[{i}] no match, skipping')
                     continue
                 time_str = m.group(1)
                 title = m.group(2).strip()
                 link = m.group(3).strip()
-                log(f'sportssonline: matched time={time_str} title={title} link={link}')
                 title = html.unescape(title)
                 label = (
                     f'[COLOR dodgerblue]{time_str}[/COLOR] '
                     f'[COLOR orange]{title}[/COLOR]'
                 )
                 results.append((link, label))
-            log(f'sportssonline: total results={len(results)}')
             if not results:
-                log(f'sportssonline: returning None — no matches found', xbmc.LOGWARNING)
                 return None
             for idx, (lnk, lbl) in enumerate(results):
-                log(f'sportssonline: result[{idx}] link={lnk} label={lbl}')
             return results
-        except requests.exceptions.Timeout:
-            log(f'sportssonline: request timed out for url={url}', xbmc.LOGERROR)
-            return None
-        except requests.exceptions.ConnectionError as e:
-            log(f'sportssonline: connection error url={url} | {e}', xbmc.LOGERROR)
-            return None
         except Exception as e:
             log(f'sportssonline: unexpected error | {e}', xbmc.LOGERROR)
             return None
