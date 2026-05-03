@@ -570,7 +570,7 @@ class streamer:
             results = []
             for line in page_data.splitlines():
                 line = line.strip()
-                m = re.match(r'^(\d{1,2}:\d{2})\s+(.+?)\s*\|\s*(https?://\S+)$', line)
+                m = re.match(r'^(\d{1,2}:\d{2})\s+(.+?)\s*\|\s*(https?://\S+)', line)
                 if not m:
                     continue
                 time_str, title, link = m.group(1), m.group(2).strip(), m.group(3).strip()
