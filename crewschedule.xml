@@ -31,39 +31,100 @@ UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
 
 TAG = 'Schedule'
 
+
 def log(msg, level=xbmc.LOGINFO):
     xbmc.log(f'{TAG} {msg}', level)
+
+
+def _base_url(url):
+    parsed = urlparse(url)
+    return f'{parsed.scheme}://{parsed.netloc}'
+
+
+def _guard(func):
+    def wrapper(self, url):
+        if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
+            return None
+        return func(self, url)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
 
 class streamer:
 
     def resolve(self, url):
         try:
-            if 'istreameast.app' in url: u = self.streameast(url)
-            elif 'chaturbate.com' in url: u = self.chaturbate(url)
-            elif 'streambtw' in url: u = self.streambtw(url)
-            elif 'fsportshd' in url: u = self.fsportshd(url)
-            elif 'volokit' in url: u = self.volokit(url)
-            elif 'streameast.ga' in url: u = self.streameast_ga(url)
-            elif 'buffstreams' in url: u = self.buffstreams(url)
-            elif 'shd247' in url: u = self.shd(url)
-            elif 'streamcenter' in url: u = self.streamcenter(url)
-            elif 'waatk' in url: u = self.waatk(url)
-            elif 'roxiestreams' in url: u = self.roxiestreams(url)
-            elif 'playoffsstream' in url: u = self.playoff(url)
-            elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
-            elif 'flyembed' in url: u = self.flyembed(url)
-            elif 'embedhd' in url: u = self.embedhd(url)
-            elif any(x in url for x in ['sportssonline', 'sportsonline']): u = self.sportssonline(url)
-            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
-            elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
-            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
+            if 'istreameast.app' in url:
+                u = self.streameast(url)
+            elif 'chaturbate.com' in url:
+                u = self.chaturbate(url)
+            elif 'streambtw' in url:
+                u = self.streambtw(url)
+            elif 'fsportshd' in url:
+                u = self.fsportshd(url)
+            elif 'volokit' in url:
+                u = self.volokit(url)
+            elif 'streameast.ga' in url:
+                u = self.streameast_ga(url)
+            elif 'buffstreams' in url:
+                u = self.buffstreams(url)
+            elif 'shd247' in url:
+                u = self.shd(url)
+            elif 'streamcenter' in url:
+                u = self.streamcenter(url)
+            elif 'waatk' in url:
+                u = self.waatk(url)
+            elif 'roxiestreams' in url:
+                u = self.roxiestreams(url)
+            elif 'playoffsstream' in url:
+                u = self.playoff(url)
+            elif 'ccrackstreams.sbs' in url:
+                u = self.crackstreams(url)
+            elif 'flyembed' in url:
+                u = self.flyembed(url)
+            elif 'embedhd' in url:
+                u = self.embedhd(url)
+            elif any(x in url for x in ['sportssonline', 'sportsonline']):
+                u = self.sportssonline(url)
+            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
+                u = self.givemereddit(url)
+            elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']):
+                u = self.methstreams(url)
+            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']):
+                u = self.ovostreams(url)
+            else:
+                log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
+                return None
             return u
         except Exception as e:
             log(f'resolve failed for {url} | {e}', xbmc.LOGERROR)
+            return None
 
+    @staticmethod
+    def _fmt_utc_ts(ts, fmt='%m/%d %I:%M %p'):
+        try:
+            dt = datetime.fromtimestamp(int(ts), tz=timezone.utc).astimezone()
+            return dt.strftime(fmt).lstrip('0')
+        except Exception:
+            return ''
+
+    @staticmethod
+    def _fmt_utc_dt(dt_str, in_fmt='%Y-%m-%d %H:%M:%S', out_fmt='%m/%d %I:%M %p'):
+        try:
+            dt = datetime.strptime(dt_str, in_fmt).replace(tzinfo=timezone.utc).astimezone()
+            return dt.strftime(out_fmt).lstrip('0')
+        except Exception:
+            return ''
+
+    @staticmethod
+    def _label(time_str, title):
+        if time_str:
+            return f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
+        return f'[COLOR orange]{title}[/COLOR]'
+
+    @_guard
     def streameast(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             matches = re.findall(
                 r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
@@ -74,23 +135,22 @@ class streamer:
             )
             results = []
             for href, league, teams, timestamp in matches:
-                href = href.strip()
-                league = html.unescape(league).strip()
-                teams = html.unescape(teams).strip()
+                href      = href.strip()
+                league    = html.unescape(league).strip()
+                teams     = html.unescape(teams).strip()
                 timestamp = html.unescape(timestamp).strip()
-                title = f'[COLOR dodgerblue]{league} {timestamp}[/COLOR] [COLOR orange]{teams}[/COLOR]'
+                title     = f'[COLOR dodgerblue]{league} {timestamp}[/COLOR] [COLOR orange]{teams}[/COLOR]'
                 results.append((href, title))
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'streameast error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def ovostreams(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
+            base = _base_url(url)
             matches = re.findall(
                 r'(?s)<div class="stream-time">([^<]+)</div>.*?'
                 r'<div class="stream-info">.*?<img[^>]+>\s*([^<]+)</div>.*?'
@@ -99,127 +159,139 @@ class streamer:
             )
             results = []
             for time_str, title, href in matches:
-                title = html.unescape(title).strip()
+                title    = html.unescape(title).strip()
                 time_str = time_str.strip()
                 try:
-                    t = datetime.strptime(time_str, '%H:%M')
-                    t = t - timedelta(hours=7)
+                    t        = datetime.strptime(time_str, '%H:%M') - timedelta(hours=7)
                     time_str = t.strftime('%I:%M %p').lstrip('0')
-                except:
+                except Exception:
                     pass
-                full_url = urljoin(base, href)
-                label = (
-                    f'[COLOR dodgerblue]{time_str}[/COLOR] '
-                    f'[COLOR orange]{title}[/COLOR]'
-                )
-                results.append((full_url, label))
-            return results if results else None
+                results.append((urljoin(base, href), self._label(time_str, title)))
+            return results or None
         except Exception as e:
             log(f'ovostreams error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def chaturbate(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            matches = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
-            hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
-            results = [
+            matches   = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
+            hosts     = {'WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED'}
+            results   = [
                 ('https://chaturbate.com' + href, title)
                 for href, title in matches
                 if any(x in title for x in hosts)
             ]
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'chaturbate error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def hdrez(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', page_data)[0]
-            items = re.findall(r'"(.+?)"', items)
-            subitem = int(re.findall(r'\(atob.+?-\s*(\d+)', page_data)[0])
-            srp = ''
+            items     = re.findall(r'<script>var.*?=\s*(\[[^;]+)', page_data)[0]
+            items     = re.findall(r'"(.+?)"', items)
+            subitem   = int(re.findall(r'\(atob.+?-\s*(\d+)', page_data)[0])
+            srp       = ''
             for item in items:
                 srp += chr(
-                    int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem)
-            results = re.findall(r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)', srp, re.S)
-            return results if results else None
+                    int(re.sub(r'[^\d]', '', base64.b64decode(item).decode('utf-8'))) - subitem
+                )
+            results = re.findall(
+                r'kode_ticket_text.*?h6>([^<]*).*?h2>([^<]*).*?an>([^<]*).*?h2>([^<]*).*?ef="([^"]*)',
+                srp, re.S
+            )
+            return results or None
         except Exception as e:
             log(f'hdrez error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def fsportshd(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
-                r'<div class="media-body">\s*<a href=["\']([^"\']+)["\'][^>]*>.*?<h4[^>]*>\s*([^<]+?)\s*<\/h4>(.*?)<\/a>',
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'<div class="media-body">\s*<a href=["\']([^"\']+)["\'][^>]*>.*?'
+                r'<h4[^>]*>\s*([^<]+?)\s*<\/h4>(.*?)<\/a>',
                 page_data, re.S
             )
             results = []
             for href, teams, block in matches:
                 if 'Click Here' in teams:
                     continue
-                teams = html.unescape(teams).strip()
+                teams    = html.unescape(teams).strip()
                 full_url = urljoin(base, href)
                 dt_match = re.search(r"timeTo\(new Date\('([^']+)'\)", block)
                 if dt_match:
                     try:
-                        dt = datetime.strptime(dt_match.group(1), '%b %d %Y %H:%M:%S +00:00')
-                        dt = dt.replace(tzinfo=timezone.utc).astimezone()
+                        dt       = datetime.strptime(dt_match.group(1), '%b %d %Y %H:%M:%S +00:00')
+                        dt       = dt.replace(tzinfo=timezone.utc).astimezone()
                         time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
-                    except:
+                    except Exception:
                         time_str = ''
                 else:
                     time_str = 'Live'
-                title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{teams}[/COLOR]'
-                results.append((full_url, title))
-            return results if results else None
+                results.append((full_url, self._label(time_str, teams)))
+            return results or None
         except Exception as e:
             log(f'fsportshd error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def streambtw(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            data = json.loads(page_data)
-            results = []
-            for group in data.get("groups", []):
-                for item in group.get("items", []):
-                    title = item.get("title")
-                    link = item.get("url")
+            data      = json.loads(page_data)
+            results   = []
+            for group in data.get('groups', []):
+                for item in group.get('items', []):
+                    title = item.get('title')
+                    link  = item.get('url')
                     if title and link:
                         results.append((link, f'[COLOR orange]{title}[/COLOR]'))
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'streambtw error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def volokit(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
-            results = []
-            for title, href in matches:
-                results.append((href, f'[COLOR orange]{html.unescape(title).strip()}[/COLOR]'))
-            return results if results else None
+            matches   = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
+            results   = [
+                (href, f'[COLOR orange]{html.unescape(title).strip()}[/COLOR]')
+                for title, href in matches
+            ]
+            return results or None
         except Exception as e:
             log(f'volokit error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def streameast_ga(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = requests.get(url).text
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            base      = _base_url(url)
+            now       = datetime.now().date()
+            tomorrow  = now + timedelta(days=1)
+
+            def _date_label(ts):
+                dt         = datetime.fromtimestamp(int(ts))
+                event_date = dt.date()
+                if event_date == now:
+                    day = 'Today'
+                elif event_date == tomorrow:
+                    day = 'Tomorrow'
+                else:
+                    day = dt.strftime('%m-%d')
+                return f'{day} {dt.strftime("%I:%M %p").lstrip("0")}', dt
+
+            # Primary pattern: two team spans
             matches = re.findall(
                 r'(?s)<a href="([^"]+)"[^>]*class="uefa-card[^"]*"[^>]*data-time="(\d+)"[^>]*>.*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
@@ -227,23 +299,14 @@ class streamer:
                 page_data
             )
             results = []
-            now = datetime.now().date()
-            tomorrow = now + timedelta(days=1)
             for href, ts, team1, team2 in matches:
-                full_url = urljoin(base, href)
-                dt = datetime.fromtimestamp(int(ts))
-                event_date = dt.date()
-                if event_date == now:
-                    label = 'Today'
-                elif event_date == tomorrow:
-                    label = 'Tomorrow'
-                else:
-                    label = dt.strftime('%m-%d')
-                time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
+                time_str, _ = _date_label(ts)
                 team1 = html.unescape(team1).strip()
                 team2 = html.unescape(team2).strip()
-                title = f"[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]"
-                results.append((full_url, title))
+                title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
+                results.append((urljoin(base, href), title))
+
+            # Fallback: single team/event span
             if not matches:
                 log('streameast_ga: primary regex found no matches, trying single-event fallback')
                 single_matches = re.findall(
@@ -252,19 +315,11 @@ class streamer:
                     page_data
                 )
                 for href, ts, title_text in single_matches:
-                    full_url = urljoin(base, href)
-                    dt = datetime.fromtimestamp(int(ts))
-                    event_date = dt.date()
-                    if event_date == now:
-                        label = 'Today'
-                    elif event_date == tomorrow:
-                        label = 'Tomorrow'
-                    else:
-                        label = dt.strftime('%m-%d')
-                    time_str = f'{label} {dt.strftime("%I:%M %p").lstrip("0")}'
-                    title_text = html.unescape(title_text).strip()
-                    title = f"[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title_text}[/COLOR]"
-                    results.append((full_url, title))
+                    time_str, _ = _date_label(ts)
+                    title_text  = html.unescape(title_text).strip()
+                    title       = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title_text}[/COLOR]'
+                    results.append((urljoin(base, href), title))
+
             if not results:
                 log('streameast_ga: both regexes failed, no matches found', xbmc.LOGERROR)
                 return None
@@ -273,71 +328,61 @@ class streamer:
             log(f'streameast_ga error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def buffstreams(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
+            base      = _base_url(url)
+            matches   = re.findall(
                 r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?'
                 r'(?:<b>([^<]+)</b>|<time[^>]+datetime="([^"]+)"[^>]*>)',
                 page_data
             )
             results = []
             for teams, href, live_status, dt_str in matches:
-                title = html.unescape(teams).replace('Buffstreams ', '').strip()
+                title    = html.unescape(teams).replace('Buffstreams ', '').strip()
                 full_url = urljoin(base, href)
                 if live_status:
                     time_str = live_status.strip()
                 elif dt_str:
-                    try:
-                        dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
-                        dt = dt.replace(tzinfo=timezone.utc).astimezone()
-                        time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
-                    except:
-                        time_str = ''
+                    time_str = self._fmt_utc_dt(dt_str)
                 else:
                     time_str = ''
-                title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                results.append((full_url, title))
-            return results if results else None
+                results.append((full_url, self._label(time_str, title)))
+            return results or None
         except Exception as e:
             log(f'buffstreams error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def roxiestreams(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
-                r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>', page_data)
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>',
+                page_data
+            )
             results = []
             for href, name, timestr in matches:
-                full_url = urljoin(base, href)
                 try:
-                    dt = datetime.strptime(timestr.strip(), "%B %d, %Y %I:%M %p")
-                    dt = dt + timedelta(hours=2)
-                    timestr = dt.strftime("%B %d, %Y %I:%M %p")
-                except:
+                    dt      = datetime.strptime(timestr.strip(), '%B %d, %Y %I:%M %p') + timedelta(hours=2)
+                    timestr = dt.strftime('%B %d, %Y %I:%M %p')
+                except Exception:
                     pass
                 name = html.unescape(name).strip()
-                title = f'[COLOR dodgerblue]{timestr.strip()}[/COLOR] [COLOR orange]{name}[/COLOR]'
-                results.append((full_url, title))
-            return results if results else None
+                results.append((urljoin(base, href), self._label(timestr.strip(), name)))
+            return results or None
         except Exception as e:
             log(f'roxiestreams error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def givemereddit(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
+            base      = _base_url(url)
+            matches   = re.findall(
                 r'<a href="([^"]+)" class="matches"[^>]*>(.*?)</a>',
                 page_data, re.S
             )
@@ -346,59 +391,53 @@ class streamer:
                 teams = re.findall(r'<span class="team-name">([^<]+)</span>', block)
                 if len(teams) < 2:
                     continue
-                team1 = html.unescape(teams[0]).strip()
-                team2 = html.unescape(teams[1]).strip()
+                team1    = html.unescape(teams[0]).strip()
+                team2    = html.unescape(teams[1]).strip()
                 full_url = urljoin(base, href)
-                dt_match = re.search(r"moment\('([^']+)'\)", block)
-                live_match = re.search(r'status-badge[^>]*>([^<]+)</span>', block)
-                if live_match:
-                    time_str = live_match.group(1).strip()
-                elif dt_match:
-                    try:
-                        dt = datetime.strptime(dt_match.group(1), '%Y-%m-%dT%H:%MZ')
-                        dt = dt.replace(tzinfo=timezone.utc).astimezone()
-                        time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
-                    except:
-                        time_str = ''
+                live_m   = re.search(r'status-badge[^>]*>([^<]+)</span>', block)
+                dt_m     = re.search(r"moment\('([^']+)'\)", block)
+                if live_m:
+                    time_str = live_m.group(1).strip()
+                elif dt_m:
+                    time_str = self._fmt_utc_dt(dt_m.group(1), '%Y-%m-%dT%H:%MZ')
                 else:
                     time_str = ''
                 title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
                 results.append((full_url, title))
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'givemereddit error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def methstreams(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)', page_data)
-            results = []
-            for href, teams, time_str in matches:
-                full_url = urljoin(base, href)
-                teams = html.unescape(teams).strip()
-                title = f'[COLOR dodgerblue]{time_str.strip()}[/COLOR] [COLOR orange]{teams}[/COLOR]'
-                results.append((full_url, title))
-            return results if results else None
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)',
+                page_data
+            )
+            results = [
+                (urljoin(base, href), self._label(time_str.strip(), html.unescape(teams).strip()))
+                for href, teams, time_str in matches
+            ]
+            return results or None
         except Exception as e:
             log(f'methstreams error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def shd(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
             page_data = client.request(url)
             if not page_data:
                 return None
+            base    = _base_url(url)
             matches = re.findall(
                 r'(?s)<tr>\s*'
                 r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
-                r'<td[^>]*><strong>([^<]+)<strong></td>.*?'
+                r'<td[^>]*><strong>([^<]+)<strong></td>.*?'  # note: original had unclosed <strong> — preserved
                 r'<td[^>]*><strong>([^<]+)</strong></td>.*?'
                 r'<a href="([^"]+)"',
                 page_data
@@ -406,73 +445,75 @@ class streamer:
             results = []
             for event, league, gmt_time, href in matches:
                 try:
-                    gmt_time_clean = gmt_time.replace('GMT', '').strip()
-                    dt = datetime.strptime(gmt_time_clean, "%H:%M").replace(tzinfo=timezone.utc)
-                    time_str = dt.astimezone().strftime("%I:%M %p").lstrip('0')
-                except:
+                    gmt_clean = gmt_time.replace('GMT', '').strip()
+                    dt        = datetime.strptime(gmt_clean, '%H:%M').replace(tzinfo=timezone.utc)
+                    time_str  = dt.astimezone().strftime('%I:%M %p').lstrip('0')
+                except Exception:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, href)
-                title = f'[COLOR dodgerblue]{league.strip()} {time_str}[/COLOR] - [COLOR orange]{event.strip()}[/COLOR]'
+                title    = f'[COLOR dodgerblue]{league.strip()} {time_str}[/COLOR] - [COLOR orange]{event.strip()}[/COLOR]'
                 results.append((full_url, title))
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'shd error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def streamcenter(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, timeout=5).json()
-            results = []
+            results   = []
             for item in page_data:
-                name = item.get("name") or item.get("gameName") or "Unknown"
-                video = item.get("videoUrl") or ""
-                start = item.get("beginPartie") or ""
+                name  = item.get('name') or item.get('gameName') or 'Unknown'
+                video = item.get('videoUrl') or ''
+                start = item.get('beginPartie') or ''
                 try:
-                    t = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
+                    t     = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
                     local = t.astimezone() - timedelta(hours=1)
-                    start = local.strftime("%m/%d %I:%M %p").lstrip('0')
-                except:
+                    start = local.strftime('%m/%d %I:%M %p').lstrip('0')
+                except Exception:
                     pass
-                title = f"[COLOR dodgerblue]{start}[/COLOR] [COLOR orange]{name}[/COLOR]" if start else name
+                title = self._label(start, name) if start else name
                 for n, u in enumerate(video.split(';'), 1):
                     href = u.split('<')[0].strip()
                     if not href:
                         continue
-                    label = title if n == 1 else f"{title} (Stream {n})"
+                    label = title if n == 1 else f'{title} (Stream {n})'
                     results.append((href, label))
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'streamcenter error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def waatk(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
-                r'(?s)<div class="match">([^<]+)</div>.*?<div class="league">([^<]+)</div>.*?<a class="watchbtn"\s+href="([^"]+)"',
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<div class="match">([^<]+)</div>.*?'
+                r'<div class="league">([^<]+)</div>.*?'
+                r'<a class="watchbtn"\s+href="([^"]+)"',
                 page_data
             )
-            results = []
-            for match, league, href in matches:
-                title = f'[COLOR orange]{match.strip()}[/COLOR] [COLOR dodgerblue]{league.strip()}[/COLOR]'
-                full_url = urljoin(base, href)
-                results.append((full_url, title))
-            return results if results else None
+            results = [
+                (
+                    urljoin(base, href),
+                    f'[COLOR orange]{match.strip()}[/COLOR] [COLOR dodgerblue]{league.strip()}[/COLOR]'
+                )
+                for match, league, href in matches
+            ]
+            return results or None
         except Exception as e:
             log(f'waatk error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def playoff(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
+            base      = _base_url(url)
+            matches   = re.findall(
                 r'(?s)<a class="btn btn-info btn-block"[^>]+href="([^"]+)"[^>]*>'
                 r'.*?<div class="text-center">([^<]*)</div>'
                 r'.*?<div[^>]+d-none d-md-inline[^>]*>([^<]+)</div>',
@@ -482,48 +523,45 @@ class streamer:
             for href, time_str, teams in matches:
                 full_url = urljoin(base, href)
                 time_str = time_str.strip()
-                teams = html.unescape(teams).strip()
+                teams    = html.unescape(teams).strip()
                 try:
-                    dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M ET')
+                    dt       = datetime.strptime(time_str, '%Y-%m-%d %H:%M ET')
                     time_str = dt.strftime('%I:%M %p ET').lstrip('0')
-                except:
+                except Exception:
                     pass
                 title = f'[COLOR orange]{teams}[/COLOR] [COLOR dodgerblue]{time_str}[/COLOR]'.strip()
                 results.append((full_url, title))
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'playoff error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def crackstreams(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            matches = re.findall(
+            base      = _base_url(url)
+            matches   = re.findall(
                 r'<a href="([^"]+)"[^>]+title="Watch ([^"]+?) Live Stream',
                 page_data
             )
-            results = []
-            for href, title in matches:
-                full_url = urljoin(base, href)
-                title = html.unescape(title).strip()
-                results.append((full_url, f'[COLOR orange]{title}[/COLOR]'))
-            return results if results else None
+            results = [
+                (urljoin(base, href), f'[COLOR orange]{html.unescape(title).strip()}[/COLOR]')
+                for href, title in matches
+            ]
+            return results or None
         except Exception as e:
             log(f'crackstreams error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def flyembed(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
-            page_data = client.request(url)
-            parsed = urlparse(url)
-            base = f'{parsed.scheme}://{parsed.netloc}'
-            results = []
-            current_section = ""
-            sections = re.split(
+            page_data       = client.request(url)
+            base            = _base_url(url)
+            results         = []
+            current_section = ''
+            sections        = re.split(
                 r'<div[^>]+class=["\']section-title["\'][^>]*>(.*?)</div>',
                 page_data,
                 flags=re.I | re.S
@@ -540,23 +578,23 @@ class streamer:
                     re.S | re.I
                 )
                 for title, link in matches:
-                    full_url = urljoin(base, link.strip())
+                    full_url    = urljoin(base, link.strip())
                     clean_title = html.unescape(title).strip()
-                    label = (
+                    label       = (
                         f'[COLOR dodgerblue]{current_section}[/COLOR] - '
                         f'[COLOR orange]{clean_title}[/COLOR]'
                     )
                     results.append((full_url, label))
-            return results if results else None
+            return results or None
         except Exception as e:
-            log(f'flyembed_schedule error: {e}', xbmc.LOGERROR)
+            log(f'flyembed error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def embedhd(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).json()
-            results = []
+            results   = []
             for day in page_data.get('days', []):
                 for event in day.get('items', []):
                     title   = event.get('title', '')
@@ -566,11 +604,7 @@ class streamer:
                     streams = event.get('streams', [])
                     if not streams:
                         continue
-                    try:
-                        local_dt  = datetime.fromtimestamp(ts)
-                        time_part = local_dt.strftime('%m/%d %I:%M %p').lstrip('0')
-                    except:
-                        time_part = ''
+                    time_part = self._fmt_utc_ts(ts)
                     if status == 'LIVE':
                         label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
                     else:
@@ -578,16 +612,17 @@ class streamer:
                     link = streams[0].get('link', '')
                     if link:
                         results.append((link, label))
-            return results if results else None
+            return results or None
         except Exception as e:
             log(f'embedhd error: {e}', xbmc.LOGERROR)
             return None
 
+    @_guard
     def sportssonline(self, url):
         try:
-            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            results = []
+            results   = []
+            now       = datetime.now()
             for line in page_data.splitlines():
                 line = line.strip()
                 if not line:
@@ -596,25 +631,18 @@ class streamer:
                 if not m:
                     continue
                 time_str = m.group(1)
-                title = html.unescape(m.group(2).strip())
-                link = m.group(3).strip()
+                title    = html.unescape(m.group(2).strip())
+                link     = m.group(3).strip()
                 try:
-                    utc_t = datetime.strptime(time_str, '%H:%M').replace(
-                        year=datetime.now().year,
-                        month=datetime.now().month,
-                        day=datetime.now().day,
+                    utc_t    = datetime.strptime(time_str, '%H:%M').replace(
+                        year=now.year, month=now.month, day=now.day,
                         tzinfo=timezone.utc
                     )
-                    local_t = utc_t.astimezone()
-                    time_str = local_t.strftime('%I:%M %p').lstrip('0')
+                    time_str = utc_t.astimezone().strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     pass
-                label = (
-                    f'[COLOR dodgerblue]{time_str}[/COLOR] '
-                    f'[COLOR orange]{title}[/COLOR]'
-                )
-                results.append((link, label))
-            return results if results else None
+                results.append((link, self._label(time_str, title)))
+            return results or None
         except Exception as e:
-            log(f'sportssonline: unexpected error | {e}', xbmc.LOGERROR)
+            log(f'sportssonline error: {e}', xbmc.LOGERROR)
             return None
