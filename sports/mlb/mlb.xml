@@ -36,7 +36,6 @@
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://istreameast.app/mlbstreams2')
     return url
 ]]></expres>
@@ -95,7 +94,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://buffstreams.plus/mlb-live-streams')
     return url
 ]]></expres>
@@ -149,7 +147,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://waatk.com/upcoming.php?category=baseball')
     return url
 ]]></expres>
@@ -203,7 +200,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://ccrackstreams.sbs/index.php?sport=MLB')
     return url
 ]]></expres>
@@ -259,7 +255,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client, control
     import re
     from urllib.parse import urljoin
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     sport = 'mlbstreams.php'
     base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/fsports_base.xml')
     base = re.findall('"([^"]*)', base_url)[0]
@@ -324,7 +319,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client, control
     import re
     from urllib.parse import urljoin
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     sport = 'mlb'
     base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/roxie_bases.xml')
     base = re.findall('"([^"]*)', base_url)[0]
@@ -387,7 +381,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://v2.streameast.ga/mlb-streams/')
     return url
 ]]></expres>
@@ -446,7 +439,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=100&categoryId=13')
     return url
 ]]></expres>
@@ -500,7 +492,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://streameast.gl/mlb')
     return url
 ]]></expres>
@@ -554,7 +545,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('http://volokit.xyz/sport/mlb')
     return url
 ]]></expres>
@@ -613,7 +603,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://methstreams.ms/league/mlbstreams')
     return url
 ]]></expres>
@@ -672,7 +661,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://istreameast.app')
     return url
 ]]></expres>
@@ -731,7 +719,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=200')
     return url
 ]]></expres>
@@ -790,7 +777,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://embedhd.org/api-event.php')
     return url
 ]]></expres>
@@ -849,7 +835,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://shd247.live/index.html')
     return url
 ]]></expres>
@@ -908,7 +893,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
     url = client.schedule('https://sportsonline.vc/prog.txt')
     return url
 ]]></expres>
