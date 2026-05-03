@@ -63,6 +63,7 @@ class streamer:
 
     def streameast(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             matches = re.findall(
                 r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
@@ -86,6 +87,7 @@ class streamer:
 
     def ovostreams(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -118,6 +120,7 @@ class streamer:
 
     def chaturbate(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             matches = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
             hosts = ['WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED']
@@ -133,6 +136,7 @@ class streamer:
 
     def hdrez(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             items = re.findall(r'<script>var.*?=\s*(\[[^;]+)', page_data)[0]
             items = re.findall(r'"(.+?)"', items)
@@ -149,6 +153,7 @@ class streamer:
 
     def fsportshd(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -181,6 +186,7 @@ class streamer:
 
     def streambtw(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             data = json.loads(page_data)
             results = []
@@ -197,6 +203,7 @@ class streamer:
 
     def volokit(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             matches = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
             results = []
@@ -209,6 +216,7 @@ class streamer:
 
     def streameast_ga(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url).text
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -267,6 +275,7 @@ class streamer:
 
     def buffstreams(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -299,6 +308,7 @@ class streamer:
 
     def roxiestreams(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -323,6 +333,7 @@ class streamer:
 
     def givemereddit(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -360,6 +371,7 @@ class streamer:
 
     def methstreams(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -377,6 +389,7 @@ class streamer:
 
     def shd(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
             page_data = client.request(url)
@@ -408,6 +421,7 @@ class streamer:
 
     def streamcenter(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, timeout=5).json()
             results = []
             for item in page_data:
@@ -434,6 +448,7 @@ class streamer:
 
     def waatk(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -453,6 +468,7 @@ class streamer:
 
     def playoff(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -481,6 +497,7 @@ class streamer:
 
     def crackstreams(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -500,6 +517,7 @@ class streamer:
 
     def flyembed(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = client.request(url)
             parsed = urlparse(url)
             base = f'{parsed.scheme}://{parsed.netloc}'
@@ -536,6 +554,7 @@ class streamer:
 
     def embedhd(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).json()
             results = []
             for day in page_data.get('days', []):
@@ -566,6 +585,7 @@ class streamer:
 
     def sportssonline(self, url):
         try:
+            if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew': return
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             results = []
             for line in page_data.splitlines():
