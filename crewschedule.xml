@@ -53,6 +53,7 @@ class streamer:
             elif 'ccrackstreams.sbs' in url: u = self.crackstreams(url)
             elif 'flyembed' in url: u = self.flyembed(url)
             elif 'embedhd' in url: u = self.embedhd(url)
+            elif 'sportssonline' in url: u = self.sportssonline(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']): u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']): u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink']): u = self.ovostreams(url)
@@ -561,4 +562,25 @@ class streamer:
             return results if results else None
         except Exception as e:
             log(f'embedhd error: {e}', xbmc.LOGERROR)
+            return None
+
+    def sportssonline(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            results = []
+            for line in page_data.splitlines():
+                line = line.strip()
+                m = re.match(r'^(\d{1,2}:\d{2})\s+(.+?)\s*\|\s*(https?://\S+)$', line)
+                if not m:
+                    continue
+                time_str, title, link = m.group(1), m.group(2).strip(), m.group(3).strip()
+                title = html.unescape(title)
+                label = (
+                    f'[COLOR dodgerblue]{time_str}[/COLOR] '
+                    f'[COLOR orange]{title}[/COLOR]'
+                )
+                results.append((link, label))
+            return results if results else None
+        except Exception as e:
+            log(f'sportssonline error: {e}', xbmc.LOGERROR)
             return None
