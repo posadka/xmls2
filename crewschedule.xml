@@ -598,6 +598,14 @@ class streamer:
                 time_str = m.group(1)
                 title = html.unescape(m.group(2).strip())
                 link = m.group(3).strip()
+                try:
+                    utc_t = datetime.strptime(time_str, '%H:%M').replace(tzinfo=timezone.utc)
+                    is_dst = time.daylight and time.localtime().tm_isdst > 0
+                    offset = timedelta(hours=-5 if is_dst else -6)
+                    central_t = utc_t + offset
+                    time_str = central_t.strftime('%I:%M %p').lstrip('0')
+                except Exception:
+                    pass
                 label = (
                     f'[COLOR dodgerblue]{time_str}[/COLOR] '
                     f'[COLOR orange]{title}[/COLOR]'
