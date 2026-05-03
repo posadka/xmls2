@@ -57,8 +57,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -111,8 +116,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -165,8 +175,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -225,8 +240,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -279,8 +299,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -333,8 +358,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -387,8 +417,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -441,8 +476,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -495,8 +535,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -549,8 +594,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -603,8 +653,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -657,8 +712,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -711,7 +771,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
     if not result[0]:
         pDialog.update(100, 'Stream not found.')
@@ -770,7 +830,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
     if not result[0]:
         pDialog.update(100, 'Stream not found.')
@@ -829,7 +889,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Playing Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
     if not result[0]:
         pDialog.update(100, 'Stream not found.')
@@ -1006,8 +1066,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             return
         if progress < 90:
             progress += 2
-        pDialog.update(progress, 'The Crew Is Getting Your Event...')
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
