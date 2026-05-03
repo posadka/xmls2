@@ -568,8 +568,7 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             results = []
-            lines = page_data.splitlines()
-            for i, line in enumerate(lines):
+            for line in page_data.splitlines():
                 line = line.strip()
                 if not line:
                     continue
@@ -577,18 +576,14 @@ class streamer:
                 if not m:
                     continue
                 time_str = m.group(1)
-                title = m.group(2).strip()
+                title = html.unescape(m.group(2).strip())
                 link = m.group(3).strip()
-                title = html.unescape(title)
                 label = (
                     f'[COLOR dodgerblue]{time_str}[/COLOR] '
                     f'[COLOR orange]{title}[/COLOR]'
                 )
                 results.append((link, label))
-            if not results:
-                return None
-            for idx, (lnk, lbl) in enumerate(results):
-            return results
+            return results if results else None
         except Exception as e:
             log(f'sportssonline: unexpected error | {e}', xbmc.LOGERROR)
             return None
