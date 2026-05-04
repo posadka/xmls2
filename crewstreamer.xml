@@ -764,15 +764,14 @@ class streamer:
     @_guard
     def embedsports(self, url):
         try:
-            if 'embedsports.top' not in url:
-                page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=10).text
-                m         = re.search(r'<iframe[^>]+src=["\']([^"\']*embedsports\.top[^"\']+)', page_data, re.I)
-                if not m:
-                    log(f'embedsports no iframe found at {url}', xbmc.LOGERROR)
-                    return None
-                url = m.group(1).strip()
-                if url.startswith('//'):
-                    url = 'https:' + url
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=10).text
+            m         = re.search(r'<iframe[^>]+src=["\']([^"\']*embedsports\.top[^"\']+)', page_data, re.I)
+            if not m:
+                log(f'embedsports no iframe found at {url}', xbmc.LOGERROR)
+                return None
+            url = m.group(1).strip()
+            if url.startswith('//'):
+                url = 'https:' + url
             url   = url.split('#')[0]
             parts = url.rstrip('/').split('/')
             if 'embed' in parts:
