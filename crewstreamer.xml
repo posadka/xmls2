@@ -93,10 +93,6 @@ class streamer:
         ).text.strip()
         return resp if resp and resp.startswith('http') else None
 
-    @staticmethod
-    def _headers_str(**kwargs):
-        return '&'.join(f'{k}={v}' for k, v in kwargs.items())
-
     def resolve(self, url):
         try:
             if 'epicmartial' in url:
@@ -301,7 +297,7 @@ class streamer:
     @_guard
     def blacktienba(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data    = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             base_headers = f'|User-Agent={UA}&Origin=http://blacktiesports.net&Referer='
             if 'm3u8' in page_data:
                 m = re.search(r'(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)
@@ -418,53 +414,15 @@ class streamer:
                 return None
             iframe_url = m.group(1)
             if 'embedhd' in iframe_url:
-                iframe1_html = requests.get(
-                    iframe_url,
-                    headers={'Referer': url, 'User-Agent': UA},
-                    timeout=10
-                ).text
-                m = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html)
-                if not m:
-                    return None
-                fid          = m.group(1)
-                parsed       = urlparse(iframe_url)
-                iframe_origin = f'{parsed.scheme}://{parsed.netloc}'
-                api_url      = f'https://exposestrat.com/maestrohd1.php?player=embedded&live={fid}'
-                api_html     = requests.get(
-                    api_url,
-                    headers={'Referer': iframe_url, 'User-Agent': UA},
-                    timeout=10
-                ).text
-                parsed     = urlparse(api_url)
-                api_origin = f'{parsed.scheme}://{parsed.netloc}'
-                m = re.search(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', api_html)
-                if m:
-                    return f'{m.group(1)}|Referer={api_origin}&User-Agent={UA}'
-                source = self._join_array(api_html)
-                if source:
-                    return f'{source}|Referer={api_origin}/&Origin={api_origin}&User-Agent={UA}'
-                m = re.search(r'atob\([\'"]([^\'"]+)[\'"]', api_html)
-                if m:
-                    decoded = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
-                    if decoded.startswith('/'):
-                        base_source = self._join_array(api_html)
-                        if base_source:
-                            pb      = urlparse(base_source)
-                            source  = f'{pb.scheme}://{pb.netloc}{decoded}'
-                        else:
-                            source = iframe_origin + decoded
-                    else:
-                        source = decoded
-                    return f'{source}|Referer={api_origin}/&Origin={api_origin}&User-Agent={UA}'
-                return None
+                return self.embedhd(iframe_url)
             elif 'wikisport' in iframe_url:
                 page_data2 = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=10).text
                 m          = re.search(r'fid\s*=\s*"([^"]+)"', page_data2)
                 if not m:
                     return None
-                fid        = m.group(1)
-                api_url    = f'https://stellarthread.com/wiki.php?player=mobile&live={fid}'
-                api_html   = requests.get(
+                fid      = m.group(1)
+                api_url  = f'https://stellarthread.com/wiki.php?player=mobile&live={fid}'
+                api_html = requests.get(
                     api_url,
                     headers={'Referer': 'https://wikisport.club/', 'User-Agent': UA},
                     timeout=10
@@ -494,8 +452,7 @@ class streamer:
                     return f'{decoded}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
             m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
             if m:
-                source = m.group(1)
-                return f'{source}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+                return f'{m.group(1)}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
             return self.embedsports(iframe_url)
         except Exception as e:
             log(f'volokit failed for {url} | {e}', xbmc.LOGERROR)
@@ -697,33 +654,13 @@ class streamer:
             iframe1   = self._get_iframe_src(page_data, require_id=True)
             if not iframe1:
                 return None
+            if 'embedhd' in iframe1:
+                return self.embedhd(iframe1)
             iframe1_html = requests.get(
                 iframe1,
                 headers={'Referer': url, 'User-Agent': UA},
                 timeout=10
             ).text
-            if 'embedhd' in iframe1:
-                m = re.search(r'fid\s*=\s*"([^"]+)"', iframe1_html)
-                if not m:
-                    return None
-                fid      = m.group(1)
-                api_url  = f'https://exposestrat.com/maestrohd1.php?player=embedded&live={fid}'
-                api_html = requests.get(
-                    api_url,
-                    headers={'Referer': iframe1, 'User-Agent': UA},
-                    timeout=10
-                ).text
-                parsed     = urlparse(api_url)
-                api_origin = f'{parsed.scheme}://{parsed.netloc}'
-
-                m = re.search(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', api_html)
-                if m:
-                    return f'{m.group(1)}|Referer={api_origin}&User-Agent={UA}'
-
-                source = self._join_array(api_html)
-                if source:
-                    return f'{source}|Referer={api_origin}&User-Agent={UA}'
-                return None
             iframe2 = self._get_iframe_src(iframe1_html)
             if not iframe2:
                 return None
@@ -807,10 +744,10 @@ class streamer:
             cipher_len = 0
             shift      = 0
             while i < len(fetch.content):
-                b      = fetch.content[i]
-                i     += 1
+                b          = fetch.content[i]
+                i         += 1
                 cipher_len |= (b & 0x7F) << shift
-                shift += 7
+                shift      += 7
                 if not (b & 0x80):
                     break
             cipher  = fetch.content[i:i + cipher_len]
@@ -999,7 +936,6 @@ class streamer:
         try:
             def xor_decode(data, key):
                 return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
-
             page_data = client.request(url)
             key_m     = re.search(r'var _k="([^"]+)"', page_data)
             raw_m     = re.search(r'var _raw="([^"]+)"', page_data)
@@ -1010,9 +946,9 @@ class streamer:
             d     = base64.b64decode(raw).decode()
             xd    = xor_decode(d, key)
             mid   = len(xd) // 2
-            j     = xd[:mid] + xd[mid:]
+            j     = base64.b64decode(base64.b64encode(xd[:mid].encode())).decode() + \
+                    base64.b64decode(base64.b64encode(xd[mid:].encode())).decode()
             final = xor_decode(j, key)
-
             embed_url  = _base_url(url) + final
             embed_html = requests.get(
                 embed_url,
