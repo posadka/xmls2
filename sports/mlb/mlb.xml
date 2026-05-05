@@ -952,7 +952,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (EHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (ETRIGAN)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
     <thumbnail></thumbnail>
     <fanart></fanart>
