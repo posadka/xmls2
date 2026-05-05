@@ -951,6 +951,134 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (EHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>$doregex[makelist]</link>
+    <thumbnail></thumbnail>
+    <fanart></fanart>
+    <regex>
+        <name>makelist</name>
+        <listrepeat><![CDATA[
+        <title>[makelist.param2]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+        ]]></listrepeat>
+        <expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    import requests
+    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    try:
+        page_data = requests.get('https://embedhd.org/api-event.php', headers={'User-Agent': UA}, timeout=10).json()
+    except Exception:
+        return None
+    results = []
+    for day in page_data.get('days', []):
+        for event in day.get('items', []):
+            title   = event.get('title', '')
+            league  = event.get('league', '').upper()
+            status  = event.get('status', '')
+            streams = event.get('streams', [])
+            if not streams:
+                continue
+            if status == 'LIVE':
+                label = '[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
+            else:
+                label = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
+            link = streams[0].get('link', '')
+            if link:
+                results.append((link, label))
+    return results or None
+]]></expres>
+        <page></page>
+    </regex>
+    <regex>
+        <name>makelist2</name>
+        <expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    import re, requests
+    try:
+        from urllib.parse import urlparse, urljoin, quote_plus
+    except ImportError:
+        from urlparse import urlparse, urljoin
+        from urllib import quote_plus
+    import xbmc, xbmcgui, threading
+    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    url = '[makelist.param1]'
+    parsed  = urlparse(url)
+    referer = '%s://%s' % (parsed.scheme, parsed.netloc)
+    headers = {'Referer': referer, 'User-Agent': UA}
+    def fetch():
+        try:
+            page = requests.get(url, headers=headers, timeout=10).text
+            m = re.search(r'fid\s*=\s*"([^"]+)"', page)
+            if not m:
+                return None
+            fid = m.group(1)
+            m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page)
+            if not m:
+                return None
+            js_src = m.group(1)
+            full_url = 'https:' + js_src if js_src.startswith('//') else js_src
+            parsed2  = urlparse(full_url)
+            referer2 = '%s://%s' % (parsed2.scheme, parsed2.netloc)
+            js_data  = requests.get(full_url, headers={'Referer': referer2, 'User-Agent': UA}, timeout=10).text
+            m = re.search(r'src=["\']([^"\']+)', js_data)
+            if not m:
+                return None
+            api = m.group(1)
+            if api.startswith('//'):
+                api = 'https:' + api
+            elif api.startswith('/'):
+                api = urljoin(referer2, api)
+            api_url  = api + 'mobile&live=' + fid
+            api_html = requests.get(api_url, headers={'Referer': referer2, 'User-Agent': UA}, timeout=10).text
+            m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
+            if not m:
+                return None
+            chars  = re.findall(r'"([^"]*)"', m.group(1))
+            source = ''.join(chars).replace('\\/', '/')
+            import re as _re
+            source = _re.sub(r'(https://)/{1,}', r'\1', source)
+            return (
+                source
+                + '|Referer=' + quote_plus(referer2 + '/')
+                + '&Origin='  + quote_plus(referer2)
+                + '&User-Agent=' + quote_plus(UA)
+            )
+        except Exception:
+            return None
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    result = [None]
+    done   = [False]
+    def run():
+        result[0] = fetch()
+        done[0]   = True
+    t = threading.Thread(target=run)
+    t.start()
+    progress = 0
+    while not done[0]:
+        if pDialog.iscanceled():
+            pDialog.close()
+            return
+        if progress < 90:
+            progress += 2
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
+        xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
+    pDialog.update(100, 'The Crew Is Playing Your Event!')
+    xbmc.sleep(2000)
+    pDialog.close()
+    return result[0]
+]]></expres>
+        <page>[makelist.param1]</page>
+    </regex>
+</item>
+
 <dir
     <title>[COLOR orchid]¤[/COLOR] [COLOR white]MLB [/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/mlb.xml</link>
