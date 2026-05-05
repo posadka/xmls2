@@ -80,10 +80,15 @@ class streamer:
         return re.sub(r'(https://)/{1,}', r'\1', source)
 
     @staticmethod
-    def _decrypt_streams_center(token, referer):
+    def _decrypt_streams_center(html, referer):
+        m = re.search(r'input:\s*"([^"]+)"', html)
+        if not m:
+            return None
+        parsed = urlparse(referer)
+        origin = f'{parsed.scheme}://{parsed.netloc}/'
         resp = requests.post(
-            'https://streams.center/embed/decrypt.php',
-            data={'input': token},
+            urljoin(origin, 'embed/decrypt.php'),
+            data={'input': m.group(1)},
             headers={
                 'User-Agent': UA,
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -91,7 +96,9 @@ class streamer:
             },
             timeout=10
         ).text.strip()
-        return resp if resp and resp.startswith('http') else None
+        if not resp or not resp.startswith('http'):
+            return None
+        return f'{resp}|Referer={origin}&User-Agent={UA}'
 
     def resolve(self, url):
         try:
@@ -589,13 +596,7 @@ class streamer:
                     headers={'Referer': picked_url, 'User-Agent': UA},
                     timeout=10
                 ).text
-                m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
-                if not m:
-                    return None
-                hls_url = self._decrypt_streams_center(m.group(1), iframe2)
-                if not hls_url:
-                    return None
-                return f'{hls_url}|Referer=https://streams.center/&User-Agent={UA}'
+                return self._decrypt_streams_center(iframe2_html, iframe2)
         except Exception as e:
             log(f'methstreams failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -669,13 +670,7 @@ class streamer:
                 headers={'Referer': iframe1, 'User-Agent': UA},
                 timeout=10
             ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
-            if not m:
-                return None
-            hls_url = self._decrypt_streams_center(m.group(1), iframe2)
-            if not hls_url:
-                return None
-            return f'{hls_url}|Referer=https://streams.center/&User-Agent={UA}'
+            return self._decrypt_streams_center(iframe2_html, iframe2)
         except Exception as e:
             log(f'streameast_ga failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -863,13 +858,7 @@ class streamer:
                 headers={'Referer': url, 'User-Agent': UA},
                 timeout=10
             ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
-            if not m:
-                return None
-            hls_url = self._decrypt_streams_center(m.group(1), iframe1)
-            if not hls_url:
-                return None
-            return f'{hls_url}|Referer=https://streams.center/&User-Agent={UA}'
+            return self._decrypt_streams_center(iframe1_html, iframe1)
         except Exception as e:
             log(f'streamcenter failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -971,13 +960,7 @@ class streamer:
                 headers={'Referer': iframe1, 'User-Agent': UA},
                 timeout=10
             ).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe2_html)
-            if not m:
-                return None
-            hls_url = self._decrypt_streams_center(m.group(1), iframe2)
-            if not hls_url:
-                return None
-            return f'{hls_url}|Referer=https://streams.center/&User-Agent={UA}'
+            return self._decrypt_streams_center(iframe2_html, iframe2)
         except Exception as e:
             log(f'crackstreams failed for {url} | {e}', xbmc.LOGERROR)
             return None
