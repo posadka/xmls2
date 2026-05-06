@@ -1314,6 +1314,113 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (4 XBOX USERS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>$doregex[makelist]</link>
+    <thumbnail></thumbnail>
+    <fanart></fanart>
+    <regex>
+        <name>makelist</name>
+        <listrepeat><![CDATA[
+        <title>[makelist.param2]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+        ]]></listrepeat>
+        <expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    import re, requests, html
+    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    try:
+        page_data = requests.get('https://istreameast.app', headers={'User-Agent': UA}, timeout=10).text
+    except Exception:
+        return None
+    matches = re.findall(
+        r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
+        r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
+        r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
+        r'data.*?>([^<]*)',
+        page_data
+    )
+    results = []
+    for href, league, teams, timestamp in matches:
+        href   = href.strip()
+        league = html.unescape(league).strip()
+        teams  = html.unescape(teams).strip()
+        label  = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, teams)
+        results.append((href, label))
+    return results or None
+]]></expres>
+        <page></page>
+    </regex>
+    <regex>
+        <name>makelist2</name>
+        <expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    import re, requests, base64
+    try:
+        from urllib.parse import urlparse
+    except ImportError:
+        from urlparse import urlparse
+    import xbmc, xbmcgui, threading
+    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    url = '[makelist.param1]'
+    def fetch():
+        try:
+            headers   = {'User-Agent': UA, 'Referer': url}
+            page_data = requests.get(url, headers=headers, timeout=10).text
+            m = re.search(r'(?i)<iframe[^>]+src="([^"]+)', page_data)
+            if not m:
+                return None
+            iframe_url  = m.group(1)
+            iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
+            parsed  = urlparse(iframe_url)
+            referer = '%s://%s/' % (parsed.scheme, parsed.netloc)
+            origin  = '%s://%s' % (parsed.scheme, parsed.netloc)
+            if 'atob' in iframe_html:
+                m = re.search(r"atob\('([^']+)", iframe_html)
+                if not m:
+                    return None
+                source = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
+            else:
+                m = re.search(r'const\s+source\s*=\s*"([^"]+)', iframe_html)
+                if not m:
+                    return None
+                source = m.group(1)
+            return '%s|User-Agent=%s&Referer=%s&Origin=%s' % (source, UA, referer, origin)
+        except Exception:
+            return None
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    result = [None]
+    done   = [False]
+    def run():
+        result[0] = fetch()
+        done[0]   = True
+    t = threading.Thread(target=run)
+    t.start()
+    progress = 0
+    while not done[0]:
+        if pDialog.iscanceled():
+            pDialog.close()
+            return
+        if progress < 90:
+            progress += 2
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
+        xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
+    pDialog.update(100, 'The Crew Is Playing Your Event!')
+    xbmc.sleep(2000)
+    pDialog.close()
+    return result[0]
+]]></expres>
+        <page>[makelist.param1]</page>
+    </regex>
+</item>
+
 <dir
     <title>[COLOR orchid]¤[/COLOR] [COLOR white]MLB [/COLOR] [COLOR orchid] LIVE DIRECTS[/COLOR] [COLOR orchid]¤[/COLOR]</title>
     <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/mlb.xml</link>
