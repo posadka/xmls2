@@ -21,9 +21,9 @@ except ImportError:
     from Crypto.Util import Counter
 
 try:
-    from urllib import urlencode, quote_plus, urlparse, urljoin
+    from urllib import urlencode, quote_plus, urlparse, urljoin, unquote
 except ImportError:
-    from urllib.parse import urlencode, quote_plus, urlparse, urljoin
+    from urllib.parse import urlencode, quote_plus, urlparse, urljoin, unquote
 
 from resources.lib.modules import control, client, workers, jsunpack, hunter
 
@@ -1025,7 +1025,6 @@ class streamer:
             stream_name = m.group(1)
             xsrf = session.cookies.get('XSRF-TOKEN', '')
             if xsrf:
-                from urllib.parse import unquote
                 xsrf = unquote(xsrf)
             resp = session.get(
                 f'{base}/token/{stream_name}',
