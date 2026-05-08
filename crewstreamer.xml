@@ -148,6 +148,8 @@ class streamer:
                 u = self.givemereddit(url)
             elif 'blacktiesports' in url:
                 u = self.blacktienba(url)
+            elif 'thetvapp' in url:
+                u = self.thetvapp(url)
             else:
                 u = self.generic(url)
             return u
@@ -306,11 +308,13 @@ class streamer:
         try:
             page_data    = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             base_headers = f'|User-Agent={UA}&Origin=http://blacktiesports.net&Referer='
+
             if 'm3u8' in page_data:
                 m = re.search(r'(?:source|src|file):\s*[\'"]([^\'"]+)', page_data)
                 if not m:
                     return None
                 return m.group(1) + base_headers + url
+
             elif 'php' in page_data:
                 m = re.search(r'(?s)<iframe id="stream.*?src="([^"]*)', page_data)
                 if not m:
@@ -334,6 +338,7 @@ class streamer:
                     return None
                 link = base64.b64decode(m.group(1).replace(' ', '')).decode('utf-8')
                 return link + base_headers + iframe_url
+
             else:
                 m = re.search(r'<script>var.*?=\s*(\[[^;]+)', page_data)
                 if not m:
@@ -420,8 +425,10 @@ class streamer:
             if not m:
                 return None
             iframe_url = m.group(1)
+
             if 'embedhd' in iframe_url:
                 return self.embedhd(iframe_url)
+
             elif 'wikisport' in iframe_url:
                 page_data2 = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=10).text
                 m          = re.search(r'fid\s*=\s*"([^"]+)"', page_data2)
@@ -443,6 +450,7 @@ class streamer:
                     f'&Referer=https://stellarthread.com/'
                     f'&Origin=https://stellarthread.com'
                 )
+
             iframe_html = requests.get(
                 iframe_url,
                 headers={'User-Agent': UA, 'Referer': url},
@@ -452,14 +460,17 @@ class streamer:
                 return None
             parsed = urlparse(iframe_url)
             origin = f'{parsed.scheme}://{parsed.netloc}'
+
             if 'atob' in iframe_html:
                 m = re.search(r"atob\(['\"]([^'\"]+)", iframe_html)
                 if m:
                     decoded = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
                     return f'{decoded}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+
             m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
             if m:
                 return f'{m.group(1)}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+
             return self.embedsports(iframe_url)
         except Exception as e:
             log(f'volokit failed for {url} | {e}', xbmc.LOGERROR)
@@ -560,6 +571,7 @@ class streamer:
             if choice == -1:
                 return None
             label, source, picked_url = links[choice]
+
             if source == 'shark':
                 json_data = requests.get(
                     picked_url,
@@ -582,6 +594,7 @@ class streamer:
                 origin  = _base_url(api_url)
                 referer = origin + '/'
                 return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+
             if source == 'streams':
                 iframe1_html = requests.get(
                     picked_url,
@@ -612,6 +625,7 @@ class streamer:
             if not page_data:
                 return None
             m3u8_list = []
+
             if 'getRandomStream' in page_data:
                 stream_calls = set(re.findall(
                     r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)",
@@ -627,14 +641,18 @@ class streamer:
                 for stream_path, subdomain in stream_calls:
                     d = random.choice(domains)
                     m3u8_list.append(f'https://{subdomain}.{d}/{stream_path}')
+
             clappr = re.findall(r"showPlayer\([^,]+,\s*['\"]([^'\"]+\.m3u8)", page_data)
             if clappr:
                 m3u8_list.extend(clappr)
+
             if not m3u8_list:
                 m3u8_list = re.findall(r'https?://[^\s\'"]+\.m3u8', page_data, re.DOTALL)
+
             m3u8_list = list(dict.fromkeys(m3u8_list))
             if not m3u8_list:
                 return None
+
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
@@ -643,6 +661,7 @@ class streamer:
                 if choice == -1:
                     return None
                 stream_url = m3u8_list[choice]
+
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             log(f'roxiestreams failed for {url} | {e}', xbmc.LOGERROR)
@@ -655,8 +674,10 @@ class streamer:
             iframe1   = self._get_iframe_src(page_data, require_id=True)
             if not iframe1:
                 return None
+
             if 'embedhd' in iframe1:
                 return self.embedhd(iframe1)
+
             iframe1_html = requests.get(
                 iframe1,
                 headers={'Referer': url, 'User-Agent': UA},
@@ -925,6 +946,7 @@ class streamer:
         try:
             def xor_decode(data, key):
                 return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
+
             page_data = client.request(url)
             key_m     = re.search(r'var _k="([^"]+)"', page_data)
             raw_m     = re.search(r'var _raw="([^"]+)"', page_data)
@@ -938,6 +960,7 @@ class streamer:
             j     = base64.b64decode(base64.b64encode(xd[:mid].encode())).decode() + \
                     base64.b64decode(base64.b64encode(xd[mid:].encode())).decode()
             final = xor_decode(j, key)
+
             embed_url  = _base_url(url) + final
             embed_html = requests.get(
                 embed_url,
@@ -986,4 +1009,38 @@ class streamer:
             return f'{m.group(1)}|Referer={referer}&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             log(f'flyembed failed for {url} | {e}', xbmc.LOGERROR)
+            return None
+
+    @_guard
+    def thetvapp(self, url):
+        try:
+            parsed  = urlparse(url)
+            base    = f'{parsed.scheme}://{parsed.netloc}'
+            session = requests.Session()
+            session.headers.update({'User-Agent': UA, 'Referer': base + '/'})
+            page    = session.get(url, timeout=10).text
+            m       = re.search(r'id="stream_name"[^>]+name="([^"]+)"', page)
+            if not m:
+                return None
+            stream_name = m.group(1)
+            xsrf = session.cookies.get('XSRF-TOKEN', '')
+            if xsrf:
+                from urllib.parse import unquote
+                xsrf = unquote(xsrf)
+            resp = session.get(
+                f'{base}/token/{stream_name}',
+                headers={
+                    'Accept':           'application/json, text/plain, */*',
+                    'Referer':          url,
+                    'X-XSRF-TOKEN':     xsrf,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                timeout=10
+            ).json()
+            stream_url = resp.get('url', '')
+            if not stream_url:
+                return None
+            return f'{stream_url}|User-Agent={UA}&Referer={base}/'
+        except Exception as e:
+            log(f'thetvapp failed for {url} | {e}', xbmc.LOGERROR)
             return None
