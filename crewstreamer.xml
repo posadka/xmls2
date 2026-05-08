@@ -993,9 +993,7 @@ class streamer:
             embed_url = self._get_iframe_src(page_data)
             if not embed_url:
                 return None
-            parsed  = urlparse(embed_url)
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
-            referer = f'{origin}/'
+            origin = _base_url(embed_url)
             embed_html = requests.get(
                 embed_url,
                 headers={'Referer': url, 'User-Agent': UA},
@@ -1003,7 +1001,7 @@ class streamer:
             ).text
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if m:
-                return f'{m.group(1)}|Referer={referer}&Origin={origin}&User-Agent={UA}'
+                return f'{m.group(1)}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
             m = re.search(r"window\._econfig='([^']+)'", embed_html)
             if not m:
                 return None
@@ -1019,7 +1017,7 @@ class streamer:
             stream_url = cfg.get('stream_url') or cfg.get('url_nop2p')
             if not stream_url:
                 return None
-            return f'{stream_url}|Referer={referer}&Origin={origin}&User-Agent={UA}'
+            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             log(f'flyembed failed for {url} | {e}', xbmc.LOGERROR)
             return None
