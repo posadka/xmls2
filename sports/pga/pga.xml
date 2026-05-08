@@ -9,12 +9,44 @@
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]PGA[/COLOR] [COLOR orchid]NETWORK[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>
-        <sublink>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/pga.xml</sublink>
-    </link>
-    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/pga.png</thumbnail>
-    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/pga_fanart.jpg</fanart>
+    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]GOLF[/COLOR] [COLOR orchid]LIVE[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+  <inputstream>$doregex[get-url]</inputstream>
+  <regex>
+    <name>get-url</name>
+    <expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc, xbmcgui, threading
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    result = [None]
+    done = [False]
+    def fetch():
+        result[0] = client.external('https://roxiestreams.info/golf')
+        done[0] = True
+    t = threading.Thread(target=fetch)
+    t.start()
+    progress = 0
+    while not done[0]:
+        if pDialog.iscanceled():
+            pDialog.close()
+            return
+        if progress < 90:
+            progress += 2
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
+        xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
+    pDialog.update(100, 'The Crew Is Playing Your Event!')
+    xbmc.sleep(2000)
+    pDialog.close()
+    return result[0]
+]]></expres>
+    <page>https://whdh.com/on-air-live-stream/</page>
+  </regex>
 </item>
 
 
