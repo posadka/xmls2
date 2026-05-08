@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
 <?xml-stylesheet href="hide-it.xsl" type="text/xsl"?>
 <layoutype>fuckOFF</layoutype>
-<item>
+<item
     <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]GOLF[/COLOR] [COLOR orchid]LIVE[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
     <link>http://162.250.201.58:6211/pk/ONEGOLF/tracks-v1a1/mono.m3u8</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/pga.png</thumbnail>
