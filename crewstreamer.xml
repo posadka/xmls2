@@ -363,9 +363,8 @@ class streamer:
     @_guard
     def ovostreams(self, url):
         try:
-            parsed  = urlparse(url)
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
+            referer = _base_url(url)
+            origin  = referer
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
             if not m:
@@ -617,9 +616,8 @@ class streamer:
     @_guard
     def roxiestreams(self, url):
         try:
-            parsed  = urlparse(url)
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
+            referer = _base_url(url)
+            origin  = referer
             headers = {'Referer': referer, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=10).text
             if not page_data:
@@ -1014,8 +1012,7 @@ class streamer:
     @_guard
     def thetvapp(self, url):
         try:
-            parsed  = urlparse(url)
-            base    = f'{parsed.scheme}://{parsed.netloc}'
+            base    = _base_url(url)
             session = requests.Session()
             session.headers.update({'User-Agent': UA, 'Referer': base + '/'})
             page    = session.get(url, timeout=10).text
