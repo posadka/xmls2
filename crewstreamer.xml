@@ -1002,9 +1002,24 @@ class streamer:
                 timeout=10
             ).text
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
+            if m:
+                return f'{m.group(1)}|Referer={referer}&Origin={origin}&User-Agent={UA}'
+            m = re.search(r"window\._econfig='([^']+)'", embed_html)
             if not m:
                 return None
-            return f'{m.group(1)}|Referer={referer}&Origin={origin}&User-Agent={UA}'
+            s    = base64.b64decode(m.group(1)).decode('utf-8')
+            size = math.ceil(len(s) / 4)
+            chunks    = [s[i * size:(i + 1) * size] for i in range(4)]
+            perm      = [2, 0, 3, 1]
+            reordered = [''] * 4
+            for i, p in enumerate(perm):
+                c            = chunks[i]
+                reordered[p] = base64.b64decode(c[:3] + c[4:]).decode('utf-8')
+            cfg        = json.loads(base64.b64decode(''.join(reordered)).decode('utf-8'))
+            stream_url = cfg.get('stream_url') or cfg.get('url_nop2p')
+            if not stream_url:
+                return None
+            return f'{stream_url}|Referer={referer}&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             log(f'flyembed failed for {url} | {e}', xbmc.LOGERROR)
             return None
