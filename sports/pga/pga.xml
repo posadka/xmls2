@@ -9,7 +9,7 @@
 </item>
 
 <item>
-    <title>[COLOR orchid]¤¤¤¤¤[/COLOR] [B][COLOR white]GOLF[/COLOR] [COLOR orchid]LIVE[/COLOR][/B] [COLOR orchid]¤¤¤¤¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]GOLF LIVE[/COLOR] [COLOR orchid] (RS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
   <inputstream>$doregex[get-url]</inputstream>
   <regex>
     <name>get-url</name>
