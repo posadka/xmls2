@@ -281,6 +281,7 @@ class streamer:
             base      = _base_url(url)
             now       = datetime.now().date()
             tomorrow  = now + timedelta(days=1)
+
             def _date_label(ts):
                 dt         = datetime.fromtimestamp(int(ts))
                 event_date = dt.date()
@@ -291,6 +292,7 @@ class streamer:
                 else:
                     day = dt.strftime('%m-%d')
                 return f'{day} {dt.strftime("%I:%M %p").lstrip("0")}', dt
+
             matches = re.findall(
                 r'(?s)<a href="([^"]+)"[^>]*class="uefa-card[^"]*"[^>]*data-time="(\d+)"[^>]*>.*?'
                 r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
@@ -304,6 +306,7 @@ class streamer:
                 team2 = html.unescape(team2).strip()
                 title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
                 results.append((urljoin(base, href), title))
+
             if not matches:
                 log('streameast_ga: primary regex found no matches, trying single-event fallback')
                 single_matches = re.findall(
@@ -316,6 +319,7 @@ class streamer:
                     title_text  = html.unescape(title_text).strip()
                     title       = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title_text}[/COLOR]'
                     results.append((urljoin(base, href), title))
+
             if not results:
                 log('streameast_ga: both regexes failed, no matches found', xbmc.LOGERROR)
                 return None
@@ -618,15 +622,22 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             base      = _base_url(url)
-            matches   = re.findall(
-                r'<a href="(/event/[^"]+)"[^>]*>([^<]+)<span>([^<]+)</span>',
+            results   = []
+            events = re.findall(
+                r'<a[^>]+href="(/event/[^"]+)"[^>]*>([^<]+)<span>([^<]+)</span>',
                 page_data
             )
-            results = []
-            for href, title, timestamp in matches:
-                title = html.unescape(title).strip()
+            for href, title, timestamp in events:
+                title = html.unescape(title).strip().rstrip(':')
                 label = self._label(timestamp.strip(), title)
                 results.append((base + href, label))
+            channels = re.findall(
+                r'<a[^>]+href="(/tv/[^"]+)"[^>]*>([^<]+)</a>',
+                page_data
+            )
+            for href, title in channels:
+                title = html.unescape(title).strip()
+                results.append((base + href, f'[COLOR orange]{title}[/COLOR]'))
             return results or None
         except Exception as e:
             log(f'thetvapp error: {e}', xbmc.LOGERROR)
