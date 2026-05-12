@@ -271,7 +271,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://buffstreams.plus/nhlstreams2')
+    url = client.schedule('https://buffstreams.plus/nflstreams')
     return url
 ]]></expres>
 <page></page>
@@ -330,8 +330,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('
-https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=100&categoryId=14')
+    url = client.schedule('https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=100&categoryId=14')
     return url
 ]]></expres>
 <page></page>
@@ -949,6 +948,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             progress += 2
         pDialog.update(progress, 'The Crew Is Getting Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()
@@ -1002,6 +1006,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             progress += 2
         pDialog.update(progress, 'The Crew Is Getting Your Event...')
         xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
     pDialog.update(100, 'The Crew Is Playing Your Event!')
     xbmc.sleep(2000)
     pDialog.close()

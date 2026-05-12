@@ -136,6 +136,8 @@ class streamer:
                 u = self.crackstreams(url)
             elif 'flyembed' in url:
                 u = self.flyembed(url)
+            elif 'ripplenetwork' in url:
+                u = self.ripplenetwork(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -1052,4 +1054,28 @@ class streamer:
             return f'{stream_url}|User-Agent={UA}&Referer={base}/'
         except Exception as e:
             log(f'thetvapp failed for {url} | {e}', xbmc.LOGERROR)
+            return None
+
+    @_guard
+    def ripplenetwork(self, url):
+        try:
+            headers = {'User-Agent': UA}
+            page_data = requests.get(url, headers=headers, timeout=10).text
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+rippleplays[^"\']+)["\']', page_data, re.I)
+            if not m:
+                return None
+            page_data2 = requests.get(m.group(1), headers=headers, timeout=10).text
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)["\']', page_data2, re.I)
+            if not m:
+                return None
+            inner_url = m.group(1)
+            page_data3 = requests.get(inner_url, headers={'User-Agent': UA, 'Referer': inner_url}, timeout=10).text
+            m = re.search(r'atob\(["\']([^"\']+)["\']', page_data3)
+            if not m:
+                return None
+            stream_url = base64.b64decode(m.group(1)).decode('utf-8')
+            origin = _base_url(inner_url)
+            return f'{stream_url}|User-Agent={UA}&Referer={origin}/'
+        except Exception as e:
+            log(f'rippleplay failed for {url} | {e}', xbmc.LOGERROR)
             return None
