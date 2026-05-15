@@ -367,13 +367,13 @@ class streamer:
     @_guard
     def ovostreams(self, url):
         try:
-            referer = _base_url(url)
-            origin  = referer
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
             if not m:
                 return None
             iframe_url  = m.group(1)
+            referer = _base_url(iframe_url)
+            origin  = referer
             iframe_html = requests.get(
                 iframe_url,
                 headers={'User-Agent': UA, 'Referer': referer},
