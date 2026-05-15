@@ -512,8 +512,8 @@ class streamer:
     @_guard
     def embedhd(self, url):
         try:
-            parsed  = urlparse(url)
-            referer = f'{parsed.scheme}://{parsed.netloc}'
+            referer = _base_url(url)
+            origin  = referer
             headers = {'Referer': referer, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
