@@ -376,7 +376,7 @@ class streamer:
             origin  = referer
             iframe_html = requests.get(
                 iframe_url,
-                headers={'User-Agent': UA, 'Referer': referer},
+                headers={'User-Agent': UA, 'Referer': url},
                 timeout=10
             ).text
             m = re.search(r'var\s+source\s*=\s*"([^"]+)', iframe_html)
