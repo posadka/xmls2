@@ -138,6 +138,8 @@ class streamer:
                 u = self.flyembed(url)
             elif 'ripplenetwork' in url:
                 u = self.ripplenetwork(url)
+            elif 'sharkstreams' in url:
+                u = self.sharkstreams(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -1078,4 +1080,29 @@ class streamer:
             return f'{stream_url}|User-Agent={UA}&Referer={origin}/'
         except Exception as e:
             log(f'rippleplay failed for {url} | {e}', xbmc.LOGERROR)
+            return None
+
+    @_guard
+    def sharkstreams(self, url):
+        try:
+            headers = {'User-Agent': UA}
+            page_data = requests.get(url, headers=headers, timeout=10).text
+            m = re.search(r"fetch\('([^']+)", page_data)
+            if not m:
+                return None
+            api_url  = 'https://sharkstreams.net/' + m.group(1)
+            api_data = requests.get(
+                api_url,
+                headers={'User-Agent': UA, 'Referer': picked_url},
+                timeout=10
+            ).text
+            m = re.search(r'\["([^"]+)', api_data)
+            if not m:
+                return None
+            stream  = m.group(1).replace('\\', '')
+            origin  = _base_url(api_url)
+            referer = origin + '/'
+            return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            log(f'sharkstreams failed for {url} | {e}', xbmc.LOGERROR)
             return None

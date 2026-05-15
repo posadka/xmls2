@@ -88,6 +88,8 @@ class streamer:
                 u = self.thetvapp(url)
             elif 'ripplenetwork' in url:
                 u = self.ripplenetwork(url)
+            elif 'sharkstreams' in url:
+                u = self.sharkstreams(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.sportssonline(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
@@ -701,5 +703,35 @@ class streamer:
                 results.append((link, self._label(time_str, title)))
             return results or None
         except Exception as e:
-            log(f'sportssonline error: {e}', xbmc.LOGERROR)
+            log(f'ripplenetwork error: {e}', xbmc.LOGERROR)
+            return None
+
+    @_guard
+    def sharkstreams(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<div class="row">.*?'
+                r'<span class="ch-date">([^<]+)</span>.*?'
+                r'<span class="ch-category">([^<]+)</span>.*?'
+                r'<span class="ch-name">([^<]+)</span>.*?'
+                r"window\.open\(\s*'([^']+)'",
+                page_data
+            )
+            results = []
+            for dt_str, category, name, player_url in matches:
+                dt_str   = dt_str.strip()
+                category = html.unescape(category).strip()
+                name     = html.unescape(name).strip()
+                try:
+                    dt       = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+                    time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
+                except Exception:
+                    time_str = dt_str
+                label = f'[COLOR dodgerblue]{category} {time_str}[/COLOR] [COLOR orange]{name}[/COLOR]'
+                results.append((player_url, label))
+            return results or None
+        except Exception as e:
+            log(f'sharkstreams error: {e}', xbmc.LOGERROR)
             return None
