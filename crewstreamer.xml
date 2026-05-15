@@ -1093,7 +1093,7 @@ class streamer:
             api_url  = 'https://sharkstreams.net/' + m.group(1)
             api_data = requests.get(
                 api_url,
-                headers={'User-Agent': UA, 'Referer': picked_url},
+                headers={'User-Agent': UA, 'Referer': url},
                 timeout=10
             ).text
             m = re.search(r'\["([^"]+)', api_data)
