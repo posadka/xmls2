@@ -140,8 +140,6 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
-            elif 'pooembed' in url:
-                u = self.pooembed(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -561,8 +559,7 @@ class streamer:
                 r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
                 page
             ))
-            poo_m = re.search(r'"type"\s*:\s*"external"[^}]*"value"\s*:\s*"(https?:\\?/\\?/pooembed\.eu\\?/embed\\?/[^"]+)"', page)
-            if not matches and not poo_m:
+            if not matches:
                 return None
             links = []
             for i, m in enumerate(matches, 1):
@@ -571,17 +568,13 @@ class streamer:
                     links.append((f'Link {i} - SharkStreams', 'shark', raw))
                 elif 'streams.center' in raw:
                     links.append((f'Link {i} - Streams.center', 'streams', raw))
-            if poo_m:
-                raw = poo_m.group(1).replace('\\/', '/')
-                links.append((f'Link {len(links) + 1} - PooEmbed', 'poo', raw))
             if not links:
                 return None
             choice = 0 if len(links) == 1 else xbmcgui.Dialog().select('Choose Stream', [x[0] for x in links])
             if choice == -1:
                 return None
             label, source, picked_url = links[choice]
-            if source == 'poo':
-                return self.pooembed(picked_url)
+
             if source == 'shark':
                 json_data = requests.get(
                     picked_url,
@@ -604,6 +597,7 @@ class streamer:
                 origin  = _base_url(api_url)
                 referer = origin + '/'
                 return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+
             if source == 'streams':
                 iframe1_html = requests.get(
                     picked_url,
@@ -1110,26 +1104,4 @@ class streamer:
             return f'{stream}|User-Agent={UA}&Referer={origin}&Origin={origin}'
         except Exception as e:
             log(f'sharkstreams failed for {url} | {e}', xbmc.LOGERROR)
-            return None
-
-    @_guard
-    def pooembed(self, url):
-        try:
-            parsed  = urlparse(url)
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
-            referer = origin + '/'
-            headers = {'User-Agent': UA, 'Referer': referer}
-            bundle_url = origin + '/js/bundle-jw.js'
-            bundle = requests.get(bundle_url, headers=headers, timeout=10).text
-            fetch_idx = bundle.find('fetch(e,{method:"POST"')
-            log(f'pooembed fetch POST context={bundle[max(0,fetch_idx-500):fetch_idx+200]}')
-            for kw in ['/serve', '/api/', '/stream', '/load', '/src', '/media', '/live', '/hls']:
-                idx = bundle.find(kw)
-                if idx != -1:
-                    log(f'pooembed kw={kw!r} ctx={bundle[max(0,idx-150):idx+150]}')
-            island_idx = bundle.find('"island"')
-            log(f'pooembed island header context={bundle[max(0,island_idx-300):island_idx+300]}')
-            return None
-        except Exception as e:
-            log(f'pooembed failed for {url} | {e}', xbmc.LOGERROR)
             return None
