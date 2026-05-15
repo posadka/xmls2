@@ -140,6 +140,8 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
+            elif 'pooembed' in url:
+                u = self.pooembed(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -559,7 +561,8 @@ class streamer:
                 r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
                 page
             ))
-            if not matches:
+            poo_m = re.search(r'"type"\s*:\s*"external"[^}]*"value"\s*:\s*"(https?:\\?/\\?/pooembed\.eu\\?/embed\\?/[^"]+)"', page)
+            if not matches and not poo_m:
                 return None
             links = []
             for i, m in enumerate(matches, 1):
@@ -568,13 +571,17 @@ class streamer:
                     links.append((f'Link {i} - SharkStreams', 'shark', raw))
                 elif 'streams.center' in raw:
                     links.append((f'Link {i} - Streams.center', 'streams', raw))
+            if poo_m:
+                raw = poo_m.group(1).replace('\\/', '/')
+                links.append((f'Link {len(links) + 1} - PooEmbed', 'poo', raw))
             if not links:
                 return None
             choice = 0 if len(links) == 1 else xbmcgui.Dialog().select('Choose Stream', [x[0] for x in links])
             if choice == -1:
                 return None
             label, source, picked_url = links[choice]
-
+            if source == 'poo':
+                return self.pooembed(picked_url)
             if source == 'shark':
                 json_data = requests.get(
                     picked_url,
@@ -597,7 +604,6 @@ class streamer:
                 origin  = _base_url(api_url)
                 referer = origin + '/'
                 return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
-
             if source == 'streams':
                 iframe1_html = requests.get(
                     picked_url,
@@ -1104,4 +1110,78 @@ class streamer:
             return f'{stream}|User-Agent={UA}&Referer={origin}&Origin={origin}'
         except Exception as e:
             log(f'sharkstreams failed for {url} | {e}', xbmc.LOGERROR)
+            return None
+
+    @_guard
+    def pooembed(self, url):
+        try:
+            parsed  = urlparse(url)
+            origin  = f'{parsed.scheme}://{parsed.netloc}'
+            parts   = parsed.path.rstrip('/').split('/')
+            try:
+                idx       = parts.index('embed')
+                stream_sc = parts[idx + 1]
+                stream_id = parts[idx + 2] if len(parts) > idx + 2 else ''
+                stream_no = parts[idx + 3] if len(parts) > idx + 3 else '1'
+            except (ValueError, IndexError):
+                log(f'pooembed path parse failed: {parts}', xbmc.LOGERROR)
+                return None
+            log(f'pooembed url={url}')
+            log(f'pooembed origin={origin}')
+            log(f'pooembed stream_sc={stream_sc} stream_id={stream_id} stream_no={stream_no}')
+            payload = bytes([
+                0x0A, len(stream_sc), *stream_sc.encode('utf-8'),
+                0x12, len(stream_id), *stream_id.encode('utf-8'),
+                0x1A, len(stream_no), *stream_no.encode('utf-8'),
+            ])
+            log(f'pooembed payload bytes={list(payload)}')
+            headers = {
+                'Content-Type': 'application/octet-stream',
+                'Origin':       origin,
+                'Referer':      url,
+                'User-Agent':   UA,
+            }
+            log(f'pooembed POST to {origin}/fetch')
+            fetch = requests.post(f'{origin}/fetch', data=payload, headers=headers, timeout=10)
+            log(f'pooembed status={fetch.status_code}')
+            log(f'pooembed response headers={dict(fetch.headers)}')
+            log(f'pooembed content length={len(fetch.content)}')
+            log(f'pooembed content bytes={list(fetch.content[:64])}')
+            log(f'pooembed content text={fetch.text[:500]}')
+            if not fetch.content:
+                log('pooembed empty response', xbmc.LOGERROR)
+                return None
+            i          = 1
+            cipher_len = 0
+            shift      = 0
+            while i < len(fetch.content):
+                b          = fetch.content[i]
+                i         += 1
+                cipher_len |= (b & 0x7F) << shift
+                shift      += 7
+                if not (b & 0x80):
+                    break
+            log(f'pooembed cipher_len={cipher_len} cipher_start={i}')
+            cipher = fetch.content[i:i + cipher_len]
+            log(f'pooembed cipher bytes={list(cipher[:32])}')
+            decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
+            decoded += b'=' * (-len(decoded) % 4)
+            log(f'pooembed decoded (pre-b64)={decoded[:64]}')
+            b64 = base64.b64decode(decoded)
+            log(f'pooembed b64 decoded len={len(b64)}')
+            aes_key = fetch.headers.get('Goat')
+            log(f'pooembed Goat header={aes_key}')
+            if not aes_key:
+                log('pooembed missing Goat header', xbmc.LOGERROR)
+                return None
+            aes = AES.new(
+                aes_key.encode(),
+                AES.MODE_CTR,
+                counter=Counter.new(128, initial_value=int.from_bytes(b'STOPSTOPSTOPSTOP', 'big'))
+            )
+            stream_url = aes.decrypt(b64).decode('utf-8')
+            log(f'pooembed stream_url={stream_url}')
+            return f'{stream_url}|User-Agent={UA}&Referer={url}&Origin={origin}'
+        except Exception as e:
+            log(f'pooembed failed for {url} | {e}', xbmc.LOGERROR)
             return None
