@@ -1121,14 +1121,14 @@ class streamer:
             headers = {'User-Agent': UA, 'Referer': referer}
             bundle_url = origin + '/js/bundle-jw.js'
             bundle = requests.get(bundle_url, headers=headers, timeout=10).text
-            island_idx = bundle.find('island')
-            log(f'pooembed island context={bundle[max(0,island_idx-200):island_idx+200]}')
-            fetch_idx = bundle.find('/fetch')
-            log(f'pooembed /fetch context={bundle[max(0,fetch_idx-200):fetch_idx+200]}')
-            for kw in ['island', '/api', '/stream', '/get', '/play', '/source', 'XMLHttpRequest', 'fetch(']:
+            fetch_idx = bundle.find('fetch(e,{method:"POST"')
+            log(f'pooembed fetch POST context={bundle[max(0,fetch_idx-500):fetch_idx+200]}')
+            for kw in ['/serve', '/api/', '/stream', '/load', '/src', '/media', '/live', '/hls']:
                 idx = bundle.find(kw)
                 if idx != -1:
-                    log(f'pooembed keyword={kw!r} context={bundle[max(0,idx-100):idx+200]}')
+                    log(f'pooembed kw={kw!r} ctx={bundle[max(0,idx-150):idx+150]}')
+            island_idx = bundle.find('"island"')
+            log(f'pooembed island header context={bundle[max(0,island_idx-300):island_idx+300]}')
             return None
         except Exception as e:
             log(f'pooembed failed for {url} | {e}', xbmc.LOGERROR)
