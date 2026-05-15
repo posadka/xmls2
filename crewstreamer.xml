@@ -383,6 +383,8 @@ class streamer:
             if not m:
                 return None
             php_url = m.group(1)
+            if 'backlik' in php_url:
+                return f'{php_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
             php = requests.get(
                 php_url,
                 headers={'User-Agent': UA, 'Referer': iframe_url},
