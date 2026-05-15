@@ -1086,11 +1086,12 @@ class streamer:
     def sharkstreams(self, url):
         try:
             headers = {'User-Agent': UA}
+            origin  = _base_url(url)
             page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r"fetch\('([^']+)", page_data)
             if not m:
                 return None
-            api_url  = 'https://sharkstreams.net/' + m.group(1)
+            api_url  = origin + m.group(1)
             api_data = requests.get(
                 api_url,
                 headers={'User-Agent': UA, 'Referer': url},
@@ -1100,9 +1101,7 @@ class streamer:
             if not m:
                 return None
             stream  = m.group(1).replace('\\', '')
-            origin  = _base_url(api_url)
-            referer = origin + '/'
-            return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+            return f'{stream}|User-Agent={UA}&Referer={origin}&Origin={origin}'
         except Exception as e:
             log(f'sharkstreams failed for {url} | {e}', xbmc.LOGERROR)
             return None
