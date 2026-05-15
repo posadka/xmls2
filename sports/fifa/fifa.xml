@@ -316,14 +316,14 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 
 <item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]SOCCER/FOOTBALL STREAMS[/COLOR] [COLOR orchid] (OS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[crewschedule]</link>
+    <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/fifa.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/fifa_fanart.jpg</fanart>
     <regex>
-        <name>crewschedule</name>
+        <name>makelist</name>
         <listrepeat><![CDATA[
-        <title>[crewschedule.param2]</title>
-        <link>$doregex[play]</link>
+        <title>[makelist.param2]</title>
+        <link>$doregex[makelist2]</link>
         <thumbnail></thumbnail>
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
@@ -336,7 +336,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <page></page>
     </regex>
     <regex>
-        <name>play</name>
+        <name>makelist2</name>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client
