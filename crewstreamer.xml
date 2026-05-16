@@ -1091,7 +1091,7 @@ class streamer:
             m = re.search(r"fetch\('([^']+)", page_data)
             if not m:
                 return None
-            api_url  = origin + '/' + m.group(1).lstrip('/')
+            api_url = urljoin(origin, m.group(1))
             api_data = requests.get(
                 api_url,
                 headers={'User-Agent': UA, 'Referer': url},
