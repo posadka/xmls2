@@ -84,15 +84,14 @@ class streamer:
         m = re.search(r'input:\s*"([^"]+)"', html)
         if not m:
             return None
-        parsed = urlparse(referer)
-        origin = f'{parsed.scheme}://{parsed.netloc}/'
+        origin = _base_url(referer) + '/'
         resp = requests.post(
             urljoin(origin, 'embed/decrypt.php'),
             data={'input': m.group(1)},
             headers={
-                'User-Agent': UA,
+                'User-Agent':   UA,
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Referer': referer,
+                'Referer':      referer,
             },
             timeout=10
         ).text.strip()
@@ -246,9 +245,8 @@ class streamer:
             iframe_url = m.group(1)
             if iframe_url.startswith('//'):
                 iframe_url = 'https:' + iframe_url
-            parsed  = urlparse(iframe_url)
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
+            origin  = _base_url(iframe_url)
+            referer = origin + '/'
             iframe_html = requests.get(
                 iframe_url,
                 headers={'Referer': referer, 'Origin': origin, 'User-Agent': UA},
@@ -268,13 +266,7 @@ class streamer:
             if not m:
                 return None
             src = m.group(1).replace('\\', '')
-            return (
-                f'{src}'
-                f'|Referer={referer}'
-                f'&Origin={origin}'
-                f'&User-Agent={UA}'
-                f'&Accept=application/x-mpegURL,*/*'
-            )
+            return f'{src}|Referer={referer}&Origin={origin}&User-Agent={UA}&Accept=application/x-mpegURL,*/*'
         except Exception as e:
             log(f'givemereddit failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -289,9 +281,8 @@ class streamer:
                 return None
             iframe_url  = m.group(1)
             iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
-            parsed  = urlparse(iframe_url)
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
+            origin  = _base_url(iframe_url)
+            referer = origin + '/'
             if 'atob' in iframe_html:
                 m = re.search(r"atob\('([^']+)", iframe_html)
                 if not m:
@@ -372,8 +363,8 @@ class streamer:
             if not m:
                 return None
             iframe_url  = m.group(1)
-            referer = _base_url(iframe_url)
-            origin  = referer
+            origin      = _base_url(iframe_url)
+            referer     = origin + '/'
             iframe_html = requests.get(
                 iframe_url,
                 headers={'User-Agent': UA, 'Referer': url},
@@ -382,13 +373,13 @@ class streamer:
             m = re.search(r'var\s+source\s*=\s*"([^"]+)', iframe_html)
             if not m:
                 return None
-            php_url = m.group(1)
-            php = requests.get(
+            php_url  = m.group(1)
+            api_html = requests.get(
                 php_url,
                 headers={'User-Agent': UA, 'Referer': iframe_url},
                 timeout=10
             ).text
-            m = re.search(r'(https?://[^\s\'"]+\.m3u8)', php)
+            m = re.search(r'(https?://[^\s\'"]+\.m3u8)', api_html)
             if not m:
                 return None
             return f'{m.group(1)}|User-Agent={UA}&Referer={referer}&Origin={origin}'
@@ -410,12 +401,7 @@ class streamer:
             source   = self._join_array(api_html)
             if not source:
                 return None
-            return (
-                f'{source}'
-                f'|Referer=https://processbigger.com/'
-                f'&Origin=https://processbigger.com'
-                f'&User-Agent={UA}'
-            )
+            return f'{source}|Referer=https://processbigger.com/&Origin=https://processbigger.com&User-Agent={UA}'
         except Exception as e:
             log(f'epicmartial failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -433,8 +419,8 @@ class streamer:
                 return self.embedhd(iframe_url)
 
             elif 'wikisport' in iframe_url:
-                page_data2 = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=10).text
-                m          = re.search(r'fid\s*=\s*"([^"]+)"', page_data2)
+                iframe_html = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=10).text
+                m           = re.search(r'fid\s*=\s*"([^"]+)"', iframe_html)
                 if not m:
                     return None
                 fid      = m.group(1)
@@ -447,12 +433,7 @@ class streamer:
                 source = self._join_array(api_html)
                 if not source:
                     return None
-                return (
-                    f'{source}'
-                    f'|User-Agent={UA}'
-                    f'&Referer=https://stellarthread.com/'
-                    f'&Origin=https://stellarthread.com'
-                )
+                return f'{source}|User-Agent={UA}&Referer=https://stellarthread.com/&Origin=https://stellarthread.com'
 
             iframe_html = requests.get(
                 iframe_url,
@@ -461,8 +442,7 @@ class streamer:
             ).text
             if not iframe_html:
                 return None
-            parsed = urlparse(iframe_url)
-            origin = f'{parsed.scheme}://{parsed.netloc}'
+            origin = _base_url(iframe_url)
 
             if 'atob' in iframe_html:
                 m = re.search(r"atob\(['\"]([^'\"]+)", iframe_html)
@@ -512,9 +492,8 @@ class streamer:
     @_guard
     def embedhd(self, url):
         try:
-            referer = _base_url(url)
-            origin  = referer
-            headers = {'Referer': referer, 'User-Agent': UA}
+            origin  = _base_url(url)
+            headers = {'Referer': origin, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             if not m:
@@ -523,19 +502,19 @@ class streamer:
             m   = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page_data)
             if not m:
                 return None
-            js_src   = m.group(1)
-            full_url = 'https:' + js_src if js_src.startswith('//') else js_src
-            parsed   = urlparse(full_url)
-            referer  = f'{parsed.scheme}://{parsed.netloc}'
-            js_data  = requests.get(full_url, headers=headers, timeout=10).text
-            m        = re.search(r'src=["\']([^"\']+)', js_data)
+            js_src = m.group(1)
+            if js_src.startswith('//'):
+                js_src = 'https:' + js_src
+            js_origin = _base_url(js_src)
+            js_html   = requests.get(js_src, headers=headers, timeout=10).text
+            m         = re.search(r'src=["\']([^"\']+)', js_html)
             if not m:
                 return None
             api = m.group(1)
             if api.startswith('//'):
                 api = 'https:' + api
             elif api.startswith('/'):
-                api = urljoin(referer, api)
+                api = urljoin(js_origin, api)
             api_url  = api + 'mobile&live=' + fid
             api_html = requests.get(api_url, headers=headers, timeout=10).text
             source   = self._join_array(api_html)
@@ -543,8 +522,8 @@ class streamer:
                 return None
             return (
                 source
-                + '|Referer=' + quote_plus(referer + '/')
-                + '&Origin=' + quote_plus(referer)
+                + '|Referer=' + quote_plus(js_origin + '/')
+                + '&Origin='  + quote_plus(js_origin)
                 + '&User-Agent=' + quote_plus(UA)
             )
         except Exception as e:
@@ -554,10 +533,10 @@ class streamer:
     @_guard
     def methstreams(self, url):
         try:
-            page = client.request(url)
+            page_data = client.request(url)
             matches = list(re.finditer(
                 r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
-                page
+                page_data
             ))
             if not matches:
                 return None
@@ -576,26 +555,36 @@ class streamer:
             label, source, picked_url = links[choice]
 
             if source == 'shark':
-                json_data = requests.get(
+                origin    = _base_url(picked_url)
+                referer   = origin + '/'
+                page_data = requests.get(
                     picked_url,
                     headers={'User-Agent': UA, 'Referer': url},
                     timeout=10
                 ).text
-                m = re.search(r"fetch\('([^']+)", json_data)
+                m = re.search(r"fetch\('([^']+)", page_data)
                 if not m:
                     return None
-                api_url  = 'https://sharkstreams.net/' + m.group(1)
+                api_url  = urljoin(origin, m.group(1))
                 api_data = requests.get(
                     api_url,
                     headers={'User-Agent': UA, 'Referer': picked_url},
                     timeout=10
                 ).text
-                m = re.search(r'\["([^"]+)', api_data)
-                if not m:
+                try:
+                    urls = json.loads(api_data).get('urls', [])
+                except Exception:
+                    m = re.search(r'\["([^"]+)', api_data)
+                    if not m:
+                        return None
+                    urls = [m.group(1).replace('\\', '')]
+                if not urls:
                     return None
-                stream  = m.group(1).replace('\\', '')
-                origin  = _base_url(api_url)
-                referer = origin + '/'
+                stream = urls[0] if len(urls) == 1 else urls[
+                    xbmcgui.Dialog().select('Choose Stream', [f'Stream {i+1}' for i in range(len(urls))])
+                ]
+                if not stream:
+                    return None
                 return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
 
             if source == 'streams':
@@ -620,8 +609,8 @@ class streamer:
     @_guard
     def roxiestreams(self, url):
         try:
-            referer = _base_url(url)
-            origin  = referer
+            origin  = _base_url(url)
+            referer = origin + '/'
             headers = {'Referer': referer, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=10).text
             if not page_data:
@@ -635,7 +624,7 @@ class streamer:
                 ))
                 fetch_m = re.search(r"fetch\('([^']+)", page_data)
                 try:
-                    domain_url  = urljoin(referer, fetch_m.group(1)) if fetch_m else None
+                    domain_url  = urljoin(origin, fetch_m.group(1)) if fetch_m else None
                     domain_text = requests.get(domain_url, headers=headers, timeout=10).text
                     domains     = [d.strip() for d in domain_text.splitlines() if d.strip()]
                 except Exception:
@@ -658,8 +647,7 @@ class streamer:
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
-                labels = [f'Stream {i + 1}' for i in range(len(m3u8_list))]
-                choice = xbmcgui.Dialog().select('Select Stream', labels)
+                choice = xbmcgui.Dialog().select('Select Stream', [f'Stream {i+1}' for i in range(len(m3u8_list))])
                 if choice == -1:
                     return None
                 stream_url = m3u8_list[choice]
@@ -740,21 +728,19 @@ class streamer:
                     return None
                 stream_sc, stream_id, stream_no = parts[-3], parts[-2], parts[-1]
             log(f'embedsports parts: sc={stream_sc!r} id={stream_id!r} no={stream_no!r}')
-            payload   = bytes([
+            payload = bytes([
                 0x0A, len(stream_sc), *stream_sc.encode('utf-8'),
                 0x12, len(stream_id), *stream_id.encode('utf-8'),
                 0x1A, len(stream_no), *stream_no.encode('utf-8'),
             ])
-            parsed    = urlparse(url)
-            origin    = f'{parsed.scheme}://{parsed.netloc}'
-            fetch_url = f'{origin}/fetch'
-            headers   = {
+            origin  = _base_url(url)
+            headers = {
                 'Content-Type': 'application/octet-stream',
                 'Origin':       origin,
                 'Referer':      url,
                 'User-Agent':   UA,
             }
-            fetch = requests.post(fetch_url, data=payload, headers=headers, timeout=10)
+            fetch = requests.post(urljoin(origin, '/fetch'), data=payload, headers=headers, timeout=10)
             if not fetch.content:
                 log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                 return None
@@ -776,7 +762,7 @@ class streamer:
             if not aes_key:
                 log(f'embedsports missing Goat header for {url}', xbmc.LOGERROR)
                 return None
-            aes       = AES.new(
+            aes = AES.new(
                 aes_key.encode(),
                 AES.MODE_CTR,
                 counter=Counter.new(128, initial_value=int.from_bytes(b'STOPSTOPSTOPSTOP', 'big'))
@@ -810,9 +796,8 @@ class streamer:
                 return None
             iframe_url  = m.group(1)
             iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
-            parsed  = urlparse(iframe_url)
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
+            origin  = _base_url(iframe_url)
+            referer = origin + '/'
             if 'atob' in iframe_html:
                 m = re.search(r"atob\('([^']+)", iframe_html)
                 if not m:
@@ -831,17 +816,17 @@ class streamer:
     @_guard
     def shd(self, url):
         try:
-            parsed  = urlparse(url)
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
+            origin  = _base_url(url)
+            referer = origin + '/'
             headers = {'Referer': referer, 'User-Agent': UA}
-            page_data = client.request(url, headers=headers)
+            page_data   = client.request(url, headers=headers)
             m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
             if not m:
                 return None
-            iframe_url = urljoin(referer, m.group(1))
-            page_data  = requests.get(iframe_url, headers=headers, timeout=10).text
-            headers    = {'Referer': iframe_url, 'User-Agent': UA}
-            m          = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
+            iframe_url  = urljoin(referer, m.group(1))
+            iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
+            headers     = {'Referer': iframe_url, 'User-Agent': UA}
+            m           = re.search(r'<iframe[^>]+src="([^"]+)', iframe_html)
             if not m:
                 return None
             iframe2_url = m.group(1)
@@ -849,22 +834,15 @@ class streamer:
                 iframe2_url = 'https:' + iframe2_url
             if not iframe2_url.startswith('http'):
                 iframe2_url = urljoin(referer, iframe2_url)
-            page_data = requests.get(iframe2_url, headers=headers, timeout=10).text
-            if not page_data:
+            iframe2_html = requests.get(iframe2_url, headers=headers, timeout=10).text
+            if not iframe2_html:
                 return None
-            parsed  = urlparse(iframe2_url)
-            referer = f'{parsed.scheme}://{parsed.netloc}/'
-            origin  = f'{parsed.scheme}://{parsed.netloc}'
-            m       = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', page_data)
+            origin  = _base_url(iframe2_url)
+            referer = origin + '/'
+            m       = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', iframe2_html)
             if not m:
                 return None
-            return (
-                f'{m.group(1)}'
-                f'|Referer={referer}'
-                f'&Origin={origin}'
-                f'&User-Agent={UA}'
-                f'&Accept=application/x-mpegURL,*/*'
-            )
+            return f'{m.group(1)}|Referer={referer}&Origin={origin}&User-Agent={UA}&Accept=application/x-mpegURL,*/*'
         except Exception as e:
             log(f'shd failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -876,12 +854,12 @@ class streamer:
             iframe1   = self._get_iframe_src(page_data)
             if not iframe1:
                 return None
-            iframe1_html = requests.get(
+            iframe_html = requests.get(
                 iframe1,
                 headers={'Referer': url, 'User-Agent': UA},
                 timeout=10
             ).text
-            return self._decrypt_streams_center(iframe1_html, iframe1)
+            return self._decrypt_streams_center(iframe_html, iframe1)
         except Exception as e:
             log(f'streamcenter failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -889,8 +867,8 @@ class streamer:
     @_guard
     def waatk(self, url):
         try:
-            base    = _base_url(url)
-            headers = {'Referer': base, 'User-Agent': UA}
+            origin  = _base_url(url)
+            headers = {'Referer': origin, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r'<iframe[^>]+src="([^"]+)"', page_data, re.I)
             if not m:
@@ -1029,11 +1007,11 @@ class streamer:
     @_guard
     def thetvapp(self, url):
         try:
-            base    = _base_url(url)
+            origin  = _base_url(url)
             session = requests.Session()
-            session.headers.update({'User-Agent': UA, 'Referer': base + '/'})
-            page    = session.get(url, timeout=10).text
-            m       = re.search(r'id="stream_name"[^>]+name="([^"]+)"', page)
+            session.headers.update({'User-Agent': UA, 'Referer': origin + '/'})
+            page_data = session.get(url, timeout=10).text
+            m         = re.search(r'id="stream_name"[^>]+name="([^"]+)"', page_data)
             if not m:
                 return None
             stream_name = m.group(1)
@@ -1041,7 +1019,7 @@ class streamer:
             if xsrf:
                 xsrf = unquote(xsrf)
             resp = session.get(
-                f'{base}/token/{stream_name}',
+                urljoin(origin, f'/token/{stream_name}'),
                 headers={
                     'Accept':           'application/json, text/plain, */*',
                     'Referer':          url,
@@ -1053,7 +1031,7 @@ class streamer:
             stream_url = resp.get('url', '')
             if not stream_url:
                 return None
-            return f'{stream_url}|User-Agent={UA}&Referer={base}/'
+            return f'{stream_url}|User-Agent={UA}&Referer={origin}/'
         except Exception as e:
             log(f'thetvapp failed for {url} | {e}', xbmc.LOGERROR)
             return None
@@ -1061,45 +1039,43 @@ class streamer:
     @_guard
     def ripplenetwork(self, url):
         try:
-            headers = {'User-Agent': UA}
+            headers   = {'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=10).text
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+rippleplays[^"\']+)["\']', page_data, re.I)
             if not m:
                 return None
-            page_data2 = requests.get(m.group(1), headers=headers, timeout=10).text
-            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)["\']', page_data2, re.I)
+            iframe_html = requests.get(m.group(1), headers=headers, timeout=10).text
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)["\']', iframe_html, re.I)
             if not m:
                 return None
-            inner_url = m.group(1)
-            page_data3 = requests.get(inner_url, headers={'User-Agent': UA, 'Referer': inner_url}, timeout=10).text
-            m = re.search(r'atob\(["\']([^"\']+)["\']', page_data3)
+            inner_url    = m.group(1)
+            iframe2_html = requests.get(inner_url, headers={'User-Agent': UA, 'Referer': inner_url}, timeout=10).text
+            m = re.search(r'atob\(["\']([^"\']+)["\']', iframe2_html)
             if not m:
                 return None
             stream_url = base64.b64decode(m.group(1)).decode('utf-8')
-            origin = _base_url(inner_url)
+            origin     = _base_url(inner_url)
             return f'{stream_url}|User-Agent={UA}&Referer={origin}/'
         except Exception as e:
-            log(f'rippleplay failed for {url} | {e}', xbmc.LOGERROR)
+            log(f'ripplenetwork failed for {url} | {e}', xbmc.LOGERROR)
             return None
 
     @_guard
     def sharkstreams(self, url):
         try:
-            headers = {'User-Agent': UA}
-            origin  = _base_url(url)
-            page_data = requests.get(url, headers=headers, timeout=10).text
+            origin    = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
             m = re.search(r"fetch\('([^']+)", page_data)
             if not m:
                 return None
-            api_url = urljoin(origin, m.group(1))
+            api_url  = urljoin(origin, m.group(1))
             api_data = requests.get(
                 api_url,
                 headers={'User-Agent': UA, 'Referer': url},
                 timeout=10
             ).text
             try:
-                data = json.loads(api_data)
-                urls = data.get('urls', [])
+                urls = json.loads(api_data).get('urls', [])
             except Exception:
                 m = re.search(r'\["([^"]+)', api_data)
                 if not m:
