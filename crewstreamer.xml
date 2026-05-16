@@ -1097,11 +1097,25 @@ class streamer:
                 headers={'User-Agent': UA, 'Referer': url},
                 timeout=10
             ).text
-            m = re.search(r'\["([^"]+)', api_data)
-            if not m:
+            try:
+                data = json.loads(api_data)
+                urls = data.get('urls', [])
+            except Exception:
+                m = re.search(r'\["([^"]+)', api_data)
+                if not m:
+                    return None
+                urls = [m.group(1).replace('\\', '')]
+            if not urls:
                 return None
-            stream  = m.group(1).replace('\\', '')
-            return f'{stream}|User-Agent={UA}&Referer={origin}&Origin={origin}'
+            if len(urls) == 1:
+                stream = urls[0]
+            else:
+                choice = xbmcgui.Dialog().select('Choose Stream', [f'Stream {i+1}' for i in range(len(urls))])
+                if choice == -1:
+                    return None
+                stream = urls[choice]
+            referer = origin + '/'
+            return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             log(f'sharkstreams failed for {url} | {e}', xbmc.LOGERROR)
             return None
