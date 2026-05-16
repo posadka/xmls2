@@ -305,8 +305,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://roxiestreams.info/fighting')
+    from resources.lib.modules import client, control
+    import re
+    from urllib.parse import urljoin
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    sport = 'fighting'
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/roxie_bases.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    full_url = urljoin(base, sport)
+    url = client.schedule(full_url)
     return url
 ]]></expres>
         <page></page>
