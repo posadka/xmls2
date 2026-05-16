@@ -730,7 +730,7 @@ class streamer:
                 except Exception:
                     time_str = dt_str
                 label = f'[COLOR dodgerblue]{category} {time_str} ET[/COLOR] [COLOR orange]{name}[/COLOR]'
-                results.append((player_url, label))
+                results.append((urljoin(base, player_url), label))
             return results or None
         except Exception as e:
             log(f'sharkstreams error: {e}', xbmc.LOGERROR)
