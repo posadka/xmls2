@@ -27,7 +27,7 @@ except ImportError:
 
 from resources.lib.modules import control, client, workers, jsunpack, hunter
 
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36'
 
 TAG = 'Schedule'
 
@@ -90,8 +90,6 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
-            elif 'gstream' in url:
-                u = self.gstream(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.sportssonline(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
@@ -733,39 +731,4 @@ class streamer:
             return results or None
         except Exception as e:
             log(f'sharkstreams error: {e}', xbmc.LOGERROR)
-            return None
-
-    @_guard
-    def gstream(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            base      = _base_url(url)
-            matches   = re.findall(
-                r'(?s)<tr>\s*'
-                r'<td>([^<]+)</td>\s*'
-                r'<td>.*?alt="([^"]+)".*?</td>\s*'
-                r'<td>([^<]+)</td>\s*'
-                r'<td>\s*([^<]+?)\s*</td>\s*'
-                r'<td[^>]*>\s*([^<]+?)\s*</td>\s*'
-                r'<td>\s*<a href="([^"]+)"',
-                page_data
-            )
-            results = []
-            for date_str, league, event, time_str, status, href in matches:
-                date_str = date_str.strip()
-                league   = league.strip()
-                event    = html.unescape(event).strip()
-                time_str = time_str.strip()
-                status   = status.strip()
-                if status.lower() == 'ended':
-                    status_color = '[COLOR red]Ended[/COLOR]'
-                elif status.lower() == 'live':
-                    status_color = '[COLOR red]LIVE[/COLOR]'
-                else:
-                    status_color = f'[COLOR yellow]{status}[/COLOR]'
-                label = f'{status_color} [COLOR dodgerblue]{league} {date_str} {time_str}[/COLOR] [COLOR orange]{event}[/COLOR]'
-                results.append((urljoin(base, href), label))
-            return results or None
-        except Exception as e:
-            log(f'gstream24 error: {e}', xbmc.LOGERROR)
             return None
