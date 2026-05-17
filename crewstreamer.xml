@@ -1104,22 +1104,40 @@ class streamer:
     def embedsports_me(self, url):
         try:
             origin    = _base_url(url)
-            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': origin + '/'}, timeout=10).text
-            m = re.search(r'const zmid\s*=\s*"([^"]+)"', page_data)
-            if not m:
+            referer   = origin + '/'
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': referer}, timeout=10).text
+            zmid_m    = re.search(r'const zmid\s*=\s*"([^"]+)"', page_data)
+            pid_m     = re.search(r'const pid\s*=\s*(\d+)', page_data)
+            edm_m     = re.search(r'const edm\s*=\s*"([^"]+)"', page_data)
+            csrf_m    = re.search(r'"csrf"\s*:\s*"([^"]+)"', page_data)
+            csrf_ip_m = re.search(r'"csrf_ip"\s*:\s*"([^"]+)"', page_data)
+            gacat_m   = re.search(r'const gameCat\s*=\s*"([^"]+)"', page_data)
+            if not all([zmid_m, pid_m, edm_m, csrf_m, csrf_ip_m]):
+                log(f'embedsports_me missing vars at {url}', xbmc.LOGERROR)
                 return None
-            zmid = m.group(1)
-            m = re.search(r'const pid\s*=\s*(\d+)', page_data)
-            pid = m.group(1) if m else '1'
-            m = re.search(r'const edm\s*=\s*"([^"]+)"', page_data)
-            edm = m.group(1) if m else 'ninguno.net'
-            js_url = f'https://sts.{edm}/scripts/v2/embed.min.js?v=1'
-            js_html = requests.get(js_url, headers={'User-Agent': UA, 'Referer': url}, timeout=10).text
-            log(f'embedsports_me zmid={zmid} pid={pid} edm={edm}')
-            for kw in ['fetch(', '/stream', '/get', '/src', '/play', 'island', 'Goat', '.m3u8', 'zmid', 'pid']:
-                idx = js_html.find(kw)
-                if idx != -1:
-                    log(f'embedsports_me kw={kw!r} ctx={js_html[max(0,idx-100):idx+200]}')
+            zmid    = zmid_m.group(1)
+            pid     = pid_m.group(1)
+            edm     = edm_m.group(1)
+            csrf    = csrf_m.group(1)
+            csrf_ip = csrf_ip_m.group(1)
+            gacat   = gacat_m.group(1) if gacat_m else 'sp'
+            api_url = f'https://{edm}/sd0embed/{gacat}'
+            params  = {
+                'pid':     pid,
+                'gacat':   gacat,
+                'gatxt':   gacat,
+                'v':       zmid,
+                'csrf':    csrf,
+                'csrf_ip': csrf_ip,
+            }
+            full_api = api_url + '?' + urlencode(params)
+            log(f'embedsports_me api_url={full_api}')
+            api_html = requests.get(
+                full_api,
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=10
+            ).text
+            log(f'embedsports_me api_html={api_html[:500]}')
             return None
         except Exception as e:
             log(f'embedsports_me failed for {url} | {e}', xbmc.LOGERROR)
