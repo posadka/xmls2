@@ -295,37 +295,34 @@ class streamer:
                     day = 'Tomorrow'
                 else:
                     day = dt.strftime('%m-%d')
-                return f'{day} {dt.strftime("%I:%M %p").lstrip("0")}', dt
+                return f'{day} {dt.strftime("%I:%M %p").lstrip("0")}'
 
             matches = re.findall(
-                r'(?s)<a href="([^"]+)"[^>]*class="uefa-card[^"]*"[^>]*data-time="(\d+)"[^>]*>.*?'
-                r'<span class="uefa-name">\s*([^<]+?)\s*</span>.*?'
-                r'<span class="uefa-name">\s*([^<]+?)\s*</span>',
+                r'(?s)<div class="m-card[^"]*"[^>]*data-time="(\d+)"[^>]*>.*?'
+                r'<a class="m-card__link"\s+href="([^"]+)"[^>]*>.*?'
+                r'<span class="m-card__name">([^<]+)</span>.*?'
+                r'<span class="m-card__name">([^<]+)</span>',
+                page_data
+            )
+            single = re.findall(
+                r'(?s)<a class="m-card[^"]*"\s+href="([^"]+)"[^>]*data-time="(\d+)"[^>]*>.*?'
+                r'<span class="m-card__title">([^<]+)</span>',
                 page_data
             )
             results = []
-            for href, ts, team1, team2 in matches:
-                time_str, _ = _date_label(ts)
-                team1 = html.unescape(team1).strip()
-                team2 = html.unescape(team2).strip()
-                title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
-                results.append((urljoin(base, href), title))
-
-            if not matches:
-                log('streameast_ga: primary regex found no matches, trying single-event fallback')
-                single_matches = re.findall(
-                    r'(?s)<a href="([^"]+)"[^>]*class="uefa-card[^"]*"[^>]*data-time="(\d+)"[^>]*>.*?'
-                    r'<span class="uefa-name">\s*([^<]+?)\s*</span>',
-                    page_data
-                )
-                for href, ts, title_text in single_matches:
-                    time_str, _ = _date_label(ts)
-                    title_text  = html.unescape(title_text).strip()
-                    title       = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title_text}[/COLOR]'
-                    results.append((urljoin(base, href), title))
-
+            for ts, href, team1, team2 in matches:
+                time_str = _date_label(ts)
+                team1    = html.unescape(team1).strip()
+                team2    = html.unescape(team2).strip()
+                label    = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
+                results.append((urljoin(base, href), label))
+            for href, ts, title_text in single:
+                time_str   = _date_label(ts)
+                title_text = html.unescape(title_text).strip()
+                label      = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title_text}[/COLOR]'
+                results.append((urljoin(base, href), label))
             if not results:
-                log('streameast_ga: both regexes failed, no matches found', xbmc.LOGERROR)
+                log('streameast_ga: no matches found', xbmc.LOGERROR)
                 return None
             return results
         except Exception as e:
