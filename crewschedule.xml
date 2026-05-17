@@ -760,9 +760,9 @@ class streamer:
                 if status.lower() == 'ended':
                     status_color = '[COLOR red]Ended[/COLOR]'
                 elif status.lower() == 'live':
-                    status_color = '[COLOR green]LIVE[/COLOR]'
+                    status_color = '[COLOR red]LIVE[/COLOR]'
                 else:
-                    status_color = f'[COLOR red]{status}[/COLOR]'
+                    status_color = f'[COLOR yellow]{status}[/COLOR]'
                 label = f'{status_color} [COLOR dodgerblue]{league} {date_str} {time_str}[/COLOR] [COLOR orange]{event}[/COLOR]'
                 results.append((urljoin(base, href), label))
             return results or None
