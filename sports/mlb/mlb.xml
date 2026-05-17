@@ -1111,7 +1111,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (XBOX USERS USE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (XBOX EHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
     <thumbnail></thumbnail>
     <fanart></fanart>
@@ -1239,134 +1239,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (2 Xbox users)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail></thumbnail>
-    <fanart></fanart>
-    <regex>
-        <name>makelist</name>
-        <listrepeat><![CDATA[
-        <title>[makelist.param2]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-        ]]></listrepeat>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests, html
-    try:
-        from urllib.parse import urlparse, urljoin
-    except ImportError:
-        from urlparse import urlparse, urljoin
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    url = 'https://roxiestreams.com'
-    try:
-        page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-    except Exception:
-        return None
-    base    = '%s://%s' % (urlparse(url).scheme, urlparse(url).netloc)
-    matches = re.findall(
-        r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>',
-        page_data
-    )
-    results = []
-    for href, name, timestr in matches:
-        name = html.unescape(name).strip()
-        label = '[COLOR orange]%s[/COLOR]' % name
-        results.append((urljoin(base, href), label))
-    return results or None
-]]></expres>
-        <page></page>
-    </regex>
-    <regex>
-        <name>makelist2</name>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests, random
-    try:
-        from urllib.parse import urlparse, urljoin
-    except ImportError:
-        from urlparse import urlparse, urljoin
-    import xbmc, xbmcgui, threading
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    url = '[makelist.param1]'
-    def fetch():
-        try:
-            parsed  = urlparse(url)
-            referer = '%s://%s/' % (parsed.scheme, parsed.netloc)
-            origin  = '%s://%s' % (parsed.scheme, parsed.netloc)
-            headers = {'Referer': referer, 'User-Agent': UA}
-            page_data = requests.get(url, headers=headers, timeout=10).text
-            if not page_data:
-                return None
-            m3u8_list = []
-            if 'getRandomStream' in page_data:
-                stream_calls = set(re.findall(
-                    r"getRandomStream\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)",
-                    page_data
-                ))
-                fetch_m = re.search(r"fetch\('([^']+)", page_data)
-                try:
-                    domain_url  = urljoin(referer, fetch_m.group(1)) if fetch_m else None
-                    domain_text = requests.get(domain_url, headers=headers, timeout=10).text
-                    domains     = [d.strip() for d in domain_text.splitlines() if d.strip()]
-                except Exception:
-                    domains = ['shadow-ran.online']
-                for stream_path, subdomain in stream_calls:
-                    d = random.choice(domains)
-                    m3u8_list.append('https://%s.%s/%s' % (subdomain, d, stream_path))
-            clappr = re.findall(r"showPlayer\([^,]+,\s*['\"]([^'\"]+\.m3u8)", page_data)
-            if clappr:
-                m3u8_list.extend(clappr)
-            if not m3u8_list:
-                m3u8_list = re.findall(r'https?://[^\s\'"]+\.m3u8', page_data, re.DOTALL)
-            m3u8_list = list(dict.fromkeys(m3u8_list))
-            if not m3u8_list:
-                return None
-            if len(m3u8_list) == 1:
-                stream_url = m3u8_list[0]
-            else:
-                labels = ['Stream %s' % (i + 1) for i in range(len(m3u8_list))]
-                choice = xbmcgui.Dialog().select('Select Stream', labels)
-                if choice == -1:
-                    return None
-                stream_url = m3u8_list[choice]
-            return '%s|User-Agent=%s&Referer=%s&Origin=%s' % (stream_url, UA, referer, origin)
-        except Exception:
-            return None
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    result = [None]
-    done   = [False]
-    def run():
-        result[0] = fetch()
-        done[0]   = True
-    t = threading.Thread(target=run)
-    t.start()
-    progress = 0
-    while not done[0]:
-        if pDialog.iscanceled():
-            pDialog.close()
-            return
-        if progress < 90:
-            progress += 2
-        pDialog.update(progress, 'The Crew Is Finding Your Event...')
-        xbmc.sleep(200)
-    if not result[0]:
-        pDialog.update(100, 'Stream not found.')
-        xbmc.sleep(2000)
-        pDialog.close()
-        return
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
-    xbmc.sleep(2000)
-    pDialog.close()
-    return result[0]
-]]></expres>
-        <page>[makelist.param1]</page>
-    </regex>
-</item>
-
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (3 XBOX USERS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (XBOX SC)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
     <thumbnail></thumbnail>
     <fanart></fanart>
@@ -1474,7 +1347,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (4 XBOX USERS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (XBOX SE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
     <thumbnail></thumbnail>
     <fanart></fanart>
