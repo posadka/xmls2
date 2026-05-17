@@ -139,6 +139,10 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
+            elif 'embedsports.me' in url:
+                u = self.embedsports_me(url)
+            elif 'gstream' in url:
+                u = self.gstream(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -1094,4 +1098,53 @@ class streamer:
             return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             log(f'sharkstreams failed for {url} | {e}', xbmc.LOGERROR)
+            return None
+
+    @_guard
+    def embedsports_me(self, url):
+        try:
+            origin    = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': origin + '/'}, timeout=10).text
+            m = re.search(r'const zmid\s*=\s*"([^"]+)"', page_data)
+            if not m:
+                return None
+            zmid = m.group(1)
+            m = re.search(r'const pid\s*=\s*(\d+)', page_data)
+            pid = m.group(1) if m else '1'
+            m = re.search(r'const edm\s*=\s*"([^"]+)"', page_data)
+            edm = m.group(1) if m else 'ninguno.net'
+            js_url = f'https://sts.{edm}/scripts/v2/embed.min.js?v=1'
+            js_html = requests.get(js_url, headers={'User-Agent': UA, 'Referer': url}, timeout=10).text
+            log(f'embedsports_me zmid={zmid} pid={pid} edm={edm}')
+            for kw in ['fetch(', '/stream', '/get', '/src', '/play', 'island', 'Goat', '.m3u8', 'zmid', 'pid']:
+                idx = js_html.find(kw)
+                if idx != -1:
+                    log(f'embedsports_me kw={kw!r} ctx={js_html[max(0,idx-100):idx+200]}')
+            return None
+        except Exception as e:
+            log(f'embedsports_me failed for {url} | {e}', xbmc.LOGERROR)
+            return None
+
+    @_guard
+    def gstream(self, url):
+        try:
+            origin    = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            alt_m     = re.search(r'<a href="([^"]+)"[^>]*>\s*Alt\s*</a>', page_data, re.I)
+            if alt_m:
+                alt_url      = alt_m.group(1)
+                alt_page     = requests.get(alt_url, headers={'User-Agent': UA, 'Referer': url}, timeout=10).text
+                embed_m      = re.search(r"src='(https://embedsports\.me/[^']+)'", alt_page)
+                if not embed_m:
+                    embed_m  = re.search(r'src="(https://embedsports\.me/[^"]+)"', alt_page)
+                if embed_m:
+                    return self.embedsports_me(embed_m.group(1))
+            embed_m = re.search(r"src='(https://embedsports\.me/[^']+)'", page_data)
+            if not embed_m:
+                embed_m = re.search(r'src="(https://embedsports\.me/[^"]+)"', page_data)
+            if not embed_m:
+                return None
+            return self.embedsports_me(embed_m.group(1))
+        except Exception as e:
+            log(f'gstream24 failed for {url} | {e}', xbmc.LOGERROR)
             return None
