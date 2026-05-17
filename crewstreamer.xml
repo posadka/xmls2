@@ -1106,14 +1106,40 @@ class streamer:
             origin    = _base_url(url)
             referer   = origin + '/'
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': referer}, timeout=10).text
-            log(f'embedsports_me status len={len(page_data)}')
-            log(f'embedsports_me page={page_data[:1000]}')
-            zmid_m    = re.search(r'const zmid\s*=\s*"([^"]+)"', page_data)
+            zmid_m    = re.search(r'const zmid\s*=\s*["\']([^"\']+)["\']', page_data)
             pid_m     = re.search(r'const pid\s*=\s*(\d+)', page_data)
-            edm_m     = re.search(r'const edm\s*=\s*"([^"]+)"', page_data)
+            edm_m     = re.search(r'const edm\s*=\s*["\']([^"\']+)["\']', page_data)
             csrf_m    = re.search(r'"csrf"\s*:\s*"([^"]+)"', page_data)
             csrf_ip_m = re.search(r'"csrf_ip"\s*:\s*"([^"]+)"', page_data)
-            log(f'embedsports_me zmid={zmid_m} pid={pid_m} edm={edm_m} csrf={csrf_m} csrf_ip={csrf_ip_m}')
+            gacat_m   = re.search(r'const gameCat\s*=\s*["\']([^"\']+)["\']', page_data)
+            if not all([zmid_m, pid_m, csrf_m, csrf_ip_m]):
+                log(f'embedsports_me missing vars at {url}', xbmc.LOGERROR)
+                return None
+            zmid    = zmid_m.group(1)
+            pid     = pid_m.group(1)
+            edm     = edm_m.group(1) if edm_m else 'ninguno.net'
+            csrf    = csrf_m.group(1)
+            csrf_ip = csrf_ip_m.group(1)
+            gacat   = gacat_m.group(1) if gacat_m else 'sp'
+            api_url = f'https://{edm}/sd0embed/{gacat}'
+            params  = {
+                'pid':     pid,
+                'gacat':   gacat,
+                'gatxt':   gacat,
+                'v':       zmid,
+                'csrf':    csrf,
+                'csrf_ip': csrf_ip,
+            }
+            full_api = api_url + '?' + urlencode(params)
+            log(f'embedsports_me api_url={full_api}')
+            api_resp = requests.get(
+                full_api,
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=10
+            )
+            log(f'embedsports_me api_status={api_resp.status_code}')
+            log(f'embedsports_me api_headers={dict(api_resp.headers)}')
+            log(f'embedsports_me api_text={api_resp.text[:500]}')
             return None
         except Exception as e:
             log(f'embedsports_me failed for {url} | {e}', xbmc.LOGERROR)
