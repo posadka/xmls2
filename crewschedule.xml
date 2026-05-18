@@ -558,7 +558,7 @@ class streamer:
     @_guard
     def flyembed(self, url):
         try:
-            data    = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            data    = requests.get(url, headers={'User-Agent': UA}, timeout=10).json()
             results = []
             for match in data:
                 team1      = html.unescape((match.get('Team 1 ') or match.get('Team1') or '').strip())
