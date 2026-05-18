@@ -568,7 +568,7 @@ class streamer:
                 iframe_url = match.get('iframeURL', '')
                 if not iframe_url:
                     continue
-                label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
+                label = f'[COLOR dodgerblue]{league} {time_str} ET[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
                 results.append((iframe_url, label))
             return results or None
         except Exception as e:
