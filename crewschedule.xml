@@ -30,10 +30,15 @@ from resources.lib.modules import control, client, workers, jsunpack, hunter
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36'
 
 TAG = 'Schedule'
+TIMEOUT = 10
 
 
 def log(msg, level=xbmc.LOGINFO):
     xbmc.log(f'{TAG} {msg}', level)
+
+
+def _log_error(source, url, e):
+    log(f'[{source}] error | {url} | {e}', xbmc.LOGERROR)
 
 
 def _base_url(url):
@@ -103,7 +108,7 @@ class streamer:
                 return None
             return u
         except Exception as e:
-            log(f'resolve failed for {url} | {e}', xbmc.LOGERROR)
+            _log_error('resolve', url, e)
             return None
 
     @staticmethod
@@ -149,7 +154,7 @@ class streamer:
                 results.append((href, title))
             return results or None
         except Exception as e:
-            log(f'streameast error: {e}', xbmc.LOGERROR)
+            _log_error('streameast', url, e)
             return None
 
     @_guard
@@ -168,14 +173,14 @@ class streamer:
                 title    = html.unescape(title).strip()
                 time_str = time_str.strip()
                 try:
-                    t        = datetime.strptime(time_str, '%H:%M') - timedelta(hours=7)
+                    t        = datetime.strptime(time_str, '%H:%M').replace(tzinfo=timezone.utc).astimezone()
                     time_str = t.strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     pass
                 results.append((urljoin(base, href), self._label(time_str, title)))
             return results or None
         except Exception as e:
-            log(f'ovostreams error: {e}', xbmc.LOGERROR)
+            _log_error('ovostreams', url, e)
             return None
 
     @_guard
@@ -191,7 +196,7 @@ class streamer:
             ]
             return results or None
         except Exception as e:
-            log(f'chaturbate error: {e}', xbmc.LOGERROR)
+            _log_error('chaturbate', url, e)
             return None
 
     @_guard
@@ -212,7 +217,7 @@ class streamer:
             )
             return results or None
         except Exception as e:
-            log(f'hdrez error: {e}', xbmc.LOGERROR)
+            _log_error('hdrez', url, e)
             return None
 
     @_guard
@@ -244,7 +249,7 @@ class streamer:
                 results.append((full_url, self._label(time_str, teams)))
             return results or None
         except Exception as e:
-            log(f'fsportshd error: {e}', xbmc.LOGERROR)
+            _log_error('fsportshd', url, e)
             return None
 
     @_guard
@@ -261,7 +266,7 @@ class streamer:
                         results.append((link, f'[COLOR orange]{title}[/COLOR]'))
             return results or None
         except Exception as e:
-            log(f'streambtw error: {e}', xbmc.LOGERROR)
+            _log_error('streambtw', url, e)
             return None
 
     @_guard
@@ -275,13 +280,13 @@ class streamer:
             ]
             return results or None
         except Exception as e:
-            log(f'volokit error: {e}', xbmc.LOGERROR)
+            _log_error('volokit', url, e)
             return None
 
     @_guard
     def streameast_ga(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             now       = datetime.now().date()
             tomorrow  = now + timedelta(days=1)
@@ -326,7 +331,7 @@ class streamer:
                 return None
             return results
         except Exception as e:
-            log(f'streameast_ga error: {e}', xbmc.LOGERROR)
+            _log_error('streameast_ga', url, e)
             return None
 
     @_guard
@@ -352,7 +357,7 @@ class streamer:
                 results.append((full_url, self._label(time_str, title)))
             return results or None
         except Exception as e:
-            log(f'buffstreams error: {e}', xbmc.LOGERROR)
+            _log_error('buffstreams', url, e)
             return None
 
     @_guard
@@ -375,7 +380,7 @@ class streamer:
                 results.append((urljoin(base, href), self._label(timestr.strip(), name)))
             return results or None
         except Exception as e:
-            log(f'roxiestreams error: {e}', xbmc.LOGERROR)
+            _log_error('roxiestreams', url, e)
             return None
 
     @_guard
@@ -407,13 +412,13 @@ class streamer:
                 results.append((full_url, title))
             return results or None
         except Exception as e:
-            log(f'givemereddit error: {e}', xbmc.LOGERROR)
+            _log_error('givemereddit', url, e)
             return None
 
     @_guard
     def methstreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)',
@@ -425,7 +430,7 @@ class streamer:
             ]
             return results or None
         except Exception as e:
-            log(f'methstreams error: {e}', xbmc.LOGERROR)
+            _log_error('methstreams', url, e)
             return None
 
     @_guard
@@ -456,13 +461,13 @@ class streamer:
                 results.append((full_url, title))
             return results or None
         except Exception as e:
-            log(f'shd error: {e}', xbmc.LOGERROR)
+            _log_error('shd', url, e)
             return None
 
     @_guard
     def streamcenter(self, url):
         try:
-            page_data = requests.get(url, timeout=5).json()
+            page_data = requests.get(url, timeout=TIMEOUT).json()
             results   = []
             for item in page_data:
                 name  = item.get('name') or item.get('gameName') or 'Unknown'
@@ -483,7 +488,7 @@ class streamer:
                     results.append((href, label))
             return results or None
         except Exception as e:
-            log(f'streamcenter error: {e}', xbmc.LOGERROR)
+            _log_error('streamcenter', url, e)
             return None
 
     @_guard
@@ -506,13 +511,13 @@ class streamer:
             ]
             return results or None
         except Exception as e:
-            log(f'waatk error: {e}', xbmc.LOGERROR)
+            _log_error('waatk', url, e)
             return None
 
     @_guard
     def playoff(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<a class="btn btn-info btn-block"[^>]+href="([^"]+)"[^>]*>'
@@ -534,7 +539,7 @@ class streamer:
                 results.append((full_url, title))
             return results or None
         except Exception as e:
-            log(f'playoff error: {e}', xbmc.LOGERROR)
+            _log_error('playoff', url, e)
             return None
 
     @_guard
@@ -552,13 +557,13 @@ class streamer:
             ]
             return results or None
         except Exception as e:
-            log(f'crackstreams error: {e}', xbmc.LOGERROR)
+            _log_error('crackstreams', url, e)
             return None
 
     @_guard
     def flyembed(self, url):
         try:
-            data    = requests.get(url, headers={'User-Agent': UA}, timeout=10).json()
+            data    = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for match in data:
                 team1      = html.unescape((match.get('Team 1 ') or match.get('Team1') or '').strip())
@@ -572,13 +577,13 @@ class streamer:
                 results.append((iframe_url, label))
             return results or None
         except Exception as e:
-            log(f'flyembed error: {e}', xbmc.LOGERROR)
+            _log_error('flyembed', url, e)
             return None
 
     @_guard
     def embedhd(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).json()
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results   = []
             for day in page_data.get('days', []):
                 for event in day.get('items', []):
@@ -599,13 +604,13 @@ class streamer:
                         results.append((link, label))
             return results or None
         except Exception as e:
-            log(f'embedhd error: {e}', xbmc.LOGERROR)
+            _log_error('embedhd', url, e)
             return None
 
     @_guard
     def thetvapp(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             results   = []
             events = re.findall(
@@ -624,13 +629,13 @@ class streamer:
                 results.append((base + href, f'[COLOR orange]{title}[/COLOR]'))
             return results or None
         except Exception as e:
-            log(f'thetvapp error: {e}', xbmc.LOGERROR)
+            _log_error('thetvapp', url, e)
             return None
 
     @_guard
     def sportssonline(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             results   = []
             now       = datetime.now()
             for line in page_data.splitlines():
@@ -654,13 +659,13 @@ class streamer:
                 results.append((link, self._label(time_str, title)))
             return results or None
         except Exception as e:
-            log(f'sportssonline error: {e}', xbmc.LOGERROR)
+            _log_error('sportssonline', url, e)
             return None
 
     @_guard
     def ripplenetwork(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             results   = []
             now       = datetime.now()
             for line in page_data.splitlines():
@@ -684,13 +689,13 @@ class streamer:
                 results.append((link, self._label(time_str, title)))
             return results or None
         except Exception as e:
-            log(f'ripplenetwork error: {e}', xbmc.LOGERROR)
+            _log_error('ripplenetwork', url, e)
             return None
 
     @_guard
     def sharkstreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<div class="row">.*?'
@@ -714,5 +719,5 @@ class streamer:
                 results.append((urljoin(base, player_url), label))
             return results or None
         except Exception as e:
-            log(f'sharkstreams error: {e}', xbmc.LOGERROR)
+            _log_error('sharkstreams', url, e)
             return None
