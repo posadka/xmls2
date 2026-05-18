@@ -338,29 +338,23 @@ class streamer:
     def buffstreams(self, url):
         try:
             page_data = client.request(url)
-            base = _base_url(url)
-            results = []
-            sections = re.findall(
-                r'(?s)<div class="top-tournament.*?<h2[^>]*>([^<]+)</h2>.*?'
-                r'<ul class="competitions">(.*?)</ul>',
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?'
+                r'(?:<b>([^<]+)</b>|<time[^>]+datetime="([^"]+)"[^>]*>)',
                 page_data
             )
-            for sport, block in sections:
-                sport = html.unescape(sport).strip()
-                sport = sport.replace('Upcoming ', '').replace(' Streams Links', '').strip()
-                matches = re.findall(
-                    r'(?s)<a[^>]+class="competition"[^>]+href="([^"]+)"[^>]+title="([^"]+)".*?'
-                    r'<time[^>]+datetime="([^"]+)"[^>]*>([^<]+)</time>.*?'
-                    r'competition-cell-side1.*?<span class="name">([^<]+)</span>.*?'
-                    r'competition-cell-side2.*?<span class="name">([^<]+)</span>',
-                    block
-                )
-                for href, title_attr, dt, time_str, team1, team2 in matches:
-                    team1 = html.unescape(team1).strip()
-                    team2 = html.unescape(team2).strip()
-                    time_str = time_str.strip()
-                    label = f'[COLOR dodgerblue]{sport} {time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
-                    results.append((urljoin(base, href), label))
+            results = []
+            for teams, href, live_status, dt_str in matches:
+                title    = html.unescape(teams).replace('Buffstreams ', '').strip()
+                full_url = urljoin(base, href)
+                if live_status:
+                    time_str = live_status.strip()
+                elif dt_str:
+                    time_str = self._fmt_utc_dt(dt_str)
+                else:
+                    time_str = ''
+                results.append((full_url, self._label(time_str, title)))
             return results or None
         except Exception as e:
             _log_error('buffstreams', url, e)
