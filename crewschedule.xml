@@ -136,7 +136,7 @@ class streamer:
     @_guard
     def streameast(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             matches = re.findall(
                 r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
                 r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
@@ -160,7 +160,7 @@ class streamer:
     @_guard
     def ovostreams(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base = _base_url(url)
             matches = re.findall(
                 r'(?s)<div class="stream-time">([^<]+)</div>.*?'
@@ -186,7 +186,7 @@ class streamer:
     @_guard
     def chaturbate(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             matches   = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
             hosts     = {'WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED'}
             results   = [
@@ -202,7 +202,7 @@ class streamer:
     @_guard
     def hdrez(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             items     = re.findall(r'<script>var.*?=\s*(\[[^;]+)', page_data)[0]
             items     = re.findall(r'"(.+?)"', items)
             subitem   = int(re.findall(r'\(atob.+?-\s*(\d+)', page_data)[0])
@@ -223,7 +223,7 @@ class streamer:
     @_guard
     def fsportshd(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'<div class="media-body">\s*<a href=["\']([^"\']+)["\'][^>]*>.*?'
@@ -255,7 +255,7 @@ class streamer:
     @_guard
     def streambtw(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             data      = json.loads(page_data)
             results   = []
             for group in data.get('groups', []):
@@ -272,7 +272,7 @@ class streamer:
     @_guard
     def volokit(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             matches   = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
             results   = [
                 (href, f'[COLOR orange]{html.unescape(title).strip()}[/COLOR]')
@@ -337,7 +337,7 @@ class streamer:
     @_guard
     def buffstreams(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?'
@@ -363,7 +363,7 @@ class streamer:
     @_guard
     def roxiestreams(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>',
@@ -386,7 +386,7 @@ class streamer:
     @_guard
     def givemereddit(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'<a href="([^"]+)" class="matches"[^>]*>(.*?)</a>',
@@ -436,7 +436,7 @@ class streamer:
     @_guard
     def shd(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             if not page_data:
                 return None
             base    = _base_url(url)
@@ -494,7 +494,7 @@ class streamer:
     @_guard
     def waatk(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<div class="match">([^<]+)</div>.*?'
@@ -545,7 +545,7 @@ class streamer:
     @_guard
     def crackstreams(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'<a href="([^"]+)"[^>]+title="Watch ([^"]+?) Live Stream',

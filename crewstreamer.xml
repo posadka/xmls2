@@ -321,7 +321,7 @@ class streamer:
                 if not m:
                     return None
                 iframe_url  = m.group(1)
-                iframe_html = client.request(iframe_url)
+                iframe_html = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
                 m = re.search(r'<script>var.*?=\s*(\[[^;]+)', iframe_html)
                 if not m:
                     return None
@@ -538,7 +538,7 @@ class streamer:
     @_guard
     def methstreams(self, url):
         try:
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             matches = list(re.finditer(
                 r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
                 page_data
@@ -806,7 +806,7 @@ class streamer:
         try:
             origin, referer = _origin_referer(url)
             headers = {'Referer': referer, 'User-Agent': UA}
-            page_data   = client.request(url, headers=headers)
+            page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
             m = re.search(r'<iframe[^>]+src="([^"]+)', page_data)
             if not m:
                 return None
@@ -913,7 +913,7 @@ class streamer:
             def xor_decode(data, key):
                 return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(data))
 
-            page_data = client.request(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             key_m     = re.search(r'var _k="([^"]+)"', page_data)
             raw_m     = re.search(r'var _raw="([^"]+)"', page_data)
             if not key_m or not raw_m:
