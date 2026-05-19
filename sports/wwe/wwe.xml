@@ -83,8 +83,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('
-https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=100&categoryId=20')
+    url = client.schedule('https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=100&categoryId=20')
     return url
 ]]></expres>
 <page></page>
