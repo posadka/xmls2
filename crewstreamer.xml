@@ -147,6 +147,10 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
+            elif 'blacktiesports' in url:
+                u = self.blacktienba(url)
+            elif 'thetvapp' in url:
+                u = self.thetvapp(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -157,10 +161,6 @@ class streamer:
                 u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
                 u = self.givemereddit(url)
-            elif 'blacktiesports' in url:
-                u = self.blacktienba(url)
-            elif 'thetvapp' in url:
-                u = self.thetvapp(url)
             else:
                 u = self.generic(url)
             return u
