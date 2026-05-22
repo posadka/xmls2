@@ -725,32 +725,29 @@ class streamer:
             return None
 
     @_guard
-        def footballropings(self, url):
-            try:
-                data    = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).json()
-                base    = _base_url(url)
-                results = []
-                for match in data.get('matches', []):
-                    channels = match.get('channels', [])
-                    if not channels:
-                        continue
-                    team1     = html.unescape((match.get('team1') or '').strip())
-                    team2     = html.unescape((match.get('team2') or '').strip())
-                    league    = html.unescape((match.get('league') or '').strip())
-                    ts        = match.get('startTimestamp', 0)
-                    label_txt = f'{team1} vs {team2}' if team2 else team1
-                    try:
-                        time_str = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).astimezone().strftime('%I:%M %p').lstrip('0')
-                    except Exception:
-                        time_str = ''
-                    label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{label_txt}[/COLOR]'
-                    for ch in channels:
-                        lang     = ch.get('language') or ''
-                        lang_tag = f' [COLOR red]{lang}[/COLOR]' if lang else ''
-                        ch_label = f'{label}{lang_tag}'
-                        for link in ch.get('links', []):
-                            results.append((urljoin(base, link), ch_label))
-                return results or None
-            except Exception as e:
-                _log_error('footballropings', url, e)
-                return None
+    def footballropings(self, url):
+        try:
+            data    = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).json()
+            base    = _base_url(url)
+            results = []
+            for match in data.get('matches', []):
+                channels = match.get('channels', [])
+                if not channels:
+                    continue
+                team1     = html.unescape((match.get('team1') or '').strip())
+                team2     = html.unescape((match.get('team2') or '').strip())
+                league    = html.unescape((match.get('league') or '').strip())
+                ts        = match.get('startTimestamp', 0)
+                label_txt = f'{team1} vs {team2}' if team2 else team1
+                try:
+                    time_str = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).astimezone().strftime('%I:%M %p').lstrip('0')
+                except Exception:
+                    time_str = ''
+                label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{label_txt}[/COLOR]'
+                for ch in channels:
+                    for link in ch.get('links', []):
+                        results.append((urljoin(base, link), label))
+            return results or None
+        except Exception as e:
+            _log_error('footballropings', url, e)
+            return None
