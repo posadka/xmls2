@@ -745,8 +745,11 @@ class streamer:
                     time_str = ''
                 label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{label_txt}[/COLOR]'
                 for ch in channels:
+                    lang     = ch.get('language') or ''
+                    lang_tag = f' [COLOR red]{lang}[/COLOR]' if lang else ''
+                    ch_label = f'{label}{lang_tag}'
                     for link in ch.get('links', []):
-                        results.append((urljoin(base, link), label))
+                        results.append((urljoin(base, link), ch_label))
             return results or None
         except Exception as e:
             _log_error('footballropings', url, e)
