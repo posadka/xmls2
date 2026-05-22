@@ -151,6 +151,8 @@ class streamer:
                 u = self.blacktienba(url)
             elif 'thetvapp' in url:
                 u = self.thetvapp(url)
+            elif 'footballropings' in url:
+                u = self.footballropings(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -1080,4 +1082,25 @@ class streamer:
             return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('sharkstreams', url, e)
+            return None
+
+    @_guard
+    def footballropings(self, url):
+        try:
+            origin    = _base_url(url)
+            referer   = origin + '/'
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': referer}, timeout=TIMEOUT).text
+            m         = re.search(r'fetch\(["\']([^"\']*api/player\.php[^"\']*)["\']', page_data)
+            if not m:
+                return None
+            api_url    = urljoin(origin, m.group(1))
+            api_data   = requests.get(api_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
+            iframe_url = api_data.get('url', '')
+            if not iframe_url:
+                return None
+            if iframe_url.startswith('//'):
+                iframe_url = 'https:' + iframe_url
+            return self.flyembed(iframe_url)
+        except Exception as e:
+            _log_error('footballropings', url, e)
             return None
