@@ -740,7 +740,7 @@ class streamer:
                 ts        = match.get('startTimestamp', 0)
                 label_txt = f'{team1} vs {team2}' if team2 else team1
                 try:
-                    time_str = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).astimezone().strftime('%I:%M %p ET').lstrip('0')
+                    time_str = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).astimezone().strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     time_str = ''
                 label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{label_txt}[/COLOR]'
