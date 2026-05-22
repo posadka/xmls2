@@ -484,7 +484,7 @@ class streamer:
                     href = u.split('<')[0].strip()
                     if not href:
                         continue
-                    label = title if n == 1 else f'{title} (Stream {n})'
+                    label = title if n == 1 else f'{title} [COLOR red](Stream {n})[/COLOR]'
                     results.append((href, label))
             return results or None
         except Exception as e:
