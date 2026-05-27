@@ -686,8 +686,9 @@ class streamer:
     def sharkstreams(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            base      = _base_url(url)
-            matches   = re.findall(
+            base = _base_url(url)
+
+            matches = re.findall(
                 r'(?s)<div class="row">.*?'
                 r'<span class="ch-date">([^<]+)</span>.*?'
                 r'<span class="ch-category">([^<]+)</span>.*?'
@@ -695,19 +696,24 @@ class streamer:
                 r"window\.open\(\s*'([^']+)'",
                 page_data
             )
+
             results = []
             for dt_str, category, name, player_url in matches:
-                dt_str   = dt_str.strip()
+                dt_str = dt_str.strip()
                 category = html.unescape(category).strip()
-                name     = html.unescape(name).strip()
+                name = html.unescape(name).strip()
+
                 try:
-                    dt       = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
-                    time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
+                    dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+                    time_str = dt.astimezone().strftime('%m/%d %I:%M %p').lstrip('0')
                 except Exception:
                     time_str = dt_str
-                label = f'[COLOR dodgerblue]{category} {time_str} ET[/COLOR] [COLOR orange]{name}[/COLOR]'
+
+                label = f'[COLOR dodgerblue]{category} {time_str}[/COLOR] [COLOR orange]{name}[/COLOR]'
                 results.append((urljoin(base, player_url), label))
+
             return results or None
+
         except Exception as e:
             _log_error('sharkstreams', url, e)
             return None
