@@ -152,7 +152,7 @@ class streamer:
             elif 'thetvapp' in url:
                 u = self.thetvapp(url)
             elif any(x in url for x in ['footballropings', 'sansat', 'nrdrse']):
-                u = self.flyembed(url)
+                u = self.footballropings(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
