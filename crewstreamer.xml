@@ -151,8 +151,8 @@ class streamer:
                 u = self.blacktienba(url)
             elif 'thetvapp' in url:
                 u = self.thetvapp(url)
-            elif 'footballropings' in url:
-                u = self.footballropings(url)
+            elif any(x in url for x in ['footballropings', 'sansat']):
+                u = self.flyembed(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
