@@ -687,7 +687,6 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base = _base_url(url)
-
             matches = re.findall(
                 r'(?s)<div class="row">.*?'
                 r'<span class="ch-date">([^<]+)</span>.*?'
@@ -696,25 +695,19 @@ class streamer:
                 r"window\.open\(\s*'([^']+)'",
                 page_data
             )
-
             results = []
             for dt_str, category, name, player_url in matches:
                 dt_str = dt_str.strip()
                 category = html.unescape(category).strip()
                 name = html.unescape(name).strip()
-
                 try:
                     dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
                     time_str = dt.strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     time_str = dt_str
-
                 label = f'[COLOR dodgerblue]{category} {time_str} ET[/COLOR] [COLOR orange]{name}[/COLOR]'
-
                 results.append((urljoin(base, player_url), label))
-
             return results or None
-
         except Exception as e:
             _log_error('sharkstreams', url, e)
             return None
