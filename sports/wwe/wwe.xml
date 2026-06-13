@@ -260,7 +260,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://methstreams.ms/league/wwestreams')
+    url = client.schedule('https://methstreams.gs/league/wwestreams')
     return url
 ]]></expres>
 <page></page>
@@ -323,7 +323,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a class="card" href="([^"]*).*?le">([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://methstreams.ms/league/tna</page>
+<page>https://methstreams.gs/league/tna</page>
 </regex>
 <regex>
   <name>makelist2</name>
@@ -383,7 +383,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     r = re.findall('(?s)<a class="card" href="([^"]*).*?le">([^<]*)', page_data)
     return r
 ]]></expres>
-<page>https://methstreams.ms/league/aew</page>
+<page>https://methstreams.gs/league/aew</page>
 </regex>
 <regex>
   <name>makelist2</name>

@@ -628,7 +628,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     url = client.schedule('https://methstreams.ms/league/nflstreams')
     return url
 ]]></expres>
-<page>https://methstreams.ms/league/nflstreams</page>
+<page>https://methstreams.gs/league/nflstreams</page>
 </regex>
 <regex>
   <name>makelist2</name>
