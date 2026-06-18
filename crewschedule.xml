@@ -356,7 +356,7 @@ class streamer:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
-                r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?<td>\s*([^<]+)</td>',
+                r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?time">([^<]*)',
                 page_data
             )
             results = []
