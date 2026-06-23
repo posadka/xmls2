@@ -361,33 +361,31 @@ class streamer:
             _log_error('blacktienba', url, e)
             return None
 
-    @_guard
     def ovostreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
-            if not m:
-                return None
-            iframe_url  = m.group(1)
-            origin, referer = _origin_referer(iframe_url)
-            iframe_html = requests.get(
-                iframe_url,
-                headers={'User-Agent': UA, 'Referer': url},
-                timeout=TIMEOUT
-            ).text
-            m = re.search(r'var\s+source\s*=\s*"([^"]+)', iframe_html)
-            if not m:
-                return None
-            php_url  = m.group(1)
-            api_html = requests.get(
-                php_url,
-                headers={'User-Agent': UA, 'Referer': iframe_url},
-                timeout=TIMEOUT
-            ).text
-            m = re.search(r'(https?://[^\s\'"]+\.(?:m3u8|xml))', page_data)
-            if not m:
-                return None
-            return f'{m.group(1)}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            results   = []
+            for card in re.findall(r'(?s)<a [^>]*class="match-card"[^>]*>.*?<span class="click-hint">[^<]*</span>\s*</a>', page_data):
+                href_m = re.search(r'href="([^"]*)"', card)
+                if not href_m:
+                    continue
+                href = href_m.group(1)
+                if not href or href == '#':
+                    continue
+                if 'Finished' in card:
+                    continue
+                home_m   = re.search(r'data-home="([^"]+)"', card)
+                away_m   = re.search(r'data-away="([^"]+)"', card)
+                time_m   = re.search(r'<div class="match-time">([^<]+)</div>', card)
+                home     = html.unescape(home_m.group(1)).strip() if home_m else ''
+                away     = html.unescape(away_m.group(1)).strip() if away_m else ''
+                time_str = time_m.group(1).strip() if time_m else ''
+                if home and away:
+                    label = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{home} vs {away}[/COLOR]'
+                else:
+                    label = f'[COLOR orange]{href.rstrip("/").split("/")[-1].replace("-vs-", " vs ").replace("-", " ").title()}[/COLOR]'
+                results.append((href, label))
+            return results or None
         except Exception as e:
             _log_error('ovostreams', url, e)
             return None
