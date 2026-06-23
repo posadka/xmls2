@@ -162,10 +162,12 @@ class streamer:
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             results   = []
             for m in re.finditer(r'(?s)<a href="([^"]*)"\s*class="match-card">', page_data):
-                href    = m.group(1)
+                href  = m.group(1)
                 if not href or href == '#':
                     continue
-                chunk    = page_data[m.start():m.start()+600]
+                chunk = page_data[m.start():m.start()+600]
+                if 'Finished' in chunk:
+                    continue
                 home_m   = re.search(r'data-home="([^"]+)"', chunk)
                 away_m   = re.search(r'data-away="([^"]+)"', chunk)
                 time_m   = re.search(r'<div class="match-time">([^<]+)</div>', chunk)
