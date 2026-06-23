@@ -20,7 +20,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/boxing/'
+    base = 'https://watchprowrestling.store/categorys/boxing/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -97,7 +97,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/mma/'
+    base = 'https://watchprowrestling.store/categorys/mma/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -174,7 +174,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/wwe/'
+    base = 'https://watchprowrestling.store/categorys/wwe/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -250,7 +250,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/aew/'
+    base = 'https://watchprowrestling.store/categorys/aew/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -325,7 +325,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/impact-wrestling/'
+    base = 'https://watchprowrestling.store/categorys/impact-wrestling/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -399,7 +399,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/roh/'
+    base = 'https://watchprowrestling.store/categorys/roh/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -473,7 +473,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/indy-shows/'
+    base = 'https://watchprowrestling.store/categorys/indy-shows/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -547,7 +547,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/njpw/'
+    base = 'https://watchprowrestling.store/categorys/njpw/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -621,7 +621,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/trending/'
+    base = 'https://watchprowrestling.store/categorys/trending/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
@@ -695,7 +695,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     import re, html
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestlings.live/categorys/wwe/'
+    base = 'https://watchprowrestling.store/categorys/wwe/'
     results = []
     for page in range(1, 6):
         page_url = base if page == 1 else f'{base}page/{page}/'
