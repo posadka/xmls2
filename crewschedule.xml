@@ -412,12 +412,14 @@ class streamer:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
-                r'(?s)<a class="card" href="([^"]+)".*?title">([^<]*)</.*?time([^<]+)',
-                page_data
+                r'<a class="card" href="([^"]+)"[^>]*>.*?'
+                r'<div class="card-title">([^<]+)</div>.*?'
+                r'<div class="card-subtitle">\s*Start time:\s*([^<]+)</div>',
+                page_data, re.DOTALL
             )
             results = [
-                (urljoin(base, href), self._label(time_str.strip(), html.unescape(teams).strip()))
-                for href, teams, time_str in matches
+                (urljoin(base, href), self._label(time_str.strip(), html.unescape(title).strip()))
+                for href, title, time_str in matches
             ]
             return results or None
         except Exception as e:
