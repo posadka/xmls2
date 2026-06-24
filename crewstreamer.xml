@@ -155,7 +155,7 @@ class streamer:
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
                 u = self.embedhd(url)
-            elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms']):
+            elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
                 u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz']):
                 u = self.ovostreams(url)
