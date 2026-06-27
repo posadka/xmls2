@@ -127,8 +127,6 @@ class streamer:
                 u = self.naughtyblog(url)
             elif 'roxiestreams' in url:
                 u = self.roxiestreams(url)
-            elif 'embedsports.top' in url:
-                u = self.embedsports(url)
             elif 'streambtw' in url:
                 u = self.streambtw(url)
             elif 'buffstreams' in url:
@@ -151,6 +149,8 @@ class streamer:
                 u = self.blacktienba(url)
             elif 'thetvapp' in url:
                 u = self.thetvapp(url)
+            elif any(x in url for x in ['embedsports.top', 'pooembed']):
+                u = self.embedsports(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
             elif any(x in url for x in ['fsportshd', 'embedhd']):
@@ -694,69 +694,98 @@ class streamer:
     @_guard
     def embedsports(self, url):
         try:
-            if 'embedsports.top' not in url:
+            from urllib.parse import urlparse as _up
+
+            try:
+                from Cryptodome.Cipher import ChaCha20_Poly1305
+            except Exception:
+                from Crypto.Cipher import ChaCha20_Poly1305
+
+            if 'embedsports.top' not in url and 'pooembed' not in url:
                 page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
-                m         = re.search(r'<iframe[^>]+src=["\']([^"\']*embedsports\.top[^"\']+)', page_data, re.I)
+                m = re.search(r'<iframe[^>]+src=["\']([^"\']*(?:embedsports\.top|pooembed)[^"\']+)', page_data, re.I)
                 if not m:
                     log(f'embedsports no iframe found at {url}', xbmc.LOGERROR)
                     return None
                 url = m.group(1).strip()
                 if url.startswith('//'):
                     url = 'https:' + url
-            url   = url.split('#')[0]
-            parts = url.rstrip('/').split('/')
-            if 'embed' in parts:
-                idx       = parts.index('embed')
-                stream_sc = parts[idx + 1]
-                stream_id = parts[idx + 2] if len(parts) > idx + 2 else ''
-                stream_no = parts[idx + 3] if len(parts) > idx + 3 else '1'
+
+            url    = url.split('#')[0]
+            origin = _base_url(url)
+            host   = _up(url).netloc
+
+            def _varint(n):
+                out = bytearray()
+                while True:
+                    byte = n & 0x7F
+                    n >>= 7
+                    out.append(byte | 0x80 if n else byte)
+                    if not n:
+                        return bytes(out)
+
+            def _field(number, value):
+                tag = (number << 3) | 2
+                return bytes([tag]) + _varint(len(value)) + value
+
+            segments = url.rstrip('/').split('/')
+            SINGLE_PATH_HOSTS = ('pooembed', 'embedindia')
+            if any(h in host for h in SINGLE_PATH_HOSTS):
+                path    = '/'.join(segments[4:])
+                payload = _field(1, path.encode())
             else:
-                if len(parts) < 3:
-                    return None
-                stream_sc, stream_id, stream_no = parts[-3], parts[-2], parts[-1]
-            log(f'embedsports parts: sc={stream_sc!r} id={stream_id!r} no={stream_no!r}')
-            payload = bytes([
-                0x0A, len(stream_sc), *stream_sc.encode('utf-8'),
-                0x12, len(stream_id), *stream_id.encode('utf-8'),
-                0x1A, len(stream_no), *stream_no.encode('utf-8'),
-            ])
-            origin  = _base_url(url)
+                sc, stream_id, no = segments[-3], segments[-2], segments[-1]
+                payload = _field(1, sc.encode()) + _field(2, stream_id.encode()) + _field(3, no.encode())
+
             headers = {
-                'Content-Type': 'application/octet-stream',
-                'Origin':       origin,
-                'Referer':      url,
-                'User-Agent':   UA,
+                'indians':      '18866ebec06934ba03ad3387e9fc9ebfbf2ea2d0e9305c86797b66c62ee4f8a5',
+                'content-type': 'application/octet-stream',
+                'origin':       origin,
+                'referer':      url,
+                'user-agent':   UA,
             }
             fetch = requests.post(urljoin(origin, '/fetch'), data=payload, headers=headers, timeout=TIMEOUT)
             if not fetch.content:
                 log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                 return None
-            i          = 1
-            cipher_len = 0
-            shift      = 0
-            while i < len(fetch.content):
-                b          = fetch.content[i]
-                i         += 1
-                cipher_len |= (b & 0x7F) << shift
-                shift      += 7
-                if not (b & 0x80):
-                    break
-            cipher  = fetch.content[i:i + cipher_len]
-            decoded = bytes([x - 47 if x >= 0x50 else x + 47 for x in cipher])
-            decoded += b'=' * (-len(decoded) % 4)
-            b64     = base64.b64decode(decoded)
-            aes_key = fetch.headers.get('Goat')
-            if not aes_key:
-                log(f'embedsports missing Goat header for {url}', xbmc.LOGERROR)
+
+            ac  = fetch.headers.get('access-control-expose-headers')
+            key = fetch.headers.get(ac)
+            if not key:
+                log(f'embedsports missing key header for {url}', xbmc.LOGERROR)
                 return None
-            aes = AES.new(
-                aes_key.encode(),
-                AES.MODE_CTR,
-                counter=Counter.new(128, initial_value=int.from_bytes(b'STOPSTOPSTOPSTOP', 'big'))
-            )
-            decrypted = aes.decrypt(b64).decode('utf-8')
-            log(f'embedsports stream URL: {decrypted}')
-            return f'{decrypted}|User-Agent={UA}&Referer={url}&Origin={origin}'
+
+            i = 0
+            while i < len(fetch.content):
+                tag   = fetch.content[i]
+                i    += 1
+                field = tag >> 3
+                length = 0
+                shift  = 0
+                while True:
+                    b      = fetch.content[i]
+                    i     += 1
+                    length |= (b & 0x7F) << shift
+                    if not (b & 0x80):
+                        break
+                    shift += 7
+                value = fetch.content[i:i + length]
+                i    += length
+                if field == 1:
+                    b64_cipher = value
+                    break
+            else:
+                log('embedsports no cipher field found', xbmc.LOGERROR)
+                return None
+
+            decoded = bytes(((b - 0x21 + 71) % 94) + 0x21 for b in b64_cipher)
+            raw     = base64.b64decode(decoded + b'=' * (-len(decoded) % 4))
+            nonce   = raw[:12]
+            ct_with_tag = raw[12:]
+            cipher  = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=nonce)
+            stream_url = cipher.decrypt_and_verify(ct_with_tag[:-16], ct_with_tag[-16:]).decode('utf-8').strip()
+            log(f'embedsports stream URL: {stream_url}')
+            return f'{stream_url}|User-Agent={UA}&Referer={url}&Origin={origin}'
         except Exception as e:
             _log_error('embedsports', url, e)
             return None
