@@ -155,7 +155,7 @@ class streamer:
                 u = self.embedsports(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
-            elif any(x in url for x in ['fsportshd', 'embedhd']):
+            elif any(x in url for x in ['fsportshd', 'embedhd', 'fsportsshd']):
                 u = self.embedhd(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
                 u = self.methstreams(url)

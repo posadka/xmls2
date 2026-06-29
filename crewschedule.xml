@@ -65,8 +65,6 @@ class streamer:
                 u = self.chaturbate(url)
             elif 'streambtw' in url:
                 u = self.streambtw(url)
-            elif 'fsportshd' in url:
-                u = self.fsportshd(url)
             elif 'volokit' in url:
                 u = self.volokit(url)
             elif 'streameast.ga' in url:
@@ -97,6 +95,8 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'streameast.mov' in url:
                 u = self.streameast_mov(url)
+            elif any(x in url for x in ['fsportsshd', 'fsportshd']):
+                u = self.fsportshd(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.sportssonline(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
