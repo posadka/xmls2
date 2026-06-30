@@ -149,6 +149,8 @@ class streamer:
                 u = self.thetvapp(url)
             elif 'streameast.mov' in url:
                 u = self.streameast_mov(url)
+            elif 'footybite' in url:
+                u = self.footybite(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
                 u = self.crackstreams(url)
             elif any(x in url for x in ['embedsports.top', 'pooembed']):
@@ -1130,3 +1132,21 @@ class streamer:
             except Exception as e:
                 _log_error('streameast_mov', url, e)
                 return None
+
+    @_guard
+    def footybite(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            m = re.search(r'const allStreams\s*=\s*(\[.*?\]);', page_data)
+            if not m:
+                return None
+            streams = json.loads(m.group(1))
+            if not streams:
+                return None
+            embed_url = streams[0].get('value')
+            if not embed_url:
+                return None
+            return self.embedsports(embed_url)
+        except Exception as e:
+            _log_error('footybite', url, e)
+            return None
