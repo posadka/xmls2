@@ -81,8 +81,6 @@ class streamer:
                 u = self.roxiestreams(url)
             elif 'playoffsstream' in url:
                 u = self.playoff(url)
-            elif 'ccrackstreams.sbs' in url:
-                u = self.crackstreams(url)
             elif 'flyembed' in url:
                 u = self.flyembed(url)
             elif 'embedhd' in url:
@@ -95,6 +93,8 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'streameast.mov' in url:
                 u = self.streameast_mov(url)
+            elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
+                u = self.crackstreams(url)
             elif any(x in url for x in ['fsportsshd', 'fsportshd']):
                 u = self.fsportshd(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
