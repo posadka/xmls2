@@ -784,22 +784,18 @@ class streamer:
             cipher  = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=nonce)
             stream_url = cipher.decrypt_and_verify(ct_with_tag[:-16], ct_with_tag[-16:]).decode('utf-8').strip()
             log(f'embedsports stream URL: {stream_url}')
-            play_headers = {
-                'User-Agent': UA,
-                'Referer': origin + '/',
-                'Origin': origin,
-                'Accept': '*/*',
-                'Accept-Language': 'en-US,en;q=0.7',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'cross-site',
-                'Sec-GPC': '1',
-                'sec-ch-ua': '"Chromium";v="148", "Brave";v="148", "Not/A)Brand";v="99"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"macOS"',
-            }
-
-            return stream_url + '|' + urlencode(play_headers)
+            return (
+                stream_url
+                + '|User-Agent=' + UA
+                + '&Referer=' + origin + '/'
+                + '&Origin=' + origin
+                + '&Accept=*/*'
+                + '&Accept-Language=en-US,en;q=0.7'
+                + '&Sec-Fetch-Dest=empty'
+                + '&Sec-Fetch-Mode=cors'
+                + '&Sec-Fetch-Site=cross-site'
+                + '&Sec-GPC=1'
+            )
         except Exception as e:
             _log_error('embedsports', url, e)
             return None
