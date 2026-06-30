@@ -153,7 +153,7 @@ class streamer:
                 u = self.footybite(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
                 u = self.crackstreams(url)
-            elif any(x in url for x in ['embedsports.top', 'pooembed']):
+            elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia']):
                 u = self.embedsports(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.flyembed(url)
