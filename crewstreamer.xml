@@ -673,9 +673,6 @@ class streamer:
                 + '&Sec-Fetch-Site=cross-site'
                 + '&Sec-GPC=1'
             )
-            log('roxie test status=%s url=%s' % (test.status_code, stream_url), xbmc.LOGERROR)
-            log('roxie test headers=%s' % dict(test.headers), xbmc.LOGERROR)
-            log('roxie test body[:200]=%s' % test.text[:200], xbmc.LOGERROR)
         except Exception as e:
             _log_error('roxiestreams', url, e)
             return None
