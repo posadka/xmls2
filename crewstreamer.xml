@@ -705,7 +705,7 @@ class streamer:
             except Exception:
                 from Crypto.Cipher import ChaCha20_Poly1305
 
-            if 'embedsports.top' not in url and 'pooembed' not in url:
+            if not any(h in url for h in ('embedsports.top', 'pooembed', 'embedindia')):
                 page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']*(?:embedsports\.top|pooembed)[^"\']+)', page_data, re.I)
                 if not m:
