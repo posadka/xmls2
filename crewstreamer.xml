@@ -14,16 +14,16 @@ import xbmc
 import xbmcgui
 
 try:
-    from Cryptodome.Cipher import AES
+    from Cryptodome.Cipher import AES,ChaCha20_Poly1305
     from Cryptodome.Util import Counter
 except ImportError:
-    from Crypto.Cipher import AES
+    from Crypto.Cipher import AES,ChaCha20_Poly1305
     from Crypto.Util import Counter
 
 try:
-    from urllib import urlencode, quote_plus, urlparse, urljoin, unquote
+    from urllib import urlencode, quote_plus, urlparse as _up, urljoin, unquote
 except ImportError:
-    from urllib.parse import urlencode, quote_plus, urlparse, urljoin, unquote
+    from urllib.parse import urlencode, quote_plus, urlparse as _up, urljoin, parse_qs, unquote
 
 from resources.lib.modules import control, client, workers, jsunpack, hunter
 
@@ -49,12 +49,12 @@ def _origin_referer(url):
 
 
 def _base_url(url):
-    parsed = urlparse(url)
+    parsed = _up(url)
     return f'{parsed.scheme}://{parsed.netloc}'
 
 
 def _is_media(url):
-    return (urlparse(url).path).strip('/').split('/')[-1].split('.')[-1] in MEDIA_EXTS
+    return (_up(url).path).strip('/').split('/')[-1].split('.')[-1] in MEDIA_EXTS
 
 
 def _guard(func):
@@ -698,13 +698,6 @@ class streamer:
     @_guard
     def embedsports(self, url):
         try:
-            from urllib.parse import urlparse as _up
-
-            try:
-                from Cryptodome.Cipher import ChaCha20_Poly1305
-            except Exception:
-                from Crypto.Cipher import ChaCha20_Poly1305
-
             if not any(h in url for h in ('embedsports.top', 'pooembed', 'embedindia')):
                 page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']*(?:embedsports\.top|pooembed)[^"\']+)', page_data, re.I)
@@ -791,7 +784,12 @@ class streamer:
             cipher  = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=nonce)
             stream_url = cipher.decrypt_and_verify(ct_with_tag[:-16], ct_with_tag[-16:]).decode('utf-8').strip()
             log(f'embedsports stream URL: {stream_url}')
-            return f'{stream_url}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+            return (
+                f'{stream_url}|User-Agent={UA}'
+                f'&Referer={origin}/'
+                f'&Origin={origin}'
+                f'&Accept=*/*'
+            )
         except Exception as e:
             _log_error('embedsports', url, e)
             return None
@@ -1118,7 +1116,6 @@ class streamer:
         @_guard
         def streameast_mov(self, url):
             try:
-                from urllib.parse import urlparse as _up, parse_qs, unquote
                 qs         = parse_qs(_up(url).query)
                 channel_id = unquote(qs.get('id', [''])[0])
                 if not channel_id:
