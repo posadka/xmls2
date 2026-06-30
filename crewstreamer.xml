@@ -661,7 +661,18 @@ class streamer:
                     return None
                 stream_url = m3u8_list[choice]
 
-            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+            return (
+                stream_url
+                + '|User-Agent=' + UA
+                + '&Referer=' + origin + '/'
+                + '&Origin=' + origin
+                + '&Accept=*/*'
+                + '&Accept-Language=en-US,en;q=0.7'
+                + '&Sec-Fetch-Dest=empty'
+                + '&Sec-Fetch-Mode=cors'
+                + '&Sec-Fetch-Site=cross-site'
+                + '&Sec-GPC=1'
+            )
         except Exception as e:
             _log_error('roxiestreams', url, e)
             return None
