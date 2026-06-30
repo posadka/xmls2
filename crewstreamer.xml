@@ -791,7 +791,7 @@ class streamer:
             cipher  = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=nonce)
             stream_url = cipher.decrypt_and_verify(ct_with_tag[:-16], ct_with_tag[-16:]).decode('utf-8').strip()
             log(f'embedsports stream URL: {stream_url}')
-            return f'{stream_url}|User-Agent={UA}&Referer={url}&Origin={origin}'
+            return f'{stream_url}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
         except Exception as e:
             _log_error('embedsports', url, e)
             return None
