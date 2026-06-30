@@ -758,7 +758,7 @@ class streamer:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
-                r'<a href="([^"]+)"[^>]*>.*?'
+                r'<a href="([^"]+)"[^>]*class="bg-gray-800[^"]*"[^>]*>(?:(?!</a>).)*?'
                 r'<h3 class="text-xl font-semibold text-white">([^<]+)</h3>\s*'
                 r'<p class="text-gray-400">([^<]+)</p>',
                 page_data, re.DOTALL
