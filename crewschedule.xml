@@ -105,7 +105,7 @@ class streamer:
                 u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
                 u = self.methstreams(url)
-            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz']):
+            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal']):
                 u = self.ovostreams(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
