@@ -1139,7 +1139,7 @@ class streamer:
             return m.group(1)
         except Exception as e:
             _log_error('streameast_mov', url, e)
-            return None}
+            return None
 
     @_guard
     def footybite(self, url):
