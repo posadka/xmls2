@@ -85,8 +85,6 @@ class streamer:
                 u = self.flyembed(url)
             elif 'embedhd' in url:
                 u = self.embedhd(url)
-            elif 'thetvapp' in url:
-                u = self.thetvapp(url)
             elif 'ripplenetwork' in url:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
@@ -622,19 +620,20 @@ class streamer:
             base      = _base_url(url)
             results   = []
             events = re.findall(
-                r'<a[^>]+href="(/event/[^"]+)"[^>]*>([^<]+)<span>([^<]+)</span>',
+                r'<a[^>]+href="(/tv-live/[^"]+)"[^>]*>([^<]+)<span[^>]+class="time-badge"[^>]*>([^<]+)</span>',
                 page_data
             )
-            for href, title, timestamp in events:
-                title = html.unescape(title).strip().rstrip(':')
-                results.append((base + href, f'[COLOR orange]{title} ET[/COLOR]'))
+            for href, title, timing in events:
+                title  = html.unescape(title).strip().rstrip(':').strip()
+                timing = timing.strip()
+                results.append((base + href, f'[COLOR orange]{title} [{timing}][/COLOR]'))
             channels = re.findall(
-                r'<a[^>]+href="(/tv/[^"]+)"[^>]*>([^<]+)</a>',
+                r'<a[^>]+href="(https://thetvapp\.to/tv/[^"]+)"[^>]*>([^<]+)</a>',
                 page_data
             )
             for href, title in channels:
                 title = html.unescape(title).strip()
-                results.append((base + href, f'[COLOR orange]{title}[/COLOR]'))
+                results.append((href, f'[COLOR orange]{title}[/COLOR]'))
             return results or None
         except Exception as e:
             _log_error('thetvapp', url, e)
