@@ -660,7 +660,7 @@ class streamer:
                 if choice == -1:
                     return None
                 stream_url = m3u8_list[choice]
-
+            log(f'roxiestreams stream_url: {stream_url}', xbmc.LOGERROR)
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('roxiestreams', url, e)
