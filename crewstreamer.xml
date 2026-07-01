@@ -1164,7 +1164,16 @@ class streamer:
         try:
             origin = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
-            m = re.search(r"window\._econfig='([^']+)'", page_data)
+            embed_url = self._get_iframe_src(page_data)
+            if not embed_url:
+                return None
+            embed_origin = _base_url(embed_url)
+            embed_html = requests.get(
+                embed_url,
+                headers={'Referer': url, 'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
+            m = re.search(r"window\._econfig='([^']+)'", embed_html)
             if not m:
                 return None
             s = base64.b64decode(m.group(1)).decode('utf-8')
@@ -1180,7 +1189,7 @@ class streamer:
             stream_url = cfg.get('stream_url') or cfg.get('url_nop2p')
             if not stream_url:
                 return None
-            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+            return f'{stream_url}|Referer={embed_origin}/&Origin={embed_origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('sportsonline', url, e)
             return None
