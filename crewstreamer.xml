@@ -149,12 +149,14 @@ class streamer:
                 u = self.streameast_mov(url)
             elif 'footybite' in url:
                 u = self.footybite(url)
+            elif 'flyembed' in url:
+                u = self.flyembed(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
                 u = self.crackstreams(url)
             elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia']):
                 u = self.embedsports(url)
-            elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline', 'flyembed']):
-                u = self.flyembed(url)
+            elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline']):
+                u = self.sportsonline(url)
             elif any(x in url for x in ['fsportshd', 'embedhd', 'fsportsshd']):
                 u = self.embedhd(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
@@ -1155,4 +1157,30 @@ class streamer:
             return self.embedsports(embed_url)
         except Exception as e:
             _log_error('footybite', url, e)
+            return None
+
+    @_guard
+    def sportsonline(self, url):
+        try:
+            origin = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r"window\._econfig='([^']+)'", page_data)
+            if not m:
+                return None
+            s = base64.b64decode(m.group(1)).decode('utf-8')
+            size = math.ceil(len(s) / 4)
+            chunks = [s[i * size:(i + 1) * size] for i in range(4)]
+            perm = [2, 0, 3, 1]
+            reordered = [''] * 4
+            for i in range(4):
+                c = chunks[i]
+                c = c[:3] + c[4:]
+                reordered[perm[i]] = base64.b64decode(c).decode('utf-8')
+            cfg = json.loads(base64.b64decode(''.join(reordered)).decode('utf-8'))
+            stream_url = cfg.get('stream_url') or cfg.get('url_nop2p')
+            if not stream_url:
+                return None
+            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('sportsonline', url, e)
             return None
