@@ -1007,6 +1007,9 @@ class streamer:
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if m:
                 return f'{m.group(1)}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+            m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+\.m3u8[^"]*)"', embed_html)
+            if m:
+                return f'{m.group(1)}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
             m = re.search(r"window\._econfig='([^']+)'", embed_html)
             if not m:
                 return None
