@@ -305,7 +305,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     href, name = results[choice]
     return [(href, name)]
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
