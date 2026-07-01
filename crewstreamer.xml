@@ -1122,24 +1122,24 @@ class streamer:
             _log_error('sharkstreams', url, e)
             return None
 
-        @_guard
-        def streameast_mov(self, url):
-            try:
-                qs         = parse_qs(_up(url).query)
-                channel_id = unquote(qs.get('id', [''])[0])
-                if not channel_id:
-                    return None
-                ref_url    = f'https://resportz.cfd/live/stream-{channel_id}.php'
-                ifr_url    = f'https://donis.jimpenopisonline.online/premiumtv/resportz.php?id={channel_id}'
-                page_data  = requests.get(ifr_url, headers={'User-Agent': UA, 'Referer': ref_url}, timeout=TIMEOUT).text
-                m          = re.search(r'(https?://[^\s"\']+\.(?:m3u8|xml)[^\s"\']*)', page_data)
-                if not m:
-                    log(f'streameast_mov: no stream found for id={channel_id}', xbmc.LOGERROR)
-                    return None
-                return m.group(1)
-            except Exception as e:
-                _log_error('streameast_mov', url, e)
+    @_guard
+    def streameast_mov(self, url):
+        try:
+            qs         = parse_qs(_up(url).query)
+            channel_id = unquote(qs.get('id', [''])[0])
+            if not channel_id:
                 return None
+            ref_url    = f'https://resportz.cfd/live/stream-{channel_id}.php'
+            ifr_url    = f'https://donis.jimpenopisonline.online/premiumtv/resportz.php?id={channel_id}'
+            page_data  = requests.get(ifr_url, headers={'User-Agent': UA, 'Referer': ref_url}, timeout=TIMEOUT).text
+            m          = re.search(r'(https?://[^\s"\']+\.(?:m3u8|xml)[^\s"\']*)', page_data)
+            if not m:
+                log(f'streameast_mov: no stream found for id={channel_id}', xbmc.LOGERROR)
+                return None
+            return m.group(1)
+        except Exception as e:
+            _log_error('streameast_mov', url, e)
+            return None}
 
     @_guard
     def footybite(self, url):
