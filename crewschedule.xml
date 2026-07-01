@@ -247,11 +247,12 @@ class streamer:
                         dt       = datetime.strptime(dt_match.group(1), '%b %d %Y %H:%M:%S +00:00')
                         dt       = dt.replace(tzinfo=timezone.utc).astimezone()
                         time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
+                        label    = self._label(time_str, teams)
                     except Exception:
-                        time_str = ''
+                        label = self._label('', teams)
                 else:
-                    time_str = 'Live'
-                results.append((full_url, self._label(time_str, teams)))
+                    label = f'[COLOR red]LIVE[/COLOR] [COLOR orange]{teams}[/COLOR]'
+                results.append((full_url, label))
             return results or None
         except Exception as e:
             _log_error('fsportshd', url, e)
