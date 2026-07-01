@@ -566,11 +566,19 @@ class streamer:
                 team1      = html.unescape((match.get('Team 1 ') or match.get('Team1') or '').strip())
                 team2      = html.unescape((match.get('Team2') or '').strip())
                 league     = html.unescape((match.get('League') or '').strip())
-                time_str   = (match.get('Time') or '').strip()
+                raw_time   = (match.get('Time') or '').strip()
                 iframe_url = match.get('iframeURL', '')
                 if not iframe_url:
                     continue
-                label = f'[COLOR dodgerblue]{league} {time_str} ET[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
+                try:
+                    h, m     = map(int, raw_time.split(':'))
+                    dt_utc   = datetime.now(timezone.utc).replace(hour=h, minute=m, second=0, microsecond=0)
+                    dt_local = dt_utc.astimezone()
+                    h12      = dt_local.hour % 12 or 12
+                    time_str = f'{h12}:{dt_local.strftime("%M")} {"AM" if dt_local.hour < 12 else "PM"}'
+                except Exception:
+                    time_str = raw_time
+                label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
                 results.append((iframe_url, label))
             return results or None
         except Exception as e:
