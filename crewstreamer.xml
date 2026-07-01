@@ -817,14 +817,14 @@ class streamer:
         try:
             headers   = {'User-Agent': UA, 'Referer': url}
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
-            m         = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
+            m         = re.search(r'(?s)<iframe[^>]+src="([^"]+)', page_data)
             if not m:
                 return None
             iframe_url  = m.group(1)
             iframe_html = requests.get(iframe_url, headers=headers, timeout=TIMEOUT).text
             origin, referer = _origin_referer(iframe_url)
             if 'atob' in iframe_html:
-                m = re.search(r"atob\('([^']+)", iframe_html)
+                m = re.search(r"window.atob\('([^']+)", iframe_html)
                 if not m:
                     return None
                 source = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
