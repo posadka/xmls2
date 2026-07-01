@@ -95,8 +95,6 @@ class streamer:
                 u = self.streameast_mov(url)
             elif 'footybite' in url:
                 u = self.footybite(url)
-            elif 'mutstreams' in url:
-                u = self.mutstreams(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
                 u = self.crackstreams(url)
             elif any(x in url for x in ['fsportsshd', 'fsportshd']):
@@ -784,25 +782,3 @@ class streamer:
         except Exception as e:
             _log_error('footybite', url, e)
             return None
-
-    @_guard
-        def mutstreams(self, url):
-            try:
-                page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-                base      = _base_url(url)
-                matches   = re.findall(
-                    r'<a href="(/watch/[^"]+)" class="stream-link">.*?'
-                    r'<h3 class="stream-title">\s*([^<]+?)\s*</h3>.*?'
-                    r'<span>([^<]+)</span>',
-                    page_data, re.S
-                )
-                results = []
-                for href, title, date_str in matches:
-                    title    = html.unescape(title).strip()
-                    date_str = date_str.strip()
-                    label    = f'[COLOR dodgerblue]{date_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                    results.append((urljoin(base, href), label))
-                return results or None
-            except Exception as e:
-                _log_error('mutstreams', url, e)
-                return None
