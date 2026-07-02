@@ -69,8 +69,6 @@ class streamer:
                 u = self.volokit(url)
             elif 'streameast.ga' in url:
                 u = self.streameast_ga(url)
-            elif 'buffstreams' in url:
-                u = self.buffstreams(url)
             elif 'shd247' in url:
                 u = self.shd(url)
             elif 'streamcenter' in url:
@@ -93,6 +91,8 @@ class streamer:
                 u = self.streameast_mov(url)
             elif 'footybite' in url:
                 u = self.footybite(url)
+            elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
+                u = self.buffstreams(url)
             elif any(x in url for x in ['thetvapp', 'thetvappv2']):
                 u = self.thetvapp(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
