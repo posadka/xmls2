@@ -258,10 +258,11 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
+            r'(?s)<div class="post-card">.*?'
+            r'<a href="([^"]+)" class="post-image-container">.*?'
             r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
-            data, re.S
+            r'<h2 class="post-title">\s*<a href="[^"]+">([^<]+)</a>',
+            data
         )
         if not cards:
             break
@@ -275,9 +276,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <regex>
 <name>playurl</name>
 <listrepeat><![CDATA[
-        <title>[playurl.param1]</title>
-        <link>[playurl.param2]</link>
-        <thumbnail>[makelist.param3]</thumbnail>
+        <title>[playurl.param2]</title>
+        <link>[playurl.param1]</link>
+        <thumbnail></thumbnail>
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
