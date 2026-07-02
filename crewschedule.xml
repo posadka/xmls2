@@ -573,10 +573,10 @@ class streamer:
                     continue
                 try:
                     h, m     = map(int, raw_time.split(':'))
-                    dt_utc   = datetime.now(timezone.utc).replace(hour=h, minute=m, second=0, microsecond=0)
+                    now_utc  = datetime.now(timezone.utc)
+                    dt_utc   = now_utc.replace(hour=h, minute=m, second=0, microsecond=0)
                     dt_local = dt_utc.astimezone()
-                    h12      = dt_local.hour % 12 or 12
-                    time_str = f'{h12}:{dt_local.strftime("%M")} {"AM" if dt_local.hour < 12 else "PM"}'
+                    time_str = dt_local.strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     time_str = raw_time
                 label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
