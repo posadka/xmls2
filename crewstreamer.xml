@@ -635,7 +635,8 @@ class streamer:
                 try:
                     domain_url  = urljoin(origin, fetch_m.group(1)) if fetch_m else None
                     domain_text = requests.get(domain_url, headers=headers, timeout=TIMEOUT).text
-                    domains = [d.strip() for d in domain_text.splitlines() if d.strip() and 'formaturamaxi.com.br' not in d]
+                    blocked = {'formaturamaxi.com.br', 'minesmp.fun'}
+                    domains = [d.strip() for d in domain_text.splitlines() if d.strip() and not any(b in d for b in blocked)]
                 except Exception:
                     domains = ['shadow-ran.online']
                 for stream_path, subdomain in stream_calls:
