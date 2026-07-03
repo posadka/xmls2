@@ -75,7 +75,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     href, name = results[choice]
     return [(href, name)]
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -152,7 +152,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     href, name = results[choice]
     return [(href, name)]
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -379,7 +379,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     href, name = results[choice]
     return [(href, name)]
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -419,7 +419,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
             results.append((link, thumb, title))
     return results
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 <regex>
 <name>playurl</name>
@@ -675,7 +675,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     href, name = results[choice]
     return [(href, name)]
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
@@ -749,7 +749,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
     href, name = results[choice]
     return [(href, name)]
 ]]></expres>
-<page></page>
+<page>[makelist.param1]</page>
 </regex>
 </item>
 
