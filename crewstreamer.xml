@@ -1229,6 +1229,7 @@ class streamer:
                 timeout=TIMEOUT
             ).json()
             m3u8 = cfg.get('srcBase', '')
+            log(f'sportzone embed_url: {embed_url}', xbmc.LOGERROR)
             if not m3u8:
                 return None
             return f'{m3u8}|User-Agent={UA}&Referer={embed_origin}/&Origin={embed_origin}'
