@@ -1218,19 +1218,20 @@ class streamer:
                 headers={'User-Agent': UA},
                 timeout=TIMEOUT
             ).json()
-            embed_url = player_data.get('url', '')
+            embed_url    = player_data.get('url', '')
             if not embed_url:
                 return None
-            cfg_url = embed_url + ('&' if '?' in embed_url else '?') + f'ppcfg=1&_={int(time.time() * 1000)}'
-            cfg     = requests.get(
+            embed_origin = _base_url(embed_url)
+            cfg_url      = embed_url + ('&' if '?' in embed_url else '?') + f'ppcfg=1&_={int(time.time() * 1000)}'
+            cfg          = requests.get(
                 cfg_url,
-                headers={'User-Agent': UA, 'Referer': embed_url},
+                headers={'User-Agent': UA, 'Referer': embed_origin + '/'},
                 timeout=TIMEOUT
             ).json()
             m3u8 = cfg.get('srcBase', '')
             if not m3u8:
                 return None
-            return f'{m3u8}|User-Agent={UA}&Referer={embed_url}'
+            return f'{m3u8}|User-Agent={UA}&Referer={embed_origin}/&Origin={embed_origin}'
         except Exception as e:
             _log_error('sportzone', url, e)
             return None
