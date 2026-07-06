@@ -746,13 +746,7 @@ class streamer:
                 else:
                     time_str = self._fmt_utc_ts(ts // 1000)
                     label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                for ch in channels:
-                    ch_link = ch.get('links', [None])[0]
-                    ch_name = ch.get('name', 'Stream')
-                    lang    = ch.get('language', '')
-                    if not ch_link:
-                        continue
-                    results.append((ch_link, f'{label} [COLOR gray]{ch_name} [{lang}][/COLOR]'))
+                results.append((channels[0].get('links')[0], label))
             return results or None
         except Exception as e:
             _log_error('sportzone', url, e)
