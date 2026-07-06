@@ -1225,7 +1225,7 @@ class streamer:
             cfg_url      = embed_url + ('&' if '?' in embed_url else '?') + f'ppcfg=1&_={int(time.time() * 1000)}'
             cfg          = requests.get(
                 cfg_url,
-                headers={'User-Agent': UA, 'Referer': embed_origin + '/'},
+                headers={'User-Agent': UA, 'Referer': embed_url},
                 timeout=TIMEOUT
             ).json()
             m3u8 = cfg.get('srcBase', '')
