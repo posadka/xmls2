@@ -87,10 +87,8 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
-            elif 'streameast.mov' in url:
-                u = self.streameast_mov(url)
-            elif 'footybite' in url:
-                u = self.footybite(url)
+            elif 'sportzone.su' in url:
+                u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
             elif any(x in url for x in ['thetvapp', 'thetvappv2']):
@@ -729,57 +727,30 @@ class streamer:
             _log_error('sharkstreams', url, e)
             return None
 
-    def streameast_mov(self, url):
-        try:
-            base      = _base_url(url)
-            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).json()
-            if not page_data or not isinstance(page_data, list):
-                return None
-            categories = page_data[0].get('categories', {})
-            results    = []
-            for cat, events in categories.items():
-                if cat.lower() in ('popular live events', 'tv shows'):
-                    continue
-                if not isinstance(events, list):
-                    continue
-                for event in events:
-                    title    = event.get('event', '').strip()
-                    time_str = event.get('time', '')
-                    channels = event.get('channels', [])
-                    if not title or not channels:
-                        continue
-                    ch   = channels[0]
-                    href = ch.get('url', '')
-                    if not href:
-                        continue
-                    if time_str == 'Live':
-                        label = f'[COLOR red]LIVE[/COLOR] [COLOR orange]{title}[/COLOR]'
-                    else:
-                        label = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                    results.append((href, label))
-            return results or None
-        except Exception as e:
-            _log_error('streameast_mov', url, e)
-            return None
-
     @_guard
-    def footybite(self, url):
+    def sportzone(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            base      = _base_url(url)
-            matches   = re.findall(
-                r'<a href="([^"]+)"[^>]*class="bg-gray-800[^"]*"[^>]*>(?:(?!</a>).)*?'
-                r'<h3 class="text-xl font-semibold text-white">([^<]+)</h3>\s*'
-                r'<p class="text-gray-400">([^<]+)</p>',
-                page_data, re.DOTALL
-            )
+            data    = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
-            for href, title, time_str in matches:
-                title    = html.unescape(title).strip()
-                time_str = html.unescape(time_str).strip()
-                label    = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                results.append((urljoin(base, href), label))
+            for match in data.get('matches', []):
+                mid      = match.get('id', '')
+                title    = match.get('title', '').strip()
+                league   = match.get('league', '').strip()
+                ts       = match.get('timestamp', 0)
+                status   = match.get('status', '')
+                channels = match.get('channels', [])
+                if not mid or not title or not channels:
+                    continue
+                link = channels[0].get('links', [None])[0]
+                if not link:
+                    continue
+                if status == 'live':
+                    label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                else:
+                    time_str = self._fmt_utc_ts(ts // 1000)
+                    label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                results.append((link, label))
             return results or None
         except Exception as e:
-            _log_error('footybite', url, e)
+            _log_error('sportzone', url, e)
             return None

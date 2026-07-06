@@ -149,6 +149,8 @@ class streamer:
                 u = self.footybite(url)
             elif 'flyembed' in url:
                 u = self.flyembed(url)
+            elif 'nizar.nexa.st' in url:
+                u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
@@ -1193,4 +1195,32 @@ class streamer:
             return f'{stream_url}|Referer={embed_origin}/&Origin={embed_origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('sportsonline', url, e)
+            return None
+
+    @_guard
+    def sportzone(self, url):
+        try:
+            ch_id       = re.search(r'id=(\d+)', url)
+            if not ch_id:
+                return None
+            player_data = requests.get(
+                f'https://nizar.nexa.st/api/player.php?id={ch_id.group(1)}',
+                headers={'User-Agent': UA},
+                timeout=TIMEOUT
+            ).json()
+            embed_url   = player_data.get('url', '')
+            if not embed_url:
+                return None
+            cfg_url     = embed_url + ('&' if '?' in embed_url else '?') + f'ppcfg=1&_={int(time.time() * 1000)}'
+            cfg         = requests.get(
+                cfg_url,
+                headers={'User-Agent': UA, 'Referer': embed_url},
+                timeout=TIMEOUT
+            ).json()
+            m3u8        = cfg.get('srcBase', '')
+            if not m3u8:
+                return None
+            return f'{m3u8}|User-Agent={UA}&Referer={embed_url}'
+        except Exception as e:
+            _log_error('sportzone', url, e)
             return None
