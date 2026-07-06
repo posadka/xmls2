@@ -741,30 +741,18 @@ class streamer:
                 channels = match.get('channels', [])
                 if not mid or not title or not channels:
                     continue
-                if len(channels) == 1:
-                    link = channels[0].get('links', [None])[0]
-                    if not link:
-                        continue
-                else:
-                    options = []
-                    for ch in channels:
-                        ch_link = ch.get('links', [None])[0]
-                        ch_name = ch.get('name', 'Stream')
-                        lang    = ch.get('language', '')
-                        if ch_link:
-                            options.append((f'{ch_name} [{lang}]', ch_link))
-                    if not options:
-                        continue
-                    choice = xbmcgui.Dialog().select(title, [o[0] for o in options])
-                    if choice == -1:
-                        continue
-                    link = options[choice][1]
                 if status == 'live':
                     label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
                 else:
                     time_str = self._fmt_utc_ts(ts // 1000)
                     label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                results.append((link, label))
+                for ch in channels:
+                    ch_link = ch.get('links', [None])[0]
+                    ch_name = ch.get('name', 'Stream')
+                    lang    = ch.get('language', '')
+                    if not ch_link:
+                        continue
+                    results.append((ch_link, f'{label} [COLOR gray]{ch_name} [{lang}][/COLOR]'))
             return results or None
         except Exception as e:
             _log_error('sportzone', url, e)
