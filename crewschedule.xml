@@ -730,24 +730,54 @@ class streamer:
     @_guard
     def sportzone(self, url):
         try:
-            data    = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
-            results = []
+            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+
+            choices = []
+            urls = []
+
             for match in data.get('matches', []):
-                mid      = match.get('id', '')
-                title    = match.get('title', '').strip()
-                league   = match.get('league', '').strip()
-                ts       = match.get('timestamp', 0)
-                status   = match.get('status', '')
-                channels = match.get('channels', [])
-                if not mid or not title or not channels:
-                    continue
-                if status == 'live':
-                    label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                sport = match.get('sport', '')
+                league = match.get('league', '')
+                team1 = match.get('team1', '')
+                team2 = match.get('team2', '')
+                event = match.get('event') or match.get('name') or ''
+
+                if team1 and team2:
+                    title = f'{team1} vs {team2}'
                 else:
-                    time_str = self._fmt_utc_ts(ts // 1000)
-                    label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                results.append((channels[0].get('links')[0], label))
-            return results or None
+                    title = event or match.get('id', 'Unknown Event')
+
+                time_str = match.get('time', '')
+                day = match.get('day_label', '')
+                status = match.get('status', '')
+
+                for ch in match.get('channels', []):
+                    ch_name = ch.get('name', 'Unknown Channel')
+                    lang = ch.get('language', '')
+
+                    for i, link in enumerate(ch.get('links', []), 1):
+                        label = (
+                            f'[COLOR dodgerblue]{day} {time_str}[/COLOR] '
+                            f'[COLOR yellow]{sport}[/COLOR] '
+                            f'[COLOR orange]{title}[/COLOR] '
+                            f'[COLOR white]- {ch_name}[/COLOR]'
+                        )
+                        if lang:
+                            label += f' [COLOR gray]({lang})[/COLOR]'
+                        if status:
+                            label += f' [COLOR red]{status.upper()}[/COLOR]'
+                        if len(ch.get('links', [])) > 1:
+                            label += f' [COLOR gray]Link {i}[/COLOR]'
+                        choices.append(label)
+                        urls.append(link)
+            if not urls:
+                return None
+            choice = xbmcgui.Dialog().select('Choose Stream', choices)
+            if choice == -1:
+                return None
+            picked = urls[choice]
+            resolved = self.resolve(picked)
+            return resolved or picked
         except Exception as e:
-            _log_error('sportzone', url, e)
+            _log_error('nizar_schedule', url, e)
             return None
