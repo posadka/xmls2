@@ -1200,7 +1200,17 @@ class streamer:
     @_guard
     def sportzone(self, url):
         try:
-            ch_id       = re.search(r'id=(\d+)', url)
+            links = json.loads(url)
+            if not links:
+                return None
+            if len(links) == 1:
+                choice = 0
+            else:
+                choice = xbmcgui.Dialog().select('Choose Stream', [l['label'] for l in links])
+            if choice == -1:
+                return None
+            ch_url  = links[choice]['url']
+            ch_id   = re.search(r'id=(\d+)', ch_url)
             if not ch_id:
                 return None
             player_data = requests.get(
@@ -1208,16 +1218,16 @@ class streamer:
                 headers={'User-Agent': UA},
                 timeout=TIMEOUT
             ).json()
-            embed_url   = player_data.get('url', '')
+            embed_url = player_data.get('url', '')
             if not embed_url:
                 return None
-            cfg_url     = embed_url + ('&' if '?' in embed_url else '?') + f'ppcfg=1&_={int(time.time() * 1000)}'
-            cfg         = requests.get(
+            cfg_url = embed_url + ('&' if '?' in embed_url else '?') + f'ppcfg=1&_={int(time.time() * 1000)}'
+            cfg     = requests.get(
                 cfg_url,
                 headers={'User-Agent': UA, 'Referer': embed_url},
                 timeout=TIMEOUT
             ).json()
-            m3u8        = cfg.get('srcBase', '')
+            m3u8 = cfg.get('srcBase', '')
             if not m3u8:
                 return None
             return f'{m3u8}|User-Agent={UA}&Referer={embed_url}'
