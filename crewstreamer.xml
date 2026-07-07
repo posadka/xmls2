@@ -367,31 +367,71 @@ class streamer:
             _log_error('blacktienba', url, e)
             return None
 
+    @_guard
     def ovostreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
-            results   = []
-            for card in re.findall(r'(?s)<a [^>]*class="match-card"[^>]*>.*?<span class="click-hint">[^<]*</span>\s*</a>', page_data):
-                href_m = re.search(r'href="([^"]*)"', card)
-                if not href_m:
-                    continue
-                href = href_m.group(1)
-                if not href or href == '#':
-                    continue
-                if 'Finished' in card:
-                    continue
-                home_m   = re.search(r'data-home="([^"]+)"', card)
-                away_m   = re.search(r'data-away="([^"]+)"', card)
-                time_m   = re.search(r'<div class="match-time">([^<]+)</div>', card)
-                home     = html.unescape(home_m.group(1)).strip() if home_m else ''
-                away     = html.unescape(away_m.group(1)).strip() if away_m else ''
-                time_str = time_m.group(1).strip() if time_m else ''
-                if home and away:
-                    label = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{home} vs {away}[/COLOR]'
-                else:
-                    label = f'[COLOR orange]{href.rstrip("/").split("/")[-1].replace("-vs-", " vs ").replace("-", " ").title()}[/COLOR]'
-                results.append((href, label))
-            return results or None
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
+            if not m:
+                return None
+            iframe_url  = m.group(1)
+            iframe_html = requests.get(
+                iframe_url,
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=TIMEOUT
+            ).text
+            origin, referer = _origin_referer(iframe_url)
+
+            m = re.search(r"const _d\s*=\s*\"([^\"]+)\"", iframe_html)
+            if not m:
+                return None
+            _d = m.group(1)
+
+            m = re.search(r"const _k\s*=\s*(\d+)", iframe_html)
+            _k = int(m.group(1)) if m else 42
+
+            ri_m = re.search(r"const _ri\s*=\s*\[([^\]]+)\]", iframe_html)
+            if not ri_m:
+                return None
+            _ri = [int(x.strip()) for x in ri_m.group(1).split(',')]
+
+            chars = list(_d)
+            unshuffled = [''] * len(chars)
+            for i, c in enumerate(chars):
+                unshuffled[_ri[i]] = c
+            xor_encoded = ''.join(unshuffled)
+
+            hex_encoded = ''
+            for i in range(0, len(xor_encoded), 2):
+                byte = int(xor_encoded[i:i+2], 16)
+                hex_encoded += chr(byte ^ _k)
+
+            rot13_str = ''
+            for i in range(0, len(hex_encoded), 2):
+                rot13_str += chr(int(hex_encoded[i:i+2], 16))
+
+            reversed_str = rot13_str.translate(
+                str.maketrans(
+                    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+                    'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
+                )
+            )
+
+            b64 = reversed_str[::-1]
+            php_url = base64.b64decode(b64 + '==').decode('utf-8')
+
+            api_data = requests.get(
+                php_url,
+                headers={'User-Agent': UA, 'Referer': iframe_url},
+                timeout=TIMEOUT
+            ).json()
+
+            if not api_data.get('success'):
+                return None
+            stream_url = api_data.get('stream', '')
+            if not stream_url:
+                return None
+            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('ovostreams', url, e)
             return None
