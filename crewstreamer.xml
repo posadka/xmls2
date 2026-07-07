@@ -427,7 +427,6 @@ class streamer:
                 },
                 timeout=TIMEOUT
             ).json()
-            log(f'ovostreams api_data: {api_data}', xbmc.LOGERROR)
             if not api_data.get('success'):
                 return None
             stream_url = api_data.get('stream', '')
