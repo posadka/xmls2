@@ -159,8 +159,10 @@ class streamer:
             _log_error('streameast', url, e)
             return None
 
+    @_guard
     def ovostreams(self, url):
         try:
+            base      = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             results   = []
             for m in re.finditer(r'(?s)<a href="([^"]*)"\s*class="match-card">', page_data):
@@ -180,7 +182,7 @@ class streamer:
                     label = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{home} vs {away}[/COLOR]'
                 else:
                     label = f'[COLOR orange]{href.rstrip("/").split("/")[-1].replace("-vs-", " vs ").replace("-", " ").title()}[/COLOR]'
-                results.append((href, label))
+                results.append((urljoin(base, href), label))
             return results or None
         except Exception as e:
             _log_error('ovostreams', url, e)
