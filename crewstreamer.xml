@@ -431,6 +431,9 @@ class streamer:
             stream_url = api_data.get('stream', '')
             if not stream_url:
                 return None
+            log(f'ovostreams url: {url}', xbmc.LOGERROR)
+            log(f'ovostreams iframe: {iframe_url}', xbmc.LOGERROR)
+            log(f'ovostreams php_url: {php_url}', xbmc.LOGERROR)
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('ovostreams', url, e)
