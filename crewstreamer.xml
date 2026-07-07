@@ -372,7 +372,7 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             log(f'ovostreams resolver url: {url}', xbmc.LOGERROR)
-            m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
+            m = re.search(r'<iframe[^>]+src=["\']?([^"\'>\s]+)', page_data)
             log(f'ovostreams iframe match: {m}', xbmc.LOGERROR)
             if not m:
                 return None
