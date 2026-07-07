@@ -371,31 +371,29 @@ class streamer:
     def ovostreams(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            log(f'ovostreams resolver url: {url}', xbmc.LOGERROR)
             m = re.search(r'<iframe[^>]+src=["\']?([^"\'>\s]+)', page_data)
-            log(f'ovostreams iframe match: {m}', xbmc.LOGERROR)
             if not m:
                 return None
             iframe_url  = m.group(1)
-            log(f'ovostreams iframe_url: {iframe_url}', xbmc.LOGERROR)
             iframe_html = requests.get(
                 iframe_url,
                 headers={'User-Agent': UA, 'Referer': url},
                 timeout=TIMEOUT
             ).text
-            log(f'ovostreams iframe_html[:300]: {iframe_html[:300]}', xbmc.LOGERROR)
             origin, referer = _origin_referer(iframe_url)
+            token_m = re.search(r"window\['([^']+)'\]\s*=\s*'([^']+)'", iframe_html)
+            if not token_m:
+                return None
+            token_key = token_m.group(1)
+            token_val = token_m.group(2)
             m = re.search(r"const _d\s*=\s*\"([^\"]+)\"", iframe_html)
-            log(f'ovostreams _d match: {m}', xbmc.LOGERROR)
             if not m:
                 return None
             _d = m.group(1)
             m = re.search(r"const _k\s*=\s*(\d+)", iframe_html)
             _k = int(m.group(1)) if m else 42
-            log(f'ovostreams _k: {_k}', xbmc.LOGERROR)
             ri_m = re.search(r"const _ri\s*=\s*\[([^\]]+)\]", iframe_html)
             if not ri_m:
-                log('ovostreams no _ri found', xbmc.LOGERROR)
                 return None
             _ri = [int(x.strip()) for x in ri_m.group(1).split(',')]
             chars = list(_d)
@@ -417,12 +415,16 @@ class streamer:
                 )
             )
             b64 = reversed_str[::-1]
-            log(f'ovostreams b64: {b64}', xbmc.LOGERROR)
             php_url = base64.b64decode(b64 + '==').decode('utf-8')
-            log(f'ovostreams php_url: {php_url}', xbmc.LOGERROR)
             api_data = requests.get(
                 php_url,
-                headers={'User-Agent': UA, 'Referer': iframe_url},
+                headers={
+                    'User-Agent': UA,
+                    'Referer': referer,
+                    'Origin': origin,
+                    'X-Token': token_val,
+                    token_key: token_val,
+                },
                 timeout=TIMEOUT
             ).json()
             log(f'ovostreams api_data: {api_data}', xbmc.LOGERROR)
