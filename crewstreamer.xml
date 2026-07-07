@@ -370,73 +370,67 @@ class streamer:
     @_guard
     def ovostreams(self, url):
         try:
-            log(f'ovostreams resolver url: {url}', xbmc.LOGERROR)
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            log(f'ovostreams page_data[:200]: {page_data[:200]}', xbmc.LOGERROR)
+            log(f'ovostreams resolver url: {url}', xbmc.LOGERROR)
             m = re.search(r'<iframe[^>]+src=["\']([^"\']+)', page_data)
             log(f'ovostreams iframe match: {m}', xbmc.LOGERROR)
             if not m:
                 return None
             iframe_url  = m.group(1)
+            log(f'ovostreams iframe_url: {iframe_url}', xbmc.LOGERROR)
             iframe_html = requests.get(
                 iframe_url,
                 headers={'User-Agent': UA, 'Referer': url},
                 timeout=TIMEOUT
             ).text
+            log(f'ovostreams iframe_html[:300]: {iframe_html[:300]}', xbmc.LOGERROR)
             origin, referer = _origin_referer(iframe_url)
-
             m = re.search(r"const _d\s*=\s*\"([^\"]+)\"", iframe_html)
+            log(f'ovostreams _d match: {m}', xbmc.LOGERROR)
             if not m:
                 return None
             _d = m.group(1)
-
             m = re.search(r"const _k\s*=\s*(\d+)", iframe_html)
             _k = int(m.group(1)) if m else 42
-
+            log(f'ovostreams _k: {_k}', xbmc.LOGERROR)
             ri_m = re.search(r"const _ri\s*=\s*\[([^\]]+)\]", iframe_html)
             if not ri_m:
+                log('ovostreams no _ri found', xbmc.LOGERROR)
                 return None
             _ri = [int(x.strip()) for x in ri_m.group(1).split(',')]
-
             chars = list(_d)
             unshuffled = [''] * len(chars)
             for i, c in enumerate(chars):
                 unshuffled[_ri[i]] = c
             xor_encoded = ''.join(unshuffled)
-
             hex_encoded = ''
             for i in range(0, len(xor_encoded), 2):
                 byte = int(xor_encoded[i:i+2], 16)
                 hex_encoded += chr(byte ^ _k)
-
             rot13_str = ''
             for i in range(0, len(hex_encoded), 2):
                 rot13_str += chr(int(hex_encoded[i:i+2], 16))
-
             reversed_str = rot13_str.translate(
                 str.maketrans(
                     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
                     'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
                 )
             )
-
             b64 = reversed_str[::-1]
+            log(f'ovostreams b64: {b64}', xbmc.LOGERROR)
             php_url = base64.b64decode(b64 + '==').decode('utf-8')
-
+            log(f'ovostreams php_url: {php_url}', xbmc.LOGERROR)
             api_data = requests.get(
                 php_url,
                 headers={'User-Agent': UA, 'Referer': iframe_url},
                 timeout=TIMEOUT
             ).json()
-
+            log(f'ovostreams api_data: {api_data}', xbmc.LOGERROR)
             if not api_data.get('success'):
                 return None
             stream_url = api_data.get('stream', '')
             if not stream_url:
                 return None
-            log(f'ovostreams url: {url}', xbmc.LOGERROR)
-            log(f'ovostreams iframe: {iframe_url}', xbmc.LOGERROR)
-            log(f'ovostreams php_url: {php_url}', xbmc.LOGERROR)
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('ovostreams', url, e)
