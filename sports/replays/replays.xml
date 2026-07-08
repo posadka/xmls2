@@ -28,7 +28,7 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div\s+class=["\']post-card["\']>.*?'
+            r'(?s)<div\s+class=["\']post-card["\']>.*?'
             r'<a\s+href=["\']([^"\']+)["\'][^>]*class=["\']post-image-container["\'][^>]*>.*?'
             r'<img[^>]+class=["\']post-image["\'][^>]+src=["\']([^"\']+)["\'][^>]*>.*?'
             r'<h2\s+class=["\']post-title["\']>\s*<a\s+href=["\'][^"\']+["\']>(.*?)</a>',
