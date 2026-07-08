@@ -99,7 +99,7 @@ class streamer:
                 u = self.fsportshd(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.sportssonline(url)
-            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
+            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.is']):
                 u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
                 u = self.methstreams(url)
