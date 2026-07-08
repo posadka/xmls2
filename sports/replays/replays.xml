@@ -980,10 +980,3 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/
 <page></page>
 </regex>
 </item>
-
-<dir
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]OLYPMIC[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>https://bitbucket.org/Francis_Drake/francis-drake/raw/master/olypmic.xml</link>
-<thumbnail>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</thumbnail>
-<fanart>https://i0.wp.com/www.swimmingworldmagazine.com/news/wp-content/uploads/2020/03/tokyo2021crop.jpeg?fit=1024%2C723&ssl=1</fanart>
-</dir>
