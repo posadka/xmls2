@@ -551,7 +551,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
-<item>
+<item
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>https://pbs.twimg.com/profile_images/1689371789842067457/-MgYODie.jpg</thumbnail>
@@ -920,7 +920,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    url = client.schedule('https://thetvappv2.com/')
+    url = client.schedule('https://the-tv.app/index1')
     return url
 ]]></expres>
         <page></page>
@@ -1027,7 +1027,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://sportzone.su/data.json')
+    url = client.schedule('https://cdnsport.ru/data.json')
     return url
 ]]></expres>
         <page></page>

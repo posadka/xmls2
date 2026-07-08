@@ -87,7 +87,7 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
-            elif 'sportzone.su' in url:
+            elif any(x in url for x in ['sportzone.su', 'cdnsport.ru']):
                 u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
