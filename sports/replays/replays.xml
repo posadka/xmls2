@@ -962,6 +962,24 @@ def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/ABSOLUTIO
 </regex>
 </item>
 
+<item>
+<name>[COLOR orchid]¤[/COLOR] [B][COLOR white]FORMULA 1[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</name>
+    <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/f1.png</thumbnail>
+    <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/f1_fanart.jpg</fanart>
+<link>$doregex[dir]</link>
+<regex>
+<name>dir</name>
+<listrepeat>dir</listrepeat>
+<expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = 'https://thechains24.com/GREENHAT/iptv-homelander/Formula1debrid.txt'):
+    from resources.lib.modules import control
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    from resources.lib.indexers import lists
+    lists.indexer().get(url)
+]]></expres>
+<page></page>
+</regex>
+</item>
 
 <dir
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR orange]OLYPMIC[/COLOR] [COLOR orchid] REPLAYS[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
