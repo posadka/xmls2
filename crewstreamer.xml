@@ -119,8 +119,6 @@ class streamer:
                 u = self.volokit(url)
             elif 'playoffsstream' in url:
                 u = self.playoff(url)
-            elif 'istreameast.app' in url:
-                u = self.streameast(url)
             elif 'streameast.ga' in url:
                 u = self.streameast_ga(url)
             elif 'naughtyblog' in url:
@@ -151,6 +149,8 @@ class streamer:
                 u = self.flyembed(url)
             elif 'nizar.nexa.st' in url:
                 u = self.sportzone(url)
+            elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
+                u = self.streameast(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):

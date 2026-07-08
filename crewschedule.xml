@@ -59,9 +59,7 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if 'istreameast.app' in url:
-                u = self.streameast(url)
-            elif 'chaturbate.com' in url:
+            if 'chaturbate.com' in url:
                 u = self.chaturbate(url)
             elif 'streambtw' in url:
                 u = self.streambtw(url)
@@ -87,6 +85,8 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
+            elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
+                u = self.streameast(url)
             elif any(x in url for x in ['sportzone.su', 'cdnsport.ru']):
                 u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
