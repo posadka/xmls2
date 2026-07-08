@@ -28,8 +28,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -105,8 +105,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -182,8 +182,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -258,8 +258,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -333,8 +333,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -407,8 +407,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -481,8 +481,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -555,8 +555,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -629,8 +629,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
@@ -703,8 +703,8 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)"[^>]*>.*?'
+            r'<article class="post-card">.*?'
+            r'<img[^>]+src="([^"]+)"[^>]*>.*?'
             r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
             data, re.S
         )
