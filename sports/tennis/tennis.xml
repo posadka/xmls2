@@ -764,7 +764,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re, requests, html
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
     try:
-        page_data = requests.get('https://istreameast.app', headers={'User-Agent': UA}, timeout=10).text
+        page_data = requests.get('https://thestreameast.top/', headers={'User-Agent': UA}, timeout=10).text
     except Exception:
         return None
     matches = re.findall(

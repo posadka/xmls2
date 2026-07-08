@@ -89,7 +89,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://istreameast.app/cfbstreams2')
+    url = client.schedule('https://thestreameast.top/cfbstreams')
     return url
 ]]></expres>
 <page></page>
@@ -384,7 +384,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://istreameast.app')
+    url = client.schedule('https://thestreameast.top/')
     return url
 ]]></expres>
 <page></page>

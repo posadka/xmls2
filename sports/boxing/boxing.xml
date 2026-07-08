@@ -8,7 +8,7 @@
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/boxing_fanart.jpg</fanart>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]BOXING LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/boxing.png</thumbnail>
@@ -24,7 +24,7 @@
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://istreameast.app/boxingstreams')
+    url = client.schedule('https://thestreameast.top/boxingstreams')
     return url
 ]]></expres>
 <page></page>
@@ -457,7 +457,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (SE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <link>$doregex[makelist]</link>
     <thumbnail>https://pbs.twimg.com/profile_images/1689371789842067457/-MgYODie.jpg</thumbnail>
@@ -473,7 +473,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://istreameast.app')
+    url = client.schedule('https://thestreameast.top/')
     return url
 ]]></expres>
 <page></page>
