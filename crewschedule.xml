@@ -770,7 +770,7 @@ class streamer:
                     f'[COLOR orange]{title}[/COLOR]'
                 )
                 if league:
-                    label += f' [COLOR gray]{league}[/COLOR]'
+                    label += f' [COLOR red]{league}[/COLOR]'
                 if status == 'live':
                     label += ' [COLOR red]LIVE[/COLOR]'
                 results.append((json.dumps(links), label))
