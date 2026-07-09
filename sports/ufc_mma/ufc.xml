@@ -192,7 +192,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (SHARK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
@@ -434,7 +434,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </regex>
 </item>
 
-<item>
+<item
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]UFC / MMA LIVE[/COLOR] [COLOR orchid] (CCS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ufc.png</thumbnail>
