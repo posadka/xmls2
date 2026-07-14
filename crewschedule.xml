@@ -83,6 +83,8 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
+            elif 'sportsurge' in url:
+                u = self.sportsurge(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
@@ -777,4 +779,33 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('sportzone', url, e)
+            return None
+
+    @_guard
+    def sportsurge(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            results   = []
+            matches   = re.findall(
+                r'<a class="row MaclariListele[^"]*"[^>]+href="([^"]+)"[^>]*>.*?'
+                r'<span[^>]*>\s*([^<]+?)\s*</span>.*?'
+                r'<span[^>]*>\s*([^<]+?)\s*</span>.*?'
+                r'<div[^>]*>([^<]+)</div>.*?'
+                r'<span[^>]*>([^<]+)</span>',
+                page_data, re.S
+            )
+            for href, team1, team2, league, status in matches:
+                team1  = html.unescape(team1).strip()
+                team2  = html.unescape(team2).strip()
+                league = html.unescape(league).strip()
+                status = html.unescape(status).strip()
+                if status.upper() == 'LIVE':
+                    time_str = '[COLOR red]LIVE[/COLOR]'
+                else:
+                    time_str = f'[COLOR dodgerblue]{status}[/COLOR]'
+                label = f'{time_str} [COLOR gray]{league}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
+                results.append((href, label))
+            return results or None
+        except Exception as e:
+            _log_error('sportsurge', url, e)
             return None
