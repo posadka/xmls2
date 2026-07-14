@@ -790,15 +790,15 @@ class streamer:
                 r'<a class="row MaclariListele[^"]*"[^>]+href="([^"]+)"[^>]*>.*?'
                 r'<span[^>]*>\s*([^<]+?)\s*</span>.*?'
                 r'<span[^>]*>\s*([^<]+?)\s*</span>.*?'
-                r'<div[^>]*>([^<]+)</div>.*?'
-                r'<span[^>]*>([^<]+)</span>',
+                r'<div[^>]+ListelemeDuzen[^>]*>\s*([^<]+?)\s*</div>.*?'
+                r'<div[^>]+ListelemeDuzen[^>]*>\s*(.*?)\s*</div>',
                 page_data, re.S
             )
-            for href, team1, team2, league, status in matches:
+            for href, team1, team2, league, status_html in matches:
                 team1  = html.unescape(team1).strip()
                 team2  = html.unescape(team2).strip()
                 league = html.unescape(league).strip()
-                status = html.unescape(status).strip()
+                status = html.unescape(re.sub(r'<[^>]+>', '', status_html)).strip()
                 if status.upper() == 'LIVE':
                     time_str = '[COLOR red]LIVE[/COLOR]'
                 else:
