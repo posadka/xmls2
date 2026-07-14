@@ -129,8 +129,6 @@ class streamer:
                 u = self.streambtw(url)
             elif 'shd247' in url:
                 u = self.shd(url)
-            elif 'streams.center' in url:
-                u = self.streamcenter(url)
             elif 'waatk' in url:
                 u = self.waatk(url)
             elif 'ripplenetwork' in url:
@@ -149,6 +147,8 @@ class streamer:
                 u = self.flyembed(url)
             elif 'nizar.nexa.st' in url:
                 u = self.sportzone(url)
+            elif any(x in url for x in ['streame.center', 'streams.center']):
+                u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
                 u = self.streameast(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):

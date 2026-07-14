@@ -69,8 +69,6 @@ class streamer:
                 u = self.streameast_ga(url)
             elif 'shd247' in url:
                 u = self.shd(url)
-            elif 'streamcenter' in url:
-                u = self.streamcenter(url)
             elif 'waatk' in url:
                 u = self.waatk(url)
             elif 'roxiestreams' in url:
@@ -85,6 +83,8 @@ class streamer:
                 u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
+            elif any(x in url for x in ['streame.center', 'streams.center']):
+                u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
                 u = self.streameast(url)
             elif any(x in url for x in ['sportzone.su', 'cdnsport.ru']):
