@@ -472,25 +472,9 @@ class streamer:
                 'Referer': _base_url(url) + '/',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             }
-            log(f'streamcenter schedule request: {url}')
-            response = requests.get(
-                url,
-                headers=headers,
-                timeout=TIMEOUT
-            )
-            log(
-                f'streamcenter response: '
-                f'status={response.status_code} '
-                f'content_type={response.headers.get("Content-Type", "")!r} '
-                f'length={len(response.content)} '
-                f'final_url={response.url}'
-            )
+            response = requests.get(url, headers=headers, timeout=TIMEOUT)
             response.raise_for_status()
             page_data = response.text
-            if not page_data:
-                log('streamcenter returned an empty page', xbmc.LOGERROR)
-                return None
-            log(f'streamcenter HTML preview: {page_data[:500]!r}')
             games = re.findall(
                 r'(?is)'
                 r'<div\s+class=["\']tg-game["\'][^>]*>'
@@ -504,16 +488,8 @@ class streamer:
                 r')',
                 page_data
             )
-            log(f'streamcenter game blocks found: {len(games)}')
-            if not games:
-                log(
-                    'streamcenter found no tg-game blocks; '
-                    f'tg-game present={"tg-game" in page_data}',
-                    xbmc.LOGERROR
-                )
-                return None
             results = []
-            for game_number, game in enumerate(games, 1):
+            for game in games:
                 time_match = re.search(
                     r'(?is)<div\s+class=["\']tg-time["\'][^>]*>\s*(.*?)\s*</div>',
                     game
@@ -523,11 +499,6 @@ class streamer:
                     game
                 )
                 if not title_match:
-                    log(
-                        f'streamcenter game {game_number}: '
-                        f'no title found; preview={game[:300]!r}',
-                        xbmc.LOGERROR
-                    )
                     continue
                 start = ''
                 if time_match:
@@ -540,32 +511,11 @@ class streamer:
                 name = re.sub(r'\s+', ' ', name)
                 title = self._label(start, name) if start else name
                 links = re.findall(
-                    r'(?is)'
-                    r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>'
-                    r'.*?'
-                    r'<button[^>]*class=["\'][^"\']*tg-watch[^"\']*["\'][^>]*>'
-                    r'\s*(.*?)\s*</button>',
+                    r'(?is)<a[^>]+href=["\']([^"\']+)["\'][^>]*>',
                     game
                 )
-                log(
-                    f'streamcenter game {game_number}: '
-                    f'time={start!r} title={name!r} links={len(links)}'
-                )
-                if not links:
-                    fallback_links = re.findall(
-                        r'(?is)data-link=["\']([^"\']+)["\']',
-                        game
-                    )
-                    log(
-                        f'streamcenter game {game_number}: '
-                        f'fallback data-link URLs={len(fallback_links)}'
-                    )
-                    links = [
-                        (href, 'Stream')
-                        for href in fallback_links
-                    ]
                 seen = set()
-                for stream_number, (href, language) in enumerate(links, 1):
+                for stream_number, href in enumerate(links, 1):
                     href = html.unescape(href).strip()
                     if href.startswith('//'):
                         href = 'https:' + href
@@ -574,38 +524,11 @@ class streamer:
                     if not href or href in seen:
                         continue
                     seen.add(href)
-                    language = html.unescape(
-                        re.sub(r'<[^>]+>', '', language)
-                    ).strip()
-                    language = re.sub(r'\s+', ' ', language)
                     label = title
-                    if language and language.lower() != 'stream':
-                        label += f' [COLOR gray]{language}[/COLOR]'
                     if len(links) > 1:
-                        label += (
-                            f' [COLOR red]'
-                            f'(Stream {stream_number})'
-                            f'[/COLOR]'
-                        )
-                    log(
-                        f'streamcenter adding result: '
-                        f'href={href!r} label={label!r}'
-                    )
+                        label += f' [COLOR red](Stream {stream_number})[/COLOR]'
                     results.append((href, label))
-            log(f'streamcenter total results: {len(results)}')
-            if not results:
-                log(
-                    'streamcenter parsed the page but produced no links',
-                    xbmc.LOGERROR
-                )
-                return None
-            return results
-        except requests.RequestException as e:
-            log(
-                f'streamcenter request failed for {url}: {e}',
-                xbmc.LOGERROR
-            )
-            return None
+            return results or None
         except Exception as e:
             _log_error('streamcenter', url, e)
             return None
