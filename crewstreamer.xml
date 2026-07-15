@@ -1282,6 +1282,15 @@ class streamer:
     @_guard
     def korast(self, url):
         try:
+            channels = json.loads(url)
+            labels = [c['label'] for c in channels]
+            idx = xbmcgui.Dialog().select('Select Channel', labels)
+            if idx == -1:
+                return None
+            url = channels[idx]['url']
+        except (ValueError, TypeError):
+            pass
+        try:
             origin = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             m = re.search(r'window\.loadPlayerChannel\((\d+)\)', page_data)
