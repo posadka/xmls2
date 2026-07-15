@@ -298,7 +298,6 @@ class streamer:
             base      = _base_url(url)
             now       = datetime.now().date()
             tomorrow  = now + timedelta(days=1)
-
             def _date_label(ts):
                 dt         = datetime.fromtimestamp(int(ts))
                 event_date = dt.date()
@@ -309,10 +308,9 @@ class streamer:
                 else:
                     day = dt.strftime('%m-%d')
                 return f'{day} {dt.strftime("%I:%M %p").lstrip("0")}'
-
             matches = re.findall(
                 r'(?s)<div class="m-card[^"]*"[^>]*data-time="(\d+)"[^>]*data-team-names="([^"]+)"[^>]*>.*?'
-                r'<a class="m-card__link"\s+href="([^"]+)"',
+                r'<a[^>]+href="([^"]+)"[^>]*class="m-card__link"',
                 page_data
             )
             results = []
