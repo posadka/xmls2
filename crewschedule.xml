@@ -470,22 +470,34 @@ class streamer:
             page_data = requests.get(url, timeout=TIMEOUT).json()
             results   = []
             for item in page_data:
-                name  = item.get('name') or item.get('gameName') or 'Unknown'
-                video = item.get('videoUrl') or ''
-                start = item.get('beginPartie') or ''
+                name  = item.get('title') or item.get('name') or item.get('gameName') or 'Unknown'
+                start = item.get('date') or item.get('beginPartie') or ''
                 try:
                     t     = datetime.fromisoformat(start).replace(tzinfo=timezone.utc)
-                    local = t.astimezone() - timedelta(hours=1)
+                    local = t.astimezone()
                     start = local.strftime('%m/%d %I:%M %p').lstrip('0')
                 except Exception:
                     pass
-                title = self._label(start, name) if start else name
-                for n, u in enumerate(video.split(';'), 1):
-                    href = u.split('<')[0].strip()
-                    if not href:
-                        continue
-                    label = title if n == 1 else f'{title} [COLOR red](Stream {n})[/COLOR]'
-                    results.append((href, label))
+                title   = self._label(start, name) if start else name
+                streams = item.get('streams') or []
+                if streams:
+                    for n, s in enumerate(streams, 1):
+                        href = s.get('url', '').strip()
+                        if not href:
+                            continue
+                        lang  = s.get('language') or s.get('lang') or ''
+                        label = f'{title} [COLOR gray]{lang}[/COLOR]' if lang else title
+                        if len(streams) > 1:
+                            label += f' [COLOR red](Stream {n})[/COLOR]'
+                        results.append((href, label))
+                else:
+                    video = item.get('videoUrl') or ''
+                    for n, u in enumerate(video.split(';'), 1):
+                        href = u.split('<')[0].strip()
+                        if not href:
+                            continue
+                        label = title if n == 1 else f'{title} [COLOR red](Stream {n})[/COLOR]'
+                        results.append((href, label))
             return results or None
         except Exception as e:
             _log_error('streamcenter', url, e)
