@@ -1294,12 +1294,15 @@ class streamer:
             origin = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             m = re.search(r'window\.loadPlayerChannel\((\d+)\)', page_data)
-            if not m:
-                return None
-            channel_id = m.group(1)
-            api_url = f'{origin}/api/player.php?id={channel_id}'
-            api_data = requests.get(api_url, headers={'Referer': url, 'User-Agent': UA}, timeout=TIMEOUT).json()
-            stream_url = api_data.get('url')
+            if m:
+                channel_id = m.group(1)
+                api_url = f'{origin}/api/player.php?id={channel_id}'
+                api_data = requests.get(api_url, headers={'Referer': url, 'User-Agent': UA}, timeout=TIMEOUT).json()
+                stream_url = api_data.get('url')
+            else:
+                api_url = f'{url}{"&" if "?" in url else "?"}ppcfg=1&_={int(time.time() * 1000)}'
+                cfg = requests.get(api_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
+                stream_url = cfg.get('src') or cfg.get('srcBase')
             if not stream_url:
                 return None
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
