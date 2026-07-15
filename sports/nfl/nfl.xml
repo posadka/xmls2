@@ -566,7 +566,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://volokit.xyz/sport/nfl')
+    url = client.schedule('volokit2.fun/sport/nfl')
     return url
 ]]></expres>
 <page>http://volokit.xyz/sport/nfl/</page>

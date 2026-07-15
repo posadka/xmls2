@@ -551,7 +551,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
-<item
+<item>
 <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NBA LIVE[/COLOR] [COLOR orchid] (VK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
 <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/nba.png</thumbnail>
 <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/nba_fanart.jpg</fanart>
@@ -567,7 +567,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('http://volokit.xyz/sport/nba')
+    url = client.schedule('volokit2.fun/sport/nba')
     return url
 ]]></expres>
 <page>http://volokit.xyz/sport/nba/</page>

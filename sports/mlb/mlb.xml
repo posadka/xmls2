@@ -608,7 +608,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
-<item
+<item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]MLB LIVE[/COLOR] [COLOR orchid] (VK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/mlb.png</thumbnail>
@@ -623,7 +623,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
-    url = client.schedule('http://volokit.xyz/sport/mlb')
+    url = client.schedule('volokit2.fun/sport/mlb')
     return url
 ]]></expres>
         <page>h</page>
