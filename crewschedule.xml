@@ -79,8 +79,6 @@ class streamer:
                 u = self.flyembed(url)
             elif 'embedhd' in url:
                 u = self.embedhd(url)
-            elif 'ripplenetwork' in url:
-                u = self.ripplenetwork(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
@@ -89,7 +87,7 @@ class streamer:
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
                 u = self.streameast(url)
-            elif any(x in url for x in ['sportzone.su', 'cdnsport.ru']):
+            elif any(x in url for x in ['sportzone.su', 'cdnsport.ru', 'esportssurge', 'ripplenetwork']):
                 u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
@@ -711,36 +709,6 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('sportssonline', url, e)
-            return None
-
-    @_guard
-    def ripplenetwork(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            results   = []
-            now       = datetime.now()
-            for line in page_data.splitlines():
-                line = line.strip()
-                if not line:
-                    continue
-                m = re.match(r'^(\d{1,2}:\d{2})\s+(.+?)\s*\|\s*(https?://\S+)', line)
-                if not m:
-                    continue
-                time_str = m.group(1)
-                title    = html.unescape(m.group(2).strip())
-                link     = m.group(3).strip()
-                try:
-                    utc_t    = datetime.strptime(time_str, '%H:%M').replace(
-                        year=now.year, month=now.month, day=now.day,
-                        tzinfo=timezone.utc
-                    )
-                    time_str = utc_t.astimezone().strftime('%I:%M %p').lstrip('0')
-                except Exception:
-                    pass
-                results.append((link, self._label(time_str, title)))
-            return results or None
-        except Exception as e:
-            _log_error('ripplenetwork', url, e)
             return None
 
     @_guard
