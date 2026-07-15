@@ -470,8 +470,8 @@ class streamer:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             results = []
             games = re.findall(
-                r'<div class="tg-game">(.*?)</div>\s*</div>\s*</div>',
-                page_data, re.S
+                r'(?s)<div class="tg-game">(.*?)</div>\s*</div>',
+                page_data
             )
             for game in games:
                 tm = re.search(r'<div class="tg-time">\s*([^<]+)', game)
