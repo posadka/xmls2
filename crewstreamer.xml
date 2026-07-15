@@ -147,7 +147,7 @@ class streamer:
                 u = self.flyembed(url)
             elif 'nizar.nexa.st' in url:
                 u = self.sportzone(url)
-             elif any(x in url for x in ['kora']):
+            elif any(x in url for x in ['kora']):
                 u = self.korast(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
