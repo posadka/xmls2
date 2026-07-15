@@ -83,8 +83,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('
-https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=100&categoryId=18')
+    url = client.schedule('https://streame.center')
     return url
 ]]></expres>
 <page></page>
@@ -532,7 +531,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client,control
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://backend.streamcenter.live/api/Parties?pageNumber=1&pageSize=200')
+    url = client.schedule('https://streame.center')
     return url
 ]]></expres>
 <page></page>
