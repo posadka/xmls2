@@ -147,6 +147,8 @@ class streamer:
                 u = self.flyembed(url)
             elif 'nizar.nexa.st' in url:
                 u = self.sportzone(url)
+             elif any(x in url for x in ['kora']):
+                u = self.korast(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'sportsurge']):
@@ -1275,4 +1277,23 @@ class streamer:
             return f'{m3u8}|User-Agent={UA}&Referer=https://tursatrueper.xyz/&Origin=https://tursatrueper.xyz'
         except Exception as e:
             _log_error('sportzone', url, e)
+            return None
+
+    @_guard
+    def korast(self, url):
+        try:
+            origin = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r'window\.loadPlayerChannel\((\d+)\)', page_data)
+            if not m:
+                return None
+            channel_id = m.group(1)
+            api_url = f'{origin}/api/player.php?id={channel_id}'
+            api_data = requests.get(api_url, headers={'Referer': url, 'User-Agent': UA}, timeout=TIMEOUT).json()
+            stream_url = api_data.get('url')
+            if not stream_url:
+                return None
+            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('korast', url, e)
             return None
