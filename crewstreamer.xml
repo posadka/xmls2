@@ -149,6 +149,8 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
+            elif any(x in url for x in ['livetx.sx']):
+                u = self.livetvsx(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'sportsurge']):
@@ -1308,4 +1310,26 @@ class streamer:
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('korast', url, e)
+            return None
+
+    @_guard
+    def livetvsx(self, url):
+        try:
+            site_origin = 'https://aliez1.me'
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r"pl\.init\('([^']+)'\)", page_data)
+            if not m:
+                iframe_url = self._get_iframe_src(page_data)
+                if not iframe_url:
+                    return None
+                page_data = requests.get(iframe_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+                m = re.search(r"pl\.init\('([^']+)'\)", page_data)
+                if not m:
+                    return None
+            stream_url = m.group(1)
+            if stream_url.startswith('//'):
+                stream_url = 'https:' + stream_url
+            return f'{stream_url}|Referer={site_origin}/&Origin={site_origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('livetv_alieztv', url, e)
             return None
