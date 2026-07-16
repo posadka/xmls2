@@ -150,7 +150,7 @@ class streamer:
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
             elif any(x in url for x in ['livetx.sx']):
-                u = self.livetvsx(url)
+                u = self.livetv_sx(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'sportsurge']):
@@ -1313,7 +1313,7 @@ class streamer:
             return None
 
     @_guard
-    def livetvsx(self, url):
+    def livetv_sx(self, url):
         try:
             site_origin = 'https://aliez1.me'
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
