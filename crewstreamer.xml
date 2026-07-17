@@ -1335,5 +1335,5 @@ class streamer:
                 stream_url = 'https:' + stream_url
             return f'{stream_url}|Referer={site_origin}/&Origin={site_origin}&User-Agent={UA}'
         except Exception as e:
-            _log_error('livetv_alieztv', url, e)
+            _log_error('livetv_sx', url, e)
             return None
