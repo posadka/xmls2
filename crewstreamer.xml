@@ -1321,9 +1321,12 @@ class streamer:
             ).text
             m = re.search(r"pl\.init\('([^']+)'\)", page_data)
             if not m:
-                iframe_url = self._get_iframe_src(page_data)
-                if not iframe_url:
+                iframe_m = re.search(r'src=["\']?(//[^"\'\s>]*?/player/live\.php\?[^"\'\s>]+)', page_data)
+                if not iframe_m:
                     return None
+                iframe_url = iframe_m.group(1)
+                if iframe_url.startswith('//'):
+                    iframe_url = 'https:' + iframe_url
                 page_data = requests.get(
                     iframe_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT, verify=False
                 ).text
