@@ -1336,7 +1336,9 @@ class streamer:
             stream_url = m.group(1)
             if stream_url.startswith('//'):
                 stream_url = 'https:' + stream_url
-            return f'{stream_url}|Referer={site_origin}/&Origin={site_origin}&User-Agent={UA}'
+            result = f'{stream_url}|Referer={site_origin}/&Origin={site_origin}&User-Agent={UA}'
+            log(f'livetv_alieztv resolved: {result}')
+            return result
         except Exception as e:
             _log_error('livetv_sx', url, e)
             return None
