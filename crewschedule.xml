@@ -843,25 +843,27 @@ class streamer:
     def sportsurge(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            results   = []
-            matches   = re.findall(
-                r'<a class="row MaclariListele[^"]*"[^>]+href="([^"]+)"[^>]*>.*?'
-                r'<span[^>]*>\s*([^<]+?)\s*</span>.*?'
-                r'<span[^>]*>\s*([^<]+?)\s*</span>.*?'
-                r'<div[^>]+ListelemeDuzen[^>]*>\s*([^<]+?)\s*</div>.*?'
-                r'<div[^>]+ListelemeDuzen[^>]*>\s*(.*?)\s*</div>',
-                page_data, re.S
-            )
-            for href, team1, team2, league, status_html in matches:
-                team1  = html.unescape(team1).strip()
-                team2  = html.unescape(team2).strip()
-                league = html.unescape(league).strip()
-                status = html.unescape(re.sub(r'<[^>]+>', '', status_html)).strip()
+            results = []
+            for m in re.finditer(r'<a class="row MaclariListele[^"]*"\s+href="([^"]+)"[^>]*>(.*?)</a>', page_data, re.S):
+                href, block = m.group(1), m.group(2)
+                teams = re.findall(r'team-name-event-row.*?<span[^>]*>\s*([^<]+?)\s*</span>', block, re.S)
+                if len(teams) >= 2:
+                    event_name = f'{html.unescape(teams[0]).strip()} vs {html.unescape(teams[1]).strip()}'
+                else:
+                    h4 = re.search(r'<h4[^>]*>\s*([^<]+?)\s*</h4>', block, re.S)
+                    if not h4:
+                        continue
+                    event_name = html.unescape(h4.group(1)).strip()
+                divs = re.findall(r'<div[^>]+ListelemeDuzen[^>]*>\s*(.*?)\s*</div>', block, re.S)
+                if len(divs) < 2:
+                    continue
+                league = html.unescape(re.sub(r'<[^>]+>', '', divs[0])).strip()
+                status = html.unescape(re.sub(r'<[^>]+>', '', divs[1])).strip()
                 if status.upper() == 'LIVE':
                     time_str = '[COLOR red]LIVE[/COLOR]'
                 else:
                     time_str = f'[COLOR dodgerblue]{status}[/COLOR]'
-                label = f'{time_str} [COLOR gray]{league}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
+                label = f'{time_str} [COLOR gray]{league}[/COLOR] [COLOR orange]{event_name}[/COLOR]'
                 results.append((href, label))
             return results or None
         except Exception as e:
