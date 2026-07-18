@@ -294,38 +294,84 @@ class streamer:
     @_guard
     def streameast_ga(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            base      = _base_url(url)
-            now       = datetime.now().date()
-            tomorrow  = now + timedelta(days=1)
+            page_data = requests.get(
+                url,
+                headers={'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
+            base = _base_url(url)
+            now = datetime.now().astimezone().date()
+            tomorrow = now + timedelta(days=1)
             def _date_label(ts):
-                dt         = datetime.fromtimestamp(int(ts))
-                event_date = dt.date()
-                if event_date == now:
-                    day = 'Today'
-                elif event_date == tomorrow:
-                    day = 'Tomorrow'
-                else:
-                    day = dt.strftime('%m-%d')
-                return f'{day} {dt.strftime("%I:%M %p").lstrip("0")}'
+                try:
+                    dt = datetime.fromtimestamp(
+                        int(ts),
+                        tz=timezone.utc
+                    ).astimezone()
+                    event_date = dt.date()
+                    if event_date == now:
+                        day = 'Today'
+                    elif event_date == tomorrow:
+                        day = 'Tomorrow'
+                    else:
+                        day = dt.strftime('%m-%d')
+                    return (
+                        f'{day} '
+                        f'{dt.strftime("%I:%M %p").lstrip("0")}'
+                    )
+                except Exception:
+                    return ''
             matches = re.findall(
-                r'<a class="m-card[^"]*"[^>]+href="([^"]+)"[^>]*data-time="(\d+)"[^>]*>.*?'
-                r'<span class="m-card__title">([^<]+)</span>',
-                page_data, re.S
+                r'(?s)'
+                r'<div\s+class="m-card\b[^"]*"'
+                r'([^>]*)>'
+                r'.*?'
+                r'<a\s+class="m-card__link"\s+href="([^"]+)"',
+                page_data
             )
             results = []
-            for href, ts, title in matches:
-                title     = html.unescape(title).strip()
-                parts     = title.split(' - ', 1)
-                if len(parts) == 2:
-                    label_txt = f'{parts[0].strip()} vs {parts[1].strip()}'
+            for attributes, href in matches:
+                time_match = re.search(
+                    r'\bdata-time="(\d+)"',
+                    attributes
+                )
+                teams_match = re.search(
+                    r'\bdata-team-names="([^"]+)"',
+                    attributes
+                )
+                if not teams_match:
+                    continue
+                teams_text = html.unescape(
+                    teams_match.group(1)
+                ).strip()
+                teams = teams_text.split('|', 1)
+                team1 = teams[0].strip()
+                if len(teams) == 2:
+                    team2 = teams[1].strip()
+                    label_txt = f'{team1} vs {team2}'
                 else:
-                    label_txt = title
-                time_str  = _date_label(ts)
-                label     = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{label_txt}[/COLOR]'
-                results.append((urljoin(base, href), label))
+                    label_txt = team1
+                if time_match:
+                    time_str = _date_label(time_match.group(1))
+                else:
+                    time_str = ''
+                if 'm-card--live' in attributes:
+                    status = '[COLOR red]LIVE[/COLOR]'
+                else:
+                    status = (
+                        f'[COLOR dodgerblue]{time_str}[/COLOR]'
+                        if time_str else ''
+                    )
+                label = (
+                    f'{status} '
+                    f'[COLOR orange]{label_txt}[/COLOR]'
+                ).strip()
+                results.append((
+                    urljoin(base, html.unescape(href)),
+                    label
+                ))
             if not results:
-                log('streameast_ga: no matches found', xbmc.LOGERROR)
+                log('streameast_ga: no matches found',xbmc.LOGERROR)
                 return None
             return results
         except Exception as e:
