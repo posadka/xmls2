@@ -905,53 +905,65 @@ class streamer:
             _log_error('livetv_sx', url, e)
             return None
 
-    LABELS = {
-        'football': 'Football',
-        'basketball': 'Basketball',
-        'american-football': 'NFL',
-        'hockey': 'Hockey',
-        'baseball': 'Baseball',
-        'motor-sports': 'Motorsports',
-        'fight': 'Fight',
-        'tennis': 'Tennis',
-        'rugby': 'Rugby',
-        'golf': 'Golf',
-        'cricket': 'Cricket',
-        'afl': 'AFL',
-        'darts': 'Darts',
-        'other': 'Other',
-    }
-
     @_guard
     def trendy(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            m = re.search(r'var EVENTS=({.*?});\s*var SITE=', page_data, re.S)
-            site_m = re.search(r"var SITE='([^']+)'", page_data)
-            if not m or not site_m:
+            events_match = re.search(r'var\s+EVENTS\s*=\s*(\{.*?\})\s*;\s*var\s+SITE\s*=', page_data, re.S)
+            site_match = re.search(r"var\s+SITE\s*=\s*['\"]([^'\"]+)['\"]", page_data)
+            if not events_match or not site_match:
+                log('trendy: EVENTS or SITE not found', xbmc.LOGERROR)
                 return None
-            events = json.loads(m.group(1))
-            site = site_m.group(1)
+            events = json.loads(events_match.group(1))
+            site = site_match.group(1).rstrip('/')
             results = []
-            for date_key in sorted(events.get('byDate', {}).keys()):
-                for sport, items in events['byDate'][date_key].items():
-                    label_sport = LABELS.get(sport, sport)
+            by_date = events.get('byDate', {})
+            for date_key in sorted(by_date):
+                sports = by_date.get(date_key, {})
+                if not isinstance(sports, dict):
+                    continue
+                for sport, items in sports.items():
+                    if not isinstance(items, list):
+                        continue
+                    sport_name = sport.replace('-', ' ').title()
                     for item in items:
-                        path_part = item.get('pathPart')
+                        if not isinstance(item, dict):
+                            continue
+                        path_part = str(item.get('pathPart') or '').strip()
                         if not path_part:
                             continue
-                        title = html.unescape(item.get('t', '')).strip()
-                        tm = html.unescape(item.get('tm', '')).strip()
-                        href = f'{site}/event/{path_part}'
+                        title = html.unescape(str(item.get('t') or '')).strip()
+                        tm = html.unescape(str(item.get('tm') or '')).strip()
+                        try:
+                            start = int(item.get('start') or 0)
+                        except Exception:
+                            start = 0
+                        href = f'{site}/event/{quote_plus(path_part, safe="-_.~")}'
                         if tm.upper() == 'LIVE':
-                            time_str = '[COLOR red]LIVE[/COLOR]'
+                            time_label = '[COLOR red]LIVE[/COLOR]'
+                        elif start > 0:
+                            try:
+                                dt = datetime.fromtimestamp(start / 1000.0, tz=timezone.utc).astimezone()
+                                event_date = dt.date()
+                                today = datetime.now().astimezone().date()
+                                tomorrow = today + timedelta(days=1)
+                                if event_date == today:
+                                    day_label = 'Today'
+                                elif event_date == tomorrow:
+                                    day_label = 'Tomorrow'
+                                else:
+                                    day_label = dt.strftime('%m/%d')
+                                local_time = dt.strftime('%I:%M %p').lstrip('0')
+                                time_label = f'[COLOR dodgerblue]{day_label} {local_time}[/COLOR]'
+                            except Exception:
+                                time_label = f'[COLOR dodgerblue]{tm}[/COLOR]' if tm else ''
                         elif tm:
-                            time_str = f'[COLOR dodgerblue]{tm}[/COLOR]'
+                            time_label = f'[COLOR dodgerblue]{tm}[/COLOR]'
                         else:
-                            time_str = ''
-                        label = f'{time_str} [COLOR gray]{label_sport}[/COLOR] [COLOR orange]{title}[/COLOR]'.strip()
+                            time_label = ''
+                        label = f'{time_label} [COLOR gray]{sport_name}[/COLOR] [COLOR orange]{title}[/COLOR]'.strip()
                         results.append((href, label))
             return results or None
         except Exception as e:
-            _log_error('trendy47', url, e)
+            _log_error('trendy', url, e)
             return None
