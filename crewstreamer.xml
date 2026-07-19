@@ -147,6 +147,8 @@ class streamer:
                 u = self.flyembed(url)
             elif 'nizar.nexa.st' in url:
                 u = self.sportzone(url)
+            elif any(x in url for x in ['trendy47']):
+                u = self.trendy(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
             elif any(x in url for x in ['livetv.sx']):
@@ -1360,4 +1362,20 @@ class streamer:
             return result
         except Exception as e:
             _log_error('livetv_sx', url, e)
+            return None
+
+    @_guard
+    def trendy(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            m = re.search(r'<iframe[^>]+id="streamIframe"[^>]+src="([^"]+)"', page_data)
+            if not m:
+                return None
+            iframe_src = html.unescape(m.group(1))
+            if 'id=' not in iframe_src:
+                return None
+            stream_url = unquote(iframe_src.split('id=', 1)[1])
+            return stream_url
+        except Exception as e:
+            _log_error('trendy47', url, e)
             return None

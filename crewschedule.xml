@@ -83,6 +83,8 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
                 u = self.sportsurge(url)
+            elif any(x in url for x in ['trendy47']):
+                u = self.trendy(url)
             elif any(x in url for x in ['livetv.sx']):
                 u = self.livetv_sx(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
@@ -901,4 +903,55 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('livetv_sx', url, e)
+            return None
+
+    LABELS = {
+        'football': 'Football',
+        'basketball': 'Basketball',
+        'american-football': 'NFL',
+        'hockey': 'Hockey',
+        'baseball': 'Baseball',
+        'motor-sports': 'Motorsports',
+        'fight': 'Fight',
+        'tennis': 'Tennis',
+        'rugby': 'Rugby',
+        'golf': 'Golf',
+        'cricket': 'Cricket',
+        'afl': 'AFL',
+        'darts': 'Darts',
+        'other': 'Other',
+    }
+
+    @_guard
+    def trendy(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            m = re.search(r'var EVENTS=({.*?});\s*var SITE=', page_data, re.S)
+            site_m = re.search(r"var SITE='([^']+)'", page_data)
+            if not m or not site_m:
+                return None
+            events = json.loads(m.group(1))
+            site = site_m.group(1)
+            results = []
+            for date_key in sorted(events.get('byDate', {}).keys()):
+                for sport, items in events['byDate'][date_key].items():
+                    label_sport = LABELS.get(sport, sport)
+                    for item in items:
+                        path_part = item.get('pathPart')
+                        if not path_part:
+                            continue
+                        title = html.unescape(item.get('t', '')).strip()
+                        tm = html.unescape(item.get('tm', '')).strip()
+                        href = f'{site}/event/{path_part}'
+                        if tm.upper() == 'LIVE':
+                            time_str = '[COLOR red]LIVE[/COLOR]'
+                        elif tm:
+                            time_str = f'[COLOR dodgerblue]{tm}[/COLOR]'
+                        else:
+                            time_str = ''
+                        label = f'{time_str} [COLOR gray]{label_sport}[/COLOR] [COLOR orange]{title}[/COLOR]'.strip()
+                        results.append((href, label))
+            return results or None
+        except Exception as e:
+            _log_error('trendy47', url, e)
             return None
