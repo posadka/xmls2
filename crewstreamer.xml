@@ -147,12 +147,8 @@ class streamer:
                 u = self.flyembed(url)
             elif 'nizar.nexa.st' in url:
                 u = self.sportzone(url)
-            elif any(x in url for x in ['trendy47']):
-                u = self.trendy(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
-            elif any(x in url for x in ['livetv.sx']):
-                u = self.livetv_sx(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'sportsurge']):
@@ -1312,70 +1308,4 @@ class streamer:
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('korast', url, e)
-            return None
-
-    @_guard
-    def livetv_sx(self, url):
-        log(f'[livetv_sx] entered with url={url!r}', xbmc.LOGERROR)
-        try:
-            site_origin = 'https://aliez1.me'
-
-            log('[livetv_sx] fetching initial page', xbmc.LOGERROR)
-            resp = requests.get(
-                url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT, verify=False
-            )
-            log(f'[livetv_sx]  status={resp.status_code} len={len(resp.text)}', xbmc.LOGERROR)
-            page_data = resp.text
-
-            m = re.search(r"pl\.init\('([^']+)'\)", page_data)
-            log(f'[livetv_sx] direct pl.init match: {bool(m)}', xbmc.LOGERROR)
-
-            if not m:
-                iframe_m = re.search(r'src=["\']?(//[^"\'\s>]*?/player/live\.php\?[^"\'\s>]+)', page_data)
-                log(f'[livetv_sx]  iframe regex match: {bool(iframe_m)}', xbmc.LOGERROR)
-                if not iframe_m:
-                    log('[livetv_sx]- no iframe found, returning None', xbmc.LOGERROR)
-                    log(f'[livetv_sx] page_data sample: {page_data[:500]!r}', xbmc.LOGERROR)
-                    return None
-                iframe_url = iframe_m.group(1)
-                if iframe_url.startswith('//'):
-                    iframe_url = 'https:' + iframe_url
-                log(f'[livetv_sx] fetching iframe url: {iframe_url}', xbmc.LOGERROR)
-                iframe_resp = requests.get(
-                    iframe_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT, verify=False
-                )
-                log(f'[livetv_sx]  status={iframe_resp.status_code} len={len(iframe_resp.text)}', xbmc.LOGERROR)
-                page_data = iframe_resp.text
-                m = re.search(r"pl\.init\('([^']+)'\)", page_data)
-                log(f'[livetv_sx] pl.init match on iframe page: {bool(m)}', xbmc.LOGERROR)
-                if not m:
-                    log('[livetv_sx]  no pl.init found on iframe page, returning None', xbmc.LOGERROR)
-                    log(f'[livetv_sx] iframe page_data sample: {page_data[:500]!r}', xbmc.LOGERROR)
-                    return None
-
-            stream_url = m.group(1)
-            log(f'[livetv_sx] raw stream_url extracted: {stream_url}', xbmc.LOGERROR)
-            if stream_url.startswith('//'):
-                stream_url = 'https:' + stream_url
-            result = f'{stream_url}|Referer={site_origin}/&Origin={site_origin}&User-Agent={UA}'
-            log(f'[livetv_sx]resolved result: {result}', xbmc.LOGERROR)
-            return result
-        except Exception as e:
-            _log_error('livetv_sx', url, e)
-            return None
-
-    @_guard
-    def trendy(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            m = re.search(r'<iframe[^>]+id="streamIframe"[^>]+src="([^"]+)"', page_data)
-            if not m:
-                return None
-            iframe_src = html.unescape(m.group(1))
-            if 'id=' not in iframe_src:
-                return None
-            stream_url = unquote(iframe_src.split('id=', 1)[1])
-            return stream_url
-        except Exception as e:
-            _log_error('trendy47', url, e)
             return None

@@ -83,10 +83,6 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
                 u = self.sportsurge(url)
-            elif any(x in url for x in ['trendy47']):
-                u = self.trendy(url)
-            elif any(x in url for x in ['livetv.sx']):
-                u = self.livetv_sx(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
@@ -870,100 +866,4 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('sportsurge', url, e)
-            return None
-
-    @_guard
-    def livetv_sx(self, url):
-        try:
-            page_data = requests.get(
-                url,
-                headers={'User-Agent': UA},
-                timeout=TIMEOUT,
-                verify=False
-            ).text
-            base = _base_url(url)
-            matches = re.findall(
-                r'<a class="(?:live|bottomgray)" href="(/enx/eventinfo/\d+_[^"]+/)">([^<]+)</a>.*?'
-                r'<span class="evdesc">([^<]+)</span>',
-                page_data, re.S
-            )
-            results = []
-            for href, teams, evdesc in matches:
-                teams = html.unescape(teams).strip()
-                evdesc = html.unescape(evdesc).strip()
-                m = re.match(r'(.+?)\s*\(([^)]+)\)\s*$', evdesc)
-                if m:
-                    time_str, league = m.group(1).strip(), m.group(2).strip()
-                else:
-                    time_str, league = evdesc, ''
-                label = self._label(time_str, teams)
-                if league:
-                    label += f' [COLOR gray]{league}[/COLOR]'
-                results.append((urljoin(base, href), label))
-            return results or None
-        except Exception as e:
-            _log_error('livetv_sx', url, e)
-            return None
-
-    @_guard
-    def trendy(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            events_match = re.search(r'var\s+EVENTS\s*=\s*(\{.*?\})\s*;\s*var\s+SITE\s*=', page_data, re.S)
-            site_match = re.search(r"var\s+SITE\s*=\s*['\"]([^'\"]+)['\"]", page_data)
-            if not events_match or not site_match:
-                log('trendy: EVENTS or SITE not found', xbmc.LOGERROR)
-                return None
-            events = json.loads(events_match.group(1))
-            site = site_match.group(1).rstrip('/')
-            results = []
-            by_date = events.get('byDate', {})
-            for date_key in sorted(by_date):
-                sports = by_date.get(date_key, {})
-                if not isinstance(sports, dict):
-                    continue
-                for sport, items in sports.items():
-                    if not isinstance(items, list):
-                        continue
-                    sport_name = sport.replace('-', ' ').title()
-                    for item in items:
-                        if not isinstance(item, dict):
-                            continue
-                        path_part = str(item.get('pathPart') or '').strip()
-                        if not path_part:
-                            continue
-                        title = html.unescape(str(item.get('t') or '')).strip()
-                        tm = html.unescape(str(item.get('tm') or '')).strip()
-                        try:
-                            start = int(item.get('start') or 0)
-                        except Exception:
-                            start = 0
-                        href = f'{site}/event/{quote_plus(path_part, safe="-_.~")}'
-                        if tm.upper() == 'LIVE':
-                            time_label = '[COLOR red]LIVE[/COLOR]'
-                        elif start > 0:
-                            try:
-                                dt = datetime.fromtimestamp(start / 1000.0, tz=timezone.utc).astimezone()
-                                event_date = dt.date()
-                                today = datetime.now().astimezone().date()
-                                tomorrow = today + timedelta(days=1)
-                                if event_date == today:
-                                    day_label = 'Today'
-                                elif event_date == tomorrow:
-                                    day_label = 'Tomorrow'
-                                else:
-                                    day_label = dt.strftime('%m/%d')
-                                local_time = dt.strftime('%I:%M %p').lstrip('0')
-                                time_label = f'[COLOR dodgerblue]{day_label} {local_time}[/COLOR]'
-                            except Exception:
-                                time_label = f'[COLOR dodgerblue]{tm}[/COLOR]' if tm else ''
-                        elif tm:
-                            time_label = f'[COLOR dodgerblue]{tm}[/COLOR]'
-                        else:
-                            time_label = ''
-                        label = f'{time_label} [COLOR gray]{sport_name}[/COLOR] [COLOR orange]{title}[/COLOR]'.strip()
-                        results.append((href, label))
-            return results or None
-        except Exception as e:
-            _log_error('trendy', url, e)
             return None
