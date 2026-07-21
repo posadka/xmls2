@@ -147,6 +147,8 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
+            elif 'streamify' in url:
+                u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'sportsurge']):
@@ -1288,4 +1290,41 @@ class streamer:
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('korast', url, e)
+            return None
+
+    @_guard
+    def streamsify(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            iframe1 = self._get_iframe_src(page_data, require_id=True)
+            if not iframe1:
+                return None
+
+            iframe1_html = requests.get(
+                iframe1,
+                headers={'Referer': url, 'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
+            iframe2 = self._get_iframe_src(iframe1_html)
+            if not iframe2:
+                return None
+
+            origin = _base_url(iframe2)
+            iframe2_html = requests.get(
+                iframe2,
+                headers={'Referer': iframe1, 'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
+
+            if 'atob' in iframe2_html:
+                m = re.search(r"atob\('([^']+)", iframe2_html)
+                if not m:
+                    return None
+                stream_url = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
+            else:
+                return None
+
+            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('streamsify', url, e)
             return None

@@ -83,6 +83,8 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
                 u = self.sportsurge(url)
+            elif 'streamsify' in url:
+                u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
@@ -866,4 +868,46 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('sportsurge', url, e)
+            return None
+
+    @_guard
+    def streamsify(self, url):
+        try:
+            base    = _base_url(url)
+            today   = datetime.now(timezone.utc).date()
+            results = []
+            page    = 1
+            while True:
+                page_url  = url if page == 1 else urljoin(base, f'/page/{page}/')
+                page_data = requests.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                articles  = re.findall(r'<article.*?</article>', page_data, re.DOTALL)
+                if not articles:
+                    break
+                stop = False
+                for article in articles:
+                    m = re.search(
+                        r'<h2 class="entry-title"[^>]*><a href="([^"]+)"[^>]*>([^<]+)</a></h2>.*?datetime="([^"]+)"',
+                        article, re.DOTALL
+                    )
+                    if not m:
+                        continue
+                    post_url, title, ts = m.groups()
+                    try:
+                        dt = datetime.strptime(ts, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc).astimezone()
+                    except Exception:
+                        continue
+                    if dt.date() < today:
+                        stop = True
+                        break
+                    if dt.date() > today:
+                        continue
+                    time_str = dt.strftime('%I:%M %p').lstrip('0')
+                    title    = html.unescape(title).strip()
+                    results.append((post_url, self._label(time_str, title)))
+                if stop:
+                    break
+                page += 1
+            return results or None
+        except Exception as e:
+            _log_error('streamsify', url, e)
             return None
