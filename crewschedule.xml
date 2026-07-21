@@ -880,22 +880,27 @@ class streamer:
             while True:
                 page_url  = url if page == 1 else urljoin(base, f'/page/{page}/')
                 page_data = requests.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-                articles  = re.findall(r'<article.*?</article>', page_data, re.DOTALL)
+                log(f'streamsify page={page} len={len(page_data)} head={page_data[:300]}', xbmc.LOGERROR)
+                articles  = re.findall(r'<article.*?</article>', page_data, re.S)
+                log(f'streamsify page={page} articles_found={len(articles)}', xbmc.LOGERROR)
                 if not articles:
                     break
                 stop = False
                 for article in articles:
                     m = re.search(
                         r'<h2 class="entry-title"[^>]*><a href="([^"]+)"[^>]*>([^<]+)</a></h2>.*?datetime="([^"]+)"',
-                        article, re.DOTALL
+                        article, re.S
                     )
                     if not m:
+                        log('streamsify article did not match title/time regex', xbmc.LOGERROR)
                         continue
                     post_url, title, ts = m.groups()
                     try:
                         dt = datetime.strptime(ts, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc).astimezone()
-                    except Exception:
+                    except Exception as e:
+                        log(f'streamsify bad timestamp {ts}: {e}', xbmc.LOGERROR)
                         continue
+                    log(f'streamsify parsed: {title.strip()} | {dt} | today={today}', xbmc.LOGERROR)
                     if dt.date() < today:
                         stop = True
                         break
@@ -907,6 +912,7 @@ class streamer:
                 if stop:
                     break
                 page += 1
+            log(f'streamsify total results={len(results)}', xbmc.LOGERROR)
             return results or None
         except Exception as e:
             _log_error('streamsify', url, e)
