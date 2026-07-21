@@ -83,7 +83,7 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
                 u = self.sportsurge(url)
-            elif 'streamsify' in url:
+            elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)

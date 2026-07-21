@@ -147,7 +147,7 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
-            elif 'streamify' in url:
+            elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
                 u = self.streamcenter(url)
