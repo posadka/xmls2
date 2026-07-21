@@ -874,7 +874,7 @@ class streamer:
     def streamsify(self, url):
         try:
             base    = _base_url(url)
-            today   = datetime.now(timezone.utc).date()
+            today   = datetime.now().astimezone().date()
             results = []
             page    = 1
             while True:
