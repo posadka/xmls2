@@ -532,402 +532,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     </regex>
 </item>
 
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (SHARK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail></thumbnail>
-    <fanart></fanart>
-    <regex>
-        <name>makelist</name>
-        <listrepeat><![CDATA[
-        <title>[makelist.param2]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-        ]]></listrepeat>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://sharkstreams.net/')
-    return url
-]]></expres>
-        <page></page>
-    </regex>
-    <regex>
-        <name>makelist2</name>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import xbmc, xbmcgui, threading
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    result = [None]
-    done = [False]
-    def fetch():
-        result[0] = client.external('[makelist.param1]')
-        done[0] = True
-    t = threading.Thread(target=fetch)
-    t.start()
-    progress = 0
-    while not done[0]:
-        if pDialog.iscanceled():
-            pDialog.close()
-            return
-        if progress < 90:
-            progress += 2
-        pDialog.update(progress, 'The Crew Is Getting Your Event...')
-        xbmc.sleep(200)
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
-    xbmc.sleep(2000)
-    pDialog.close()
-    return result[0]
-]]></expres>
-        <page></page>
-    </regex>
-</item>
-
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (XBOX EHD)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail></thumbnail>
-    <fanart></fanart>
-    <regex>
-        <name>makelist</name>
-        <listrepeat><![CDATA[
-        <title>[makelist.param2]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-        ]]></listrepeat>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import requests
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    try:
-        page_data = requests.get('https://embedhd.org/api-event.php', headers={'User-Agent': UA}, timeout=10).json()
-    except Exception:
-        return None
-    results = []
-    for day in page_data.get('days', []):
-        for event in day.get('items', []):
-            title   = event.get('title', '')
-            league  = event.get('league', '').upper()
-            status  = event.get('status', '')
-            streams = event.get('streams', [])
-            if not streams:
-                continue
-            if status == 'LIVE':
-                label = '[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
-            else:
-                label = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
-            link = streams[0].get('link', '')
-            if link:
-                results.append((link, label))
-    return results or None
-]]></expres>
-        <page></page>
-    </regex>
-    <regex>
-        <name>makelist2</name>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests
-    try:
-        from urllib.parse import urlparse, urljoin, quote_plus
-    except ImportError:
-        from urlparse import urlparse, urljoin
-        from urllib import quote_plus
-    import xbmc, xbmcgui, threading
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    url = '[makelist.param1]'
-    parsed  = urlparse(url)
-    referer = '%s://%s' % (parsed.scheme, parsed.netloc)
-    headers = {'Referer': referer, 'User-Agent': UA}
-    def fetch():
-        try:
-            page = requests.get(url, headers=headers, timeout=10).text
-            m = re.search(r'fid\s*=\s*"([^"]+)"', page)
-            if not m:
-                return None
-            fid = m.group(1)
-            m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page)
-            if not m:
-                return None
-            js_src = m.group(1)
-            full_url = 'https:' + js_src if js_src.startswith('//') else js_src
-            parsed2  = urlparse(full_url)
-            referer2 = '%s://%s' % (parsed2.scheme, parsed2.netloc)
-            js_data  = requests.get(full_url, headers={'Referer': referer2, 'User-Agent': UA}, timeout=10).text
-            m = re.search(r'src=["\']([^"\']+)', js_data)
-            if not m:
-                return None
-            api = m.group(1)
-            if api.startswith('//'):
-                api = 'https:' + api
-            elif api.startswith('/'):
-                api = urljoin(referer2, api)
-            api_url  = api + 'mobile&live=' + fid
-            api_html = requests.get(api_url, headers={'Referer': referer2, 'User-Agent': UA}, timeout=10).text
-            m = re.search(r'\(\[([^\]]+)\]\.join\(""\)', api_html)
-            if not m:
-                return None
-            chars  = re.findall(r'"([^"]*)"', m.group(1))
-            source = ''.join(chars).replace('\\/', '/')
-            import re as _re
-            source = _re.sub(r'(https://)/{1,}', r'\1', source)
-            return (
-                source
-                + '|Referer=' + quote_plus(referer2 + '/')
-                + '&Origin='  + quote_plus(referer2)
-                + '&User-Agent=' + quote_plus(UA)
-            )
-        except Exception:
-            return None
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    result = [None]
-    done   = [False]
-    def run():
-        result[0] = fetch()
-        done[0]   = True
-    t = threading.Thread(target=run)
-    t.start()
-    progress = 0
-    while not done[0]:
-        if pDialog.iscanceled():
-            pDialog.close()
-            return
-        if progress < 90:
-            progress += 2
-        pDialog.update(progress, 'The Crew Is Finding Your Event...')
-        xbmc.sleep(200)
-    if not result[0]:
-        pDialog.update(100, 'Stream not found.')
-        xbmc.sleep(2000)
-        pDialog.close()
-        return
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
-    xbmc.sleep(2000)
-    pDialog.close()
-    return result[0]
-]]></expres>
-        <page>[makelist.param1]</page>
-    </regex>
-</item>
-
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (XBOX SC)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail></thumbnail>
-    <fanart></fanart>
-    <regex>
-        <name>makelist</name>
-        <listrepeat><![CDATA[
-        <title>[makelist.param2]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-        ]]></listrepeat>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import requests
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    try:
-        page_data = requests.get('hhttps://streame.center', headers={'User-Agent': UA}, timeout=10).json()
-    except Exception:
-        return None
-    results = []
-    for item in page_data:
-        name  = item.get('name') or item.get('gameName') or 'Unknown'
-        video = item.get('videoUrl') or ''
-        for n, u in enumerate(video.split(';'), 1):
-            href = u.split('<')[0].strip()
-            if not href:
-                continue
-            label = '[COLOR orange]%s[/COLOR]' % name if n == 1 else '[COLOR orange]%s (Stream %s)[/COLOR]' % (name, n)
-            results.append((href, label))
-    return results or None
-]]></expres>
-        <page></page>
-    </regex>
-    <regex>
-        <name>makelist2</name>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests
-    try:
-        from urllib.parse import urlparse
-    except ImportError:
-        from urlparse import urlparse
-    import xbmc, xbmcgui, threading
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    url = '[makelist.param1]'
-    def fetch():
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', page_data, re.I)
-            if not m:
-                return None
-            iframe1 = m.group(1).strip()
-            if iframe1.startswith('//'):
-                iframe1 = 'https:' + iframe1
-            iframe1_html = requests.get(iframe1, headers={'Referer': url, 'User-Agent': UA}, timeout=10).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
-            if not m:
-                return None
-            parsed  = urlparse(iframe1)
-            origin  = '%s://%s/' % (parsed.scheme, parsed.netloc)
-            resp = requests.post(
-                origin + 'embed/decrypt.php',
-                data={'input': m.group(1)},
-                headers={
-                    'User-Agent': UA,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Referer': iframe1,
-                },
-                timeout=10
-            ).text.strip()
-            if not resp or not resp.startswith('http'):
-                return None
-            return '%s|Referer=%s&User-Agent=%s' % (resp, origin, UA)
-        except Exception:
-            return None
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    result = [None]
-    done   = [False]
-    def run():
-        result[0] = fetch()
-        done[0]   = True
-    t = threading.Thread(target=run)
-    t.start()
-    progress = 0
-    while not done[0]:
-        if pDialog.iscanceled():
-            pDialog.close()
-            return
-        if progress < 90:
-            progress += 2
-        pDialog.update(progress, 'The Crew Is Finding Your Event...')
-        xbmc.sleep(200)
-    if not result[0]:
-        pDialog.update(100, 'Stream not found.')
-        xbmc.sleep(2000)
-        pDialog.close()
-        return
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
-    xbmc.sleep(2000)
-    pDialog.close()
-    return result[0]
-]]></expres>
-        <page>[makelist.param1]</page>
-    </regex>
-</item>
-
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (XBOX SE)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail></thumbnail>
-    <fanart></fanart>
-    <regex>
-        <name>makelist</name>
-        <listrepeat><![CDATA[
-        <title>[makelist.param2]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-        ]]></listrepeat>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests, html
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    try:
-        page_data = requests.get('https://thestreameast.top/', headers={'User-Agent': UA}, timeout=10).text
-    except Exception:
-        return None
-    matches = re.findall(
-        r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
-        r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
-        r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
-        r'data.*?>([^<]*)',
-        page_data
-    )
-    results = []
-    for href, league, teams, timestamp in matches:
-        href   = href.strip()
-        league = html.unescape(league).strip()
-        teams  = html.unescape(teams).strip()
-        label  = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, teams)
-        results.append((href, label))
-    return results or None
-]]></expres>
-        <page></page>
-    </regex>
-    <regex>
-        <name>makelist2</name>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests, base64
-    try:
-        from urllib.parse import urlparse
-    except ImportError:
-        from urlparse import urlparse
-    import xbmc, xbmcgui, threading
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    url = '[makelist.param1]'
-    def fetch():
-        try:
-            headers   = {'User-Agent': UA, 'Referer': url}
-            page_data = requests.get(url, headers=headers, timeout=10).text
-            m = re.search(r'(?i)<iframe[^>]+src="([^"]+)', page_data)
-            if not m:
-                return None
-            iframe_url  = m.group(1)
-            iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
-            parsed  = urlparse(iframe_url)
-            referer = '%s://%s/' % (parsed.scheme, parsed.netloc)
-            origin  = '%s://%s' % (parsed.scheme, parsed.netloc)
-            if 'atob' in iframe_html:
-                m = re.search(r"atob\('([^']+)", iframe_html)
-                if not m:
-                    return None
-                source = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
-            else:
-                m = re.search(r'const\s+source\s*=\s*"([^"]+)', iframe_html)
-                if not m:
-                    return None
-                source = m.group(1)
-            return '%s|User-Agent=%s&Referer=%s&Origin=%s' % (source, UA, referer, origin)
-        except Exception:
-            return None
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    result = [None]
-    done   = [False]
-    def run():
-        result[0] = fetch()
-        done[0]   = True
-    t = threading.Thread(target=run)
-    t.start()
-    progress = 0
-    while not done[0]:
-        if pDialog.iscanceled():
-            pDialog.close()
-            return
-        if progress < 90:
-            progress += 2
-        pDialog.update(progress, 'The Crew Is Finding Your Event...')
-        xbmc.sleep(200)
-    if not result[0]:
-        pDialog.update(100, 'Stream not found.')
-        xbmc.sleep(2000)
-        pDialog.close()
-        return
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
-    xbmc.sleep(2000)
-    pDialog.close()
-    return result[0]
-]]></expres>
-        <page>[makelist.param1]</page>
-    </regex>
-</item>
-
 <item>
     <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (SZ)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <link>$doregex[makelist]</link>
@@ -979,6 +583,64 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     return result[0]
 ]]></expres>
         <page></page>
+    </regex>
+</item>
+
+<item>
+    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (SFI)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+    <link>$doregex[makelist]</link>
+    <thumbnail></thumbnail>
+    <fanart></fanart>
+    <regex>
+        <name>makelist</name>
+        <listrepeat><![CDATA[
+        <title>[makelist.param2]</title>
+        <link>$doregex[makelist2]</link>
+        <thumbnail></thumbnail>
+        ]]></listrepeat>
+        <expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client,control
+    url = client.schedule('https://streamsify.xyz/')
+    return url
+]]></expres>
+        <page></page>
+    </regex>
+    <regex>
+        <name>makelist2</name>
+        <expres><![CDATA[#$pyFunction
+def GetLSProData(page_data,Cookie_Jar,m,url = ''):
+    from resources.lib.modules import client
+    import xbmc, xbmcgui, threading
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
+    result = [None]
+    done = [False]
+    def fetch():
+        result[0] = client.external('[makelist.param1]')
+        done[0] = True
+    t = threading.Thread(target=fetch)
+    t.start()
+    progress = 0
+    while not done[0]:
+        if pDialog.iscanceled():
+            pDialog.close()
+            return
+        if progress < 90:
+            progress += 2
+        pDialog.update(progress, 'The Crew Is Finding Your Event...')
+        xbmc.sleep(200)
+    if not result[0]:
+        pDialog.update(100, 'Stream not found.')
+        xbmc.sleep(2000)
+        pDialog.close()
+        return
+    pDialog.update(100, 'The Crew Is Playing Your Event!')
+    xbmc.sleep(2000)
+    pDialog.close()
+    return result[0]
+]]></expres>
+        <page>[makelist.param1]</page>
     </regex>
 </item>
 
