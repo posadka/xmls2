@@ -1234,8 +1234,7 @@ class streamer:
                 if choice == -1:
                     return None
                 stream = urls[choice]
-            referer = origin + '/'
-            return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+            return f'{stream}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
         except Exception as e:
             _log_error('sharkstreams', url, e)
             return None
