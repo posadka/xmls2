@@ -150,6 +150,8 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
+            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk']):
+                u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
@@ -1411,4 +1413,30 @@ class streamer:
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('streamsify', url, e)
+            return None
+
+    @_guard
+    def timstreams(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            m = re.search(
+                r'var\s+_uz6\s*=\s*\[([^\]]+)\].*?_cs4\s*=\s*(\d+)\s*,\s*_tx4\s*=\s*(\d+)',
+                page_data, re.S
+            )
+            if not m:
+                log(f'timstreams: no obfuscated payload found | {url}', xbmc.LOGERROR)
+                return None
+            arr = [int(n) for n in m.group(1).split(',')]
+            cs4 = int(m.group(2))
+            tx4 = int(m.group(3))
+            decoded = ''.join(chr(((n ^ cs4) - tx4 + 256) % 256) for n in arr)
+            m = re.search(r'SIGNED_URL\s*=\s*"([^"]+)"', decoded)
+            if not m:
+                log(f'timstreams: no SIGNED_URL in decoded payload | {url}', xbmc.LOGERROR)
+                return None
+            stream_url = m.group(1)
+            origin = _base_url(stream_url)
+            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('timstreams', url, e)
             return None

@@ -83,6 +83,8 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
                 u = self.sportsurge(url)
+            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk']):
+                u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center']):
@@ -909,4 +911,21 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('streamsify', url, e)
+            return None
+
+    @_guard
+    def timstreams(self, url):
+        try:
+            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            results = []
+            for ch in data.get('channels', []):
+                for s in ch.get('streams', []):
+                    stream_url = s.get('url', '')
+                    if not stream_url:
+                        continue
+                    label = f'[COLOR orange]{ch.get("name", "")}[/COLOR]'
+                    results.append((stream_url, label))
+            return results or None
+        except Exception as e:
+            _log_error('timstreams', url, e)
             return None
