@@ -148,6 +148,8 @@ class streamer:
                 u = self.flyembed(url)
             elif 'nizar.nexa.st' in url:
                 u = self.sportzone(url)
+            elif any(x in url for x in ['rippleplays.cfd', 'ripplestream.cyou']):
+                u = self.ripplestreamsfouru(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
             elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk']):
@@ -1437,4 +1439,45 @@ class streamer:
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('timstreams', url, e)
+            return None
+
+    @_guard
+    def ripplestreamsfouru(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            iframe1 = self._get_iframe_src(page_data)
+            if not iframe1:
+                log(f'ripplestreamsfouru: no iframe1 | {url}', xbmc.LOGERROR)
+                return None
+
+            iframe1_html = requests.get(
+                iframe1,
+                headers={'Referer': url, 'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
+            iframe2 = self._get_iframe_src(iframe1_html)
+            if not iframe2:
+                log(f'ripplestreamsfouru: no iframe2 | {iframe1}', xbmc.LOGERROR)
+                return None
+
+            origin = _base_url(iframe2)
+            iframe2_html = requests.get(
+                iframe2,
+                headers={'Referer': iframe1, 'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
+
+            if 'atob' in iframe2_html:
+                m = re.search(r"atob\('([^']+)", iframe2_html)
+                if not m:
+                    log(f'ripplestreamsfouru: no atob match | {iframe2}', xbmc.LOGERROR)
+                    return None
+                stream_url = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
+            else:
+                log(f'ripplestreamsfouru: no atob in iframe2 html | {iframe2}', xbmc.LOGERROR)
+                return None
+
+            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('ripplestreamsfouru', url, e)
             return None

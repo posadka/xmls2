@@ -83,6 +83,8 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
                 u = self.sportsurge(url)
+            elif any(x in url for x in ['rippleplays.cfd', 'ripplestream.cyou']):
+                u = self.ripplestreamsfouru(url)
             elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk']):
                 u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
@@ -897,4 +899,31 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('timstreams', url, e)
+            return None
+
+    @_guard
+    def ripplestream(url):
+        try:
+            base    = _base_url(url)
+            results = []
+            page    = 1
+            while True:
+                page_url  = url if page == 1 else urljoin(base, f'/page/{page}/')
+                page_data = requests.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                articles  = re.findall(r'<article id="post-\d+".*?</article>', page_data, re.S)
+                if not articles:
+                    break
+                for article in articles:
+                    m = re.search(r'<h3>\s*<a href="([^"]+)">([^<]+)</a>\s*</h3>', article, re.S)
+                    if not m:
+                        continue
+                    href, title = m.groups()
+                    title = html.unescape(title).strip()
+                    results.append((href, f'[COLOR orange]{title}[/COLOR]'))
+                if not re.search(r'<a class="next page-numbers"', page_data):
+                    break
+                page += 1
+            return results or None
+        except Exception as e:
+            _log_error('ripplestream', url, e)
             return None
