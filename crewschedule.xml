@@ -145,7 +145,7 @@ class streamer:
                 u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal']):
                 u = self.ovostreams(url)
-            elif 'xyzstreams' in url:
+            elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)

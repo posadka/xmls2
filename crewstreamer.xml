@@ -176,7 +176,7 @@ class streamer:
                 u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
                 u = self.givemereddit(url)
-            elif 'xyzstreams' in url:
+            elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
             else:
                 u = self.generic(url)
