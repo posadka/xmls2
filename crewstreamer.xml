@@ -176,6 +176,8 @@ class streamer:
                 u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams']):
                 u = self.givemereddit(url)
+            elif 'xyzstreams' in url:
+                u = self.xyzstreams(url)
             else:
                 u = self.generic(url)
             return u
@@ -1480,4 +1482,24 @@ class streamer:
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('ripplestreamsfouru', url, e)
+            return None
+
+    @_guard
+    def xyzstreams(self, url):
+        try:
+            links = json.loads(url)
+            if not links:
+                log('xyzstreams: empty links list', xbmc.LOGERROR)
+                return None
+            if len(links) == 1:
+                choice = 0
+            else:
+                choice = xbmcgui.Dialog().select('Choose Feed', [l['label'] for l in links])
+            if choice == -1:
+                return None
+            stream_url = links[choice]['url']
+            origin = _base_url(stream_url)
+            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('xyzstreams', url, e)
             return None

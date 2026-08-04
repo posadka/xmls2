@@ -32,6 +32,40 @@ UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
 TAG = 'Schedule'
 TIMEOUT = 10
 
+M3U8_CHANNELS_MAP = {
+    'LAA': 'https://ftv2.xyzstreams.st/MLBTVLAA/B0001/master.m3u8',
+    'BAL': 'https://ftv2.xyzstreams.st/MLBTVBAL/B0004/master.m3u8',
+    'BOS': 'https://ftv2.xyzstreams.st/MLBTVBOS/B0005/master.m3u8',
+    'CWS': 'https://ftv2.xyzstreams.st/MLBTVCHW/B0007/master.m3u8',
+    'CLE': 'https://ftv2.xyzstreams.st/MLBTVCLE/B0009/master.m3u8',
+    'DET': 'https://ftv2.xyzstreams.st/MLBTVDET/B0011/master.m3u8',
+    'HOU': 'https://ftv2.xyzstreams.st/MLBTVHOU/B0013/master.m3u8',
+    'KC':  'https://ftv2.xyzstreams.st/MLBTVKCR/B0014/master.m3u8',
+    'MIN': 'https://ftv2.xyzstreams.st/MLBTVMIN/B0017/master.m3u8',
+    'NYY': 'https://ftv2.xyzstreams.st/MLBTVNYY/B0020/master.m3u8',
+    'ATH': 'https://ftv2.xyzstreams.st/MLBTVATH/B0021/master.m3u8',
+    'SEA': 'https://ftv2.xyzstreams.st/MLBTVSEA/B0026/master.m3u8',
+    'TB':  'https://ftv2.xyzstreams.st/MLBTVTBR/B0028/master.m3u8',
+    'TEX': 'https://ftv2.xyzstreams.st/MLBTVTEX/B0029/master.m3u8',
+    'TOR': 'https://ftv2.xyzstreams.st/MLBTVTOR/B0030/master.m3u8',
+    'AZ':  'https://ftv2.xyzstreams.st/MLBTVARI/B0002/master.m3u8',
+    'ATL': 'https://ftv2.xyzstreams.st/MLBTVATL/B0003/master.m3u8',
+    'CHC': 'https://ftv2.xyzstreams.st/MLBTVCHC/B0006/master.m3u8',
+    'CIN': 'https://ftv2.xyzstreams.st/MLBTVCIN/B0008/master.m3u8',
+    'COL': 'https://ftv2.xyzstreams.st/MLBTVCOL/B0010/master.m3u8',
+    'LAD': 'https://ftv2.xyzstreams.st/MLBTVLAD/B0015/master.m3u8',
+    'MIA': 'https://ftv2.xyzstreams.st/MLBTVMIA/B0012/master.m3u8',
+    'MIL': 'https://ftv2.xyzstreams.st/MLBTVMIL/B0016/master.m3u8',
+    'NYM': 'https://ftv2.xyzstreams.st/MLBTVNYM/B0019/master.m3u8',
+    'PHI': 'https://ftv2.xyzstreams.st/MLBTVPHI/B0022/master.m3u8',
+    'PIT': 'https://ftv2.xyzstreams.st/MLBTVPIT/B0023/master.m3u8',
+    'SD':  'https://ftv2.xyzstreams.st/MLBTVSDP/B0024/master.m3u8',
+    'SF':  'https://ftv2.xyzstreams.st/MLBTVSFG/B0025/master.m3u8',
+    'STL': 'https://ftv2.xyzstreams.st/MLBTVSTL/B0027/master.m3u8',
+    'WSH': 'https://ftv2.xyzstreams.st/MLBTVWAS/B0018/master.m3u8',
+    'WAS': 'https://ftv2.xyzstreams.st/MLBTVWAS/B0018/master.m3u8',
+}
+
 
 def log(msg, level=xbmc.LOGINFO):
     xbmc.log(f'{TAG} {msg}', level)
@@ -111,6 +145,8 @@ class streamer:
                 u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal']):
                 u = self.ovostreams(url)
+            elif 'xyzstreams' in url:
+                u = self.xyzstreams(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -902,7 +938,7 @@ class streamer:
             return None
 
     @_guard
-    def ripplestream(url):
+    def ripplestream(self, url):
         try:
             base    = _base_url(url)
             results = []
@@ -926,4 +962,47 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('ripplestream', url, e)
+            return None
+
+    @_guard
+    def xyzstreams(self, url):
+        try:
+            data  = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            games = (data.get('data') or {}).get('games', [])
+            results = []
+            for game in games:
+                home = game.get('home_team') or {}
+                away = game.get('visiting_team') or {}
+                home_abbr = (home.get('short_name') or '').upper()
+                away_abbr = (away.get('short_name') or '').upper()
+                home_url  = M3U8_CHANNELS_MAP.get(home_abbr)
+                away_url  = M3U8_CHANNELS_MAP.get(away_abbr)
+                if not home_url and not away_url:
+                    continue
+                links = []
+                if away_url:
+                    links.append({'label': f'Away Feed ({away_abbr})', 'url': away_url})
+                if home_url:
+                    links.append({'label': f'Home Feed ({home_abbr})', 'url': home_url})
+                title  = f'{away.get("name") or away_abbr} @ {home.get("name") or home_abbr}'
+                status = (game.get('game_status') or '').lower()
+                clock  = (game.get('clock') or '').strip()
+                if status in ('in progress', 'live') and clock and not clock.lower().startswith('0 '):
+                    time_str = '[COLOR red]LIVE[/COLOR]'
+                elif status in ('final', 'completed'):
+                    time_str = '[COLOR gray]FINAL[/COLOR]'
+                else:
+                    time_str = ''
+                    dt_str = game.get('datetime')
+                    if dt_str:
+                        try:
+                            dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc).astimezone()
+                            time_str = f'[COLOR dodgerblue]{dt.strftime("%m/%d %I:%M %p").lstrip("0")}[/COLOR]'
+                        except Exception:
+                            pass
+                label = f'{time_str} [COLOR orange]{title}[/COLOR]'.strip()
+                results.append((json.dumps(links), label))
+            return results or None
+        except Exception as e:
+            _log_error('xyzstreams', url, e)
             return None
