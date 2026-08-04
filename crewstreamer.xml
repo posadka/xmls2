@@ -1498,8 +1498,18 @@ class streamer:
             if choice == -1:
                 return None
             stream_url = links[choice]['url']
-            origin = _base_url(stream_url)
-            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+            return (
+                stream_url
+                + '|Referer=' + quote_plus('https://xyzstreams.st/')
+                + '&Origin=' + quote_plus('https://xyzstreams.st')
+                + '&User-Agent=' + quote_plus(UA)
+                + '&Accept=' + quote_plus('*/*')
+                + '&Accept-Language=' + quote_plus('en-US,en;q=0.7')
+                + '&Sec-Fetch-Dest=empty'
+                + '&Sec-Fetch-Mode=cors'
+                + '&Sec-Fetch-Site=same-site'
+                + '&Sec-GPC=1'
+            )
         except Exception as e:
             _log_error('xyzstreams', url, e)
             return None
