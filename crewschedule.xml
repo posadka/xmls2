@@ -119,7 +119,7 @@ class streamer:
                 u = self.sportsurge(url)
             elif any(x in url for x in ['rippleplays.cfd', 'ripplestream.cyou']):
                 u = self.ripplestreamsfouru(url)
-            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk']):
+            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants']):
                 u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
