@@ -63,8 +63,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://thestreameast.top/')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streameast.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -121,9 +125,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
+    from resources.lib.modules import client, control
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://ovogoal.cyou/api/v2/flyembed.json')
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/flyembed.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
 <page></page>
@@ -180,8 +187,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://streame.center')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streame.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -238,8 +249,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://embedhd.st/api-event.php')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/ehd.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -296,8 +311,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://shd247.world/index.html')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/shd.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -354,61 +373,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://sportsonline.vc/prog.txt')
-    return url
-]]></expres>
-        <page></page>
-    </regex>
-    <regex>
-        <name>makelist2</name>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import xbmc, xbmcgui, threading
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    result = [None]
-    done = [False]
-    def fetch():
-        result[0] = client.external('[makelist.param1]')
-        done[0] = True
-    t = threading.Thread(target=fetch)
-    t.start()
-    progress = 0
-    while not done[0]:
-        if pDialog.iscanceled():
-            pDialog.close()
-            return
-        if progress < 90:
-            progress += 2
-        pDialog.update(progress, 'The Crew Is Getting Your Event...')
-        xbmc.sleep(200)
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
-    xbmc.sleep(2000)
-    pDialog.close()
-    return result[0]
-]]></expres>
-        <page></page>
-    </regex>
-</item>
-
-<item>
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (TVAPP)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail></thumbnail>
-    <fanart></fanart>
-    <regex>
-        <name>makelist</name>
-        <listrepeat><![CDATA[
-        <title>[makelist.param2]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-        ]]></listrepeat>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://the-tv.app/index1')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/sportsonline.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -460,8 +430,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://buffstreams.ir')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/buff.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -513,9 +487,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
+    from resources.lib.modules import client, control
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://cdnsport.ru/data.json')
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/sz.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -567,8 +544,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://sportsurge.ir')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/ss2.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -625,8 +606,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://streamsify.xyz/')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streamsify.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -728,59 +713,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     return result[0]
 ]]></expres>
         <page>[makelist.param1]</page>
-    </regex>
-</item>
-
-<item
-    <title>[COLOR orchid]¤[/COLOR] [B][COLOR white]FULL SITE LIVE[/COLOR] [COLOR orchid] (SHARK)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
-    <link>$doregex[makelist]</link>
-    <thumbnail></thumbnail>
-    <fanart></fanart>
-    <regex>
-        <name>makelist</name>
-        <listrepeat><![CDATA[
-        <title>[makelist.param2]</title>
-        <link>$doregex[makelist2]</link>
-        <thumbnail></thumbnail>
-        ]]></listrepeat>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://sharkstreams.net/')
-    return url
-]]></expres>
-        <page></page>
-    </regex>
-    <regex>
-        <name>makelist2</name>
-        <expres><![CDATA[#$pyFunction
-def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client
-    import xbmc, xbmcgui, threading
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
-    result = [None]
-    done = [False]
-    def fetch():
-        result[0] = client.external('[makelist.param1]')
-        done[0] = True
-    t = threading.Thread(target=fetch)
-    t.start()
-    progress = 0
-    while not done[0]:
-        if pDialog.iscanceled():
-            pDialog.close()
-            return
-        if progress < 90:
-            progress += 2
-        pDialog.update(progress, 'The Crew Is Getting Your Event...')
-        xbmc.sleep(200)
-    pDialog.update(100, 'The Crew Is Playing Your Event!')
-    xbmc.sleep(2000)
-    pDialog.close()
-    return result[0]
-]]></expres>
-        <page></page>
     </regex>
 </item>
 
@@ -1132,6 +1064,5 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 <link>plugin://plugin.video.thecrew/?action=developer</link>
 <thumbnail></thumbnail>
 </plugin>
-
 
 

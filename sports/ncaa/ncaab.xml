@@ -322,8 +322,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://thestreameast.top/')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streameast.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -380,9 +384,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
+    from resources.lib.modules import client, control
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://ovogoal.cyou/api/v2/flyembed.json')
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/flyembed.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
 <page></page>
@@ -439,8 +446,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://streame.center')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streame.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -497,8 +508,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://embedhd.st/api-event.php')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/ehd.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -555,8 +570,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://shd247.world/index.html')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/shd.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -613,8 +632,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://sportsonline.vc/prog.txt')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/sportsonline.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -666,8 +689,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://buffstreams.ir')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/buff.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -719,9 +746,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
+    from resources.lib.modules import client, control
+    import re
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    url = client.schedule('https://cdnsport.ru/data.json')
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/sz.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -773,8 +803,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://sportsurge.ir')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/ss2.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -831,8 +865,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://streamsify.xyz/')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streamsify.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>
@@ -1281,7 +1319,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <plugin>
-    <name>Testings</name>
-    <link>plugin://plugin.video.thecrew/?action=developer</link>
-    <thumbnail></thumbnail>
+<name>Testings</name>
+<link>plugin://plugin.video.thecrew/?action=developer</link>
+<thumbnail></thumbnail>
 </plugin>
