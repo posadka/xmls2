@@ -112,6 +112,29 @@ class streamer:
             return None
         return f'{resp}|Referer={origin}&User-Agent={UA}'
 
+    @staticmethod
+    def _decrypt_layered(encoded, xor_key, rev_indices):
+        chars = list(encoded)
+        unshuffled = [''] * len(chars)
+        for i, c in enumerate(chars):
+            unshuffled[rev_indices[i]] = c
+        xor_encoded = ''.join(unshuffled)
+        hex_encoded = ''
+        for i in range(0, len(xor_encoded), 2):
+            byte = int(xor_encoded[i:i+2], 16)
+            hex_encoded += chr(byte ^ xor_key)
+        rot13_str = ''
+        for i in range(0, len(hex_encoded), 2):
+            rot13_str += chr(int(hex_encoded[i:i+2], 16))
+        reversed_str = rot13_str.translate(
+            str.maketrans(
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+                'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
+            )
+        )
+        b64 = reversed_str[::-1]
+        return base64.b64decode(b64 + '==').decode('utf-8')
+
     def resolve(self, url):
         try:
             if 'epicmartial' in url:
@@ -396,7 +419,31 @@ class streamer:
     @_guard
     def ovostreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+
+            wk_m  = re.search(r'_wk\s*=\s*(\d+)', page_data)
+            wri_m = re.search(r'_wri\s*=\s*\[([^\]]+)\]', page_data)
+            wd_m  = re.search(r'_wd\s*=\s*"([^"]+)"', page_data)
+            if wk_m and wri_m and wd_m:
+                xor_key     = int(wk_m.group(1))
+                rev_indices = [int(x.strip()) for x in wri_m.group(1).split(',')]
+                worker_url  = self._decrypt_layered(wd_m.group(1), xor_key, rev_indices)
+                origin, referer = _origin_referer(url)
+                api_data = requests.get(
+                    worker_url,
+                    headers={'User-Agent': UA, 'Referer': referer, 'Origin': origin},
+                    timeout=TIMEOUT
+                ).json()
+                if not api_data.get('success'):
+                    log(f'ovostreams: worker branch, api success=false | {worker_url}', xbmc.LOGERROR)
+                    return None
+                stream_url = api_data.get('stream', '')
+                if not stream_url:
+                    log(f'ovostreams: worker branch, no stream in api response | {worker_url}', xbmc.LOGERROR)
+                    return None
+                stream_origin = _base_url(stream_url)
+                return f'{stream_url}|User-Agent={UA}&Referer={stream_origin}/&Origin={stream_origin}'
+
             m = re.search(r'<iframe[^>]+src=["\']?([^"\'>\s]+)', page_data)
             if not m:
                 log(f'ovostreams: no iframe found | {url}', xbmc.LOGERROR)
@@ -426,26 +473,7 @@ class streamer:
                 log(f'ovostreams: no _ri match | {iframe_url}', xbmc.LOGERROR)
                 return None
             _ri = [int(x.strip()) for x in ri_m.group(1).split(',')]
-            chars = list(_d)
-            unshuffled = [''] * len(chars)
-            for i, c in enumerate(chars):
-                unshuffled[_ri[i]] = c
-            xor_encoded = ''.join(unshuffled)
-            hex_encoded = ''
-            for i in range(0, len(xor_encoded), 2):
-                byte = int(xor_encoded[i:i+2], 16)
-                hex_encoded += chr(byte ^ _k)
-            rot13_str = ''
-            for i in range(0, len(hex_encoded), 2):
-                rot13_str += chr(int(hex_encoded[i:i+2], 16))
-            reversed_str = rot13_str.translate(
-                str.maketrans(
-                    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-                    'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
-                )
-            )
-            b64 = reversed_str[::-1]
-            php_url = base64.b64decode(b64 + '==').decode('utf-8')
+            php_url = self._decrypt_layered(_d, _k, _ri)
             api_data = requests.get(
                 php_url,
                 headers={
