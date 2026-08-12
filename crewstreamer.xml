@@ -1150,15 +1150,16 @@ class streamer:
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
                 r'\s*for\s*\(\s*\w+\s*=\s*0\s*;\s*\w+\s*<\s*\w+\.length\s*;\s*\w+\+\+\s*\)\s*\{'
-                r'\s*\w+\s*\+=\s*String\.fromCharCode\(\(\(\s*\w+\[\w+\]\s*\^\s*\w+\s*\)\s*-\s*\w+\s*\+\s*256\s*\)\s*%\s*256\s*\)\s*;\s*\}'
+                r'\s*\w+\s*\+=\s*String\.fromCharCode\(\(\(\s*\w+\[\w+\]\s*\^\s*\w+\s*\)\s*-\s*\w+\s*\+\s*(65536|256)\s*\)\s*%\s*(65536|256)\s*\)\s*;\s*\}'
                 r'\s*window\["ev"\+"al"\]\(\s*\w+\s*\)\s*;',
                 embed_html, re.S
             )
             if m:
-                arr = [int(n) for n in m.group(1).split(',')]
-                cs4 = int(m.group(2))
-                tx4 = int(m.group(3))
-                decoded = ''.join(chr(((n ^ cs4) - tx4 + 256) % 256) for n in arr)
+                arr    = [int(n) for n in m.group(1).split(',')]
+                cs4    = int(m.group(2))
+                tx4    = int(m.group(3))
+                modulo = int(m.group(4))
+                decoded = ''.join(chr(((n ^ cs4) - tx4 + modulo) % modulo) for n in arr)
                 m = re.search(r'SIGNED_URL\s*=\s*"([^"]+)"', decoded)
                 if m:
                     return f'{m.group(1)}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
