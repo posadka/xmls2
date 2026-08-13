@@ -94,7 +94,7 @@ class streamer:
     def _decrypt_streams_center(html, referer):
         m = re.search(r'input:\s*"([^"]+)"', html)
         if not m:
-            log(f'_decrypt_streams_center: no input token | {referer}', xbmc.LOGERROR)
+            log(f'_decrypt_streams_center: no input token | {referer} | len={len(html)} preview={html[:200]!r}', xbmc.LOGERROR)
             return None
         origin = _base_url(referer) + '/'
         resp = requests.post(
