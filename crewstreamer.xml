@@ -1009,11 +1009,14 @@ class streamer:
             if not iframe1:
                 log(f'streamcenter: no iframe found | {url}', xbmc.LOGERROR)
                 return None
-            iframe_html = requests.get(
+            iframe_r = requests.get(
                 iframe1,
                 headers={'Referer': url, 'User-Agent': UA},
-                timeout=TIMEOUT
-            ).text
+                timeout=TIMEOUT,
+                allow_redirects=True
+            )
+            iframe_html = iframe_r.text
+            iframe1     = iframe_r.url
             return self._decrypt_streams_center(iframe_html, iframe1)
         except Exception as e:
             _log_error('streamcenter', url, e)
