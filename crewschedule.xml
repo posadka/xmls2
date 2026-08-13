@@ -531,46 +531,49 @@ class streamer:
             response.raise_for_status()
             page_data = response.text
             games = re.findall(
-                r'(?is)'
-                r'<div\s+class=["\']tg-game["\'][^>]*>'
-                r'(.*?)'
-                r'(?='
-                r'<div\s+class=["\']tg-game["\']'
-                r'|<div\s+class=["\']tg-cat["\']'
-                r'|<div\s+class=["\']tg-footer["\']'
-                r'|</div>\s*</div>\s*<script'
-                r'|$'
-                r')',
+                r'(?is)<article\s+class=["\']game-card-row["\'][^>]*>(.*?)</article>',
                 page_data
             )
             results = []
             for game in games:
+                status_match = re.search(
+                    r'(?is)<span\s+class=["\']game-card-status\s+game-card-status-(\w+)["\'][^>]*>\s*(.*?)\s*</span>',
+                    game
+                )
                 time_match = re.search(
-                    r'(?is)<div\s+class=["\']tg-time["\'][^>]*>\s*(.*?)\s*</div>',
+                    r'(?is)<time\s+dateTime=["\']([^"\']+)["\']',
                     game
                 )
                 title_match = re.search(
-                    r'(?is)<div\s+class=["\']tg-title["\'][^>]*>\s*(.*?)\s*</div>',
+                    r'(?is)<h3[^>]*>\s*(.*?)\s*</h3>',
                     game
                 )
                 if not title_match:
                     continue
-                start = ''
-                if time_match:
-                    start = html.unescape(
-                        re.sub(r'<[^>]+>', '', time_match.group(1))
-                    ).strip()
                 name = html.unescape(
                     re.sub(r'<[^>]+>', '', title_match.group(1))
                 ).strip()
                 name = re.sub(r'\s+', ' ', name)
+                is_live = bool(status_match) and status_match.group(1).lower() == 'live'
+                start = ''
+                if time_match:
+                    try:
+                        dt = datetime.strptime(
+                            time_match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ'
+                        ).replace(tzinfo=timezone.utc)
+                        start = dt.astimezone().strftime('%I:%M %p').lstrip('0')
+                    except Exception:
+                        start = ''
                 title = self._label(start, name) if start else name
-                links = re.findall(
-                    r'(?is)<a[^>]+href=["\']([^"\']+)["\'][^>]*>',
+                if is_live:
+                    title = f'[COLOR red]LIVE[/COLOR] {title}'
+                sources = re.findall(
+                    r'(?is)<div\s+class=["\']game-card-source["\'][^>]*>.*?'
+                    r'<a\s+class=["\']game-card-open-link["\'][^>]+href=["\']([^"\']+)["\'][^>]*>\s*(.*?)\s*</a>',
                     game
                 )
                 seen = set()
-                for stream_number, href in enumerate(links, 1):
+                for href, source_label in sources:
                     href = html.unescape(href).strip()
                     if href.startswith('//'):
                         href = 'https:' + href
@@ -580,8 +583,11 @@ class streamer:
                         continue
                     seen.add(href)
                     label = title
-                    if len(links) > 1:
-                        label += f' [COLOR red](Stream {stream_number})[/COLOR]'
+                    if len(sources) > 1:
+                        source_name = html.unescape(
+                            re.sub(r'<[^>]+>', '', source_label)
+                        ).strip()
+                        label += f' [COLOR orange]({source_name})[/COLOR]'
                     results.append((href, label))
             return results or None
         except Exception as e:
