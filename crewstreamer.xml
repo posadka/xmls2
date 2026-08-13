@@ -132,7 +132,8 @@ class streamer:
             if choice == -1:
                 return None
             stream_url = urls[choice]
-        return f'{stream_url}|Referer={resp}&User-Agent={UA}'
+        player_origin = _base_url(resp) + '/'
+        return f'{stream_url}|Referer={player_origin}&User-Agent={UA}'
 
     @staticmethod
     def _decrypt_layered(encoded, xor_key, rev_indices):
