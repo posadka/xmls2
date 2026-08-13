@@ -92,7 +92,8 @@ class streamer:
 
     @staticmethod
     def _decrypt_streams_center(html, referer):
-        origin = _base_url(referer) + '/'
+        base   = _base_url(referer)
+        origin = base + '/'
         m = re.search(r'const streamUrls = (\[.*?\]);', html)
         if m:
             urls = json.loads(m.group(1))
@@ -106,7 +107,7 @@ class streamer:
                 if choice == -1:
                     return None
                 stream_url = urls[choice]
-            return f'{stream_url}|Referer={origin}&User-Agent={UA}'
+            return f'{stream_url}|Referer={origin}&Origin={base}&User-Agent={UA}'
 
         m = re.search(r'input:\s*"([^"]+)"', html)
         if not m:
@@ -126,7 +127,7 @@ class streamer:
             log(f'_decrypt_streams_center: bad decrypt response | {referer} | {resp}', xbmc.LOGERROR)
             return None
         if '.m3u8' in resp:
-            return f'{resp}|Referer={origin}&User-Agent={UA}'
+            return f'{resp}|Referer={origin}&Origin={base}&User-Agent={UA}'
         player_html = requests.get(
             resp,
             headers={'User-Agent': UA, 'Referer': referer},
@@ -147,8 +148,9 @@ class streamer:
             if choice == -1:
                 return None
             stream_url = urls[choice]
-        player_origin = _base_url(resp) + '/'
-        return f'{stream_url}|Referer={player_origin}&User-Agent={UA}'
+        player_base   = _base_url(resp)
+        player_origin = player_base + '/'
+        return f'{stream_url}|Referer={player_origin}&Origin={player_base}&User-Agent={UA}'
 
     @staticmethod
     def _decrypt_layered(encoded, xor_key, rev_indices):
