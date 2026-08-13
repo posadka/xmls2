@@ -1016,7 +1016,6 @@ class streamer:
                 allow_redirects=True
             )
             iframe_html = iframe_r.text
-            iframe1     = iframe_r.url
             return self._decrypt_streams_center(iframe_html, iframe1)
         except Exception as e:
             _log_error('streamcenter', url, e)
