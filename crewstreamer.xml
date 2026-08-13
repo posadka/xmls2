@@ -1004,18 +1004,17 @@ class streamer:
     @_guard
     def streamcenter(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_resp = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            page_data = page_resp.text
             iframe1   = self._get_iframe_src(page_data)
             if not iframe1:
                 log(f'streamcenter: no iframe found | {url}', xbmc.LOGERROR)
                 return None
-            iframe_r = requests.get(
+            iframe_html = requests.get(
                 iframe1,
-                headers={'Referer': url, 'User-Agent': UA},
-                timeout=TIMEOUT,
-                allow_redirects=True
-            )
-            iframe_html = iframe_r.text
+                headers={'Referer': page_resp.url, 'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
             return self._decrypt_streams_center(iframe_html, iframe1)
         except Exception as e:
             _log_error('streamcenter', url, e)
