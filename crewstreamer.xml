@@ -179,7 +179,7 @@ class streamer:
                 u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
-            elif any(x in url for x in ['streame.center', 'streams.center']):
+            elif any(x in url for x in ['streame.center', 'streams.center', 'streamecenter']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'sportsurge']):
                 u = self.streameast(url)
