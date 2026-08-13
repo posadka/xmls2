@@ -1004,19 +1004,113 @@ class streamer:
     @_guard
     def streamcenter(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            iframe1   = self._get_iframe_src(page_data)
-            if not iframe1:
-                log(f'streamcenter: no iframe found | {url}', xbmc.LOGERROR)
-                return None
-            iframe_html = requests.get(
-                iframe1,
-                headers={'Referer': url, 'User-Agent': UA},
+            log(f'streamcenter: START | {url}')
+
+            r = requests.get(
+                url,
+                headers={'User-Agent': UA},
                 timeout=TIMEOUT
-            ).text
-            return self._decrypt_streams_center(iframe_html, iframe1)
+            )
+
+            log(
+                f'streamcenter: page status={r.status_code} '
+                f'len={len(r.text)} | {url}'
+            )
+
+            page_data = r.text
+
+            iframe1 = self._get_iframe_src(page_data)
+
+            log(
+                f'streamcenter: iframe extracted = {iframe1!r}'
+            )
+
+            if not iframe1:
+                log(
+                    f'streamcenter: no iframe found | {url}',
+                    xbmc.LOGERROR
+                )
+                return None
+
+            iframe_headers = {
+                'Referer': url,
+                'User-Agent': UA
+            }
+
+            log(
+                f'streamcenter: requesting iframe | '
+                f'{iframe1} | headers={iframe_headers}'
+            )
+
+            iframe_r = requests.get(
+                iframe1,
+                headers=iframe_headers,
+                timeout=TIMEOUT
+            )
+
+            iframe_html = iframe_r.text
+
+            log(
+                f'streamcenter: iframe status={iframe_r.status_code} '
+                f'len={len(iframe_html)} '
+                f'final_url={iframe_r.url}'
+            )
+
+            # Useful without dumping the entire page.
+            log(
+                f'streamcenter: iframe preview='
+                f'{iframe_html[:500]!r}'
+            )
+
+            log(
+                'streamcenter: calling _decrypt_streams_center'
+            )
+
+            try:
+                result = self._decrypt_streams_center(
+                    iframe_html,
+                    iframe1
+                )
+
+                log(
+                    f'streamcenter: decrypt returned '
+                    f'{type(result).__name__} | {result!r}'
+                )
+
+                return result
+
+            except Exception as e:
+                log(
+                    f'streamcenter: _decrypt_streams_center FAILED | '
+                    f'type={type(e).__name__} | error={e}',
+                    xbmc.LOGERROR
+                )
+
+                import traceback
+
+                log(
+                    'streamcenter: decrypt traceback:\n'
+                    + traceback.format_exc(),
+                    xbmc.LOGERROR
+                )
+
+                return None
+
         except Exception as e:
-            _log_error('streamcenter', url, e)
+            log(
+                f'streamcenter: OUTER FAILED | '
+                f'type={type(e).__name__} | error={e}',
+                xbmc.LOGERROR
+            )
+
+            import traceback
+
+            log(
+                'streamcenter: outer traceback:\n'
+                + traceback.format_exc(),
+                xbmc.LOGERROR
+            )
+
             return None
 
     @_guard
