@@ -92,11 +92,26 @@ class streamer:
 
     @staticmethod
     def _decrypt_streams_center(html, referer):
+        origin = _base_url(referer) + '/'
+        m = re.search(r'const streamUrls = (\[.*?\]);', html)
+        if m:
+            urls = json.loads(m.group(1))
+            if not urls:
+                log(f'_decrypt_streams_center: empty streamUrls | {referer}', xbmc.LOGERROR)
+                return None
+            if len(urls) == 1:
+                stream_url = urls[0]
+            else:
+                choice = xbmcgui.Dialog().select('Choose Stream', [_up(u).netloc for u in urls])
+                if choice == -1:
+                    return None
+                stream_url = urls[choice]
+            return f'{stream_url}|Referer={origin}&User-Agent={UA}'
+
         m = re.search(r'input:\s*"([^"]+)"', html)
         if not m:
             log(f'_decrypt_streams_center: no input token | {referer} | len={len(html)} preview={html[:200]!r}', xbmc.LOGERROR)
             return None
-        origin = _base_url(referer) + '/'
         resp = requests.post(
             urljoin(origin, 'embed/decrypt.php'),
             data={'input': m.group(1)},
