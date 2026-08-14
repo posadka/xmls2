@@ -117,6 +117,8 @@ class streamer:
                 u = self.sharkstreams(url)
             elif 'sportsurge' in url:
                 u = self.sportsurge(url)
+            elif 'iframe.st/rampages' in url:
+                u = self.rampages(url)
             elif any(x in url for x in ['rippleplays.cfd', 'ripplestream.cyou']):
                 u = self.ripplestreamsfouru(url)
             elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants']):
@@ -176,6 +178,38 @@ class streamer:
         if time_str:
             return f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
         return f'[COLOR orange]{title}[/COLOR]'
+
+    @_guard
+    def rampages(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<tr><td data-sort="\*[^"]*"><a href="([^"]+)">'
+                r'<img class="icon" src="[^"]*" alt="Directory">([^<]+)</a></td>'
+                r'<td data-sort="[^"]*">([^<]+)</td>',
+                page_data
+            )
+            entries = []
+            for href, name, dt_str in matches:
+                name  = html.unescape(name).strip()
+                title = name.replace('-vs-', ' vs ').replace('-', ' ').title()
+                dt_str = dt_str.strip()
+                try:
+                    dt        = datetime.strptime(dt_str, '%Y-%m-%d %H:%M').replace(tzinfo=timezone.utc)
+                    time_str  = dt.astimezone().strftime('%m/%d %I:%M %p').lstrip('0')
+                    sort_key  = dt
+                except Exception:
+                    time_str  = dt_str
+                    sort_key  = datetime.max.replace(tzinfo=timezone.utc)
+                full_url = urljoin(base, href)
+                entries.append((sort_key, full_url, self._label(time_str, title)))
+            entries.sort(key=lambda e: e[0])
+            results = [(u, l) for _, u, l in entries]
+            return results or None
+        except Exception as e:
+            _log_error('rampages', url, e)
+            return None
 
     @_guard
     def streameast(self, url):
