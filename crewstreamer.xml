@@ -461,7 +461,8 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
 
-            m = re.search(r'<iframe[^>]+src=["\']?([^"\'>\s]+)', page_data)
+            no_script = re.sub(r'(?is)<script\b.*?</script>', '', page_data)
+            m = re.search(r'<iframe[^>]+src=["\']?([^"\'>\s]+)', no_script)
             if m:
                 content_url = m.group(1)
                 if content_url.startswith('//'):
