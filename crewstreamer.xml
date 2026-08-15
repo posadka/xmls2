@@ -1473,7 +1473,7 @@ class streamer:
             if not stream_url:
                 log(f'korast: no stream_url found | {url}', xbmc.LOGERROR)
                 return None
-            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+            return f'{stream_url}|User-Agent={UA}&Referer=https://tursatrueper.xyz/&Origin=https://tursatrueper.xyz'
         except Exception as e:
             _log_error('korast', url, e)
             return None
