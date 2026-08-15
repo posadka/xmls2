@@ -670,6 +670,22 @@ class streamer:
     @_guard
     def embedhd(self, url):
         try:
+            try:
+                links = json.loads(url)
+            except (ValueError, TypeError):
+                links = None
+            if isinstance(links, list):
+                if not links:
+                    log('embedhd: empty links list', xbmc.LOGERROR)
+                    return None
+                if len(links) == 1:
+                    choice = 0
+                else:
+                    choice = xbmcgui.Dialog().select('Choose Stream', [l['label'] for l in links])
+                if choice == -1:
+                    return None
+                url = links[choice]['url']
+
             origin  = _base_url(url)
             headers = {'Referer': origin, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text

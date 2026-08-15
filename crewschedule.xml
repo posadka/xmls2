@@ -784,14 +784,20 @@ class streamer:
                     streams = event.get('streams', [])
                     if not streams:
                         continue
+                    links = [
+                        {'label': f'Stream {i}', 'url': s.get('link')}
+                        for i, s in enumerate(streams, 1)
+                        if s.get('link')
+                    ]
+                    if not links:
+                        continue
                     time_part = self._fmt_utc_ts(ts)
                     if status == 'LIVE':
                         label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
                     else:
                         label = f'[COLOR dodgerblue]{league} {time_part}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                    link = streams[0].get('link', '')
-                    if link:
-                        results.append((link, label))
+                    link = links[0]['url'] if len(links) == 1 else json.dumps(links)
+                    results.append((link, label))
             return results or None
         except Exception as e:
             _log_error('embedhd', url, e)
