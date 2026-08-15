@@ -867,7 +867,14 @@ class streamer:
                 title = f'{team1} vs {team2}' if team1 and team2 else event
                 if not title:
                     continue
-                time_str = match.get('time', '')
+                raw_time = match.get('time', '')
+                try:
+                    h, m = map(int, raw_time.split(':'))
+                    now_utc = datetime.now(timezone.utc)
+                    dt_utc = now_utc.replace(hour=h, minute=m, second=0, microsecond=0)
+                    time_str = dt_utc.astimezone().strftime('%I:%M %p').lstrip('0')
+                except Exception:
+                    time_str = raw_time
                 day = match.get('day_label', '')
                 sport = match.get('sport', '')
                 league = match.get('league', '')
