@@ -461,27 +461,41 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
 
-            dk_m  = re.search(r'const _dk\s*=\s*(\d+)', page_data)
-            dd_m  = re.search(r'const _dd\s*=\s*"([^"]+)"', page_data)
-            dri_m = re.search(r'const _dri\s*=\s*\[([^\]]+)\]', page_data)
+            m = re.search(r'<iframe[^>]+src=["\']?([^"\'>\s]+)', page_data)
+            if m:
+                content_url = m.group(1)
+                if content_url.startswith('//'):
+                    content_url = 'https:' + content_url
+                content = requests.get(
+                    content_url,
+                    headers={'User-Agent': UA, 'Referer': url},
+                    timeout=TIMEOUT
+                ).text
+            else:
+                content_url = url
+                content = page_data
+
+            dk_m  = re.search(r'const _dk\s*=\s*(\d+)', content)
+            dd_m  = re.search(r'const _dd\s*=\s*"([^"]+)"', content)
+            dri_m = re.search(r'const _dri\s*=\s*\[([^\]]+)\]', content)
             if dk_m and dd_m and dri_m:
                 xor_key     = int(dk_m.group(1))
                 rev_indices = [int(x.strip()) for x in dri_m.group(1).split(',')]
                 stream_url  = self._decrypt_layered(dd_m.group(1), xor_key, rev_indices)
                 if not stream_url:
-                    log(f'ovostreams: direct branch, empty decrypt result | {url}', xbmc.LOGERROR)
+                    log(f'ovostreams: direct branch, empty decrypt result | {content_url}', xbmc.LOGERROR)
                     return None
-                base = _base_url(url)
+                base = _base_url(content_url)
                 return f'{stream_url}|User-Agent={UA}&Referer={base}/&Origin={base}'
 
-            wk_m  = re.search(r'_wk\s*=\s*(\d+)', page_data)
-            wri_m = re.search(r'_wri\s*=\s*\[([^\]]+)\]', page_data)
-            wd_m  = re.search(r'_wd\s*=\s*"([^"]+)"', page_data)
+            wk_m  = re.search(r'_wk\s*=\s*(\d+)', content)
+            wri_m = re.search(r'_wri\s*=\s*\[([^\]]+)\]', content)
+            wd_m  = re.search(r'_wd\s*=\s*"([^"]+)"', content)
             if wk_m and wri_m and wd_m:
                 xor_key     = int(wk_m.group(1))
                 rev_indices = [int(x.strip()) for x in wri_m.group(1).split(',')]
                 worker_url  = self._decrypt_layered(wd_m.group(1), xor_key, rev_indices)
-                origin, referer = _origin_referer(url)
+                origin, referer = _origin_referer(content_url)
                 api_data = requests.get(
                     worker_url,
                     headers={'User-Agent': UA, 'Referer': referer, 'Origin': origin},
@@ -497,49 +511,23 @@ class streamer:
                 stream_origin = _base_url(stream_url)
                 return f'{stream_url}|User-Agent={UA}&Referer={stream_origin}/&Origin={stream_origin}'
 
-            m = re.search(r'<iframe[^>]+src=["\']?([^"\'>\s]+)', page_data)
-            if not m:
-                log(f'ovostreams: no iframe found | {url}', xbmc.LOGERROR)
-                return None
-            iframe_url  = m.group(1)
-            if iframe_url.startswith('//'):
-                iframe_url = 'https:' + iframe_url
-            iframe_html = requests.get(
-                iframe_url,
-                headers={'User-Agent': UA, 'Referer': url},
-                timeout=TIMEOUT
-            ).text
-
-            dk_m  = re.search(r'const _dk\s*=\s*(\d+)', iframe_html)
-            dd_m  = re.search(r'const _dd\s*=\s*"([^"]+)"', iframe_html)
-            dri_m = re.search(r'const _dri\s*=\s*\[([^\]]+)\]', iframe_html)
-            if dk_m and dd_m and dri_m:
-                xor_key     = int(dk_m.group(1))
-                rev_indices = [int(x.strip()) for x in dri_m.group(1).split(',')]
-                stream_url  = self._decrypt_layered(dd_m.group(1), xor_key, rev_indices)
-                if not stream_url:
-                    log(f'ovostreams: iframe direct branch, empty decrypt result | {iframe_url}', xbmc.LOGERROR)
-                    return None
-                base = _base_url(iframe_url)
-                return f'{stream_url}|User-Agent={UA}&Referer={base}/&Origin={base}'
-
-            origin, referer = _origin_referer(iframe_url)
-            token_m = re.search(r"window\['([^']+)'\]\s*=\s*'([^']+)'", iframe_html)
+            origin, referer = _origin_referer(content_url)
+            token_m = re.search(r"window\['([^']+)'\]\s*=\s*'([^']+)'", content)
             if not token_m:
-                log(f'ovostreams: no token match | {iframe_url}', xbmc.LOGERROR)
+                log(f'ovostreams: no token match | {content_url}', xbmc.LOGERROR)
                 return None
             token_key = token_m.group(1)
             token_val = token_m.group(2)
-            m = re.search(r"const _d\s*=\s*\"([^\"]+)\"", iframe_html)
+            m = re.search(r"const _d\s*=\s*\"([^\"]+)\"", content)
             if not m:
-                log(f'ovostreams: no _d match | {iframe_url}', xbmc.LOGERROR)
+                log(f'ovostreams: no _d match | {content_url}', xbmc.LOGERROR)
                 return None
             _d = m.group(1)
-            m = re.search(r"const _k\s*=\s*(\d+)", iframe_html)
+            m = re.search(r"const _k\s*=\s*(\d+)", content)
             _k = int(m.group(1)) if m else 42
-            ri_m = re.search(r"const _ri\s*=\s*\[([^\]]+)\]", iframe_html)
+            ri_m = re.search(r"const _ri\s*=\s*\[([^\]]+)\]", content)
             if not ri_m:
-                log(f'ovostreams: no _ri match | {iframe_url}', xbmc.LOGERROR)
+                log(f'ovostreams: no _ri match | {content_url}', xbmc.LOGERROR)
                 return None
             _ri = [int(x.strip()) for x in ri_m.group(1).split(',')]
             php_url = self._decrypt_layered(_d, _k, _ri)
