@@ -421,6 +421,21 @@ class streamer:
                 label = f'{status} [COLOR orange]{label_txt}[/COLOR]'.strip()
                 results.append((urljoin(base, html.unescape(href)), label))
 
+            event_matches = re.findall(
+                r'(?s)<a\s+class="(m-card\b[^"]*\bm-card--event\b[^"]*)"\s+href="([^"]+)"([^>]*)>.*?<span\s+class="m-card__title">([^<]+)</span>',
+                page_data
+            )
+            for class_val, href, attrs, title_text in event_matches:
+                time_match = re.search(r'\bdata-time="(\d+)"', attrs)
+                title      = html.unescape(title_text).strip()
+                time_str   = _date_label(time_match.group(1)) if time_match else ''
+                if 'm-card--live' in class_val:
+                    status = '[COLOR red]LIVE[/COLOR]'
+                else:
+                    status = f'[COLOR dodgerblue]{time_str}[/COLOR]' if time_str else ''
+                label = f'{status} [COLOR orange]{title}[/COLOR]'.strip()
+                results.append((urljoin(base, html.unescape(href)), label))
+
             if not results:
                 log('streameast_ga: no matches found', xbmc.LOGERROR)
                 return None
