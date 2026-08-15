@@ -287,8 +287,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from urllib.parse import urljoin
     sport = 'ufc-streams'
     base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/sega.xml')
-    base = re.findall('"([^"]*)', base_url)[0]
-    full_url = urljoin(base, sport)
+    base = re.findall(r'"([^"]+)"', base_url)[0]
+    full_url = urljoin(base.rstrip('/') + '/', sport + '/')
     url = client.schedule(full_url)
     return url
 ]]></expres>
