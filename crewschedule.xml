@@ -240,25 +240,31 @@ class streamer:
         try:
             base      = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            now       = datetime.now()
             results   = []
-            for m in re.finditer(r'(?s)<a href="([^"]*)"\s*class="match-card">', page_data):
-                href  = m.group(1)
-                if not href or href == '#':
+            matches = re.findall(
+                r'(?s)<div class="stream-row"[^>]*>\s*'
+                r'<div class="stream-time">([^<]*)</div>\s*'
+                r'<div class="stream-info">(.*?)</div>\s*'
+                r'<button class="watch-btn" onclick="window\.location\.href=\'([^\']+)\'"',
+                page_data
+            )
+            for time_str, info_block, href in matches:
+                title = re.sub(r'<img[^>]*>', '', info_block)
+                title = html.unescape(title)
+                title = re.sub(r'\s+', ' ', title).strip()
+                if not title or not href or href == '#':
                     continue
-                chunk = page_data[m.start():m.start()+600]
-                if 'Finished' in chunk:
-                    continue
-                home_m   = re.search(r'data-home="([^"]+)"', chunk)
-                away_m   = re.search(r'data-away="([^"]+)"', chunk)
-                time_m   = re.search(r'<div class="match-time">([^<]+)</div>', chunk)
-                home     = html.unescape(home_m.group(1)).strip() if home_m else ''
-                away     = html.unescape(away_m.group(1)).strip() if away_m else ''
-                time_str = time_m.group(1).strip() if time_m else ''
-                if home and away:
-                    label = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{home} vs {away}[/COLOR]'
-                else:
-                    label = f'[COLOR orange]{href.rstrip("/").split("/")[-1].replace("-vs-", " vs ").replace("-", " ").title()}[/COLOR]'
-                results.append((urljoin(base, href), label))
+                time_str = time_str.strip()
+                try:
+                    utc_t    = datetime.strptime(time_str, '%H:%M').replace(
+                        year=now.year, month=now.month, day=now.day,
+                        tzinfo=timezone.utc
+                    )
+                    time_str = utc_t.astimezone().strftime('%I:%M %p').lstrip('0')
+                except Exception:
+                    pass
+                results.append((urljoin(base, href), self._label(time_str, title)))
             return results or None
         except Exception as e:
             _log_error('ovostreams', url, e)
