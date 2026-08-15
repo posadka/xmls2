@@ -947,8 +947,12 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    from resources.lib.modules import client,control
-    url = client.schedule('https://flyembed.click/channels.json')
+    from resources.lib.modules import client, control
+    import re
+    if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/flyc.xml')
+    base = re.findall('"([^"]*)', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
         <page></page>

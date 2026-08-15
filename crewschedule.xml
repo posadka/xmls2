@@ -95,6 +95,8 @@ class streamer:
         try:
             if 'chaturbate.com' in url:
                 u = self.chaturbate(url)
+            elif any(x in url for x in ['kora', 'topsurge.st']):
+                u = self.korast(url)
             elif 'streambtw' in url:
                 u = self.streambtw(url)
             elif 'volokit' in url:
@@ -901,6 +903,56 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('sportzone', url, e)
+            return None
+
+    @_guard
+    def korast(self, url):
+        try:
+            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            results = []
+            for match in data.get('matches', []):
+                team1 = match.get('team1', '')
+                team2 = match.get('team2', '')
+                title = f'{team1} vs {team2}' if team1 and team2 else team1
+                if not title:
+                    continue
+                ts = match.get('startTimestamp')
+                if ts:
+                    time_str = self._fmt_utc_ts(ts // 1000)
+                else:
+                    time_str = match.get('time', '')
+                league = match.get('league', '')
+                sport  = match.get('sport', '')
+                links  = []
+                for ch in match.get('channels', []):
+                    ch_name = ch.get('name', 'Unknown Channel')
+                    lang    = ch.get('language', '')
+                    ch_links = ch.get('links', [])
+                    for i, link in enumerate(ch_links, 1):
+                        if not link:
+                            continue
+                        label = ch_name
+                        if lang:
+                            label += f' ({lang})'
+                        if len(ch_links) > 1:
+                            label += f' Link {i}'
+                        links.append({
+                            'label': label,
+                            'url': link
+                        })
+                if not links:
+                    continue
+                label = (
+                    f'[COLOR dodgerblue]{time_str}[/COLOR] '
+                    f'[COLOR yellow]{sport}[/COLOR] '
+                    f'[COLOR orange]{title}[/COLOR]'
+                )
+                if league:
+                    label += f' [COLOR red]{league}[/COLOR]'
+                results.append((json.dumps(links), label))
+            return results or None
+        except Exception as e:
+            _log_error('korast', url, e)
             return None
 
     @_guard
