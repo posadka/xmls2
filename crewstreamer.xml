@@ -233,6 +233,8 @@ class streamer:
                 u = self.sportsonline(url)
             elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
                 u = self.embedhd_st(url)
+            elif 'embedhd.pk' in url:
+                u = self.embedhd_pk(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
                 u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st']):
@@ -589,6 +591,9 @@ class streamer:
             if 'embedhd.st' in iframe_url:
                 return self.embedhd_st(iframe_url)
 
+            elif 'embedhd.pk' in iframe_url:
+                return self.embedhd_pk(iframe_url)
+
             elif 'wikisport' in iframe_url:
                 iframe_html = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
                 m           = re.search(r'fid\s*=\s*"([^"]+)"', iframe_html)
@@ -665,6 +670,30 @@ class streamer:
             return results[choice][0] if choice != -1 else None
         except Exception as e:
             _log_error('naughtyblog', url, e)
+            return None
+
+    @_guard
+    def embedhd_pk(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            iframe_url = self._get_iframe_src(page_data)
+            if not iframe_url:
+                log(f'embedhd_pk: no iframe found | {url}', xbmc.LOGERROR)
+                return None
+            iframe_html = requests.get(
+                iframe_url,
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=TIMEOUT
+            ).text
+            m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+)"', iframe_html)
+            if not m:
+                log(f'embedhd_pk: no streamUrl found | {iframe_url}', xbmc.LOGERROR)
+                return None
+            stream_url = m.group(1)
+            origin, referer = _origin_referer(iframe_url)
+            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            _log_error('embedhd_pk', url, e)
             return None
 
     @_guard
@@ -900,6 +929,9 @@ class streamer:
 
             if 'embedhd.st' in iframe1:
                 return self.embedhd_st(iframe1)
+
+            elif 'embedhd.pk' in iframe1:
+                return self.embedhd_pk(iframe1)
 
             iframe1_html = requests.get(
                 iframe1,
