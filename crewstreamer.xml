@@ -461,6 +461,19 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
 
+            dk_m  = re.search(r'const _dk\s*=\s*(\d+)', page_data)
+            dd_m  = re.search(r'const _dd\s*=\s*"([^"]+)"', page_data)
+            dri_m = re.search(r'const _dri\s*=\s*\[([^\]]+)\]', page_data)
+            if dk_m and dd_m and dri_m:
+                xor_key     = int(dk_m.group(1))
+                rev_indices = [int(x.strip()) for x in dri_m.group(1).split(',')]
+                stream_url  = self._decrypt_layered(dd_m.group(1), xor_key, rev_indices)
+                if not stream_url:
+                    log(f'ovostreams: direct branch, empty decrypt result | {url}', xbmc.LOGERROR)
+                    return None
+                base = _base_url(url)
+                return f'{stream_url}|User-Agent={UA}&Referer={base}/&Origin={base}'
+
             wk_m  = re.search(r'_wk\s*=\s*(\d+)', page_data)
             wri_m = re.search(r'_wri\s*=\s*\[([^\]]+)\]', page_data)
             wd_m  = re.search(r'_wd\s*=\s*"([^"]+)"', page_data)
