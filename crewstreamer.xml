@@ -369,11 +369,33 @@ class streamer:
         try:
             headers   = {'User-Agent': UA, 'Referer': url}
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
-            m = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
-            if not m:
-                log(f'streameast: no iframe found | {url}', xbmc.LOGERROR)
-                return None
-            iframe_url  = m.group(1)
+
+            servers = re.findall(
+                r'(?s)id="stream-btn-(\d+)"[^>]*?class="[^"]*"[^>]*>\s*([^<]+?)\s*</div>',
+                page_data
+            )
+            tmpl = re.search(
+                r"document\.getElementById\('wp_player'\)\.src\s*=\s*'([^']+)'\s*\+\s*streamId\s*\+\s*'([^']+)'",
+                page_data
+            )
+            if servers and tmpl:
+                if len(servers) == 1:
+                    choice = 0
+                else:
+                    labels = [html.unescape(label).strip() for _, label in servers]
+                    choice = xbmcgui.Dialog().select('Choose Server', labels)
+                if choice == -1:
+                    return None
+                stream_id      = servers[choice][0]
+                prefix, suffix = tmpl.group(1), tmpl.group(2)
+                iframe_url     = prefix + stream_id + suffix
+            else:
+                m = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
+                if not m:
+                    log(f'streameast: no iframe found | {url}', xbmc.LOGERROR)
+                    return None
+                iframe_url = m.group(1)
+
             iframe_html = requests.get(iframe_url, headers=headers, timeout=TIMEOUT).text
             origin, referer = _origin_referer(iframe_url)
             if 'atob' in iframe_html:
