@@ -231,8 +231,8 @@ class streamer:
                 u = self.embedsports(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline']):
                 u = self.sportsonline(url)
-            elif any(x in url for x in ['fsportshd', 'embedhd', 'fsportsshd']):
-                u = self.embedhd(url)
+            elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
+                u = self.embedhd_st(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
                 u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st']):
@@ -586,8 +586,8 @@ class streamer:
                 return None
             iframe_url = m.group(1)
 
-            if 'embedhd' in iframe_url:
-                return self.embedhd(iframe_url)
+            if 'embedhd.st' in iframe_url:
+                return self.embedhd_st(iframe_url)
 
             elif 'wikisport' in iframe_url:
                 iframe_html = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
@@ -668,7 +668,7 @@ class streamer:
             return None
 
     @_guard
-    def embedhd(self, url):
+    def embedhd_st(self, url):
         try:
             try:
                 links = json.loads(url)
@@ -898,8 +898,8 @@ class streamer:
                 log(f'streameast_ga: no iframe1 (require_id) | {url}', xbmc.LOGERROR)
                 return None
 
-            if 'embedhd' in iframe1:
-                return self.embedhd(iframe1)
+            if 'embedhd.st' in iframe1:
+                return self.embedhd_st(iframe1)
 
             iframe1_html = requests.get(
                 iframe1,
