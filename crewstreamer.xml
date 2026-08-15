@@ -849,6 +849,34 @@ class streamer:
     def streameast_ga(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            base = _base_url(url)
+            li_blocks = re.findall(r'(?s)<li\s+class="se-stream([^"]*)">(.*?)</li>', page_data)
+            servers = []
+            for cls, block in li_blocks:
+                if 'is-pro' in cls:
+                    continue
+                href_m = re.search(r'href="([^"]+)"', block)
+                name_m = re.search(r'<span\s+class="se-stream__name">([^<]+)</span>', block)
+                if href_m and name_m:
+                    servers.append((href_m.group(1), name_m.group(1)))
+            if servers:
+                if len(servers) == 1:
+                    choice = 0
+                else:
+                    labels = [html.unescape(name).strip() for _, name in servers]
+                    choice = xbmcgui.Dialog().select('Choose Server', labels)
+                if choice == -1:
+                    return None
+                href, _ = servers[choice]
+                chosen_url = urljoin(base, href)
+                if chosen_url != url:
+                    page_data = requests.get(
+                        chosen_url,
+                        headers={'User-Agent': UA, 'Referer': url},
+                        timeout=TIMEOUT
+                    ).text
+                url = chosen_url
+
             iframe1   = self._get_iframe_src(page_data, require_id=True)
             if not iframe1:
                 log(f'streameast_ga: no iframe1 (require_id) | {url}', xbmc.LOGERROR)
