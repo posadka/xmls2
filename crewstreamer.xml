@@ -1423,7 +1423,7 @@ class streamer:
                 return None
             player_data = requests.get(
                 f'https://nizar.nexa.st/api/player.php?id={ch_id.group(1)}',
-                headers={'User-Agent': UA},
+                headers={'User-Agent': UA, 'Referer': 'https://nizar.nexa.st/', 'Origin': 'https://nizar.nexa.st'},
                 timeout=TIMEOUT
             ).json()
             embed_url    = player_data.get('url', '')
