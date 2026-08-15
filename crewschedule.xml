@@ -450,6 +450,19 @@ class streamer:
                 else:
                     time_str = ''
                 results.append((full_url, self._label(time_str, title)))
+            event_matches = re.findall(
+                r'(?s)<a class="d-block competition p-4"[^>]*href="([^"]+)">\s*<div>\s*(.*?)\s*</div>',
+                page_data
+            )
+            for href, block in event_matches:
+                text = html.unescape(re.sub(r'\s+', ' ', block)).strip()
+                m = re.match(r'^(.*?)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M\s*ET)$', text)
+                if m:
+                    title, time_str = m.group(1).strip(), m.group(2).strip()
+                else:
+                    title, time_str = text, ''
+                full_url = urljoin(base, href)
+                results.append((full_url, self._label(time_str, title)))
             return results or None
         except Exception as e:
             _log_error('buffstreams', url, e)
