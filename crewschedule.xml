@@ -618,54 +618,6 @@ class streamer:
                         ).strip()
                         label += f' [COLOR orange]({source_name})[/COLOR]'
                     results.append((href, label))
-            if results:
-                return results
-            cards = re.findall(
-                r'(?is)<article\s+class=["\']catalog-card["\'][^>]*>(.*?)</article>',
-                page_data
-            )
-            for card in cards:
-                title_match = re.search(
-                    r'(?is)<h3[^>]*>\s*(.*?)\s*</h3>',
-                    card
-                )
-                watch_match = re.search(
-                    r'(?is)<a\s+class=["\']button primary["\'][^>]+href=["\']([^"\']+)["\'][^>]*>\s*Watch\s*</a>',
-                    card
-                )
-                if not title_match or not watch_match:
-                    continue
-                name = html.unescape(
-                    re.sub(r'<[^>]+>', '', title_match.group(1))
-                ).strip()
-                name = re.sub(r'\s+', ' ', name)
-                status_match = re.search(
-                    r'(?is)<span\s+class=["\']catalog-status\s+catalog-status-(\w+)["\']',
-                    card
-                )
-                time_match = re.search(
-                    r'(?is)<time\s+data-time-kind=["\']local-date-time["\']\s+dateTime=["\']([^"\']+)["\']',
-                    card
-                )
-                is_live = bool(status_match) and status_match.group(1).lower() == 'live'
-                start = ''
-                if time_match:
-                    try:
-                        dt = datetime.strptime(
-                            time_match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ'
-                        ).replace(tzinfo=timezone.utc)
-                        start = dt.astimezone().strftime('%I:%M %p').lstrip('0')
-                    except Exception:
-                        start = ''
-                title = self._label(start, name) if start else name
-                if is_live:
-                    title = f'[COLOR red]LIVE[/COLOR] {title}'
-                href = html.unescape(watch_match.group(1)).strip()
-                if href.startswith('//'):
-                    href = 'https:' + href
-                elif not href.startswith('http'):
-                    href = urljoin(response.url, href)
-                results.append((href, title))
             return results or None
         except Exception as e:
             _log_error('streamcenter', url, e)
