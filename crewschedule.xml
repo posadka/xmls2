@@ -93,20 +93,14 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if 'chaturbate.com' in url:
-                u = self.chaturbate(url)
-            elif any(x in url for x in ['kora', 'topsurge.st']):
+            if any(x in url for x in ['kora', 'topsurge.st']):
                 u = self.korast(url)
-            elif 'streambtw' in url:
-                u = self.streambtw(url)
             elif 'volokit' in url:
                 u = self.volokit(url)
             elif 'streameast.ga' in url:
                 u = self.streameast_ga(url)
             elif 'shd247' in url:
                 u = self.shd(url)
-            elif 'waatk' in url:
-                u = self.waatk(url)
             elif 'roxiestreams' in url:
                 u = self.roxiestreams(url)
             elif 'playoffsstream' in url:
@@ -135,8 +129,6 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
-            elif any(x in url for x in ['thetvapp', 'thetvappv2']):
-                u = self.thetvapp(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
                 u = self.crackstreams(url)
             elif any(x in url for x in ['fsportsshd', 'fsportshd']):
@@ -273,22 +265,6 @@ class streamer:
             return None
 
     @_guard
-    def chaturbate(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            matches   = re.findall(r'<li.*?href="([^"]*)"(?:[^>]*)>([^<]*)', page_data, re.S)
-            hosts     = {'WOMEN', 'MEN', 'TRANS', 'COUPLES', 'FEATURED'}
-            results   = [
-                ('https://chaturbate.com' + href, title)
-                for href, title in matches
-                if any(x in title for x in hosts)
-            ]
-            return results or None
-        except Exception as e:
-            _log_error('chaturbate', url, e)
-            return None
-
-    @_guard
     def hdrez(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
@@ -340,23 +316,6 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('fsportshd', url, e)
-            return None
-
-    @_guard
-    def streambtw(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            data      = json.loads(page_data)
-            results   = []
-            for group in data.get('groups', []):
-                for item in group.get('items', []):
-                    title = item.get('title')
-                    link  = item.get('url')
-                    if title and link:
-                        results.append((link, f'[COLOR orange]{title}[/COLOR]'))
-            return results or None
-        except Exception as e:
-            _log_error('streambtw', url, e)
             return None
 
     @_guard
@@ -713,29 +672,6 @@ class streamer:
             return None
 
     @_guard
-    def waatk(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            base      = _base_url(url)
-            matches   = re.findall(
-                r'(?s)<div class="match">([^<]+)</div>.*?'
-                r'<div class="league">([^<]+)</div>.*?'
-                r'<a class="watchbtn"\s+href="([^"]+)"',
-                page_data
-            )
-            results = [
-                (
-                    urljoin(base, href),
-                    f'[COLOR orange]{match.strip()}[/COLOR] [COLOR dodgerblue]{league.strip()}[/COLOR]'
-                )
-                for match, league, href in matches
-            ]
-            return results or None
-        except Exception as e:
-            _log_error('waatk', url, e)
-            return None
-
-    @_guard
     def playoff(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
@@ -849,32 +785,6 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('embedhd', url, e)
-            return None
-
-    @_guard
-    def thetvapp(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            base      = _base_url(url)
-            results   = []
-            events = re.findall(
-                r'<a[^>]+href="(/tv-live/[^"]+)"[^>]*>([^<]+)<span[^>]+class="time-badge"[^>]*>([^<]+)</span>',
-                page_data
-            )
-            for href, title, timing in events:
-                title  = html.unescape(title).strip().rstrip(':').strip()
-                timing = timing.strip()
-                results.append((base + href, f'[COLOR orange]{title} [{timing}][/COLOR]'))
-            channels = re.findall(
-                r'<a[^>]+href="(https://thetvapp\.to/tv/[^"]+)"[^>]*>([^<]+)</a>',
-                page_data
-            )
-            for href, title in channels:
-                title = html.unescape(title).strip()
-                results.append((href, f'[COLOR orange]{title}[/COLOR]'))
-            return results or None
-        except Exception as e:
-            _log_error('thetvapp', url, e)
             return None
 
     @_guard
