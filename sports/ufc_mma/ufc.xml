@@ -26,8 +26,8 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     from urllib.parse import urljoin
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    sport = 'fighting'
-    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streamemma.xml')
+    sport = 'mma'
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/streame.xml')
     base = re.findall('"([^"]*)', base_url)[0]
     full_url = urljoin(base, sport)
     url = client.schedule(full_url)
