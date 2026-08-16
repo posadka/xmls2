@@ -1097,11 +1097,34 @@ class streamer:
         try:
             headers   = {'User-Agent': UA, 'Referer': url}
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
-            m         = re.search(r'(?s)<iframe[^>]+src="([^"]+)', page_data)
-            if not m:
-                log(f'buffstreams: no iframe found | {url}', xbmc.LOGERROR)
-                return None
-            iframe_url  = m.group(1)
+
+            servers = re.findall(
+                r'(?s)id="stream-btn-(\d+)"[^>]*>\s*([^<]+?)\s*</div>',
+                page_data
+            )
+            tmpl = re.search(
+                r"document\.getElementById\('cx-iframe'\)\.src\s*=\s*'([^']+)'\s*\+\s*streamId(?:\s*\+\s*'([^']*)')?",
+                page_data
+            )
+            if servers and tmpl:
+                if len(servers) == 1:
+                    choice = 0
+                else:
+                    labels = [html.unescape(label).strip() for _, label in servers]
+                    choice = xbmcgui.Dialog().select('Choose Server', labels)
+                if choice == -1:
+                    return None
+                stream_id  = servers[choice][0]
+                prefix     = tmpl.group(1)
+                suffix     = tmpl.group(2) or ''
+                iframe_url = prefix + stream_id + suffix
+            else:
+                m = re.search(r'(?s)<iframe[^>]+src="([^"]+)', page_data)
+                if not m:
+                    log(f'buffstreams: no iframe found | {url}', xbmc.LOGERROR)
+                    return None
+                iframe_url = m.group(1)
+
             iframe_html = requests.get(iframe_url, headers=headers, timeout=TIMEOUT).text
             origin, referer = _origin_referer(iframe_url)
             if 'atob' in iframe_html:
