@@ -999,6 +999,7 @@ class streamer:
     def ripplestream(self, url):
         try:
             base    = _base_url(url)
+            today   = datetime.now().date()
             results = []
             page    = 1
             while True:
@@ -1007,14 +1008,29 @@ class streamer:
                 articles  = re.findall(r'<article id="post-\d+".*?</article>', page_data, re.S)
                 if not articles:
                     break
+                stop = False
                 for article in articles:
                     m = re.search(r'<h3>\s*<a href="([^"]+)">([^<]+)</a>\s*</h3>', article, re.S)
                     if not m:
                         continue
                     href, title = m.groups()
+                    date_m = re.search(
+                        r'<span class="item-metadata posts-date">\s*<i[^>]*></i>\s*([^<]+?)\s*</span>',
+                        article
+                    )
+                    if date_m:
+                        try:
+                            article_date = datetime.strptime(date_m.group(1).strip(), '%B %d, %Y').date()
+                        except Exception:
+                            article_date = None
+                        if article_date and article_date < today:
+                            stop = True
+                            break
+                        if article_date and article_date > today:
+                            continue
                     title = html.unescape(title).strip()
                     results.append((href, f'[COLOR orange]{title}[/COLOR]'))
-                if not re.search(r'<a class="next page-numbers"', page_data):
+                if stop or not re.search(r'<a class="next page-numbers"', page_data):
                     break
                 page += 1
             return results or None
