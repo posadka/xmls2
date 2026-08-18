@@ -116,7 +116,7 @@ class streamer:
             elif 'iframe.st/rampages' in url:
                 u = self.rampages(url)
             elif any(x in url for x in ['rippleplays.cfd', 'ripplestream.cyou']):
-                u = self.ripplestreamsfouru(url)
+                u = self.ripplestream(url)
             elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants']):
                 u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
