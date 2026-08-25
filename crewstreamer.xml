@@ -94,9 +94,13 @@ class streamer:
     def _decrypt_streams_center(html, referer):
         base   = _base_url(referer)
         origin = base + '/'
-        m = re.search(r'const streamUrl = "([^"]*)', html)
+        m = re.search(r'const streamUrls\s*=\s*(\[.*?\]);', html)
         if m:
-            urls = json.loads(m.group(1))
+            try:
+                urls = json.loads(m.group(1))
+            except Exception:
+                urls = []
+            urls = [u for u in urls if u]
             if not urls:
                 log(f'_decrypt_streams_center: empty streamUrls | {referer}', xbmc.LOGERROR)
                 return None
@@ -107,6 +111,17 @@ class streamer:
                 if choice == -1:
                     return None
                 stream_url = urls[choice]
+            return f'{stream_url}|Referer={origin}&Origin={base}&User-Agent={UA}'
+
+        m = re.search(r'const streamUrl\s*=\s*"([^"]*)"', html)
+        if m:
+            try:
+                stream_url = json.loads('"' + m.group(1) + '"')
+            except Exception:
+                stream_url = m.group(1).replace('\\/', '/')
+            if not stream_url:
+                log(f'_decrypt_streams_center: empty streamUrl | {referer}', xbmc.LOGERROR)
+                return None
             return f'{stream_url}|Referer={origin}&Origin={base}&User-Agent={UA}'
 
         m = re.search(r'input:\s*"([^"]+)"', html)
