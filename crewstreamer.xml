@@ -1665,7 +1665,7 @@ class streamer:
             if not m:
                 log(f'timstreams: no SIGNED_URL in decoded payload | {url}', xbmc.LOGERROR)
                 return None
-            stream_url = m.group(1)
+            stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('timstreams', url, e)
