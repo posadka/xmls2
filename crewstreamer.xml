@@ -1380,6 +1380,7 @@ class streamer:
             if not stream_url:
                 log(f'flyembed: no stream_url in _econfig | {embed_url}', xbmc.LOGERROR)
                 return None
+            stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('flyembed', url, e)
@@ -1537,6 +1538,7 @@ class streamer:
             if not stream_url:
                 log(f'sportsonline: no stream_url in _econfig | {embed_url}', xbmc.LOGERROR)
                 return None
+            stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
             return f'{stream_url}|Referer={embed_origin}/&Origin={embed_origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('sportsonline', url, e)
