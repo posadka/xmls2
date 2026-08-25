@@ -1322,10 +1322,12 @@ class streamer:
             ).text
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if m:
-                return f'{m.group(1)}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
+                return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
             m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+\.m3u8[^"]*)"', embed_html)
             if m:
-                return f'{m.group(1)}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
+                return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
