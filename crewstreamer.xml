@@ -94,7 +94,7 @@ class streamer:
     def _decrypt_streams_center(html, referer):
         base   = _base_url(referer)
         origin = base + '/'
-        m = re.search(r'const streamUrls = (\[.*?\]);', html)
+        m = re.search(r'const streamUrl = "([^"]*)', html)
         if m:
             urls = json.loads(m.group(1))
             if not urls:
