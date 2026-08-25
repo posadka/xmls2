@@ -1337,11 +1337,19 @@ class streamer:
             ).text
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if m:
-                stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
+                try:
+                    stream_url = json.loads('"' + m.group(1) + '"')
+                except Exception:
+                    stream_url = m.group(1).replace('\\/', '/')
+                stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                 return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
             m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+\.m3u8[^"]*)"', embed_html)
             if m:
-                stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
+                try:
+                    stream_url = json.loads('"' + m.group(1) + '"')
+                except Exception:
+                    stream_url = m.group(1).replace('\\/', '/')
+                stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                 return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
@@ -1359,7 +1367,11 @@ class streamer:
                 decoded = ''.join(chr(((n ^ cs4) - tx4 + modulo) % modulo) for n in arr)
                 m = re.search(r'SIGNED_URL\s*=\s*"([^"]+)"', decoded)
                 if m:
-                    stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
+                    try:
+                        stream_url = json.loads('"' + m.group(1) + '"')
+                    except Exception:
+                        stream_url = m.group(1).replace('\\/', '/')
+                    stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                     return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
                 log(f'flyembed: xor branch, no SIGNED_URL in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
@@ -1684,7 +1696,11 @@ class streamer:
             if not m:
                 log(f'timstreams: no SIGNED_URL in decoded payload | {url}', xbmc.LOGERROR)
                 return None
-            stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
+            try:
+                stream_url = json.loads('"' + m.group(1) + '"')
+            except Exception:
+                stream_url = m.group(1).replace('\\/', '/')
+            stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
             return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
         except Exception as e:
             _log_error('timstreams', url, e)
