@@ -1342,7 +1342,8 @@ class streamer:
                 decoded = ''.join(chr(((n ^ cs4) - tx4 + modulo) % modulo) for n in arr)
                 m = re.search(r'SIGNED_URL\s*=\s*"([^"]+)"', decoded)
                 if m:
-                    return f'{m.group(1)}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                    stream_url = re.sub(r'(?<!:)/{2,}', '/', m.group(1))
+                    return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
                 log(f'flyembed: xor branch, no SIGNED_URL in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
             m = re.search(r"window\._econfig='([^']+)'", embed_html)
