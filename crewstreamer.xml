@@ -1329,12 +1329,13 @@ class streamer:
             if not embed_url:
                 log(f'flyembed: no embed iframe | {url}', xbmc.LOGERROR)
                 return None
-            origin = _base_url(embed_url)
-            embed_html = requests.get(
+            embed_resp = requests.get(
                 embed_url,
                 headers={'Referer': url, 'User-Agent': UA},
                 timeout=TIMEOUT
-            ).text
+            )
+            embed_html = embed_resp.text
+            origin = _base_url(embed_resp.url)
             m = re.search(r'src\s*=\s*"([^"]*\.m3u8[^"]*)"', embed_html)
             if m:
                 try:
@@ -1675,8 +1676,9 @@ class streamer:
     @_guard
     def timstreams(self, url):
         try:
-            origin = _base_url(url)
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            resp = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            page_data = resp.text
+            origin = _base_url(resp.url)
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
