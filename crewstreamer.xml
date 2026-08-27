@@ -1351,6 +1351,10 @@ class streamer:
                     + '&Sec-Fetch-Mode=cors'
                     + '&Sec-Fetch-Site=cross-site'
                     + '&Sec-GPC=1'
+                    + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
+                    + '&Sec-Ch-Ua-Mobile=?0'
+                    + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
+                    + '&Priority=' + quote_plus('u=1, i')
                 )
             m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+\.m3u8[^"]*)"', embed_html)
             if m:
@@ -1367,6 +1371,10 @@ class streamer:
                     + '&Sec-Fetch-Mode=cors'
                     + '&Sec-Fetch-Site=cross-site'
                     + '&Sec-GPC=1'
+                    + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
+                    + '&Sec-Ch-Ua-Mobile=?0'
+                    + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
+                    + '&Priority=' + quote_plus('u=1, i')
                 )
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
@@ -1397,6 +1405,10 @@ class streamer:
                         + '&Sec-Fetch-Mode=cors'
                         + '&Sec-Fetch-Site=cross-site'
                         + '&Sec-GPC=1'
+                        + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
+                        + '&Sec-Ch-Ua-Mobile=?0'
+                        + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
+                        + '&Priority=' + quote_plus('u=1, i')
                     )
                 log(f'flyembed: xor branch, no SIGNED_URL in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
@@ -1426,6 +1438,10 @@ class streamer:
                 + '&Sec-Fetch-Mode=cors'
                 + '&Sec-Fetch-Site=cross-site'
                 + '&Sec-GPC=1'
+                + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
+                + '&Sec-Ch-Ua-Mobile=?0'
+                + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
+                + '&Priority=' + quote_plus('u=1, i')
             )
         except Exception as e:
             _log_error('flyembed', url, e)
@@ -1743,6 +1759,10 @@ class streamer:
                 + '&Sec-Fetch-Mode=cors'
                 + '&Sec-Fetch-Site=cross-site'
                 + '&Sec-GPC=1'
+                + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
+                + '&Sec-Ch-Ua-Mobile=?0'
+                + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
+                + '&Priority=' + quote_plus('u=1, i')
             )
         except Exception as e:
             _log_error('timstreams', url, e)
