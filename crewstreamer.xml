@@ -1343,7 +1343,15 @@ class streamer:
                 except Exception:
                     stream_url = m.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                return (
+                    f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                    + '&Accept=*/*'
+                    + '&Accept-Language=en-US,en;q=0.8'
+                    + '&Sec-Fetch-Dest=empty'
+                    + '&Sec-Fetch-Mode=cors'
+                    + '&Sec-Fetch-Site=cross-site'
+                    + '&Sec-GPC=1'
+                )
             m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+\.m3u8[^"]*)"', embed_html)
             if m:
                 try:
@@ -1351,7 +1359,15 @@ class streamer:
                 except Exception:
                     stream_url = m.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                return (
+                    f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                    + '&Accept=*/*'
+                    + '&Accept-Language=en-US,en;q=0.8'
+                    + '&Sec-Fetch-Dest=empty'
+                    + '&Sec-Fetch-Mode=cors'
+                    + '&Sec-Fetch-Site=cross-site'
+                    + '&Sec-GPC=1'
+                )
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
@@ -1373,7 +1389,15 @@ class streamer:
                     except Exception:
                         stream_url = m.group(1).replace('\\/', '/')
                     stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                    return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                    return (
+                        f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                        + '&Accept=*/*'
+                        + '&Accept-Language=en-US,en;q=0.8'
+                        + '&Sec-Fetch-Dest=empty'
+                        + '&Sec-Fetch-Mode=cors'
+                        + '&Sec-Fetch-Site=cross-site'
+                        + '&Sec-GPC=1'
+                    )
                 log(f'flyembed: xor branch, no SIGNED_URL in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
             m = re.search(r"window\._econfig='([^']+)'", embed_html)
@@ -1394,7 +1418,15 @@ class streamer:
                 log(f'flyembed: no stream_url in _econfig | {embed_url}', xbmc.LOGERROR)
                 return None
             stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+            return (
+                f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                + '&Accept=*/*'
+                + '&Accept-Language=en-US,en;q=0.8'
+                + '&Sec-Fetch-Dest=empty'
+                + '&Sec-Fetch-Mode=cors'
+                + '&Sec-Fetch-Site=cross-site'
+                + '&Sec-GPC=1'
+            )
         except Exception as e:
             _log_error('flyembed', url, e)
             return None
@@ -1703,7 +1735,15 @@ class streamer:
             except Exception:
                 stream_url = m.group(1).replace('\\/', '/')
             stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-            return f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+            return (
+                f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                + '&Accept=*/*'
+                + '&Accept-Language=en-US,en;q=0.8'
+                + '&Sec-Fetch-Dest=empty'
+                + '&Sec-Fetch-Mode=cors'
+                + '&Sec-Fetch-Site=cross-site'
+                + '&Sec-GPC=1'
+            )
         except Exception as e:
             _log_error('timstreams', url, e)
             return None
