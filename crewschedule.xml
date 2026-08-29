@@ -141,6 +141,8 @@ class streamer:
                 u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal']):
                 u = self.ovostreams(url)
+            elif 'gozo' in url:
+                u = self.gozo(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
             else:
@@ -1025,6 +1027,32 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('ripplestream', url, e)
+            return None
+
+    @_guard
+    def gozo(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<div class="sport-tag">([^<]*)</div>.*?'
+                r'<div class="team-name">([^<]*)</div>.*?'
+                r'<div class="team-name">([^<]*)</div>.*?'
+                r'<a href="([^"]+)" class="watch-btn">',
+                page_data
+            )
+            results = []
+            for sport, team1, team2, href in matches:
+                sport = html.unescape(sport).strip()
+                team1 = html.unescape(team1).strip()
+                team2 = html.unescape(team2).strip()
+                title = f'{team1} vs {team2}'
+                full_url = urljoin(base, href)
+                label = f'[COLOR dodgerblue]{sport}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                results.append((full_url, label))
+            return results or None
+        except Exception as e:
+            _log_error('gozo', url, e)
             return None
 
     @_guard
