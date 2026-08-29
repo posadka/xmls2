@@ -568,11 +568,11 @@ class streamer:
             results = []
             for game in games:
                 status_match = re.search(
-                    r'(?is)<span\s+class=["\']game-card-status\s+game-card-status-(\w+)["\'][^>]*>\s*(.*?)\s*</span>',
+                    r'(?is)<span[^>]*\bclass=["\']([^"\']*\bgame-card-status\b[^"\']*)["\'][^>]*>\s*(.*?)\s*</span>',
                     game
                 )
                 time_match = re.search(
-                    r'(?is)<time\s+dateTime=["\']([^"\']+)["\']',
+                    r'(?is)<time[^>]*?\sdateTime=["\']([^"\']+)["\']',
                     game
                 )
                 title_match = re.search(
@@ -585,7 +585,7 @@ class streamer:
                     re.sub(r'<[^>]+>', '', title_match.group(1))
                 ).strip()
                 name = re.sub(r'\s+', ' ', name)
-                is_live = bool(status_match) and status_match.group(1).lower() == 'live'
+                is_live = bool(status_match) and 'game-card-status-live' in status_match.group(1).lower()
                 start = ''
                 if time_match:
                     try:
