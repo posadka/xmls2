@@ -230,7 +230,7 @@ class streamer:
                 u = self.ripplestreamsfouru(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
-            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192']):
+            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', epiembeds.online]):
                 u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
