@@ -153,13 +153,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     from resources.lib.modules import client, control
     import re
-    from urllib.parse import urljoin
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    sport = 'nfl'
     base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/ovogoal.xml')
-    base = re.findall('"([^"]*)"', base_url)[0]
-    full_url = urljoin(base, sport)
-    url = client.schedule(full_url)
+    base = re.findall('"([^"]*)""', base_url)[0]
+    url = client.schedule(base)
     return url
 ]]></expres>
 <page></page>
