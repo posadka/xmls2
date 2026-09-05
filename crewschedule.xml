@@ -212,19 +212,21 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             matches = re.findall(
-                r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
+                r'(?s)<li[^>]*\bclass=["\'][^"\']*\bf1-podium--item\b[^"\']*["\'][^>]*>\s*'
+                r'<a\s+href=["\']([^"\']+)["\'].*?'
                 r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
                 r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
-                r'data.*?>([^<]*)',
+                r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*\bdata-zaman=["\'](\d+)["\'][^>]*>',
                 page_data
             )
             results = []
-            for href, league, teams, timestamp in matches:
-                href      = href.strip()
-                league    = html.unescape(league).strip()
-                teams     = html.unescape(teams).strip()
-                timestamp = html.unescape(timestamp).strip()
-                title     = f'[COLOR dodgerblue]{league} {timestamp}[/COLOR] [COLOR orange]{teams}[/COLOR]'
+            for href, league, teams, time_cls, epoch in matches:
+                href    = html.unescape(href).strip()
+                league  = html.unescape(league).strip()
+                teams   = html.unescape(teams).strip()
+                is_live = 'btn-live' in time_cls
+                status  = '[COLOR red]LIVE[/COLOR]' if is_live else self._fmt_utc_ts(epoch)
+                title   = f'[COLOR dodgerblue]{league} {status}[/COLOR] [COLOR orange]{teams}[/COLOR]'
                 results.append((href, title))
             return results or None
         except Exception as e:
