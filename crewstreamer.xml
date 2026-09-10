@@ -1766,6 +1766,41 @@ class streamer:
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
                 r'\s*for\s*\(\s*\w+\s*=\s*0\s*;\s*\w+\s*<\s*\w+\.length\s*;\s*\w+\+\+\s*\)\s*\{'
+                r'\s*\w+\s*\+=\s*String\.fromCharCode\(\(\(\s*\w+\[\w+\]\s*\^\s*\w+\s*\)\s*-\s*\w+\s*\+\s*256\s*\)\s*&\s*255\s*\)\s*;\s*\}'
+                r'\s*window\.eval\(\s*\w+\s*\)\s*;',
+                page_data, re.S
+            )
+            if m:
+                arr  = [int(n) for n in m.group(1).split(',')]
+                key1 = int(m.group(2))
+                key2 = int(m.group(3))
+                decoded = ''.join(chr(((n ^ key1) - key2 + 256) & 255) for n in arr)
+                m2 = re.search(r'\burl\s*=\s*"([^"]+)"', decoded)
+                if not m2:
+                    log(f'timstreams: bitmask-xor branch, no url var in decoded payload | {url}', xbmc.LOGERROR)
+                    return None
+                try:
+                    stream_url = json.loads('"' + m2.group(1) + '"')
+                except Exception:
+                    stream_url = m2.group(1).replace('\\/', '/')
+                stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
+                return (
+                    f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+                    + '&Accept=*/*'
+                    + '&Accept-Language=en-US,en;q=0.8'
+                    + '&Sec-Fetch-Dest=empty'
+                    + '&Sec-Fetch-Mode=cors'
+                    + '&Sec-Fetch-Site=cross-site'
+                    + '&Sec-GPC=1'
+                    + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
+                    + '&Sec-Ch-Ua-Mobile=?0'
+                    + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
+                    + '&Priority=' + quote_plus('u=1, i')
+                )
+            m = re.search(
+                r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
+                r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
+                r'\s*for\s*\(\s*\w+\s*=\s*0\s*;\s*\w+\s*<\s*\w+\.length\s*;\s*\w+\+\+\s*\)\s*\{'
                 r'\s*\w+\s*\+=\s*String\.fromCharCode\(\(\(\s*\w+\[\w+\]\s*\^\s*\w+\s*\)\s*-\s*\w+\s*\+\s*256\s*\)\s*%\s*256\s*\)\s*;\s*\}'
                 r'\s*window\["ev"\+"al"\]\(\s*\w+\s*\)\s*;',
                 page_data, re.S
