@@ -386,7 +386,7 @@ class streamer:
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
 
             servers = re.findall(
-                r'(?s)id="stream-btn-(\d+)"[^>]*?class="[^"]*"[^>]*>\s*([^<]+?)\s*</div>',
+                r'(?s)id="stream-btn-(\d+)"[^>]*?class="[^"]*"[^>]*>(.*?)</div>',
                 page_data
             )
             tmpl = re.search(
@@ -397,7 +397,10 @@ class streamer:
                 if len(servers) == 1:
                     choice = 0
                 else:
-                    labels = [html.unescape(label).strip() for _, label in servers]
+                    labels = [
+                        re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', label))).strip()
+                        for _, label in servers
+                    ]
                     choice = xbmcgui.Dialog().select('Choose Server', labels)
                 if choice == -1:
                     return None
