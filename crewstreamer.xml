@@ -743,8 +743,10 @@ class streamer:
                 links = json.loads(url)
             except (ValueError, TypeError):
                 links = None
+
             if isinstance(links, list):
                 if not links:
+                    log('embedhd: empty links list', xbmc.LOGERROR)
                     return None
                 if len(links) == 1:
                     choice = 0
@@ -753,29 +755,46 @@ class streamer:
                 if choice == -1:
                     return None
                 url = links[choice]['url']
+
             origin  = _base_url(url)
             headers = {'Referer': origin, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
+
             if 'rockystream' in url or 'embed.st' in url:
                 m = re.search(r'<iframe[^>]+data-source=["\']([^"\']+)["\']', page_data, re.I)
                 if not m:
+                    log(
+                        f'embedhd ROCKY PAGE | {url} | '
+                        f'len={len(page_data)} preview={page_data[:1500]!r}',
+                        xbmc.LOGERROR
+                    )
                     return None
+
                 try:
                     embed_url = base64.b64decode(m.group(1)).decode('utf-8', 'ignore').strip()
-                except Exception:
+                except Exception as e:
+                    log(f'embedhd: bad data-source | {url} | {e}', xbmc.LOGERROR)
                     return None
+
                 embed_html = requests.get(
                     embed_url,
                     headers={'User-Agent': UA, 'Referer': url},
                     timeout=TIMEOUT
                 ).text
+
                 m = re.search(
                     r'<script[^>]+src=["\']([^"\']*bundle-jw\.js[^"\']*)["\']',
                     embed_html,
                     re.I
                 )
                 if not m:
+                    log(
+                        f'embedhd: no bundle-jw.js | {embed_url} | '
+                        f'len={len(embed_html)} preview={embed_html[:1500]!r}',
+                        xbmc.LOGERROR
+                    )
                     return None
+
                 bundle_url = urljoin(embed_url, m.group(1))
                 bundle_html = requests.get(
                     bundle_url,
@@ -783,38 +802,61 @@ class streamer:
                     timeout=TIMEOUT
                 ).text
 
+                log(
+                    f'embedhd BUNDLE | {bundle_url} | '
+                    f'len={len(bundle_html)} preview={bundle_html[:1500]!r}',
+                    xbmc.LOGERROR
+                )
+
                 return None
+
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             if not m:
+                log(f'embedhd: no fid match | {url}', xbmc.LOGERROR)
                 return None
+
             fid = m.group(1)
+
             m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page_data)
             if not m:
+                log(f'embedhd: no js src match | {url}', xbmc.LOGERROR)
                 return None
+
             js_src = m.group(1)
+
             if js_src.startswith('//'):
                 js_src = 'https:' + js_src
+
             js_origin = _base_url(js_src)
             js_html   = requests.get(js_src, headers=headers, timeout=TIMEOUT).text
+
             m = re.search(r'src=["\']([^"\']+)', js_html)
             if not m:
+                log(f'embedhd: no api src in js | {js_src}', xbmc.LOGERROR)
                 return None
+
             api = m.group(1)
+
             if api.startswith('//'):
                 api = 'https:' + api
             elif api.startswith('/'):
                 api = urljoin(js_origin, api)
+
             api_url  = api + 'mobile&live=' + fid
             api_html = requests.get(api_url, headers=headers, timeout=TIMEOUT).text
             source   = self._join_array(api_html)
+
             if not source:
+                log(f'embedhd: no source from join array | {api_url}', xbmc.LOGERROR)
                 return None
+
             return (
                 source
                 + '|Referer=' + quote_plus(js_origin + '/')
                 + '&Origin=' + quote_plus(js_origin)
                 + '&User-Agent=' + quote_plus(UA)
             )
+
         except Exception as e:
             _log_error('embedhd', url, e)
             return None
