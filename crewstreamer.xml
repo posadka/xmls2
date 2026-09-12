@@ -778,45 +778,42 @@ class streamer:
                     timeout=TIMEOUT
                 ).text
 
-                scripts = re.findall(r'<script([^>]*)>(.*?)</script>', embed_html, re.I | re.S)
-                inline = [body.strip() for attrs, body in scripts if not re.search(r'src=["\']', attrs, re.I) and body.strip()]
-
-                if not inline:
-                    log(f'embedhd: no inline scripts | {embed_url}', xbmc.LOGERROR)
-                    return None
-
-                script = max(inline, key=len)
-
-                log(f'embedhd SCRIPT0 LEN | {len(script)}', xbmc.LOGERROR)
-
-                urls = re.findall(r'https?://[^"\'\\\s<>]+', script, re.I)
-                log(f'embedhd SCRIPT0 URLS | {urls[:30]}', xbmc.LOGERROR)
-
-                paths = re.findall(
-                    r'["\']([^"\']*(?:\.php|\.m3u8|/api/|/stream/|/source/|/playlist/)[^"\']*)["\']',
-                    script,
+                m = re.search(
+                    r'window\[[\'"]([^\'"]+)[\'"]\]\s*=\s*[\'"]([^\'"]+)[\'"]',
+                    embed_html,
                     re.I
                 )
-                log(f'embedhd SCRIPT0 PATHS | {paths[:30]}', xbmc.LOGERROR)
 
-                for term in ('fetch', 'XMLHttpRequest', 'atob', 'location', 'pathname', 'source', 'sources', 'playlist', 'player'):
-                    pos = script.find(term)
-                    if pos != -1:
-                        log(
-                            f'embedhd SCRIPT0 {term} | '
-                            f'{script[max(0, pos - 500):pos + 1500]!r}',
-                            xbmc.LOGERROR
-                        )
+                if not m:
+                    log(f'embedhd: no window payload | {embed_url}', xbmc.LOGERROR)
+                    return None
 
-                strings = re.findall(r'["\']([^"\']{4,200})["\']', script)
-                useful = [
-                    s for s in strings
-                    if any(x in s.lower() for x in (
-                        'http', '.php', '.m3u8', 'stream', 'source',
-                        'playlist', 'ingest', 'api', 'token'
-                    ))
-                ]
-                log(f'embedhd SCRIPT0 STRINGS | {useful[:50]}', xbmc.LOGERROR)
+                payload_name = m.group(1)
+                payload      = m.group(2)
+
+                log(f'embedhd PAYLOAD NAME | {payload_name}', xbmc.LOGERROR)
+                log(f'embedhd PAYLOAD LEN | {len(payload)}', xbmc.LOGERROR)
+                log(f'embedhd PAYLOAD START | {payload[:500]!r}', xbmc.LOGERROR)
+                log(f'embedhd PAYLOAD END | {payload[-500:]!r}', xbmc.LOGERROR)
+
+                try:
+                    decoded = base64.b64decode(payload + '===')
+                    log(f'embedhd PAYLOAD DECODE LEN | {len(decoded)}', xbmc.LOGERROR)
+                    log(f'embedhd PAYLOAD DECODE START | {decoded[:1000]!r}', xbmc.LOGERROR)
+                    log(f'embedhd PAYLOAD DECODE END | {decoded[-1000:]!r}', xbmc.LOGERROR)
+
+                    text = decoded.decode('utf-8', 'ignore')
+
+                    urls = re.findall(
+                        r'https?://[^\s"\'<>]+',
+                        text,
+                        re.I
+                    )
+
+                    log(f'embedhd PAYLOAD URLS | {urls[:30]}', xbmc.LOGERROR)
+
+                except Exception as e:
+                    log(f'embedhd: payload decode error | {e}', xbmc.LOGERROR)
 
                 return None
 
