@@ -623,8 +623,16 @@ class streamer:
     @_guard
     def volokit(self, url):
         try:
-            log('volokit: CANARY - new file loaded', xbmc.LOGERROR)
-            page_data  = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+
+            links = re.findall(r'<a href="([^"]+)" class="btn btn-(?:primary|secondary)">([^<]+)</a>', page_data)
+            if len(links) == 2:
+                choice = xbmcgui.Dialog().select('Choose Stream', [label for _, label in links])
+                if choice == -1:
+                    return None
+                url       = links[choice][0]
+                page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+
             m          = re.search(r'(?s)<iframe[^>]*allow=[\'"]encrypted-media[^>]*src=[\'"]([^\'"]+)', page_data)
             if not m:
                 log(f'volokit: no encrypted-media iframe | {url}', xbmc.LOGERROR)
