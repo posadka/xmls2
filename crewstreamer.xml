@@ -686,6 +686,7 @@ class streamer:
                     timeout=TIMEOUT,
                     allow_redirects=True
                 )
+                log(f'volokit: gameId branch debug | status={resolved.status_code} | history={[r.status_code for r in resolved.history]} | final_url={resolved.url}', xbmc.LOGERROR)
                 stream_url = resolved.url
                 return f'{stream_url}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
 
