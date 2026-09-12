@@ -346,7 +346,7 @@ class streamer:
     @_guard
     def givemereddit(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}).text
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             m = re.search(r'(?is)iframe\s+class="embed-responsive-item"\s+src="([^"]+)"', page_data)
             if not m:
                 log(f'givemereddit: no iframe found | {url}', xbmc.LOGERROR)
