@@ -27,7 +27,7 @@ except ImportError:
 
 from resources.lib.modules import control, client, workers, jsunpack, hunter
 
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36'
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36'
 
 TAG = 'Streamer'
 
@@ -246,8 +246,10 @@ class streamer:
                 u = self.embedsports(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline']):
                 u = self.sportsonline(url)
-            elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd', 'rockystream']):
+            elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
                 u = self.embedhd_st(url)
+            elif 'rockystream' in url:
+                u = self.rockystream(url)
             elif 'embedhd.pk' in url:
                 u = self.embedhd_pk(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
@@ -737,13 +739,37 @@ class streamer:
             return None
 
     @_guard
+    def rockystream(self, url):
+        try:
+            page_data = requests.get(
+                url,
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=TIMEOUT
+            ).text
+            m = re.search(r'data-source="([^"]+)"', page_data)
+            if not m:
+                log(f'rockystream: no data-source match | {url}', xbmc.LOGERROR)
+                return None
+            try:
+                decoded_url = base64.b64decode(m.group(1)).decode('utf-8')
+            except Exception:
+                log(f'rockystream: bad base64 in data-source | {url}', xbmc.LOGERROR)
+                return None
+            if 'embed.st' in decoded_url:
+                log(f'rockystream: embed.st target unsupported (wasm-signed) | {decoded_url}', xbmc.LOGERROR)
+                return None
+            return self.resolve(decoded_url)
+        except Exception as e:
+            _log_error('rockystream', url, e)
+            return None
+
+    @_guard
     def embedhd_st(self, url):
         try:
             try:
                 links = json.loads(url)
             except (ValueError, TypeError):
                 links = None
-
             if isinstance(links, list):
                 if not links:
                     log('embedhd: empty links list', xbmc.LOGERROR)
@@ -759,166 +785,41 @@ class streamer:
             origin  = _base_url(url)
             headers = {'Referer': origin, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
-
-            if 'rockystream' in url or 'embed.st' in url:
-                m = re.search(r'<iframe[^>]+data-source=["\']([^"\']+)["\']', page_data, re.I)
-                if not m:
-                    log(f'embedhd ROCKY PAGE | {url} | len={len(page_data)}', xbmc.LOGERROR)
-                    return None
-
-                try:
-                    embed_url = base64.b64decode(m.group(1)).decode('utf-8', 'ignore').strip()
-                except Exception as e:
-                    log(f'embedhd: bad data-source | {url} | {e}', xbmc.LOGERROR)
-                    return None
-
-                embed_html = requests.get(
-                    embed_url,
-                    headers={'User-Agent': UA, 'Referer': url},
-                    timeout=TIMEOUT
-                ).text
-
-                log(f'embedhd EMBED URL | {embed_url}', xbmc.LOGERROR)
-                log(f'embedhd EMBED LEN | {len(embed_html)}', xbmc.LOGERROR)
-
-                for term in (
-                    'mevent5',
-                    '/embed/ingest/',
-                    'location.pathname',
-                    'window.location',
-                    'pathname',
-                    'jwplayer(',
-                    '.setup(',
-                    'playlist',
-                    'sources',
-                    'file:',
-                    'source:',
-                    'config',
-                    'token'
-                ):
-                    start = 0
-                    count = 0
-
-                    while count < 5:
-                        pos = embed_html.find(term, start)
-                        if pos == -1:
-                            break
-
-                        log(
-                            f'embedhd EMBED {term} {count} | '
-                            f'{embed_html[max(0, pos - 500):pos + 1500]!r}',
-                            xbmc.LOGERROR
-                        )
-
-                        start = pos + len(term)
-                        count += 1
-
-                m = re.search(
-                    r'<script[^>]+src=["\']([^"\']*bundle-jw\.js[^"\']*)["\']',
-                    embed_html,
-                    re.I
-                )
-
-                if not m:
-                    log(f'embedhd: no bundle-jw.js | {embed_url}', xbmc.LOGERROR)
-                    return None
-
-                bundle_url  = urljoin(embed_url, m.group(1))
-                bundle_html = requests.get(
-                    bundle_url,
-                    headers={
-                        'User-Agent': UA,
-                        'Referer': embed_url
-                    },
-                    timeout=TIMEOUT
-                ).text
-
-                log(f'embedhd BUNDLE URL | {bundle_url}', xbmc.LOGERROR)
-                log(f'embedhd BUNDLE LEN | {len(bundle_html)}', xbmc.LOGERROR)
-
-                for term in (
-                    'location.pathname',
-                    'window.location',
-                    '.pathname',
-                    'location.href',
-                    'document.location',
-                    '/embed/',
-                    'ingest',
-                    'fetch(',
-                    'XMLHttpRequest',
-                    'jwplayer(',
-                    '.setup(',
-                    'setup({',
-                    'playlist:',
-                    'sources:',
-                    'file:',
-                    'source:',
-                    'load('
-                ):
-                    start = 0
-                    count = 0
-
-                    while count < 10:
-                        pos = bundle_html.find(term, start)
-                        if pos == -1:
-                            break
-
-                        log(
-                            f'embedhd BUNDLE {term} {count} | '
-                            f'{bundle_html[max(0, pos - 750):pos + 2000]!r}',
-                            xbmc.LOGERROR
-                        )
-
-                        start = pos + len(term)
-                        count += 1
-
-                return None
-
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             if not m:
                 log(f'embedhd: no fid match | {url}', xbmc.LOGERROR)
                 return None
-
             fid = m.group(1)
-
-            m = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page_data)
+            m   = re.search(r'(?s)fid\s*=\s*.*?src=["\']([^"\']+)["\']', page_data)
             if not m:
                 log(f'embedhd: no js src match | {url}', xbmc.LOGERROR)
                 return None
-
             js_src = m.group(1)
             if js_src.startswith('//'):
                 js_src = 'https:' + js_src
-
             js_origin = _base_url(js_src)
             js_html   = requests.get(js_src, headers=headers, timeout=TIMEOUT).text
-
-            m = re.search(r'src=["\']([^"\']+)', js_html)
+            m         = re.search(r'src=["\']([^"\']+)', js_html)
             if not m:
                 log(f'embedhd: no api src in js | {js_src}', xbmc.LOGERROR)
                 return None
-
             api = m.group(1)
             if api.startswith('//'):
                 api = 'https:' + api
             elif api.startswith('/'):
                 api = urljoin(js_origin, api)
-
             api_url  = api + 'mobile&live=' + fid
             api_html = requests.get(api_url, headers=headers, timeout=TIMEOUT).text
             source   = self._join_array(api_html)
-
             if not source:
                 log(f'embedhd: no source from join array | {api_url}', xbmc.LOGERROR)
                 return None
-
             return (
                 source
                 + '|Referer=' + quote_plus(js_origin + '/')
                 + '&Origin='  + quote_plus(js_origin)
                 + '&User-Agent=' + quote_plus(UA)
             )
-
         except Exception as e:
             _log_error('embedhd', url, e)
             return None
