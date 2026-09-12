@@ -778,6 +778,41 @@ class streamer:
                     timeout=TIMEOUT
                 ).text
 
+                log(f'embedhd EMBED URL | {embed_url}', xbmc.LOGERROR)
+                log(f'embedhd EMBED LEN | {len(embed_html)}', xbmc.LOGERROR)
+
+                for term in (
+                    'mevent5',
+                    '/embed/ingest/',
+                    'location.pathname',
+                    'window.location',
+                    'pathname',
+                    'jwplayer(',
+                    '.setup(',
+                    'playlist',
+                    'sources',
+                    'file:',
+                    'source:',
+                    'config',
+                    'token'
+                ):
+                    start = 0
+                    count = 0
+
+                    while count < 5:
+                        pos = embed_html.find(term, start)
+                        if pos == -1:
+                            break
+
+                        log(
+                            f'embedhd EMBED {term} {count} | '
+                            f'{embed_html[max(0, pos - 500):pos + 1500]!r}',
+                            xbmc.LOGERROR
+                        )
+
+                        start = pos + len(term)
+                        count += 1
+
                 m = re.search(
                     r'<script[^>]+src=["\']([^"\']*bundle-jw\.js[^"\']*)["\']',
                     embed_html,
@@ -801,61 +836,41 @@ class streamer:
                 log(f'embedhd BUNDLE URL | {bundle_url}', xbmc.LOGERROR)
                 log(f'embedhd BUNDLE LEN | {len(bundle_html)}', xbmc.LOGERROR)
 
-                arrays = re.findall(
-                    r'(?:const|let|var)\s+(_0x[a-f0-9]+)\s*=\s*\[(.*?)\]',
-                    bundle_html,
-                    re.I | re.S
-                )
+                for term in (
+                    'location.pathname',
+                    'window.location',
+                    '.pathname',
+                    'location.href',
+                    'document.location',
+                    '/embed/',
+                    'ingest',
+                    'fetch(',
+                    'XMLHttpRequest',
+                    'jwplayer(',
+                    '.setup(',
+                    'setup({',
+                    'playlist:',
+                    'sources:',
+                    'file:',
+                    'source:',
+                    'load('
+                ):
+                    start = 0
+                    count = 0
 
-                log(f'embedhd BUNDLE ARRAYS | {len(arrays)}', xbmc.LOGERROR)
+                    while count < 10:
+                        pos = bundle_html.find(term, start)
+                        if pos == -1:
+                            break
 
-                if arrays:
-                    arrays = sorted(
-                        arrays,
-                        key=lambda x: len(x[1]),
-                        reverse=True
-                    )
-
-                    for name, data in arrays[:5]:
                         log(
-                            f'embedhd BUNDLE ARRAY | '
-                            f'{name} len={len(data)} '
-                            f'start={data[:1000]!r}',
+                            f'embedhd BUNDLE {term} {count} | '
+                            f'{bundle_html[max(0, pos - 750):pos + 2000]!r}',
                             xbmc.LOGERROR
                         )
 
-                decoders = re.findall(
-                    r'function\s+(_0x[a-f0-9]+)\s*\([^)]*\)\s*\{.{0,5000}?(?:decodeURIComponent|fromCharCode|charCodeAt|indexOf).*?\}',
-                    bundle_html,
-                    re.I | re.S
-                )
-
-                log(f'embedhd BUNDLE DECODERS | {decoders[:20]}', xbmc.LOGERROR)
-
-                invokes = re.findall(
-                    r'(_0x[a-f0-9]+)\(\s*(0x[a-f0-9]+|\d+)\s*\)',
-                    bundle_html,
-                    re.I
-                )
-
-                log(f'embedhd BUNDLE LOOKUPS | {invokes[-100:]}', xbmc.LOGERROR)
-
-                domains = re.findall(
-                    r'[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+',
-                    bundle_html
-                )
-
-                domains = list(dict.fromkeys(
-                    d for d in domains
-                    if not any(x in d.lower() for x in (
-                        'jwplayer.com',
-                        'jwplatform.com',
-                        'google.com',
-                        'w3.org'
-                    ))
-                ))
-
-                log(f'embedhd BUNDLE DOMAINS | {domains[:100]}', xbmc.LOGERROR)
+                        start = pos + len(term)
+                        count += 1
 
                 return None
 
