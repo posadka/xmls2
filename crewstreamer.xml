@@ -683,7 +683,7 @@ class streamer:
                     return None
                 resolved = requests.get(
                     stream_url,
-                    headers={'User-Agent': UA, 'Referer': iframe_url},
+                    headers={'User-Agent': UA, 'Origin': origin},
                     timeout=TIMEOUT,
                     allow_redirects=True
                 )
