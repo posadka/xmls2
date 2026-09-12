@@ -788,11 +788,7 @@ class streamer:
                     re.I
                 )
                 if not m:
-                    log(
-                        f'embedhd: no bundle-jw.js | {embed_url} | '
-                        f'len={len(embed_html)} preview={embed_html[:1500]!r}',
-                        xbmc.LOGERROR
-                    )
+                    log(f'embedhd: no bundle-jw.js | {embed_url}', xbmc.LOGERROR)
                     return None
 
                 bundle_url = urljoin(embed_url, m.group(1))
@@ -802,9 +798,29 @@ class streamer:
                     timeout=TIMEOUT
                 ).text
 
+                m3u8s = re.findall(
+                    r'https?[^"\'\\\s]+?\.m3u8[^"\'\\\s]*',
+                    bundle_html,
+                    re.I
+                )
+                log(f'embedhd M3U8 MATCHES | {m3u8s[:10]}', xbmc.LOGERROR)
+
+                fetches = re.findall(
+                    r'fetch\(\s*["\']([^"\']+)',
+                    bundle_html,
+                    re.I
+                )
+                log(f'embedhd FETCH MATCHES | {fetches[:20]}', xbmc.LOGERROR)
+
+                api_urls = re.findall(
+                    r'["\']([^"\']*(?:api|source|stream|playlist)[^"\']*)["\']',
+                    bundle_html,
+                    re.I
+                )
+                log(f'embedhd API MATCHES | {api_urls[-30:]}', xbmc.LOGERROR)
+
                 log(
-                    f'embedhd BUNDLE | {bundle_url} | '
-                    f'len={len(bundle_html)} preview={bundle_html[:1500]!r}',
+                    f'embedhd BUNDLE TAIL | {bundle_html[-5000:]!r}',
                     xbmc.LOGERROR
                 )
 
