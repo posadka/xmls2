@@ -355,7 +355,11 @@ class streamer:
             if iframe_url.startswith('//'):
                 iframe_url = 'https:' + iframe_url
             origin, referer = _origin_referer(iframe_url)
-            iframe_html = requests.get(iframe_url,headers={'Referer': referer, 'Origin': origin, 'User-Agent': UA}).text
+            iframe_html = requests.get(
+                iframe_url,
+                headers={'Referer': referer, 'Origin': origin, 'User-Agent': UA},
+                timeout=TIMEOUT
+            ).text
             m = re.search(
                 r'decodeURIComponent\(escape\(r\)\)}\("([^"]*)",([^,]*),"([^"]*)",([^,]*),([^,]*),([^)]+)\)',
                 iframe_html
