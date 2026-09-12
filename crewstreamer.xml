@@ -665,6 +665,18 @@ class streamer:
                 return None
             origin = _base_url(iframe_url)
 
+            m = re.search(r'var\s+gameId\s*=\s*(\d+)', iframe_html)
+            if m:
+                stream_url = requests.get(
+                    urljoin(origin + '/', f'cles/mlb1.php?id={m.group(1)}'),
+                    headers={'User-Agent': UA, 'Referer': iframe_url},
+                    timeout=TIMEOUT
+                ).text.strip()
+                if not stream_url.startswith('http'):
+                    log(f'volokit: gameId branch, bad stream response | {iframe_url} | {stream_url}', xbmc.LOGERROR)
+                    return None
+                return f'{stream_url}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+
             if 'atob' in iframe_html:
                 m = re.search(r"atob\(['\"]([^'\"]+)", iframe_html)
                 if m:
