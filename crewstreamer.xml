@@ -689,7 +689,7 @@ class streamer:
                 )
                 log(f'volokit: gameId branch debug | status={resolved.status_code} | history={[r.status_code for r in resolved.history]} | final_url={resolved.url}', xbmc.LOGERROR)
                 stream_url = resolved.url
-                return f'{stream_url}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+                return f'{stream_url}|User-Agent={UA}&Origin=null'
 
             if 'atob' in iframe_html:
                 m = re.search(r"atob\(['\"]([^'\"]+)", iframe_html)
