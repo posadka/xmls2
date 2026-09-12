@@ -680,6 +680,13 @@ class streamer:
                 if not stream_url.startswith('http'):
                     log(f'volokit: gameId branch, bad stream response | {iframe_url} | {stream_url}', xbmc.LOGERROR)
                     return None
+                resolved = requests.get(
+                    stream_url,
+                    headers={'User-Agent': UA, 'Referer': iframe_url},
+                    timeout=TIMEOUT,
+                    allow_redirects=True
+                )
+                stream_url = resolved.url
                 return f'{stream_url}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
 
             if 'atob' in iframe_html:
