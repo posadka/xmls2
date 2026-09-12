@@ -763,7 +763,7 @@ class streamer:
             if 'rockystream' in url or 'embed.st' in url:
                 m = re.search(r'<iframe[^>]+data-source=["\']([^"\']+)["\']', page_data, re.I)
                 if not m:
-                    log(f'embedhd ROCKY PAGE | {url} | len={len(page_data)} preview={page_data[:1500]!r}', xbmc.LOGERROR)
+                    log(f'embedhd ROCKY PAGE | {url} | len={len(page_data)}', xbmc.LOGERROR)
                     return None
 
                 try:
@@ -779,41 +779,83 @@ class streamer:
                 ).text
 
                 m = re.search(
-                    r'window\[[\'"]([^\'"]+)[\'"]\]\s*=\s*[\'"]([^\'"]+)[\'"]',
+                    r'<script[^>]+src=["\']([^"\']*bundle-jw\.js[^"\']*)["\']',
                     embed_html,
                     re.I
                 )
 
                 if not m:
-                    log(f'embedhd: no window payload | {embed_url}', xbmc.LOGERROR)
+                    log(f'embedhd: no bundle-jw.js | {embed_url}', xbmc.LOGERROR)
                     return None
 
-                payload_name = m.group(1)
-                payload      = m.group(2)
+                bundle_url  = urljoin(embed_url, m.group(1))
+                bundle_html = requests.get(
+                    bundle_url,
+                    headers={
+                        'User-Agent': UA,
+                        'Referer': embed_url
+                    },
+                    timeout=TIMEOUT
+                ).text
 
-                log(f'embedhd PAYLOAD NAME | {payload_name}', xbmc.LOGERROR)
-                log(f'embedhd PAYLOAD LEN | {len(payload)}', xbmc.LOGERROR)
-                log(f'embedhd PAYLOAD START | {payload[:500]!r}', xbmc.LOGERROR)
-                log(f'embedhd PAYLOAD END | {payload[-500:]!r}', xbmc.LOGERROR)
+                log(f'embedhd BUNDLE URL | {bundle_url}', xbmc.LOGERROR)
+                log(f'embedhd BUNDLE LEN | {len(bundle_html)}', xbmc.LOGERROR)
 
-                try:
-                    decoded = base64.b64decode(payload + '===')
-                    log(f'embedhd PAYLOAD DECODE LEN | {len(decoded)}', xbmc.LOGERROR)
-                    log(f'embedhd PAYLOAD DECODE START | {decoded[:1000]!r}', xbmc.LOGERROR)
-                    log(f'embedhd PAYLOAD DECODE END | {decoded[-1000:]!r}', xbmc.LOGERROR)
+                arrays = re.findall(
+                    r'(?:const|let|var)\s+(_0x[a-f0-9]+)\s*=\s*\[(.*?)\]',
+                    bundle_html,
+                    re.I | re.S
+                )
 
-                    text = decoded.decode('utf-8', 'ignore')
+                log(f'embedhd BUNDLE ARRAYS | {len(arrays)}', xbmc.LOGERROR)
 
-                    urls = re.findall(
-                        r'https?://[^\s"\'<>]+',
-                        text,
-                        re.I
+                if arrays:
+                    arrays = sorted(
+                        arrays,
+                        key=lambda x: len(x[1]),
+                        reverse=True
                     )
 
-                    log(f'embedhd PAYLOAD URLS | {urls[:30]}', xbmc.LOGERROR)
+                    for name, data in arrays[:5]:
+                        log(
+                            f'embedhd BUNDLE ARRAY | '
+                            f'{name} len={len(data)} '
+                            f'start={data[:1000]!r}',
+                            xbmc.LOGERROR
+                        )
 
-                except Exception as e:
-                    log(f'embedhd: payload decode error | {e}', xbmc.LOGERROR)
+                decoders = re.findall(
+                    r'function\s+(_0x[a-f0-9]+)\s*\([^)]*\)\s*\{.{0,5000}?(?:decodeURIComponent|fromCharCode|charCodeAt|indexOf).*?\}',
+                    bundle_html,
+                    re.I | re.S
+                )
+
+                log(f'embedhd BUNDLE DECODERS | {decoders[:20]}', xbmc.LOGERROR)
+
+                invokes = re.findall(
+                    r'(_0x[a-f0-9]+)\(\s*(0x[a-f0-9]+|\d+)\s*\)',
+                    bundle_html,
+                    re.I
+                )
+
+                log(f'embedhd BUNDLE LOOKUPS | {invokes[-100:]}', xbmc.LOGERROR)
+
+                domains = re.findall(
+                    r'[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+',
+                    bundle_html
+                )
+
+                domains = list(dict.fromkeys(
+                    d for d in domains
+                    if not any(x in d.lower() for x in (
+                        'jwplayer.com',
+                        'jwplatform.com',
+                        'google.com',
+                        'w3.org'
+                    ))
+                ))
+
+                log(f'embedhd BUNDLE DOMAINS | {domains[:100]}', xbmc.LOGERROR)
 
                 return None
 
