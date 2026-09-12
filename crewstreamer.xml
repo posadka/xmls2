@@ -778,21 +778,45 @@ class streamer:
                     timeout=TIMEOUT
                 ).text
 
-                scripts = re.findall(
-                    r'<script([^>]*)>(.*?)</script>',
-                    embed_html,
-                    re.I | re.S
+                scripts = re.findall(r'<script([^>]*)>(.*?)</script>', embed_html, re.I | re.S)
+                inline = [body.strip() for attrs, body in scripts if not re.search(r'src=["\']', attrs, re.I) and body.strip()]
+
+                if not inline:
+                    log(f'embedhd: no inline scripts | {embed_url}', xbmc.LOGERROR)
+                    return None
+
+                script = max(inline, key=len)
+
+                log(f'embedhd SCRIPT0 LEN | {len(script)}', xbmc.LOGERROR)
+
+                urls = re.findall(r'https?://[^"\'\\\s<>]+', script, re.I)
+                log(f'embedhd SCRIPT0 URLS | {urls[:30]}', xbmc.LOGERROR)
+
+                paths = re.findall(
+                    r'["\']([^"\']*(?:\.php|\.m3u8|/api/|/stream/|/source/|/playlist/)[^"\']*)["\']',
+                    script,
+                    re.I
                 )
+                log(f'embedhd SCRIPT0 PATHS | {paths[:30]}', xbmc.LOGERROR)
 
-                log(f'embedhd EMBED URL | {embed_url}', xbmc.LOGERROR)
-                log(f'embedhd EMBED LEN | {len(embed_html)}', xbmc.LOGERROR)
+                for term in ('fetch', 'XMLHttpRequest', 'atob', 'location', 'pathname', 'source', 'sources', 'playlist', 'player'):
+                    pos = script.find(term)
+                    if pos != -1:
+                        log(
+                            f'embedhd SCRIPT0 {term} | '
+                            f'{script[max(0, pos - 500):pos + 1500]!r}',
+                            xbmc.LOGERROR
+                        )
 
-                for i, (attrs, body) in enumerate(scripts):
-                    src = re.search(r'src=["\']([^"\']+)', attrs, re.I)
-                    if src:
-                        log(f'embedhd SCRIPT {i} SRC | {src.group(1)}', xbmc.LOGERROR)
-                    elif body.strip():
-                        log(f'embedhd SCRIPT {i} INLINE | {body.strip()[-2500:]!r}', xbmc.LOGERROR)
+                strings = re.findall(r'["\']([^"\']{4,200})["\']', script)
+                useful = [
+                    s for s in strings
+                    if any(x in s.lower() for x in (
+                        'http', '.php', '.m3u8', 'stream', 'source',
+                        'playlist', 'ingest', 'api', 'token'
+                    ))
+                ]
+                log(f'embedhd SCRIPT0 STRINGS | {useful[:50]}', xbmc.LOGERROR)
 
                 return None
 
