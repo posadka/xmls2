@@ -763,11 +763,7 @@ class streamer:
             if 'rockystream' in url or 'embed.st' in url:
                 m = re.search(r'<iframe[^>]+data-source=["\']([^"\']+)["\']', page_data, re.I)
                 if not m:
-                    log(
-                        f'embedhd ROCKY PAGE | {url} | '
-                        f'len={len(page_data)} preview={page_data[:1500]!r}',
-                        xbmc.LOGERROR
-                    )
+                    log(f'embedhd ROCKY PAGE | {url} | len={len(page_data)} preview={page_data[:1500]!r}', xbmc.LOGERROR)
                     return None
 
                 try:
@@ -782,47 +778,21 @@ class streamer:
                     timeout=TIMEOUT
                 ).text
 
-                m = re.search(
-                    r'<script[^>]+src=["\']([^"\']*bundle-jw\.js[^"\']*)["\']',
+                scripts = re.findall(
+                    r'<script([^>]*)>(.*?)</script>',
                     embed_html,
-                    re.I
+                    re.I | re.S
                 )
-                if not m:
-                    log(f'embedhd: no bundle-jw.js | {embed_url}', xbmc.LOGERROR)
-                    return None
 
-                bundle_url = urljoin(embed_url, m.group(1))
-                bundle_html = requests.get(
-                    bundle_url,
-                    headers={'User-Agent': UA, 'Referer': embed_url},
-                    timeout=TIMEOUT
-                ).text
+                log(f'embedhd EMBED URL | {embed_url}', xbmc.LOGERROR)
+                log(f'embedhd EMBED LEN | {len(embed_html)}', xbmc.LOGERROR)
 
-                m3u8s = re.findall(
-                    r'https?[^"\'\\\s]+?\.m3u8[^"\'\\\s]*',
-                    bundle_html,
-                    re.I
-                )
-                log(f'embedhd M3U8 MATCHES | {m3u8s[:10]}', xbmc.LOGERROR)
-
-                fetches = re.findall(
-                    r'fetch\(\s*["\']([^"\']+)',
-                    bundle_html,
-                    re.I
-                )
-                log(f'embedhd FETCH MATCHES | {fetches[:20]}', xbmc.LOGERROR)
-
-                api_urls = re.findall(
-                    r'["\']([^"\']*(?:api|source|stream|playlist)[^"\']*)["\']',
-                    bundle_html,
-                    re.I
-                )
-                log(f'embedhd API MATCHES | {api_urls[-30:]}', xbmc.LOGERROR)
-
-                log(
-                    f'embedhd BUNDLE TAIL | {bundle_html[-5000:]!r}',
-                    xbmc.LOGERROR
-                )
+                for i, (attrs, body) in enumerate(scripts):
+                    src = re.search(r'src=["\']([^"\']+)', attrs, re.I)
+                    if src:
+                        log(f'embedhd SCRIPT {i} SRC | {src.group(1)}', xbmc.LOGERROR)
+                    elif body.strip():
+                        log(f'embedhd SCRIPT {i} INLINE | {body.strip()[-2500:]!r}', xbmc.LOGERROR)
 
                 return None
 
@@ -839,7 +809,6 @@ class streamer:
                 return None
 
             js_src = m.group(1)
-
             if js_src.startswith('//'):
                 js_src = 'https:' + js_src
 
@@ -852,7 +821,6 @@ class streamer:
                 return None
 
             api = m.group(1)
-
             if api.startswith('//'):
                 api = 'https:' + api
             elif api.startswith('/'):
@@ -869,7 +837,7 @@ class streamer:
             return (
                 source
                 + '|Referer=' + quote_plus(js_origin + '/')
-                + '&Origin=' + quote_plus(js_origin)
+                + '&Origin='  + quote_plus(js_origin)
                 + '&User-Agent=' + quote_plus(UA)
             )
 
