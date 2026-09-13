@@ -254,14 +254,14 @@ class streamer:
                 u = self.embedhd_pk(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.ms', 'methstreams.gs']):
                 u = self.methstreams(url)
+            elif 'iframe.gs' in url:
+                u = self.iframe_gs(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st', 'gozo']):
                 u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.ws']):
                 u = self.givemereddit(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
-            elif 'gszone' in url:
-                u = self.gszone(url)
             else:
                 u = self.generic(url)
             return u
@@ -864,86 +864,63 @@ class streamer:
     def methstreams(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            matches = list(re.finditer(
-                r'https?:\\?/\\?/(?:sharkstreams\.net\\?/player\.php\?channel=\d+|streams\.center\\?/embed\\?/ch\d+\.php)',
-                page_data
-            ))
-            if not matches:
-                log(f'methstreams: no candidate links found | {url}', xbmc.LOGERROR)
+            m = re.search(r'const\s+allStreams\s*=\s*(\[.*?\]);', page_data, re.S)
+            if not m:
+                log(f'methstreams: no allStreams array found | {url}', xbmc.LOGERROR)
                 return None
-            links = []
-            for i, m in enumerate(matches, 1):
-                raw = m.group(0).replace('\\/', '/')
-                if 'sharkstreams.net' in raw:
-                    links.append((f'Link {i} - SharkStreams', 'shark', raw))
-                elif 'streams.center' in raw:
-                    links.append((f'Link {i} - Streams.center', 'streams', raw))
-            if not links:
-                log(f'methstreams: candidates found but none classified | {url}', xbmc.LOGERROR)
+            try:
+                streams = json.loads(m.group(1))
+            except Exception:
+                log(f'methstreams: failed to parse allStreams json | {url}', xbmc.LOGERROR)
                 return None
-            choice = 0 if len(links) == 1 else xbmcgui.Dialog().select('Choose Stream', [x[0] for x in links])
-            if choice == -1:
+            iframe_gs_url = next(
+                (s.get('value') for s in streams if 'iframe.gs' in (s.get('value') or '')),
+                None
+            )
+            if not iframe_gs_url:
+                log(f'methstreams: no iframe.gs link in allStreams | {url}', xbmc.LOGERROR)
                 return None
-            label, source, picked_url = links[choice]
-
-            if source == 'shark':
-                origin, referer = _origin_referer(picked_url)
-                page_data = requests.get(
-                    picked_url,
-                    headers={'User-Agent': UA, 'Referer': url},
-                    timeout=TIMEOUT
-                ).text
-                m = re.search(r"fetch\('([^']+)", page_data)
-                if not m:
-                    log(f'methstreams: shark branch, no fetch call | {picked_url}', xbmc.LOGERROR)
-                    return None
-                api_url  = urljoin(origin, m.group(1))
-                api_data = requests.get(
-                    api_url,
-                    headers={'User-Agent': UA, 'Referer': picked_url},
-                    timeout=TIMEOUT
-                ).text
-                try:
-                    urls = json.loads(api_data).get('urls', [])
-                except Exception:
-                    m = re.search(r'\["([^"]+)', api_data)
-                    if not m:
-                        log(f'methstreams: shark branch, no urls in api response | {api_url}', xbmc.LOGERROR)
-                        return None
-                    urls = [m.group(1).replace('\\', '')]
-                if not urls:
-                    log(f'methstreams: shark branch, empty urls list | {api_url}', xbmc.LOGERROR)
-                    return None
-                if len(urls) == 1:
-                    stream = urls[0]
-                else:
-                    choice = xbmcgui.Dialog().select('Choose Stream', [f'Stream {i+1}' for i in range(len(urls))])
-                    if choice == -1:
-                        return None
-                    stream = urls[choice]
-                if not stream:
-                    log(f'methstreams: shark branch, empty chosen stream | {api_url}', xbmc.LOGERROR)
-                    return None
-                return f'{stream}|User-Agent={UA}&Referer={referer}&Origin={origin}'
-
-            if source == 'streams':
-                iframe1_html = requests.get(
-                    picked_url,
-                    headers={'User-Agent': UA, 'Referer': url},
-                    timeout=TIMEOUT
-                ).text
-                iframe2 = self._get_iframe_src(iframe1_html)
-                if not iframe2:
-                    log(f'methstreams: streams branch, no iframe2 | {picked_url}', xbmc.LOGERROR)
-                    return None
-                iframe2_html = requests.get(
-                    iframe2,
-                    headers={'Referer': picked_url, 'User-Agent': UA},
-                    timeout=TIMEOUT
-                ).text
-                return self._decrypt_streams_center(iframe2_html, iframe2)
+            return self.resolve(iframe_gs_url)
         except Exception as e:
             _log_error('methstreams', url, e)
+            return None
+
+    @_guard
+    def iframe_gs(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            origin, referer = _origin_referer(url)
+            mode_m = re.search(r'const\s+MODE\s*=\s*"([^"]+)"', page_data)
+            mode = mode_m.group(1) if mode_m else 'direct'
+
+            if mode == 'direct':
+                m = re.search(r'const\s+DIRECT_STREAM_URL\s*=\s*"([^"]+)"', page_data)
+                if not m:
+                    log(f'iframe_gs: no DIRECT_STREAM_URL found | {url}', xbmc.LOGERROR)
+                    return None
+                stream_url = m.group(1)
+            else:
+                m = re.search(r'const\s+WORKER_URL\s*=\s*"([^"]+)"', page_data)
+                if not m:
+                    log(f'iframe_gs: no WORKER_URL found | {url}', xbmc.LOGERROR)
+                    return None
+                worker_url = m.group(1)
+                api_data = requests.get(
+                    worker_url,
+                    headers={'User-Agent': UA, 'Referer': referer, 'Origin': origin},
+                    timeout=TIMEOUT
+                ).json()
+                if not api_data.get('success'):
+                    log(f'iframe_gs: worker api success=false | {worker_url}', xbmc.LOGERROR)
+                    return None
+                stream_url = api_data.get('stream', '')
+                if not stream_url:
+                    log(f'iframe_gs: no stream in worker response | {worker_url}', xbmc.LOGERROR)
+                    return None
+
+            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            _log_error('iframe_gs', url, e)
             return None
 
     @_guard
@@ -1973,29 +1950,4 @@ class streamer:
             )
         except Exception as e:
             _log_error('xyzstreams', url, e)
-            return None
-
-    @_guard
-    def gszone(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            m = re.search(r'\(function\(c,k\)\{.*?\}\)\("([^"]+)",\s*(\d+)\)', page_data, re.S)
-            if not m:
-                log(f'gszone: no obfuscated loader match | {url}', xbmc.LOGERROR)
-                return None
-            c, k = m.group(1), int(m.group(2))
-            r   = base64.b64decode(c).decode('latin1')
-            rel = ''.join(chr(ord(ch) ^ k) for ch in r)
-            follow_url = url.split('?')[0] + rel
-            follow_html = requests.get(
-                follow_url,
-                headers={'User-Agent': UA, 'Referer': url},
-                timeout=TIMEOUT
-            ).text
-            log(f'gszone DEBUG follow_url={follow_url}', xbmc.LOGERROR)
-            log(f'gszone DEBUG follow_html[:800]={follow_html[:800]}', xbmc.LOGERROR)
-            log(f'gszone: follow-up response structure | {follow_url}', xbmc.LOGERROR)
-            return None
-        except Exception as e:
-            _log_error('gszone', url, e)
             return None
