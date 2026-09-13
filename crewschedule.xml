@@ -145,6 +145,8 @@ class streamer:
                 u = self.gozo(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
+            elif 'gszone' in url:
+                u = self.gszone(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -1098,4 +1100,24 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('xyzstreams', url, e)
+            return None
+
+    @_guard
+    def gszone(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<a href="([^"]+)" class="item" data-c="([^"]+)">.*?<span class="name">([^<]+)</span>',
+                page_data
+            )
+            results = []
+            for href, category, name in matches:
+                name     = html.unescape(name).strip()
+                category = html.unescape(category).strip()
+                label    = f'[COLOR dodgerblue]{category}[/COLOR] [COLOR orange]{name}[/COLOR]'
+                results.append((urljoin(base, href), label))
+            return results or None
+        except Exception as e:
+            _log_error('gszone', url, e)
             return None
