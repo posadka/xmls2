@@ -260,6 +260,8 @@ class streamer:
                 u = self.givemereddit(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
+            elif 'gszone' in url:
+                u = self.gszone(url)
             else:
                 u = self.generic(url)
             return u
@@ -1971,4 +1973,29 @@ class streamer:
             )
         except Exception as e:
             _log_error('xyzstreams', url, e)
+            return None
+
+    @_guard
+    def gszone(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            m = re.search(r'\(function\(c,k\)\{.*?\}\)\("([^"]+)",\s*(\d+)\)', page_data, re.S)
+            if not m:
+                log(f'gszone: no obfuscated loader match | {url}', xbmc.LOGERROR)
+                return None
+            c, k = m.group(1), int(m.group(2))
+            r   = base64.b64decode(c).decode('latin1')
+            rel = ''.join(chr(ord(ch) ^ k) for ch in r)
+            follow_url = url.split('?')[0] + rel
+            follow_html = requests.get(
+                follow_url,
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=TIMEOUT
+            ).text
+            log(f'gszone DEBUG follow_url={follow_url}', xbmc.LOGERROR)
+            log(f'gszone DEBUG follow_html[:800]={follow_html[:800]}', xbmc.LOGERROR)
+            log(f'gszone: follow-up response structure | {follow_url}', xbmc.LOGERROR)
+            return None
+        except Exception as e:
+            _log_error('gszone', url, e)
             return None
