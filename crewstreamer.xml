@@ -256,6 +256,8 @@ class streamer:
                 u = self.methstreams(url)
             elif 'iframe.gs' in url:
                 u = self.iframe_gs(url)
+            elif 'runid.xyz' in url:
+                u = self.runid(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st', 'gozo']):
                 u = self.ovostreams(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.ws']):
@@ -864,7 +866,7 @@ class streamer:
     def methstreams(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            m = re.search(r'const\s+allStreams\s*=\s*(\[.*?\]);', page_data, re.S)
+            m = re.search(r'const\s+allStreams\s*=\s*(\[[\s\S]*?\])\s*;', page_data)
             if not m:
                 log(f'methstreams: no allStreams array found | {url}', xbmc.LOGERROR)
                 return None
@@ -873,16 +875,37 @@ class streamer:
             except Exception:
                 log(f'methstreams: failed to parse allStreams json | {url}', xbmc.LOGERROR)
                 return None
-            iframe_gs_url = next(
-                (s.get('value') for s in streams if 'iframe.gs' in (s.get('value') or '')),
-                None
-            )
-            if not iframe_gs_url:
-                log(f'methstreams: no iframe.gs link in allStreams | {url}', xbmc.LOGERROR)
+            picks = [
+                s for s in streams
+                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz'))
+            ]
+            if not picks:
+                log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
                 return None
-            return self.resolve(iframe_gs_url)
+            if len(picks) == 1:
+                choice = 0
+            else:
+                choice = xbmcgui.Dialog().select('Choose Stream', [p.get('label', 'Stream') for p in picks])
+            if choice == -1:
+                return None
+            return self.resolve(picks[choice]['value'])
         except Exception as e:
             _log_error('methstreams', url, e)
+            return None
+
+    @_guard
+    def runid(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r"source:\s*'([^']+)'", page_data)
+            if not m:
+                log(f'runid: no source match | {url}', xbmc.LOGERROR)
+                return None
+            stream_url = m.group(1)
+            origin, referer = _origin_referer(url)
+            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            _log_error('runid', url, e)
             return None
 
     @_guard
