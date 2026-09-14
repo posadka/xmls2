@@ -139,14 +139,12 @@ class streamer:
                 u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'methstreams.gs']):
                 u = self.methstreams(url)
-            elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal']):
+            elif any(x in url for x in ['ovostreams.com', 'ovostream.net', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal']):
                 u = self.ovostreams(url)
             elif 'gozo' in url:
                 u = self.gozo(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
-            elif 'gszone' in url:
-                u = self.gszone(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -240,31 +238,19 @@ class streamer:
         try:
             base      = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
-            now       = datetime.now()
             results   = []
-            matches = re.findall(
-                r'(?s)<div class="stream-row"[^>]*>\s*'
-                r'<div class="stream-time">([^<]*)</div>\s*'
-                r'<div class="stream-info">(.*?)</div>\s*'
-                r'<button class="watch-btn" onclick="window\.location\.href=\'([^\']+)\'"',
-                page_data
-            )
-            for time_str, info_block, href in matches:
-                title = re.sub(r'<img[^>]*>', '', info_block)
-                title = html.unescape(title)
-                title = re.sub(r'\s+', ' ', title).strip()
-                if not title or not href or href == '#':
+            cards = re.split(r'(?=<div class="card" data-search=)', page_data)[1:]
+            for block in cards:
+                sport_m = re.search(r'<div class="sport-tag">([^<]*)</div>', block)
+                teams   = re.findall(r'<div class="team-name">([^<]*)</div>', block)
+                href_m  = re.search(r'<a href="([^"]+)" class="watch-btn">', block)
+                if not teams or not href_m:
                     continue
-                time_str = time_str.strip()
-                try:
-                    utc_t    = datetime.strptime(time_str, '%H:%M').replace(
-                        year=now.year, month=now.month, day=now.day,
-                        tzinfo=timezone.utc
-                    )
-                    time_str = utc_t.astimezone().strftime('%I:%M %p').lstrip('0')
-                except Exception:
-                    pass
-                results.append((urljoin(base, href), self._label(time_str, title)))
+                sport = html.unescape(sport_m.group(1)).strip() if sport_m else ''
+                title = ' vs '.join(html.unescape(t).strip() for t in teams)
+                href  = html.unescape(href_m.group(1)).strip()
+                label = f'[COLOR dodgerblue]{sport}[/COLOR] [COLOR orange]{title}[/COLOR]' if sport else f'[COLOR orange]{title}[/COLOR]'
+                results.append((urljoin(base, href), label))
             return results or None
         except Exception as e:
             _log_error('ovostreams', url, e)
@@ -1100,24 +1086,4 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('xyzstreams', url, e)
-            return None
-
-    @_guard
-    def gszone(self, url):
-        try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            base      = _base_url(url)
-            matches   = re.findall(
-                r'(?s)<a href="([^"]+)" class="item" data-c="([^"]+)">.*?<span class="name">([^<]+)</span>',
-                page_data
-            )
-            results = []
-            for href, category, name in matches:
-                name     = html.unescape(name).strip()
-                category = html.unescape(category).strip()
-                label    = f'[COLOR dodgerblue]{category}[/COLOR] [COLOR orange]{name}[/COLOR]'
-                results.append((urljoin(base, href), label))
-            return results or None
-        except Exception as e:
-            _log_error('gszone', url, e)
             return None
