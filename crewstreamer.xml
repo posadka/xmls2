@@ -260,6 +260,8 @@ class streamer:
                 u = self.runid(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st', 'gozo']):
                 u = self.ovostreams(url)
+            elif 'ovostream.net' in url:
+                u = self.ovostream_net(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.ws']):
                 u = self.givemereddit(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
@@ -601,6 +603,31 @@ class streamer:
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('ovostreams', url, e)
+            return None
+
+    @_guard
+    def ovostream_net(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r'<div class="player-box">\s*<iframe src="([^"]+)"', page_data)
+            if not m:
+                log(f'ovostream_net: no player iframe found | {url}', xbmc.LOGERROR)
+                return None
+            iframe_url = m.group(1)
+            iframe_html = requests.get(
+                iframe_url,
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=TIMEOUT
+            ).text
+            m = re.search(r'var\s+sourceUrl\s*=\s*"([^"]+)"', iframe_html)
+            if not m:
+                log(f'ovostream_net: no sourceUrl found | {iframe_url}', xbmc.LOGERROR)
+                return None
+            stream_url = m.group(1)
+            origin, referer = _origin_referer(iframe_url)
+            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            _log_error('ovostream_net', url, e)
             return None
 
     @_guard
