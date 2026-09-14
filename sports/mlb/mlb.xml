@@ -162,7 +162,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re
     from urllib.parse import urljoin
     if not control.infoLabel('Container.PluginName') == 'plugin.video.thecrew': return
-    sport = 'league/mlbstreams'
+    sport = 'league/mlbwildcard'
     base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/meth.xml')
     base = re.findall('"([^"]*)', base_url)[0]
     full_url = urljoin(base, sport)
