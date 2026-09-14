@@ -9,9 +9,34 @@ import math
 import html
 from datetime import datetime, timedelta, timezone
 
-import requests
+try:
+    from curl_cffi import requests
+    _CURL_CFFI = True
+except ImportError:
+    import requests
+    _CURL_CFFI = False
 import xbmc
 import xbmcgui
+
+_IMPERSONATE = 'chrome124'
+
+
+def _http_get(url, **kwargs):
+    if _CURL_CFFI:
+        kwargs.setdefault('impersonate', _IMPERSONATE)
+    return requests.get(url, **kwargs)
+
+
+def _http_post(url, **kwargs):
+    if _CURL_CFFI:
+        kwargs.setdefault('impersonate', _IMPERSONATE)
+    return requests.post(url, **kwargs)
+
+
+def _new_session():
+    if _CURL_CFFI:
+        return requests.Session(impersonate=_IMPERSONATE)
+    return requests.Session()
 
 try:
     from Cryptodome.Cipher import AES
@@ -178,7 +203,7 @@ class streamer:
     @_guard
     def rampages(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<tr><td data-sort="\*[^"]*"><a href="([^"]+)">'
@@ -210,7 +235,7 @@ class streamer:
     @_guard
     def streameast(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             matches = re.findall(
                 r'(?s)<li[^>]*\bclass=["\'][^"\']*\bf1-podium--item\b[^"\']*["\'][^>]*>\s*'
                 r'<a\s+href=["\']([^"\']+)["\'].*?'
@@ -237,7 +262,7 @@ class streamer:
     def ovostreams(self, url):
         try:
             base      = _base_url(url)
-            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             results   = []
             cards = re.split(r'(?=<div class="card" data-search=)', page_data)[1:]
             for block in cards:
@@ -259,7 +284,7 @@ class streamer:
     @_guard
     def hdrez(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             items     = re.findall(r'<script>var.*?=\s*(\[[^;]+)', page_data)[0]
             items     = re.findall(r'"(.+?)"', items)
             subitem   = int(re.findall(r'\(atob.+?-\s*(\d+)', page_data)[0])
@@ -280,7 +305,7 @@ class streamer:
     @_guard
     def fsportshd(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'<div class="media-body">\s*<a href=["\']([^"\']+)["\'][^>]*>.*?'
@@ -313,7 +338,7 @@ class streamer:
     @_guard
     def volokit(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             matches   = re.findall(r'(?s)padding:0">([^<]*).*?href="([^"]*)', page_data)
             results   = [
                 (href, f'[COLOR orange]{html.unescape(title).strip()}[/COLOR]')
@@ -327,7 +352,7 @@ class streamer:
     @_guard
     def streameast_ga(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base = _base_url(url)
             now = datetime.now().astimezone().date()
             tomorrow = now + timedelta(days=1)
@@ -398,7 +423,7 @@ class streamer:
     @_guard
     def buffstreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<a[^>]+class="competition"[^>]+title="([^"]+)"[^>]+href="([^"]+)".*?'
@@ -437,7 +462,7 @@ class streamer:
     @_guard
     def roxiestreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<a href="([^"]+)">\s*([^<]+)</a>.*?time">([^<]*)',
@@ -460,7 +485,7 @@ class streamer:
     @_guard
     def givemereddit(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'<a href="([^"]+)" class="matches"[^>]*>(.*?)</a>',
@@ -492,7 +517,7 @@ class streamer:
     @_guard
     def methstreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'<a class="card" href="([^"]+)"[^>]*>.*?'
@@ -512,7 +537,7 @@ class streamer:
     @_guard
     def shd(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             if not page_data:
                 return None
             base    = _base_url(url)
@@ -548,7 +573,7 @@ class streamer:
                 'Referer': _base_url(url) + '/',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             }
-            response = requests.get(url, headers=headers, timeout=TIMEOUT)
+            response = _http_get(url, headers=headers, timeout=TIMEOUT)
             response.raise_for_status()
             page_data = response.text
             games = re.findall(
@@ -618,7 +643,7 @@ class streamer:
     @_guard
     def playoff(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<a class="btn btn-info btn-block"[^>]+href="([^"]+)"[^>]*>'
@@ -646,7 +671,7 @@ class streamer:
     @_guard
     def crackstreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'<a href="([^"]+)"[^>]+title="Watch ([^"]+?) Live Stream',
@@ -664,7 +689,7 @@ class streamer:
     @_guard
     def flyembed(self, url):
         try:
-            data    = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            data    = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for entry in data:
                 if 'iframeURL' in entry:
@@ -701,7 +726,7 @@ class streamer:
     @_guard
     def embedhd(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results   = []
             for day in page_data.get('days', []):
                 for event in day.get('items', []):
@@ -734,7 +759,7 @@ class streamer:
     @_guard
     def sportssonline(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             results   = []
             now       = datetime.now()
             for line in page_data.splitlines():
@@ -764,7 +789,7 @@ class streamer:
     @_guard
     def sharkstreams(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base = _base_url(url)
             matches = re.findall(
                 r'(?s)<div class="row">.*?'
@@ -794,7 +819,7 @@ class streamer:
     @_guard
     def sportzone(self, url):
         try:
-            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for match in data.get('matches', []):
                 team1 = match.get('team1', '')
@@ -851,7 +876,7 @@ class streamer:
     @_guard
     def korast(self, url):
         try:
-            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for match in data.get('matches', []):
                 team1 = match.get('team1', '')
@@ -901,7 +926,7 @@ class streamer:
     @_guard
     def sportsurge(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             results = []
             for m in re.finditer(r'<a class="row MaclariListele[^"]*"\s+href="([^"]+)"[^>]*>(.*?)</a>', page_data, re.S):
                 href, block = m.group(1), m.group(2)
@@ -938,7 +963,7 @@ class streamer:
             page    = 1
             while True:
                 page_url  = url if page == 1 else urljoin(base, f'/page/{page}/')
-                page_data = requests.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                page_data = _http_get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
                 articles  = re.findall(r'<article.*?</article>', page_data, re.S)
                 if not articles:
                     break
@@ -973,7 +998,7 @@ class streamer:
     @_guard
     def timstreams(self, url):
         try:
-            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for ch in data.get('channels', []):
                 for s in ch.get('streams', []):
@@ -995,7 +1020,7 @@ class streamer:
             page    = 1
             while True:
                 page_url  = url if page == 1 else urljoin(base, f'/page/{page}/')
-                page_data = requests.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                page_data = _http_get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
                 articles  = re.findall(r'<article id="post-\d+".*?</article>', page_data, re.S)
                 if not articles:
                     break
@@ -1022,7 +1047,7 @@ class streamer:
     @_guard
     def gozo(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            page_data = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base      = _base_url(url)
             matches   = re.findall(
                 r'(?s)<div class="sport-tag">([^<]*)</div>.*?'
@@ -1048,7 +1073,7 @@ class streamer:
     @_guard
     def xyzstreams(self, url):
         try:
-            data  = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            data  = _http_get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             games = (data.get('data') or {}).get('games', [])
             results = []
             for game in games:
