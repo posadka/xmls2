@@ -2061,12 +2061,11 @@ class streamer:
 
             rendition_key = options[choice][1]
             playlist_text = renditions[rendition_key]
-            temp_dir  = xbmcvfs.translatePath('special://temp/')
-            file_path = temp_dir + f'topstreamer_{int(time.time())}.m3u8'
+            file_path = f'special://temp/topstreamer_{int(time.time())}.m3u8'
             f = xbmcvfs.File(file_path, 'w')
             f.write(playlist_text)
             f.close()
-            return f'{file_path}|User-Agent={UA}&Origin=https://topstreamer.site'
+            return file_path
         except Exception as e:
             _log_error('topstreamer', url, e)
             return None
