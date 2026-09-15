@@ -241,7 +241,7 @@ class streamer:
                 u = self.streameast(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
-            elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
+            elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top']):
                 u = self.crackstreams(url)
             elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia']):
                 u = self.embedsports(url)

@@ -129,7 +129,7 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
-            elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site']):
+            elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top']):
                 u = self.crackstreams(url)
             elif any(x in url for x in ['fsportsshd', 'fsportshd']):
                 u = self.fsportshd(url)
