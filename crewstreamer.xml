@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 import requests
 import xbmc
 import xbmcgui
+import xbmcvfs
 
 try:
     from Cryptodome.Cipher import AES,ChaCha20_Poly1305
@@ -2060,9 +2061,12 @@ class streamer:
 
             rendition_key = options[choice][1]
             playlist_text = renditions[rendition_key]
-            b64_playlist  = base64.b64encode(playlist_text.encode('utf-8')).decode('utf-8')
-            stream_url    = f'data:application/vnd.apple.mpegurl;base64,{b64_playlist}'
-            return f'{stream_url}|User-Agent={UA}'
+            temp_dir  = xbmcvfs.translatePath('special://temp/')
+            file_path = temp_dir + f'topstreamer_{int(time.time())}.m3u8'
+            f = xbmcvfs.File(file_path, 'w')
+            f.write(playlist_text)
+            f.close()
+            return f'{file_path}|User-Agent={UA}&Origin=https://topstreamer.site'
         except Exception as e:
             _log_error('topstreamer', url, e)
             return None
