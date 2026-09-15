@@ -266,6 +266,8 @@ class streamer:
                 u = self.givemereddit(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
+            elif 'topstreamer.site' in url:
+                u = self.topstreamer(url)
             else:
                 u = self.generic(url)
             return u
@@ -2000,4 +2002,67 @@ class streamer:
             )
         except Exception as e:
             _log_error('xyzstreams', url, e)
+            return None
+
+    @_guard
+    def topstreamer(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+
+            m = re.search(r'window\.masterinf\s*=\s*(\{.*?\})\s*;', page_data, re.S)
+            if not m:
+                log(f'topstreamer: no masterinf found | {url}', xbmc.LOGERROR)
+                return None
+            try:
+                masterinf = json.loads(m.group(1))
+            except Exception:
+                log(f'topstreamer: failed to parse masterinf json | {url}', xbmc.LOGERROR)
+                return None
+
+            m = re.search(r'window\.payload\s*=\s*(\{.*?\})\s*;', page_data, re.S)
+            if not m:
+                log(f'topstreamer: no payload found | {url}', xbmc.LOGERROR)
+                return None
+            try:
+                payload = json.loads(m.group(1))
+            except Exception:
+                log(f'topstreamer: failed to parse payload json | {url}', xbmc.LOGERROR)
+                return None
+
+            renditions = payload.get('renditions', {})
+            if not renditions:
+                log(f'topstreamer: empty renditions | {url}', xbmc.LOGERROR)
+                return None
+
+            options = []
+            for key, info in masterinf.items():
+                rendition_key = key[:-5] if key.endswith('.m3u8') else key
+                if rendition_key not in renditions:
+                    continue
+                inf   = info.get('inf', '')
+                bw_m  = re.search(r'BANDWIDTH=(\d+)', inf)
+                res_m = re.search(r'RESOLUTION=(\d+x\d+)', inf)
+                bw    = int(bw_m.group(1)) if bw_m else 0
+                res   = res_m.group(1) if res_m else '?'
+                options.append((bw, rendition_key, f'{res} ({bw // 1000}kbps)'))
+
+            if not options:
+                log(f'topstreamer: no matching renditions | {url}', xbmc.LOGERROR)
+                return None
+            options.sort(key=lambda x: x[0], reverse=True)
+
+            if len(options) == 1:
+                choice = 0
+            else:
+                choice = xbmcgui.Dialog().select('Choose Quality', [o[2] for o in options])
+            if choice == -1:
+                return None
+
+            rendition_key = options[choice][1]
+            playlist_text = renditions[rendition_key]
+            b64_playlist  = base64.b64encode(playlist_text.encode('utf-8')).decode('utf-8')
+            stream_url    = f'data:application/vnd.apple.mpegurl;base64,{b64_playlist}'
+            return f'{stream_url}|User-Agent={UA}'
+        except Exception as e:
+            _log_error('topstreamer', url, e)
             return None

@@ -145,6 +145,8 @@ class streamer:
                 u = self.gozo(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
+            elif 'topstreamer.site' in url:
+                u = self.topstreamer(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -1086,4 +1088,32 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('xyzstreams', url, e)
+            return None
+
+    @_guard
+    def topstreamer(self, url):
+        try:
+            base      = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            matches = re.findall(
+                r'(?s)data-id="[^"]+".*?'
+                r'<span class="code">([^<]+)</span>.*?'
+                r'<div class="name">([^<]*)</div>.*?'
+                r'<span class="code">([^<]+)</span>.*?'
+                r'<div class="name">([^<]*)</div>.*?'
+                r'<a href="([^"]+)"[^>]*class="item"><span>WATCH</span>.*?'
+                r"moment\('([^']+)'\)",
+                page_data
+            )
+            results = []
+            for away_code, away_name, home_code, home_name, href, iso_ts in matches:
+                away_name = html.unescape(away_name).strip() or away_code
+                home_name = html.unescape(home_name).strip() or home_code
+                title     = f'{away_name} @ {home_name}'
+                time_str  = self._fmt_utc_dt(iso_ts, in_fmt='%Y-%m-%dT%H:%M:%SZ')
+                full_url  = urljoin(base, href)
+                results.append((full_url, self._label(time_str, title)))
+            return results or None
+        except Exception as e:
+            _log_error('topstreamer', url, e)
             return None
