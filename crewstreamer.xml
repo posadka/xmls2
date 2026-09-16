@@ -7,13 +7,12 @@ import time
 import random
 import math
 import html
+import os
 from datetime import datetime, timedelta
 
 import requests
 import xbmc
 import xbmcgui
-import threading
-import http.server
 
 try:
     from Cryptodome.Cipher import AES,ChaCha20_Poly1305
@@ -27,7 +26,7 @@ try:
 except ImportError:
     from urllib.parse import urlencode, quote_plus, urlparse as _up, urljoin, parse_qs, unquote
 
-from resources.lib.modules import control, client, workers, jsunpack, hunter
+from resources.lib.modules import control, client, workers, jsunpack, hunter, segmentproxy
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36'
 
@@ -68,100 +67,11 @@ def _guard(func):
     return wrapper
 
 
-TS_PACKET_SIZE = 188
-TS_SYNC_BYTE = 0x47
-
-_PROXY_PORT = None
-_PROXY_LOCK = threading.Lock()
-
-
-def _find_ts_start(data):
-    scan_limit = min(4096, len(data) - (5 * TS_PACKET_SIZE))
-    for offset in range(scan_limit):
-        if data[offset] != TS_SYNC_BYTE:
-            continue
-        aligned = True
-        for k in range(1, 5):
-            idx = offset + k * TS_PACKET_SIZE
-            if idx >= len(data) or data[idx] != TS_SYNC_BYTE:
-                aligned = False
-                break
-        if aligned:
-            return offset
-    return 0
-
-
-def _unwrap_segment(data):
-    offset = _find_ts_start(data)
-    return data[offset:]
-
-
-_MANIFEST_STORE = {}
-_MANIFEST_LOCK = threading.Lock()
-
-
-class _SegmentProxyHandler(http.server.BaseHTTPRequestHandler):
-    def log_message(self, fmt, *args):
-        pass
-
-    def do_GET(self):
-        parsed = _up(self.path)
-
-        if parsed.path.startswith('/manifest/'):
-            manifest_id = parsed.path[len('/manifest/'):]
-            if manifest_id.endswith('.m3u8'):
-                manifest_id = manifest_id[:-5]
-            with _MANIFEST_LOCK:
-                text = _MANIFEST_STORE.get(manifest_id)
-            if text is None:
-                self.send_response(404)
-                self.end_headers()
-                return
-            payload = text.encode('utf-8')
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
-            self.send_header('Content-Length', str(len(payload)))
-            self.end_headers()
-            self.wfile.write(payload)
-            return
-
-        qs = parse_qs(parsed.query)
-        target = qs.get('url', [None])[0]
-        if not target:
-            self.send_response(400)
-            self.end_headers()
-            return
-        target = unquote(target)
-        try:
-            resp = requests.get(target, timeout=TIMEOUT)
-            payload = _unwrap_segment(resp.content)
-            self.send_response(200)
-            self.send_header('Content-Type', 'video/mp2t')
-            self.send_header('Content-Length', str(len(payload)))
-            self.end_headers()
-            self.wfile.write(payload)
-        except Exception as e:
-            log(f'segment proxy error fetching {target}: {e}', xbmc.LOGERROR)
-            try:
-                self.send_response(502)
-                self.end_headers()
-            except Exception:
-                pass
-
-
-def _get_proxy_port():
-    global _PROXY_PORT
-    with _PROXY_LOCK:
-        if _PROXY_PORT is None:
-            server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), _SegmentProxyHandler)
-            _PROXY_PORT = server.server_address[1]
-            thread = threading.Thread(target=server.serve_forever, daemon=True)
-            thread.start()
-        return _PROXY_PORT
-
-
 def _rewrite_manifest_through_proxy(manifest_text, base_url):
-    port = _get_proxy_port()
+    port = segmentproxy.get_port()
+    if not port:
+        log('segment proxy service not running (no port published)', xbmc.LOGERROR)
+        return None
     lines = []
     for line in manifest_text.splitlines():
         stripped = line.strip()
@@ -174,10 +84,17 @@ def _rewrite_manifest_through_proxy(manifest_text, base_url):
 
 
 def _publish_manifest(manifest_text, name_prefix):
-    port = _get_proxy_port()
+    if manifest_text is None:
+        return None
+    port = segmentproxy.get_port()
+    manifest_dir = segmentproxy.get_manifest_dir()
+    if not port or not manifest_dir:
+        log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
+        return None
     manifest_id = f'{name_prefix}_{int(time.time() * 1000)}'
-    with _MANIFEST_LOCK:
-        _MANIFEST_STORE[manifest_id] = manifest_text
+    path = os.path.join(manifest_dir, f'{manifest_id}.m3u8')
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(manifest_text)
     return f'http://127.0.0.1:{port}/manifest/{manifest_id}.m3u8|User-Agent={UA}'
 
 
