@@ -7,13 +7,11 @@ import time
 import random
 import math
 import html
-import os
 from datetime import datetime, timedelta
 
 import requests
 import xbmc
 import xbmcgui
-import xbmcvfs
 import threading
 import http.server
 
@@ -98,12 +96,36 @@ def _unwrap_segment(data):
     return data[offset:]
 
 
+_MANIFEST_STORE = {}
+_MANIFEST_LOCK = threading.Lock()
+
+
 class _SegmentProxyHandler(http.server.BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass
 
     def do_GET(self):
-        qs = parse_qs(_up(self.path).query)
+        parsed = _up(self.path)
+
+        if parsed.path.startswith('/manifest/'):
+            manifest_id = parsed.path[len('/manifest/'):]
+            if manifest_id.endswith('.m3u8'):
+                manifest_id = manifest_id[:-5]
+            with _MANIFEST_LOCK:
+                text = _MANIFEST_STORE.get(manifest_id)
+            if text is None:
+                self.send_response(404)
+                self.end_headers()
+                return
+            payload = text.encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        qs = parse_qs(parsed.query)
         target = qs.get('url', [None])[0]
         if not target:
             self.send_response(400)
@@ -151,24 +173,19 @@ def _rewrite_manifest_through_proxy(manifest_text, base_url):
     return '\n'.join(lines)
 
 
-def _write_local_manifest(rewritten_text, name_prefix):
-    file_path = xbmcvfs.translatePath(f'special://temp/{name_prefix}_{int(time.time())}.m3u8')
-    f = xbmcvfs.File(file_path, 'w')
-    write_ok = f.write(bytearray(rewritten_text, 'utf-8'))
-    f.close()
-    vfs_exists = xbmcvfs.exists(file_path)
-    os_exists = os.path.exists(file_path)
-    log(f'{name_prefix}: wrote {file_path} | write()={write_ok} | xbmcvfs.exists={vfs_exists} | os.path.exists={os_exists}', xbmc.LOGERROR)
-    if not os_exists:
-        return None
-    return file_path
+def _publish_manifest(manifest_text, name_prefix):
+    port = _get_proxy_port()
+    manifest_id = f'{name_prefix}_{int(time.time() * 1000)}'
+    with _MANIFEST_LOCK:
+        _MANIFEST_STORE[manifest_id] = manifest_text
+    return f'http://127.0.0.1:{port}/manifest/{manifest_id}.m3u8|User-Agent={UA}'
 
 
 def _proxy_local_manifest(stream_url, headers, name_prefix):
     resp = requests.get(stream_url, headers=headers, timeout=TIMEOUT)
     manifest_text = resp.text
     rewritten = _rewrite_manifest_through_proxy(manifest_text, resp.url)
-    return _write_local_manifest(rewritten, name_prefix)
+    return _publish_manifest(rewritten, name_prefix)
 
 
 class streamer:
@@ -2032,7 +2049,7 @@ class streamer:
             variant_url = urljoin(master_resp.url, variant_line)
             variant_resp = requests.get(variant_url, headers=headers, timeout=TIMEOUT)
             rewritten = _rewrite_manifest_through_proxy(variant_resp.text, variant_resp.url)
-            return _write_local_manifest(rewritten, 'xyzstreams')
+            return _publish_manifest(rewritten, 'xyzstreams')
         except Exception as e:
             _log_error('xyzstreams', url, e)
             return None
@@ -2093,11 +2110,7 @@ class streamer:
 
             rendition_key = options[choice][1]
             playlist_text = renditions[rendition_key]
-            file_path = xbmcvfs.translatePath(f'special://temp/topstreamer_{int(time.time())}.m3u8')
-            f = xbmcvfs.File(file_path, 'w')
-            f.write(bytearray(playlist_text, 'utf-8'))
-            f.close()
-            return file_path
+            return _publish_manifest(playlist_text, 'topstreamer')
         except Exception as e:
             _log_error('topstreamer', url, e)
             return None
