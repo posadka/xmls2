@@ -83,6 +83,20 @@ def _rewrite_manifest_through_proxy(manifest_text, base_url):
     return '\n'.join(lines)
 
 
+def _append_query_param(url, key, value):
+    sep = '&' if '?' in url else '?'
+    return f'{url}{sep}{key}={value}'
+
+
+def _dlhd_token(headers):
+    try:
+        resp = requests.get('https://dlhd.net/api/token', headers=headers, timeout=TIMEOUT)
+        return resp.json().get('token')
+    except Exception as e:
+        log(f'dlhd token fetch failed: {e}', xbmc.LOGERROR)
+        return None
+
+
 def _publish_manifest(manifest_text, name_prefix):
     if manifest_text is None:
         return None
@@ -101,6 +115,9 @@ def _publish_manifest(manifest_text, name_prefix):
 def _proxy_local_manifest(stream_url, headers, name_prefix):
     resp = requests.get(stream_url, headers=headers, timeout=TIMEOUT)
     manifest_text = resp.text
+    if not manifest_text.lstrip().startswith('#EXTM3U'):
+        log(f'{name_prefix}: upstream did not return a valid manifest | {stream_url} | body: {manifest_text[:200]!r}', xbmc.LOGERROR)
+        return None
     rewritten = _rewrite_manifest_through_proxy(manifest_text, resp.url)
     return _publish_manifest(rewritten, name_prefix)
 
@@ -1955,7 +1972,15 @@ class streamer:
                 'Referer': 'https://xyzstreams.st/',
                 'Origin': 'https://xyzstreams.st',
             }
+            token = _dlhd_token(headers)
+            if not token:
+                log(f'xyzstreams: failed to obtain dlhd.net token | {master_url}', xbmc.LOGERROR)
+                return None
+            master_url = _append_query_param(master_url, 'token', token)
             master_resp = requests.get(master_url, headers=headers, timeout=TIMEOUT)
+            if not master_resp.text.lstrip().startswith('#EXTM3U'):
+                log(f'xyzstreams: master playlist invalid | {master_url} | body: {master_resp.text[:200]!r}', xbmc.LOGERROR)
+                return None
             variant_line = next(
                 (ln.strip() for ln in master_resp.text.splitlines() if ln.strip() and not ln.strip().startswith('#')),
                 None
@@ -1964,7 +1989,11 @@ class streamer:
                 log(f'xyzstreams: no variant found in master playlist | {master_url}', xbmc.LOGERROR)
                 return None
             variant_url = urljoin(master_resp.url, variant_line)
+            variant_url = _append_query_param(variant_url, 'token', token)
             variant_resp = requests.get(variant_url, headers=headers, timeout=TIMEOUT)
+            if not variant_resp.text.lstrip().startswith('#EXTM3U'):
+                log(f'xyzstreams: variant playlist invalid | {variant_url} | body: {variant_resp.text[:200]!r}', xbmc.LOGERROR)
+                return None
             rewritten = _rewrite_manifest_through_proxy(variant_resp.text, variant_resp.url)
             return _publish_manifest(rewritten, 'xyzstreams')
         except Exception as e:
