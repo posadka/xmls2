@@ -265,7 +265,7 @@ class streamer:
                 u = self.ovostream_net(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.ws']):
                 u = self.givemereddit(url)
-            elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
+            elif any(x in url for x in ['xyzstreams', 'dlhd.net', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
