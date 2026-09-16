@@ -7,6 +7,7 @@ import time
 import random
 import math
 import html
+import os
 from datetime import datetime, timedelta
 
 import requests
@@ -155,8 +156,10 @@ def _write_local_manifest(rewritten_text, name_prefix):
     f = xbmcvfs.File(file_path, 'w')
     write_ok = f.write(bytearray(rewritten_text, 'utf-8'))
     f.close()
-    if not xbmcvfs.exists(file_path):
-        log(f'{name_prefix}: local manifest was NOT created at {file_path} (write() returned {write_ok})', xbmc.LOGERROR)
+    vfs_exists = xbmcvfs.exists(file_path)
+    os_exists = os.path.exists(file_path)
+    log(f'{name_prefix}: wrote {file_path} | write()={write_ok} | xbmcvfs.exists={vfs_exists} | os.path.exists={os_exists}', xbmc.LOGERROR)
+    if not os_exists:
         return None
     return file_path
 
