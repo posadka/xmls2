@@ -13,6 +13,8 @@ import requests
 import xbmc
 import xbmcgui
 import xbmcvfs
+import threading
+import http.server
 
 try:
     from Cryptodome.Cipher import AES,ChaCha20_Poly1305
@@ -65,6 +67,102 @@ def _guard(func):
         return func(self, url)
     wrapper.__name__ = func.__name__
     return wrapper
+
+
+TS_PACKET_SIZE = 188
+TS_SYNC_BYTE = 0x47
+
+_PROXY_PORT = None
+_PROXY_LOCK = threading.Lock()
+
+
+def _find_ts_start(data):
+    scan_limit = min(4096, len(data) - (5 * TS_PACKET_SIZE))
+    for offset in range(scan_limit):
+        if data[offset] != TS_SYNC_BYTE:
+            continue
+        aligned = True
+        for k in range(1, 5):
+            idx = offset + k * TS_PACKET_SIZE
+            if idx >= len(data) or data[idx] != TS_SYNC_BYTE:
+                aligned = False
+                break
+        if aligned:
+            return offset
+    return 0
+
+
+def _unwrap_segment(data):
+    offset = _find_ts_start(data)
+    return data[offset:]
+
+
+class _SegmentProxyHandler(http.server.BaseHTTPRequestHandler):
+    def log_message(self, fmt, *args):
+        pass
+
+    def do_GET(self):
+        qs = parse_qs(_up(self.path).query)
+        target = qs.get('url', [None])[0]
+        if not target:
+            self.send_response(400)
+            self.end_headers()
+            return
+        target = unquote(target)
+        try:
+            resp = requests.get(target, timeout=TIMEOUT)
+            payload = _unwrap_segment(resp.content)
+            self.send_response(200)
+            self.send_header('Content-Type', 'video/mp2t')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+        except Exception as e:
+            log(f'segment proxy error fetching {target}: {e}', xbmc.LOGERROR)
+            try:
+                self.send_response(502)
+                self.end_headers()
+            except Exception:
+                pass
+
+
+def _get_proxy_port():
+    global _PROXY_PORT
+    with _PROXY_LOCK:
+        if _PROXY_PORT is None:
+            server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), _SegmentProxyHandler)
+            _PROXY_PORT = server.server_address[1]
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+        return _PROXY_PORT
+
+
+def _rewrite_manifest_through_proxy(manifest_text, base_url):
+    port = _get_proxy_port()
+    lines = []
+    for line in manifest_text.splitlines():
+        stripped = line.strip()
+        if stripped and not stripped.startswith('#'):
+            abs_url = urljoin(base_url, stripped)
+            lines.append(f'http://127.0.0.1:{port}/seg?url=' + quote_plus(abs_url))
+        else:
+            lines.append(line)
+    return '\n'.join(lines)
+
+
+def _write_local_manifest(rewritten_text, name_prefix):
+    file_path = f'special://temp/{name_prefix}_{int(time.time())}.m3u8'
+    f = xbmcvfs.File(file_path, 'w')
+    f.write(rewritten_text)
+    f.close()
+    return file_path
+
+
+def _proxy_local_manifest(stream_url, headers, name_prefix):
+    resp = requests.get(stream_url, headers=headers, timeout=TIMEOUT)
+    manifest_text = resp.text
+    rewritten = _rewrite_manifest_through_proxy(manifest_text, resp.url)
+    return _write_local_manifest(rewritten, name_prefix)
 
 
 class streamer:
@@ -1439,19 +1537,8 @@ class streamer:
                 except Exception:
                     stream_url = m.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                return (
-                    f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
-                    + '&Accept=*/*'
-                    + '&Accept-Language=en-US,en;q=0.8'
-                    + '&Sec-Fetch-Dest=empty'
-                    + '&Sec-Fetch-Mode=cors'
-                    + '&Sec-Fetch-Site=cross-site'
-                    + '&Sec-GPC=1'
-                    + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
-                    + '&Sec-Ch-Ua-Mobile=?0'
-                    + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
-                    + '&Priority=' + quote_plus('u=1, i')
-                )
+                headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                return _proxy_local_manifest(stream_url, headers, 'flyembed')
             m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+\.m3u8[^"]*)"', embed_html)
             if m:
                 try:
@@ -1459,19 +1546,8 @@ class streamer:
                 except Exception:
                     stream_url = m.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                return (
-                    f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
-                    + '&Accept=*/*'
-                    + '&Accept-Language=en-US,en;q=0.8'
-                    + '&Sec-Fetch-Dest=empty'
-                    + '&Sec-Fetch-Mode=cors'
-                    + '&Sec-Fetch-Site=cross-site'
-                    + '&Sec-GPC=1'
-                    + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
-                    + '&Sec-Ch-Ua-Mobile=?0'
-                    + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
-                    + '&Priority=' + quote_plus('u=1, i')
-                )
+                headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                return _proxy_local_manifest(stream_url, headers, 'flyembed')
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
@@ -1492,19 +1568,8 @@ class streamer:
                     except Exception:
                         stream_url = m.group(1).replace('\\/', '/')
                     stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                    return (
-                        f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
-                        + '&Accept=*/*'
-                        + '&Accept-Language=en-US,en;q=0.8'
-                        + '&Sec-Fetch-Dest=empty'
-                        + '&Sec-Fetch-Mode=cors'
-                        + '&Sec-Fetch-Site=cross-site'
-                        + '&Sec-GPC=1'
-                        + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
-                        + '&Sec-Ch-Ua-Mobile=?0'
-                        + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
-                        + '&Priority=' + quote_plus('u=1, i')
-                    )
+                    headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                    return _proxy_local_manifest(stream_url, headers, 'flyembed')
                 log(f'flyembed: bitmask-xor branch, no url var in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
             m = re.search(
@@ -1528,19 +1593,8 @@ class streamer:
                     except Exception:
                         stream_url = m.group(1).replace('\\/', '/')
                     stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                    return (
-                        f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
-                        + '&Accept=*/*'
-                        + '&Accept-Language=en-US,en;q=0.8'
-                        + '&Sec-Fetch-Dest=empty'
-                        + '&Sec-Fetch-Mode=cors'
-                        + '&Sec-Fetch-Site=cross-site'
-                        + '&Sec-GPC=1'
-                        + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
-                        + '&Sec-Ch-Ua-Mobile=?0'
-                        + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
-                        + '&Priority=' + quote_plus('u=1, i')
-                    )
+                    headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                    return _proxy_local_manifest(stream_url, headers, 'flyembed')
                 log(f'flyembed: xor branch, no SIGNED_URL in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
             m = re.search(r"window\._econfig='([^']+)'", embed_html)
@@ -1561,19 +1615,8 @@ class streamer:
                 log(f'flyembed: no stream_url in _econfig | {embed_url}', xbmc.LOGERROR)
                 return None
             stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-            return (
-                f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
-                + '&Accept=*/*'
-                + '&Accept-Language=en-US,en;q=0.8'
-                + '&Sec-Fetch-Dest=empty'
-                + '&Sec-Fetch-Mode=cors'
-                + '&Sec-Fetch-Site=cross-site'
-                + '&Sec-GPC=1'
-                + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
-                + '&Sec-Ch-Ua-Mobile=?0'
-                + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
-                + '&Priority=' + quote_plus('u=1, i')
-            )
+            headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+            return _proxy_local_manifest(stream_url, headers, 'flyembed')
         except Exception as e:
             _log_error('flyembed', url, e)
             return None
@@ -1880,19 +1923,8 @@ class streamer:
                 except Exception:
                     stream_url = m2.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-                return (
-                    f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
-                    + '&Accept=*/*'
-                    + '&Accept-Language=en-US,en;q=0.8'
-                    + '&Sec-Fetch-Dest=empty'
-                    + '&Sec-Fetch-Mode=cors'
-                    + '&Sec-Fetch-Site=cross-site'
-                    + '&Sec-GPC=1'
-                    + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
-                    + '&Sec-Ch-Ua-Mobile=?0'
-                    + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
-                    + '&Priority=' + quote_plus('u=1, i')
-                )
+                headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                return _proxy_local_manifest(stream_url, headers, 'timstreams')
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
@@ -1917,19 +1949,8 @@ class streamer:
             except Exception:
                 stream_url = m.group(1).replace('\\/', '/')
             stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
-            return (
-                f'{stream_url}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
-                + '&Accept=*/*'
-                + '&Accept-Language=en-US,en;q=0.8'
-                + '&Sec-Fetch-Dest=empty'
-                + '&Sec-Fetch-Mode=cors'
-                + '&Sec-Fetch-Site=cross-site'
-                + '&Sec-GPC=1'
-                + '&Sec-Ch-Ua=' + quote_plus('"Not;A=Brand";v="8", "Chromium";v="150", "Brave";v="150"')
-                + '&Sec-Ch-Ua-Mobile=?0'
-                + '&Sec-Ch-Ua-Platform=' + quote_plus('"macOS"')
-                + '&Priority=' + quote_plus('u=1, i')
-            )
+            headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+            return _proxy_local_manifest(stream_url, headers, 'timstreams')
         except Exception as e:
             _log_error('timstreams', url, e)
             return None
@@ -1988,8 +2009,24 @@ class streamer:
                 choice = xbmcgui.Dialog().select('Choose Feed', [l['label'] for l in links])
             if choice == -1:
                 return None
-            stream_url = links[choice]['url']
-            return f'{stream_url}|Referer=https://xyzstreams.st/&Origin=https://xyzstreams.st&User-Agent={UA}'
+            master_url = links[choice]['url']
+            headers = {
+                'User-Agent': UA,
+                'Referer': 'https://xyzstreams.st/',
+                'Origin': 'https://xyzstreams.st',
+            }
+            master_resp = requests.get(master_url, headers=headers, timeout=TIMEOUT)
+            variant_line = next(
+                (ln.strip() for ln in master_resp.text.splitlines() if ln.strip() and not ln.strip().startswith('#')),
+                None
+            )
+            if not variant_line:
+                log(f'xyzstreams: no variant found in master playlist | {master_url}', xbmc.LOGERROR)
+                return None
+            variant_url = urljoin(master_resp.url, variant_line)
+            variant_resp = requests.get(variant_url, headers=headers, timeout=TIMEOUT)
+            rewritten = _rewrite_manifest_through_proxy(variant_resp.text, variant_resp.url)
+            return _write_local_manifest(rewritten, 'xyzstreams')
         except Exception as e:
             _log_error('xyzstreams', url, e)
             return None
