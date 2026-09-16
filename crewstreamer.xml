@@ -151,7 +151,7 @@ def _rewrite_manifest_through_proxy(manifest_text, base_url):
 
 
 def _write_local_manifest(rewritten_text, name_prefix):
-    file_path = f'special://temp/{name_prefix}_{int(time.time())}.m3u8'
+    file_path = xbmcvfs.translatePath(f'special://temp/{name_prefix}_{int(time.time())}.m3u8')
     f = xbmcvfs.File(file_path, 'w')
     f.write(bytearray(rewritten_text, 'utf-8'))
     f.close()
@@ -2087,7 +2087,7 @@ class streamer:
 
             rendition_key = options[choice][1]
             playlist_text = renditions[rendition_key]
-            file_path = f'special://temp/topstreamer_{int(time.time())}.m3u8'
+            file_path = xbmcvfs.translatePath(f'special://temp/topstreamer_{int(time.time())}.m3u8')
             f = xbmcvfs.File(file_path, 'w')
             f.write(bytearray(playlist_text, 'utf-8'))
             f.close()
