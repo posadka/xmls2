@@ -1069,11 +1069,11 @@ class streamer:
                     links.append({'label': f'Home Feed ({home_abbr})', 'url': home_url})
                 title  = f'{away.get("name") or away_abbr} @ {home.get("name") or home_abbr}'
                 status = (game.get('game_status') or '').lower()
+                if status in ('final', 'completed'):
+                    continue
                 clock  = (game.get('clock') or '').strip()
                 if status in ('in progress', 'live') and clock and not clock.lower().startswith('0 '):
                     time_str = '[COLOR red]LIVE[/COLOR]'
-                elif status in ('final', 'completed'):
-                    time_str = '[COLOR gray]FINAL[/COLOR]'
                 else:
                     time_str = ''
                     dt_str = game.get('datetime')

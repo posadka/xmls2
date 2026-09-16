@@ -1976,7 +1976,7 @@ class streamer:
             if not token:
                 log(f'xyzstreams: failed to obtain dlhd.net token | {master_url}', xbmc.LOGERROR)
                 return None
-            master_url = _append_query_param(master_url, 'token', token)
+            master_url = _append_query_param(master_url, 'token', token) if 'token=' not in master_url else master_url
             master_resp = requests.get(master_url, headers=headers, timeout=TIMEOUT)
             if not master_resp.text.lstrip().startswith('#EXTM3U'):
                 log(f'xyzstreams: master playlist invalid | {master_url} | body: {master_resp.text[:200]!r}', xbmc.LOGERROR)
@@ -1989,7 +1989,8 @@ class streamer:
                 log(f'xyzstreams: no variant found in master playlist | {master_url}', xbmc.LOGERROR)
                 return None
             variant_url = urljoin(master_resp.url, variant_line)
-            variant_url = _append_query_param(variant_url, 'token', token)
+            if 'token=' not in variant_url:
+                variant_url = _append_query_param(variant_url, 'token', token)
             variant_resp = requests.get(variant_url, headers=headers, timeout=TIMEOUT)
             if not variant_resp.text.lstrip().startswith('#EXTM3U'):
                 log(f'xyzstreams: variant playlist invalid | {variant_url} | body: {variant_resp.text[:200]!r}', xbmc.LOGERROR)
