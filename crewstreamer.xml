@@ -153,8 +153,11 @@ def _rewrite_manifest_through_proxy(manifest_text, base_url):
 def _write_local_manifest(rewritten_text, name_prefix):
     file_path = xbmcvfs.translatePath(f'special://temp/{name_prefix}_{int(time.time())}.m3u8')
     f = xbmcvfs.File(file_path, 'w')
-    f.write(bytearray(rewritten_text, 'utf-8'))
+    write_ok = f.write(bytearray(rewritten_text, 'utf-8'))
     f.close()
+    if not xbmcvfs.exists(file_path):
+        log(f'{name_prefix}: local manifest was NOT created at {file_path} (write() returned {write_ok})', xbmc.LOGERROR)
+        return None
     return file_path
 
 
