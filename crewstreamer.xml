@@ -67,22 +67,6 @@ def _guard(func):
     return wrapper
 
 
-def _rewrite_manifest_through_proxy(manifest_text, base_url):
-    port = segmentproxy.get_port()
-    if not port:
-        log('segment proxy service not running (no port published)', xbmc.LOGERROR)
-        return None
-    lines = []
-    for line in manifest_text.splitlines():
-        stripped = line.strip()
-        if stripped and not stripped.startswith('#'):
-            abs_url = urljoin(base_url, stripped)
-            lines.append(f'http://127.0.0.1:{port}/seg?url=' + quote_plus(abs_url))
-        else:
-            lines.append(line)
-    return '\n'.join(lines)
-
-
 def _append_query_param(url, key, value):
     sep = '&' if '?' in url else '?'
     return f'{url}{sep}{key}={value}'
@@ -97,29 +81,25 @@ def _dlhd_token(headers):
         return None
 
 
-def _publish_manifest(manifest_text, name_prefix):
-    if manifest_text is None:
-        return None
-    port = segmentproxy.get_port()
-    manifest_dir = segmentproxy.get_manifest_dir()
-    if not port or not manifest_dir:
+def _publish_live_manifest(upstream_url, headers, name_prefix):
+    """For genuine live streams: the proxy re-fetches upstream_url fresh on every
+    manifest request instead of caching one snapshot, since a live media playlist
+    keeps sliding forward with new segments."""
+    local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix)
+    if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
-    manifest_id = f'{name_prefix}_{int(time.time() * 1000)}'
-    path = os.path.join(manifest_dir, f'{manifest_id}.m3u8')
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(manifest_text)
-    return f'http://127.0.0.1:{port}/manifest/{manifest_id}.m3u8|User-Agent={UA}'
+    return f'{local_url}|User-Agent={UA}'
 
 
-def _proxy_local_manifest(stream_url, headers, name_prefix):
-    resp = requests.get(stream_url, headers=headers, timeout=TIMEOUT)
-    manifest_text = resp.text
-    if not manifest_text.lstrip().startswith('#EXTM3U'):
-        log(f'{name_prefix}: upstream did not return a valid manifest | {stream_url} | body: {manifest_text[:200]!r}', xbmc.LOGERROR)
+def _publish_static_manifest(manifest_text, name_prefix):
+    """For content with no separate upstream URL to re-fetch (e.g. parsed out of
+    embedded page state) — publishes a one-time snapshot."""
+    local_url = segmentproxy.register_static_manifest(manifest_text, name_prefix)
+    if not local_url:
+        log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
-    rewritten = _rewrite_manifest_through_proxy(manifest_text, resp.url)
-    return _publish_manifest(rewritten, name_prefix)
+    return f'{local_url}|User-Agent={UA}'
 
 
 class streamer:
@@ -1495,7 +1475,7 @@ class streamer:
                     stream_url = m.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                 headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-                return _proxy_local_manifest(stream_url, headers, 'flyembed')
+                return _publish_live_manifest(stream_url, headers, 'flyembed')
             m = re.search(r'var\s+streamUrl\s*=\s*"([^"]+\.m3u8[^"]*)"', embed_html)
             if m:
                 try:
@@ -1504,7 +1484,7 @@ class streamer:
                     stream_url = m.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                 headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-                return _proxy_local_manifest(stream_url, headers, 'flyembed')
+                return _publish_live_manifest(stream_url, headers, 'flyembed')
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
@@ -1526,7 +1506,7 @@ class streamer:
                         stream_url = m.group(1).replace('\\/', '/')
                     stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                     headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-                    return _proxy_local_manifest(stream_url, headers, 'flyembed')
+                    return _publish_live_manifest(stream_url, headers, 'flyembed')
                 log(f'flyembed: bitmask-xor branch, no url var in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
             m = re.search(
@@ -1551,7 +1531,7 @@ class streamer:
                         stream_url = m.group(1).replace('\\/', '/')
                     stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                     headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-                    return _proxy_local_manifest(stream_url, headers, 'flyembed')
+                    return _publish_live_manifest(stream_url, headers, 'flyembed')
                 log(f'flyembed: xor branch, no SIGNED_URL in decoded payload | {embed_url}', xbmc.LOGERROR)
                 return None
             m = re.search(r"window\._econfig='([^']+)'", embed_html)
@@ -1573,7 +1553,7 @@ class streamer:
                 return None
             stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
             headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-            return _proxy_local_manifest(stream_url, headers, 'flyembed')
+            return _publish_live_manifest(stream_url, headers, 'flyembed')
         except Exception as e:
             _log_error('flyembed', url, e)
             return None
@@ -1881,7 +1861,7 @@ class streamer:
                     stream_url = m2.group(1).replace('\\/', '/')
                 stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
                 headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-                return _proxy_local_manifest(stream_url, headers, 'timstreams')
+                return _publish_live_manifest(stream_url, headers, 'timstreams')
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
@@ -1907,7 +1887,7 @@ class streamer:
                 stream_url = m.group(1).replace('\\/', '/')
             stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
             headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-            return _proxy_local_manifest(stream_url, headers, 'timstreams')
+            return _publish_live_manifest(stream_url, headers, 'timstreams')
         except Exception as e:
             _log_error('timstreams', url, e)
             return None
@@ -1991,12 +1971,7 @@ class streamer:
             variant_url = urljoin(master_resp.url, variant_line)
             if 'token=' not in variant_url:
                 variant_url = _append_query_param(variant_url, 'token', token)
-            variant_resp = requests.get(variant_url, headers=headers, timeout=TIMEOUT)
-            if not variant_resp.text.lstrip().startswith('#EXTM3U'):
-                log(f'xyzstreams: variant playlist invalid | {variant_url} | body: {variant_resp.text[:200]!r}', xbmc.LOGERROR)
-                return None
-            rewritten = _rewrite_manifest_through_proxy(variant_resp.text, variant_resp.url)
-            return _publish_manifest(rewritten, 'xyzstreams')
+            return _publish_live_manifest(variant_url, headers, 'xyzstreams')
         except Exception as e:
             _log_error('xyzstreams', url, e)
             return None
@@ -2057,7 +2032,7 @@ class streamer:
 
             rendition_key = options[choice][1]
             playlist_text = renditions[rendition_key]
-            return _publish_manifest(playlist_text, 'topstreamer')
+            return _publish_static_manifest(playlist_text, 'topstreamer')
         except Exception as e:
             _log_error('topstreamer', url, e)
             return None
