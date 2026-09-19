@@ -308,6 +308,8 @@ class streamer:
                 u = self.topstreamer(url)
             elif 'streamed.pk' in url:
                 u = self.streamed(url)
+            elif '720pstream.cx' in url:
+                u = self.cx720p(url)
             else:
                 u = self.generic(url)
             return u
@@ -881,6 +883,22 @@ class streamer:
             return self.resolve(iframe_url)
         except Exception as e:
             _log_error('playoff', url, e)
+            return None
+
+    @_guard
+    def cx720p(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r'<iframe[^>]+src="([^"]+)"', page_data)
+            if not m:
+                log(f'cx720p: no iframe found | {url}', xbmc.LOGERROR)
+                return None
+            iframe_url = m.group(1).strip()
+            if iframe_url.startswith('//'):
+                iframe_url = 'https:' + iframe_url
+            return self.resolve(iframe_url)
+        except Exception as e:
+            _log_error('cx720p', url, e)
             return None
 
     @_guard
