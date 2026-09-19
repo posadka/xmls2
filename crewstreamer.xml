@@ -941,7 +941,7 @@ class streamer:
                 return None
             picks = [
                 s for s in streams
-                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center'))
+                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed'))
             ]
             if not picks:
                 log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
