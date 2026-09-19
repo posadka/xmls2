@@ -280,6 +280,8 @@ class streamer:
                 u = self.crackstreams(url)
             elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia']):
                 u = self.embedsports(url)
+            elif 'embed.st' in url:
+                u = self.embed_st(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline']):
                 u = self.sportsonline(url)
             elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
@@ -849,17 +851,14 @@ class streamer:
                 headers={'User-Agent': UA, 'Referer': url},
                 timeout=TIMEOUT
             ).text
-            m = re.search(r'data-source="([^"]+)"', page_data)
+            m = re.search(r'atob\("([^"]+)"\)', page_data)
             if not m:
-                log(f'rockystream: no data-source match | {url}', xbmc.LOGERROR)
+                log(f'rockystream: no atob() iframe src match | {url}', xbmc.LOGERROR)
                 return None
             try:
                 decoded_url = base64.b64decode(m.group(1)).decode('utf-8')
             except Exception:
-                log(f'rockystream: bad base64 in data-source | {url}', xbmc.LOGERROR)
-                return None
-            if 'embed.st' in decoded_url:
-                log(f'rockystream: embed.st target unsupported (wasm-signed) | {decoded_url}', xbmc.LOGERROR)
+                log(f'rockystream: bad base64 in atob() | {url}', xbmc.LOGERROR)
                 return None
             return self.resolve(decoded_url)
         except Exception as e:
@@ -1118,6 +1117,89 @@ class streamer:
             return self._decrypt_streams_center(iframe2_html, iframe2)
         except Exception as e:
             _log_error('streameast_ga', url, e)
+            return None
+
+    @staticmethod
+    def _decrypt_goat_response(response):
+        """Shared decode for the 'goat' protobuf/ChaCha20-Poly1305 scheme used by
+        embedsports.top and embed.st: field-1 protobuf payload holds an
+        obfuscated base64 blob (byte-shift cipher) wrapping a 12-byte nonce +
+        ChaCha20-Poly1305 ciphertext, keyed by whatever header
+        access-control-expose-headers names."""
+        ac  = response.headers.get('access-control-expose-headers')
+        key = response.headers.get(ac) if ac else None
+        if not key:
+            return None
+        content = response.content
+        i = 0
+        while i < len(content):
+            tag   = content[i]
+            i    += 1
+            field = tag >> 3
+            length = 0
+            shift  = 0
+            while True:
+                b      = content[i]
+                i     += 1
+                length |= (b & 0x7F) << shift
+                if not (b & 0x80):
+                    break
+                shift += 7
+            value = content[i:i + length]
+            i    += length
+            if field == 1:
+                b64_cipher = value
+                break
+        else:
+            return None
+        decoded = bytes(((b - 0x21 + 71) % 94) + 0x21 for b in b64_cipher)
+        raw     = base64.b64decode(decoded + b'=' * (-len(decoded) % 4))
+        nonce   = raw[:12]
+        ct_with_tag = raw[12:]
+        cipher  = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=nonce)
+        return cipher.decrypt_and_verify(ct_with_tag[:-16], ct_with_tag[-16:]).decode('utf-8').strip()
+
+    @_guard
+    def embed_st(self, url):
+        try:
+            origin = 'https://embed.st'
+            url_no_frag = url.split('#')[0].rstrip('/')
+            segments = url_no_frag.split('/')
+            sc, stream_id, no = segments[-3], segments[-2], segments[-1]
+
+            def _varint(n):
+                out = bytearray()
+                while True:
+                    byte = n & 0x7F
+                    n >>= 7
+                    out.append(byte | 0x80 if n else byte)
+                    if not n:
+                        return bytes(out)
+
+            def _field(number, value):
+                tag = (number << 3) | 2
+                return bytes([tag]) + _varint(len(value)) + value
+
+            payload = _field(1, sc.encode()) + _field(2, stream_id.encode()) + _field(3, no.encode())
+            headers = {
+                'User-Agent': UA,
+                'Referer': url,
+                'Origin': origin,
+                'Content-Type': 'application/octet-stream',
+            }
+            fetch = requests.post(origin + '/fetch', data=payload, headers=headers, timeout=TIMEOUT)
+            if not fetch.content:
+                log(f'embed_st: empty response | {url}', xbmc.LOGERROR)
+                return None
+
+            stream_url = self._decrypt_goat_response(fetch)
+            if not stream_url:
+                log(f'embed_st: decrypt failed or missing key header | {url}', xbmc.LOGERROR)
+                return None
+
+            return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': url, 'Origin': origin}, 'embed_st')
+        except Exception as e:
+            _log_error('embed_st', url, e)
             return None
 
     @_guard
