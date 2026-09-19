@@ -1296,11 +1296,21 @@ class streamer:
             cipher  = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=nonce)
             stream_url = cipher.decrypt_and_verify(ct_with_tag[:-16], ct_with_tag[-16:]).decode('utf-8').strip()
             log(f'embedsports stream URL: {stream_url}')
-            return _publish_live_manifest(
-                stream_url,
-                {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin},
-                'embedsports'
-            )
+            headers2 = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+            manifest_resp = requests.get(stream_url, headers=headers2, timeout=TIMEOUT)
+            if not manifest_resp.text.lstrip().startswith('#EXTM3U'):
+                log(f'embedsports: master playlist invalid | {stream_url} | body: {manifest_resp.text[:200]!r}', xbmc.LOGERROR)
+                return None
+            if '#EXT-X-STREAM-INF' in manifest_resp.text:
+                variant_line = next(
+                    (ln.strip() for ln in manifest_resp.text.splitlines() if ln.strip() and not ln.strip().startswith('#')),
+                    None
+                )
+                if not variant_line:
+                    log(f'embedsports: no variant found in master playlist | {stream_url}', xbmc.LOGERROR)
+                    return None
+                stream_url = urljoin(manifest_resp.url, variant_line)
+            return _publish_live_manifest(stream_url, headers2, 'embedsports')
         except Exception as e:
             _log_error('embedsports', url, e)
             return None
