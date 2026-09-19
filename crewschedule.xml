@@ -147,6 +147,8 @@ class streamer:
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
+            elif 'streamed.pk' in url:
+                u = self.streamed(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -1116,4 +1118,34 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('topstreamer', url, e)
+            return None
+
+    @_guard
+    def streamed(self, url):
+        try:
+            games = requests.get(url, headers={'User-Agent': UA, 'Referer': 'https://streamed.pk/'}, timeout=TIMEOUT).json()
+            results = []
+            for game in games:
+                sources = game.get('sources') or []
+                if not sources:
+                    continue
+                teams = game.get('teams') or {}
+                home  = (teams.get('home') or {}).get('name')
+                away  = (teams.get('away') or {}).get('name')
+                title = f'{away} vs {home}' if home and away else (game.get('title') or '')
+                if not title:
+                    continue
+                ts = game.get('date')
+                time_str = ''
+                if ts:
+                    try:
+                        dt = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).astimezone()
+                        time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        pass
+                label = self._label(time_str, title)
+                results.append((json.dumps(sources), label))
+            return results or None
+        except Exception as e:
+            _log_error('streamed', url, e)
             return None

@@ -304,6 +304,8 @@ class streamer:
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
+            elif 'streamed.pk' in url:
+                u = self.streamed(url)
             else:
                 u = self.generic(url)
             return u
@@ -2094,4 +2096,53 @@ class streamer:
             return _publish_static_manifest(playlist_text, 'topstreamer')
         except Exception as e:
             _log_error('topstreamer', url, e)
+            return None
+
+    @_guard
+    def streamed(self, url):
+        try:
+            sources = json.loads(url)
+            if not sources:
+                log('streamed: empty sources list', xbmc.LOGERROR)
+                return None
+            if len(sources) == 1:
+                choice = 0
+            else:
+                choice = xbmcgui.Dialog().select('Choose Source', [s.get('source', '?').title() for s in sources])
+            if choice == -1:
+                return None
+            src    = sources[choice]
+            source = src.get('source')
+            sid    = src.get('id')
+            if not source or not sid:
+                log(f'streamed: missing source/id | {src}', xbmc.LOGERROR)
+                return None
+
+            api_url = f'https://streamed.pk/api/stream/{source}/{sid}'
+            streams = requests.get(api_url, headers={'User-Agent': UA, 'Referer': 'https://streamed.pk/'}, timeout=TIMEOUT).json()
+            if not streams:
+                log(f'streamed: no streams returned | {api_url}', xbmc.LOGERROR)
+                return None
+
+            if len(streams) == 1:
+                pick = 0
+            else:
+                labels = []
+                for s in streams:
+                    lang    = s.get('language', '')
+                    hd      = 'HD' if s.get('hd') else 'SD'
+                    viewers = s.get('viewers', 0)
+                    labels.append(f'{lang} ({hd}) - {viewers} viewers')
+                pick = xbmcgui.Dialog().select('Choose Stream', labels)
+            if pick == -1:
+                return None
+
+            embed_url = streams[pick].get('embedUrl')
+            if not embed_url:
+                log(f'streamed: no embedUrl | {api_url}', xbmc.LOGERROR)
+                return None
+
+            return self.resolve(embed_url)
+        except Exception as e:
+            _log_error('streamed', url, e)
             return None
