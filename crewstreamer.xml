@@ -939,7 +939,7 @@ class streamer:
                 return None
             picks = [
                 s for s in streams
-                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed'))
+                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia'))
             ]
             if not picks:
                 log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
@@ -1239,8 +1239,13 @@ class streamer:
                 sc, stream_id, no = segments[-3], segments[-2], segments[-1]
                 payload = _field(1, sc.encode()) + _field(2, stream_id.encode()) + _field(3, no.encode())
 
+            INDIANS_SECRETS = {
+                'embedindia': '679808d3e4c8a4068767e6f22dfe191318909a62e6601b8149c8e2fa29a5375e',
+            }
+            indians_secret = next((v for k, v in INDIANS_SECRETS.items() if k in host), '18866ebec06934ba03ad3387e9fc9ebfbf2ea2d0e9305c86797b66c62ee4f8a5')
+
             headers = {
-                'indians':      '18866ebec06934ba03ad3387e9fc9ebfbf2ea2d0e9305c86797b66c62ee4f8a5',
+                'indians':      indians_secret,
                 'content-type': 'application/octet-stream',
                 'origin':       origin,
                 'referer':      url,
