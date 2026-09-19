@@ -149,6 +149,8 @@ class streamer:
                 u = self.topstreamer(url)
             elif 'streamed.pk' in url:
                 u = self.streamed(url)
+            elif '720pstream.cx' in url:
+                u = self.cx720p(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -1149,4 +1151,36 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def cx720p(self, url):
+        try:
+            base      = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            matches = re.findall(
+                r'<a href="(/live/[^"]+)" class="block">\s*'
+                r'<article[^>]*>.*?'
+                r'<time[^>]+data-utc="([^"]*)"[^>]*>.*?'
+                r'<h3[^>]*>([^<]+)</h3>.*?'
+                r'aria-label="versus".*?'
+                r'<h3[^>]*>([^<]+)</h3>',
+                page_data, re.S
+            )
+            results = []
+            for href, iso_ts, team1, team2 in matches:
+                team1 = html.unescape(team1).strip()
+                team2 = html.unescape(team2).strip()
+                title = f'{team1} vs {team2}'
+                time_str = ''
+                if iso_ts:
+                    try:
+                        dt = datetime.fromisoformat(iso_ts).astimezone()
+                        time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        pass
+                results.append((urljoin(base, href), self._label(time_str, title)))
+            return results or None
+        except Exception as e:
+            _log_error('cx720p', url, e)
             return None
