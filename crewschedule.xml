@@ -123,7 +123,7 @@ class streamer:
                 u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center', 'streamecenter', 'streamcenter']):
                 u = self.streamcenter(url)
-            elif any(x in url for x in ['istreameast.app', 'thestreameast.top']):
+            elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'streameast.cool']):
                 u = self.streameast(url)
             elif any(x in url for x in ['sportzone.su', 'cdnsport.ru', 'esportssurge', 'ripplenetwork']):
                 u = self.sportzone(url)
