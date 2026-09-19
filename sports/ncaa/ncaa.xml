@@ -399,7 +399,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 </item>
 
 <item>
-<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (PS)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
+<title>[COLOR orchid]¤[/COLOR] [B][COLOR white]NCAA FOOTBALL[/COLOR] [COLOR orchid] (720)[/COLOR][/B] [COLOR orchid]¤[/COLOR]</title>
     <thumbnail>special://home/addons/script.thecrew.artwork/resources/media/thecrew/ncaa.png</thumbnail>
     <fanart>special://home/addons/script.thecrew.artwork/resources/fanart/ncaa_fanart.jpg</fanart>
 <link>$doregex[makelist]</link>
