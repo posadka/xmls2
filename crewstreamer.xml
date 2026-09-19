@@ -2111,7 +2111,9 @@ class streamer:
     @_guard
     def streamed(self, url):
         try:
-            sources = json.loads(url)
+            data    = json.loads(url)
+            sources = data.get('sources') if isinstance(data, dict) else data
+            base    = (data.get('base') if isinstance(data, dict) else None) or 'https://streamed.pk'
             if not sources:
                 log('streamed: empty sources list', xbmc.LOGERROR)
                 return None
@@ -2128,8 +2130,8 @@ class streamer:
                 log(f'streamed: missing source/id | {src}', xbmc.LOGERROR)
                 return None
 
-            api_url = f'https://streamed.pk/api/stream/{source}/{sid}'
-            streams = requests.get(api_url, headers={'User-Agent': UA, 'Referer': 'https://streamed.pk/'}, timeout=TIMEOUT).json()
+            api_url = f'{base}/api/stream/{source}/{sid}'
+            streams = requests.get(api_url, headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).json()
             if not streams:
                 log(f'streamed: no streams returned | {api_url}', xbmc.LOGERROR)
                 return None

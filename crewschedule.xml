@@ -1123,7 +1123,8 @@ class streamer:
     @_guard
     def streamed(self, url):
         try:
-            games = requests.get(url, headers={'User-Agent': UA, 'Referer': 'https://streamed.pk/'}, timeout=TIMEOUT).json()
+            base  = _base_url(url)
+            games = requests.get(url, headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).json()
             results = []
             for game in games:
                 sources = game.get('sources') or []
@@ -1144,7 +1145,7 @@ class streamer:
                     except Exception:
                         pass
                 label = self._label(time_str, title)
-                results.append((json.dumps(sources), label))
+                results.append((json.dumps({'streamed.pk': True, 'base': base, 'sources': sources}), label))
             return results or None
         except Exception as e:
             _log_error('streamed', url, e)
