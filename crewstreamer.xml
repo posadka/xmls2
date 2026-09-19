@@ -280,6 +280,8 @@ class streamer:
                 u = self.embedsports(url)
             elif 'embed.st' in url:
                 u = self.embed_st(url)
+            elif 'embedsports.me' in url:
+                u = self.embedsportsme(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline']):
                 u = self.sportsonline(url)
             elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
@@ -866,6 +868,22 @@ class streamer:
             return None
 
     @_guard
+    def playoff(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r'<iframe[^>]+class="embed-responsive-item"[^>]+src=[\'"]([^\'"]+)[\'"]', page_data)
+            if not m:
+                log(f'playoff: no iframe found | {url}', xbmc.LOGERROR)
+                return None
+            iframe_url = m.group(1).strip()
+            if iframe_url.startswith('//'):
+                iframe_url = 'https:' + iframe_url
+            return self.resolve(iframe_url)
+        except Exception as e:
+            _log_error('playoff', url, e)
+            return None
+
+    @_guard
     def embedhd_st(self, url):
         try:
             try:
@@ -1200,6 +1218,110 @@ class streamer:
             return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': url, 'Origin': origin}, 'embed_st')
         except Exception as e:
             _log_error('embed_st', url, e)
+            return None
+
+    @_guard
+    def embedsportsme(self, url):
+        try:
+            def _b64x2(value):
+                if isinstance(value, str):
+                    value = (value + '=' * (-len(value) % 4)).encode()
+                return base64.b64decode(base64.b64decode(value)).decode()
+
+            def _with_query(u, **params):
+                parts = _up(u)
+                query = dict(parse_qs(parts.query))
+                for k, v in query.items():
+                    query[k] = v[0] if isinstance(v, list) else v
+                query.update(params)
+                return f'{parts.scheme}://{parts.netloc}{parts.path}?{urlencode(query)}'
+
+            def _find(pattern, text):
+                m = re.search(pattern, text)
+                return m.group(1) if m else None
+
+            domain = 'embedsports.me'
+            origin = f'https://{domain}'
+            page_headers = {'User-Agent': UA, 'Referer': url, 'Origin': 'https://720pstream.cx'}
+            r = requests.get(url, headers=page_headers, timeout=TIMEOUT)
+            text = r.text
+
+            zmid     = _find(r'zmid\s*=\s*"([^"]+)"', text)
+            pid      = _find(r'pid\s*=\s*(\d+)', text)
+            edm      = _find(r'edm\s*=\s*"([^"]+)"', text)
+            gameCat  = _find(r'gameCat\s*=\s*"([^"]+)"', text)
+            gameText = _find(r'gameText\s*=\s*"([^"]+)"', text)
+            if not all([zmid, pid, edm, gameCat, gameText]):
+                log(f'embedsportsme: missing zmid/pid/edm/gameCat/gameText | {url}', xbmc.LOGERROR)
+                return None
+
+            site_m = re.search(r'siteConfig\s*=\s*(\{.*?\})\s*[,;]', text, re.DOTALL)
+            if not site_m:
+                log(f'embedsportsme: siteConfig not found | {url}', xbmc.LOGERROR)
+                return None
+            config = json.loads(site_m.group(1))
+
+            player_params = {
+                'pid': pid, 'gacat': gameText, 'gatxt': gameCat, 'v': zmid,
+                'csrf': config['csrf'], 'csrf_ip': config['csrf_ip'],
+                'expires': config['sec_expires'], 'sec_hash': config['sec_hash'],
+            }
+            player_url = f'https://{edm}/sd0embed/{gameCat}?' + urlencode(player_params)
+
+            headers2 = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+            r2 = requests.get(player_url, headers=headers2, timeout=TIMEOUT)
+            ptext = r2.text
+
+            csrftoken_b64   = _find(r'const\s*csrftoken\s*=\s*"([^"]+)"', ptext)
+            playerId        = _find(r'const\s*playerId\s*=\s*"([^"]+)"', ptext)
+            sCode_raw       = _find(r'const\s*sCode\s*=\s*decodeSr\s*\(\s*\[([\d,\s]+)\]', ptext)
+            strUnqId        = _find(r'const\s*strUnqId\s*=\s*"([^"]+)"', ptext)
+            session_id      = _find(r'const\s*session_id\s*=\s*"([^"]+)"', ptext)
+            expireTs        = _find(r'const\s*expireTs\s*=\s*parseInt\s*\("([^"]+)"', ptext)
+            edgeHostId      = _find(r'const\s*edgeHostId\s*=\s*"([^"]+)"', ptext)
+            videoSource_raw = _find(r'const\s*videoSource\s*=\s*bota\s*\(\s*decodeSr\s*\(\s*\[([\d,\s]+)\]', ptext)
+            secTokenB64     = _find(r'const\s*secTokenUrl\s*=\s*bota\("([^"]+)"\)', ptext)
+
+            if not all([csrftoken_b64, playerId, sCode_raw, strUnqId, session_id, expireTs, edgeHostId, videoSource_raw, secTokenB64]):
+                log(f'embedsportsme: missing player page constants | {player_url}', xbmc.LOGERROR)
+                return None
+
+            csrf          = _b64x2(csrftoken_b64)
+            s_code        = ''.join(chr(int(n)) for n in sCode_raw.split(',') if n.strip())
+            video_source  = _b64x2(bytes(int(n) for n in videoSource_raw.split(',') if n.strip()))
+            sec_token_url = base64.b64decode(secTokenB64).decode()
+
+            auth_url = _with_query(
+                f'{sec_token_url}/', scode=s_code, stream=strUnqId,
+                expires=expireTs, u_id=playerId, session_id=session_id, host_id=edgeHostId
+            )
+            auth = requests.get(auth_url, headers={'X-CSRF-Auth': csrf, 'Accept': 'application/json'}, timeout=TIMEOUT)
+
+            device_id = playerId
+            try:
+                device_id = auth.json().get('device_id') or device_id
+            except Exception:
+                pass
+
+            stream_url  = _with_query(video_source, u_id=device_id)
+            edm_origin  = f'https://{edm}'
+            final_headers = {'User-Agent': UA, 'Referer': edm_origin + '/', 'Origin': edm_origin}
+
+            check = requests.get(stream_url, headers=final_headers, timeout=TIMEOUT)
+            if not check.text.lstrip().startswith('#EXTM3U'):
+                log(f'embedsportsme: final playlist invalid | {stream_url} | body: {check.text[:200]!r}', xbmc.LOGERROR)
+                return None
+            if '#EXT-X-STREAM-INF' in check.text:
+                variant_line = next(
+                    (ln.strip() for ln in check.text.splitlines() if ln.strip() and not ln.strip().startswith('#')),
+                    None
+                )
+                if variant_line:
+                    stream_url = urljoin(check.url, variant_line)
+
+            return _publish_live_manifest(stream_url, final_headers, 'embedsportsme')
+        except Exception as e:
+            _log_error('embedsportsme', url, e)
             return None
 
     @_guard
