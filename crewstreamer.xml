@@ -102,6 +102,10 @@ def _publish_static_manifest(manifest_text, name_prefix):
     return f'{local_url}|User-Agent={UA}'
 
 
+def _publish_direct_hls(stream_url, headers):
+    return f'{stream_url}|' + '&'.join(f'{k}={v}' for k, v in headers.items())
+
+
 class streamer:
 
     def _get_iframe_src(self, data, require_id=False):
@@ -1088,7 +1092,7 @@ class streamer:
                     return None
                 stream_url = m3u8_list[choice]
             log(f'roxiestreams stream_url: {stream_url}', xbmc.LOGERROR)
-            return _publish_live_manifest(stream_url, headers, 'roxiestreams')
+            return _publish_direct_hls(stream_url, headers)
         except Exception as e:
             _log_error('roxiestreams', url, e)
             return None
