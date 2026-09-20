@@ -1092,7 +1092,7 @@ class streamer:
                     return None
                 stream_url = m3u8_list[choice]
             log(f'roxiestreams stream_url: {stream_url}', xbmc.LOGERROR)
-            return _publish_direct_hls(stream_url, headers)
+            return _publish_direct_hls(stream_url, {**headers, 'Origin': origin})
         except Exception as e:
             _log_error('roxiestreams', url, e)
             return None
