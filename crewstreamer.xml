@@ -306,6 +306,8 @@ class streamer:
                 u = self.ovostream_net(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.ws']):
                 u = self.givemereddit(url)
+            elif 'xyzstreams.st/nfl-' in url or 'xyzstreams.st/247.html' in url:
+                u = self.xyzstreams_nfl(url)
             elif any(x in url for x in ['xyzstreams', 'dlhd.net', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
@@ -2189,6 +2191,43 @@ class streamer:
             return _publish_live_manifest(variant_url, headers, 'xyzstreams')
         except Exception as e:
             _log_error('xyzstreams', url, e)
+            return None
+
+    @_guard
+    def xyzstreams_nfl(self, url):
+        try:
+            page_resp = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT)
+            tag_m = re.search(r'<iframe\b[^>]*\bid=["\']stream-player["\'][^>]*>', page_resp.text, re.I)
+            src_m = re.search(r'\bsrc=["\']([^"\']+)', tag_m.group(0)) if tag_m else None
+            if not src_m:
+                log(f'xyzstreams_nfl: no stream-player iframe | {url}', xbmc.LOGERROR)
+                return None
+            embed_url = urljoin(page_resp.url, html.unescape(src_m.group(1)))
+            stream_id = _up(embed_url).query
+            if not stream_id:
+                log(f'xyzstreams_nfl: no stream id in embed url | {embed_url}', xbmc.LOGERROR)
+                return None
+            embed_html = requests.get(
+                embed_url,
+                headers={'User-Agent': UA, 'Referer': page_resp.url},
+                timeout=TIMEOUT
+            ).text
+            servers = re.findall(r"'(\d+)'\s*:\s*`([^`]*\$\{streamId\}[^`]*)`", embed_html)
+            if not servers:
+                log(f'xyzstreams_nfl: no server templates in embed | {embed_url}', xbmc.LOGERROR)
+                return None
+            urls = [tmpl.replace('${streamId}', stream_id) for _, tmpl in servers]
+            if len(urls) == 1:
+                stream_url = urls[0]
+            else:
+                choice = xbmcgui.Dialog().select('Choose Server', [f'Server {n}' for n, _ in servers])
+                if choice == -1:
+                    return None
+                stream_url = urls[choice]
+            origin, referer = _origin_referer(embed_url)
+            return _publish_direct_hls(stream_url, {'User-Agent': UA, 'Referer': referer, 'Origin': origin})
+        except Exception as e:
+            _log_error('xyzstreams_nfl', url, e)
             return None
 
     @_guard

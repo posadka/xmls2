@@ -143,6 +143,8 @@ class streamer:
                 u = self.ovostreams(url)
             elif 'gozo' in url:
                 u = self.gozo(url)
+            elif 'xyzstreams.st/nfl' in url:
+                u = self.xyzstreams_nfl(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
@@ -1092,6 +1094,51 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('xyzstreams', url, e)
+            return None
+
+    @_guard
+    def xyzstreams_nfl(self, url):
+        try:
+            base      = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            feed_m    = re.search(r"const\s+targetUrl\s*=\s*'([^']+)'", page_data)
+            if not feed_m:
+                log(f'xyzstreams_nfl: no feed url found | {url}', xbmc.LOGERROR)
+                return None
+            map_m      = re.search(r'const\s+NFL_STREAM_MAP\s*=\s*\{(.*?)\}\s*;', page_data, re.S)
+            stream_map = dict(re.findall(r"'([A-Z]+)'\s*:\s*'([^']+)'", map_m.group(1))) if map_m else {}
+            data  = requests.get(feed_m.group(1), headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            games = (data.get('data') or {}).get('games', [])
+            results = []
+            for game in games:
+                home = game.get('home_team') or {}
+                away = game.get('visiting_team') or {}
+                home_abbr = home.get('short_name') or 'HOME'
+                away_abbr = away.get('short_name') or 'AWAY'
+                status = (game.get('game_status') or '').lower()
+                if status in ('final', 'completed'):
+                    continue
+                home_name = home.get('name') or home.get('short_name') or 'Home'
+                slug      = re.sub(r'[^a-z]', '', home_name.lower())
+                page_path = stream_map.get(home_abbr) or f'247.html?streamid={slug}&proid=nfl'
+                title     = f'{away.get("name") or away_abbr} @ {home_name}'
+                clock     = (game.get('clock') or '').strip()
+                if (status in ('in progress', 'live') or game.get('active') is True) and clock and not clock.lower().startswith('0 '):
+                    time_str = '[COLOR red]LIVE[/COLOR]'
+                else:
+                    time_str = ''
+                    dt_str = game.get('datetime')
+                    if dt_str:
+                        try:
+                            dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc).astimezone()
+                            time_str = f'[COLOR dodgerblue]{dt.strftime("%m/%d %I:%M %p").lstrip("0")}[/COLOR]'
+                        except Exception:
+                            pass
+                label = f'{time_str} [COLOR orange]{title}[/COLOR]'.strip()
+                results.append((urljoin(base + '/', page_path), label))
+            return results or None
+        except Exception as e:
+            _log_error('xyzstreams_nfl', url, e)
             return None
 
     @_guard
