@@ -2314,6 +2314,7 @@ class streamer:
                 'channel': chan_m.group(1),
                 'rendition': rendition_key,
                 'is_publisher': False,
+                'skip_ads': True,
                 'subfolder': info.get('subfolder', ''),
                 'placeholder': f'https://{hosts[0]}{ph_m.group(1)}' if ph_m else '',
             }
