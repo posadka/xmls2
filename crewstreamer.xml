@@ -106,6 +106,14 @@ def _publish_direct_hls(stream_url, headers):
     return f'{stream_url}|' + '&'.join(f'{k}={v}' for k, v in headers.items())
 
 
+def _publish_ws_manifest(manifest_text, headers, ws_config, name_prefix):
+    local_url = segmentproxy.register_ws_manifest(manifest_text, headers, name_prefix, ws_config)
+    if not local_url:
+        log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
+        return None
+    return f'{local_url}|User-Agent={UA}'
+
+
 class streamer:
 
     def _get_iframe_src(self, data, require_id=False):
@@ -2287,7 +2295,29 @@ class streamer:
 
             rendition_key = options[choice][1]
             playlist_text = renditions[rendition_key]
-            return _publish_static_manifest(playlist_text, 'topstreamer')
+
+            hosts_m = re.search(r'const\s+SERVICE_HOSTS\s*=\s*\[([^\]]+)\]', page_data)
+            path_m  = re.search(r'new\s+WebSocket\(\s*"wss://"\s*\+\s*host\s*\+\s*"([^"]+)"', page_data)
+            chan_m  = re.search(r"var\s+channel\s*=\s*'([^']+)'", page_data)
+            ph_m    = re.search(r'PLACEHOLDER_URL\s*=\s*"https://"\s*\+\s*SERVICE_HOSTS\[0\]\s*\+\s*"([^"]+)"', page_data)
+            hosts   = re.findall(r'"([^"]+)"', hosts_m.group(1)) if hosts_m else []
+            if not (hosts and path_m and chan_m):
+                log(f'topstreamer: websocket details not found, using static snapshot | {url}', xbmc.LOGERROR)
+                return _publish_static_manifest(playlist_text, 'topstreamer')
+
+            origin      = _base_url(url)
+            info        = masterinf.get(rendition_key + '.m3u8') or masterinf.get(rendition_key) or {}
+            ws_config   = {
+                'hosts': hosts,
+                'path': path_m.group(1),
+                'origin': origin,
+                'channel': chan_m.group(1),
+                'rendition': rendition_key,
+                'is_publisher': False,
+                'subfolder': info.get('subfolder', ''),
+                'placeholder': f'https://{hosts[0]}{ph_m.group(1)}' if ph_m else '',
+            }
+            return _publish_ws_manifest(playlist_text, {'User-Agent': UA, 'Origin': origin}, ws_config, 'topstreamer')
         except Exception as e:
             _log_error('topstreamer', url, e)
             return None
