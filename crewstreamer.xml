@@ -2199,19 +2199,20 @@ class streamer:
             page_resp = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT)
             tag_m = re.search(r'<iframe\b[^>]*\bid=["\']stream-player["\'][^>]*>', page_resp.text, re.I)
             src_m = re.search(r'\bsrc=["\']([^"\']+)', tag_m.group(0)) if tag_m else None
-            if not src_m:
-                log(f'xyzstreams_nfl: no stream-player iframe | {url}', xbmc.LOGERROR)
-                return None
-            embed_url = urljoin(page_resp.url, html.unescape(src_m.group(1)))
+            if src_m:
+                embed_url  = urljoin(page_resp.url, html.unescape(src_m.group(1)))
+                embed_html = requests.get(
+                    embed_url,
+                    headers={'User-Agent': UA, 'Referer': page_resp.url},
+                    timeout=TIMEOUT
+                ).text
+            else:
+                embed_url  = url
+                embed_html = page_resp.text
             stream_id = _up(embed_url).query
             if not stream_id:
                 log(f'xyzstreams_nfl: no stream id in embed url | {embed_url}', xbmc.LOGERROR)
                 return None
-            embed_html = requests.get(
-                embed_url,
-                headers={'User-Agent': UA, 'Referer': page_resp.url},
-                timeout=TIMEOUT
-            ).text
             servers = re.findall(r"'(\d+)'\s*:\s*`([^`]*\$\{streamId\}[^`]*)`", embed_html)
             if not servers:
                 log(f'xyzstreams_nfl: no server templates in embed | {embed_url}', xbmc.LOGERROR)
