@@ -799,6 +799,9 @@ class streamer:
                 m = re.search(r"atob\(['\"]([^'\"]+)", iframe_html)
                 if m:
                     decoded = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
+                    if decoded.startswith('http'):
+                        log(f'volokit: atob branch decoded to a page URL, re-resolving | {decoded}', xbmc.LOGERROR)
+                        return self.resolve(decoded)
                     return _publish_live_manifest(
                         decoded, {'User-Agent': UA, 'Referer': f'{origin}/', 'Origin': origin}, 'volokit'
                     )
