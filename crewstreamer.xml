@@ -734,6 +734,9 @@ class streamer:
             elif 'embedhd.pk' in iframe_url:
                 return self.embedhd_pk(iframe_url)
 
+            elif 'embed.st' in iframe_url:
+                return self.embed_st(iframe_url)
+
             elif 'wikisport' in iframe_url:
                 iframe_html = requests.get(iframe_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
                 m           = re.search(r'fid\s*=\s*"([^"]+)"', iframe_html)
@@ -751,7 +754,11 @@ class streamer:
                 if not source:
                     log(f'volokit: wikisport branch, no source | {api_url}', xbmc.LOGERROR)
                     return None
-                return f'{source}|User-Agent={UA}&Referer=https://stellarthread.com/&Origin=https://stellarthread.com'
+                return _publish_live_manifest(
+                    source,
+                    {'User-Agent': UA, 'Referer': 'https://stellarthread.com/', 'Origin': 'https://stellarthread.com'},
+                    'volokit'
+                )
 
             iframe_html = requests.get(
                 iframe_url,
@@ -786,17 +793,21 @@ class streamer:
                 )
                 log(f'volokit: gameId branch debug | status={resolved.status_code} | history={[r.status_code for r in resolved.history]} | final_url={resolved.url}', xbmc.LOGERROR)
                 stream_url = resolved.url
-                return f'{stream_url}|User-Agent={UA}&Origin=null'
+                return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Origin': 'null'}, 'volokit')
 
             if 'atob' in iframe_html:
                 m = re.search(r"atob\(['\"]([^'\"]+)", iframe_html)
                 if m:
                     decoded = base64.b64decode(m.group(1)).decode('utf-8', 'ignore')
-                    return f'{decoded}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+                    return _publish_live_manifest(
+                        decoded, {'User-Agent': UA, 'Referer': f'{origin}/', 'Origin': origin}, 'volokit'
+                    )
 
             m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
             if m:
-                return f'{m.group(1)}|User-Agent={UA}&Referer={origin}/&Origin={origin}'
+                return _publish_live_manifest(
+                    m.group(1), {'User-Agent': UA, 'Referer': f'{origin}/', 'Origin': origin}, 'volokit'
+                )
 
             log(f'volokit: falling through to embedsports | {iframe_url}', xbmc.LOGERROR)
             return self.embedsports(iframe_url)
