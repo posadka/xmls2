@@ -27,7 +27,7 @@ except ImportError:
 
 from resources.lib.modules import control, client, workers, jsunpack, hunter
 
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36'
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36'
 
 TAG = 'Schedule'
 TIMEOUT = 10
@@ -143,6 +143,8 @@ class streamer:
                 u = self.ovostreams(url)
             elif 'gozo' in url:
                 u = self.gozo(url)
+            elif 'gstream24' in url:
+                u = self.gstream24(url)
             elif 'xyzstreams.st/nfl' in url:
                 u = self.xyzstreams_nfl(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
@@ -1230,4 +1232,43 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('cx720p', url, e)
+            return None
+
+    @_guard
+    def gstream24(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            base      = _base_url(url)
+            matches   = re.findall(
+                r'(?s)<tr>\s*'
+                r'<td>\s*([^<]*?)\s*</td>\s*'
+                r'<td>\s*<img[^>]+alt="([^"]*)"[^>]*>\s*</td>\s*'
+                r'<td>\s*([^<]*?)\s*</td>\s*'
+                r'<td>\s*([^<]*?)\s*</td>\s*'
+                r'<td[^>]*>\s*([^<]*?)\s*</td>\s*'
+                r'<td>\s*<a href="([^"]+)"[^>]*>\s*WATCH\s*</a>',
+                page_data
+            )
+            results = []
+            for date_str, league, event, time_str, status, href in matches:
+                status = html.unescape(status).strip()
+                if status.lower() == 'ended':
+                    continue
+                league   = html.unescape(league).strip()
+                event    = html.unescape(event).strip()
+                time_str = html.unescape(time_str).strip()
+                status_l = status.lower()
+                if status_l == 'live':
+                    status_label = '[COLOR red]LIVE[/COLOR]'
+                elif 'soon' in status_l:
+                    status_label = f'[COLOR yellow]{status.upper()}[/COLOR]'
+                else:
+                    status_label = f'[COLOR dodgerblue]{time_str}[/COLOR]'
+                label = f'{status_label} [COLOR orange]{event}[/COLOR]'.strip()
+                if league:
+                    label = f'[COLOR gray]{league}[/COLOR] {label}'
+                results.append((urljoin(base, href), label))
+            return results or None
+        except Exception as e:
+            _log_error('gstream24', url, e)
             return None

@@ -28,7 +28,7 @@ except ImportError:
 
 from resources.lib.modules import control, client, workers, jsunpack, hunter, segmentproxy
 
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36'
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36'
 
 TAG = 'Streamer'
 
@@ -324,6 +324,8 @@ class streamer:
                 u = self.streamed(url)
             elif '720pstream.cx' in url:
                 u = self.cx720p(url)
+            elif 'gstream24' in url:
+                u = self.gstream24(url)
             else:
                 u = self.generic(url)
             return u
@@ -927,6 +929,40 @@ class streamer:
             return self.resolve(iframe_url)
         except Exception as e:
             _log_error('cx720p', url, e)
+            return None
+
+    @_guard
+    def gstream24(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+
+            div_m = re.search(r"<div class='list-links'>(.*?)</div>", page_data, re.S)
+            if div_m:
+                links = re.findall(r'<a href="([^"]+)" class="btn"[^>]*>([^<]+)</a>', div_m.group(1))
+                links = [(href, label.strip()) for href, label in links]
+            else:
+                links = []
+
+            if len(links) >= 2:
+                choice = xbmcgui.Dialog().select('Choose Feed', [label for _, label in links])
+                if choice == -1:
+                    return None
+                chosen_url = links[choice][0]
+                if chosen_url != url:
+                    page_data = requests.get(
+                        chosen_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT
+                    ).text
+
+            m = re.search(r"<iframe[^>]+src=['\"]([^'\"]+)", page_data)
+            if not m:
+                log(f'gstream24: no iframe found | {url}', xbmc.LOGERROR)
+                return None
+            iframe_url = m.group(1).strip()
+            if iframe_url.startswith('//'):
+                iframe_url = 'https:' + iframe_url
+            return self.resolve(iframe_url)
+        except Exception as e:
+            _log_error('gstream24', url, e)
             return None
 
     @_guard
