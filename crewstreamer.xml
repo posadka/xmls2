@@ -84,7 +84,23 @@ def _dlhd_token(headers):
 def _publish_live_manifest(upstream_url, headers, name_prefix):
     """For genuine live streams: the proxy re-fetches upstream_url fresh on every
     manifest request instead of caching one snapshot, since a live media playlist
-    keeps sliding forward with new segments."""
+    keeps sliding forward with new segments.
+
+    Probes upstream_url first with the same headers the proxy would use. If the
+    origin answers 200, this is a normal resolve -> segmentproxy path (unwrap,
+    keys, ad-placeholder handling all still apply). If it answers 403 - a
+    geo/CDN block that would also break every later proxy re-fetch, not just
+    this one - skip the local proxy entirely and hand the manifest straight to
+    the player instead, so blocked regions still get to play even though they
+    lose the proxy-side handling. Any other outcome (timeout, non-403 error)
+    falls through to the normal proxy path rather than guessing."""
+    try:
+        probe = requests.get(upstream_url, headers=headers or {}, timeout=TIMEOUT)
+        if probe.status_code == 403:
+            log(f'{name_prefix}: upstream manifest 403 on probe, bypassing segment proxy', xbmc.LOGWARNING)
+            return _publish_direct_hls(upstream_url, headers)
+    except Exception as e:
+        log(f'{name_prefix}: upstream manifest probe failed, falling back to proxy path: {e}', xbmc.LOGWARNING)
     local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix)
     if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
