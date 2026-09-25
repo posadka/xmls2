@@ -80,6 +80,17 @@ def _base_url(url):
     return f'{parsed.scheme}://{parsed.netloc}'
 
 
+def _to_local(dt_utc):
+    """Convert an aware UTC datetime to local wall-clock time without relying on
+    datetime.astimezone()'s automatic system-timezone lookup. Kodi on Xbox (UWP
+    sandbox) doesn't reliably support that lookup - it can raise or silently
+    return UTC unchanged - but time.timezone / time.altzone still work there,
+    so the local offset is computed from those directly instead."""
+    is_dst = bool(time.daylight) and time.localtime().tm_isdst > 0
+    offset = timedelta(seconds=-(time.altzone if is_dst else time.timezone))
+    return dt_utc.astimezone(timezone.utc) + offset
+
+
 def _guard(func):
     def wrapper(self, url):
         if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
@@ -166,7 +177,7 @@ class streamer:
     @staticmethod
     def _fmt_utc_ts(ts, fmt='%m/%d %I:%M %p'):
         try:
-            dt = datetime.fromtimestamp(int(ts), tz=timezone.utc).astimezone()
+            dt = _to_local(datetime.fromtimestamp(int(ts), tz=timezone.utc))
             return dt.strftime(fmt).lstrip('0')
         except Exception:
             return ''
@@ -174,7 +185,7 @@ class streamer:
     @staticmethod
     def _fmt_utc_dt(dt_str, in_fmt='%Y-%m-%d %H:%M:%S', out_fmt='%m/%d %I:%M %p'):
         try:
-            dt = datetime.strptime(dt_str, in_fmt).replace(tzinfo=timezone.utc).astimezone()
+            dt = _to_local(datetime.strptime(dt_str, in_fmt).replace(tzinfo=timezone.utc))
             return dt.strftime(out_fmt).lstrip('0')
         except Exception:
             return ''
@@ -203,7 +214,7 @@ class streamer:
                 dt_str = dt_str.strip()
                 try:
                     dt        = datetime.strptime(dt_str, '%Y-%m-%d %H:%M').replace(tzinfo=timezone.utc)
-                    time_str  = dt.astimezone().strftime('%m/%d %I:%M %p').lstrip('0')
+                    time_str  = _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
                     sort_key  = dt
                 except Exception:
                     time_str  = dt_str
@@ -307,7 +318,7 @@ class streamer:
                 if dt_match:
                     try:
                         dt       = datetime.strptime(dt_match.group(1), '%b %d %Y %H:%M:%S +00:00')
-                        dt       = dt.replace(tzinfo=timezone.utc).astimezone()
+                        dt       = _to_local(dt.replace(tzinfo=timezone.utc))
                         time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
                         label    = self._label(time_str, teams)
                     except Exception:
@@ -339,12 +350,12 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base = _base_url(url)
-            now = datetime.now().astimezone().date()
+            now = datetime.now().date()
             tomorrow = now + timedelta(days=1)
 
             def _date_label(ts):
                 try:
-                    dt = datetime.fromtimestamp(int(ts), tz=timezone.utc).astimezone()
+                    dt = _to_local(datetime.fromtimestamp(int(ts), tz=timezone.utc))
                     event_date = dt.date()
                     if event_date == now:
                         day = 'Today'
@@ -539,7 +550,7 @@ class streamer:
                 try:
                     gmt_clean = gmt_time.replace('GMT', '').strip()
                     dt        = datetime.strptime(gmt_clean, '%H:%M').replace(tzinfo=timezone.utc)
-                    time_str  = dt.astimezone().strftime('%I:%M %p').lstrip('0')
+                    time_str  = _to_local(dt).strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     time_str = gmt_time.strip()
                 full_url = urljoin(base, href)
@@ -592,7 +603,7 @@ class streamer:
                         dt = datetime.strptime(
                             time_match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ'
                         ).replace(tzinfo=timezone.utc)
-                        start = dt.astimezone().strftime('%I:%M %p').lstrip('0')
+                        start = _to_local(dt).strftime('%I:%M %p').lstrip('0')
                     except Exception:
                         start = ''
                 title = self._label(start, name) if start else name
@@ -689,7 +700,7 @@ class streamer:
                         h, m     = map(int, raw_time.split(':'))
                         now_utc  = datetime.now(timezone.utc)
                         dt_utc   = now_utc.replace(hour=h, minute=m, second=0, microsecond=0)
-                        dt_local = dt_utc.astimezone()
+                        dt_local = _to_local(dt_utc)
                         time_str = dt_local.strftime('%I:%M %p').lstrip('0')
                     except Exception:
                         time_str = raw_time
@@ -762,7 +773,7 @@ class streamer:
                         year=now.year, month=now.month, day=now.day,
                         tzinfo=timezone.utc
                     )
-                    time_str = utc_t.astimezone().strftime('%I:%M %p').lstrip('0')
+                    time_str = _to_local(utc_t).strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     pass
                 results.append((link, self._label(time_str, title)))
@@ -818,7 +829,7 @@ class streamer:
                     h, m = map(int, raw_time.split(':'))
                     now_utc = datetime.now(timezone.utc)
                     dt_utc = now_utc.replace(hour=h, minute=m, second=0, microsecond=0)
-                    time_str = dt_utc.astimezone().strftime('%I:%M %p').lstrip('0')
+                    time_str = _to_local(dt_utc).strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     time_str = raw_time
                 day = match.get('day_label', '')
@@ -943,7 +954,7 @@ class streamer:
     def streamsify(self, url):
         try:
             base    = _base_url(url)
-            today   = datetime.now().astimezone().date()
+            today   = datetime.now().date()
             results = []
             page    = 1
             while True:
@@ -962,7 +973,7 @@ class streamer:
                         continue
                     post_url, title, ts = m.groups()
                     try:
-                        dt = datetime.strptime(ts, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc).astimezone()
+                        dt = _to_local(datetime.strptime(ts, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc))
                     except Exception:
                         continue
                     if dt.date() < today:
@@ -1126,7 +1137,7 @@ class streamer:
                     dt_str = game.get('datetime')
                     if dt_str:
                         try:
-                            dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc).astimezone()
+                            dt = _to_local(datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc))
                             time_str = f'[COLOR dodgerblue]{dt.strftime("%m/%d %I:%M %p").lstrip("0")}[/COLOR]'
                         except Exception:
                             pass
@@ -1171,7 +1182,7 @@ class streamer:
                     dt_str = game.get('datetime')
                     if dt_str:
                         try:
-                            dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc).astimezone()
+                            dt = _to_local(datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc))
                             time_str = f'[COLOR dodgerblue]{dt.strftime("%m/%d %I:%M %p").lstrip("0")}[/COLOR]'
                         except Exception:
                             pass
@@ -1230,7 +1241,7 @@ class streamer:
                 time_str = ''
                 if ts:
                     try:
-                        dt = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).astimezone()
+                        dt = _to_local(datetime.fromtimestamp(ts / 1000, tz=timezone.utc))
                         time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
                     except Exception:
                         pass
@@ -1263,7 +1274,7 @@ class streamer:
                 time_str = ''
                 if iso_ts:
                     try:
-                        dt = datetime.fromisoformat(iso_ts).astimezone()
+                        dt = _to_local(datetime.fromisoformat(iso_ts))
                         time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
                     except Exception:
                         pass
