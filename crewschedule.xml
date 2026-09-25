@@ -1078,6 +1078,9 @@ class streamer:
                 league   = html.unescape(league).strip()
                 event    = html.unescape(event).strip()
                 time_str = html.unescape(time_str).strip()
+                href     = html.unescape(href).strip()
+                if league.upper() == 'MLB' and re.search(r'-away/?$', href):
+                    continue
                 if status.lower() == 'live':
                     status_label = '[COLOR red]LIVE[/COLOR]'
                 else:
