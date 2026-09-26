@@ -129,6 +129,8 @@ class streamer:
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'streameast.cool']):
                 u = self.streameast(url)
+            elif 'streameast.vg' in url:
+                u = self.streameast_vg(url)
             elif any(x in url for x in ['sportzone.su', 'cdnsport.ru', 'esportssurge', 'ripplenetwork']):
                 u = self.sportzone(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
@@ -245,6 +247,38 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('streameast', url, e)
+            return None
+
+    @_guard
+    def streameast_vg(self, url):
+        try:
+            base      = _base_url(url)
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            matches   = re.findall(
+                r'<a class="ev (?:ev-match|ev-plain)([^"]*)" href="([^"]+)" title="([^"]+)"[^>]*>(.*?)</a>',
+                page_data, re.S
+            )
+            results = []
+            for status_cls, href, title, block in matches:
+                if 'is-post' in status_cls:
+                    continue
+                title = html.unescape(title).strip()
+                if 'is-live' in status_cls:
+                    label = f'[COLOR red]LIVE[/COLOR] [COLOR orange]{title}[/COLOR]'
+                else:
+                    time_str  = ''
+                    time_match = re.search(r'<time class="ko" datetime="([^"]+)"', block)
+                    if time_match:
+                        try:
+                            dt = datetime.strptime(time_match.group(1), '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+                            time_str = _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
+                        except Exception:
+                            pass
+                    label = self._label(time_str, title)
+                results.append((urljoin(base, href), label))
+            return results or None
+        except Exception as e:
+            _log_error('streameast_vg', url, e)
             return None
 
     @_guard
