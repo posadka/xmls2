@@ -2194,8 +2194,8 @@ class streamer:
                 page_data, re.S
             )
             if not m:
-                log(f'timstreams: no obfuscated payload found | {url}', xbmc.LOGERROR)
-                return None
+                log(f'timstreams: no obfuscated payload found, falling back to flyembed | {url}', xbmc.LOGWARNING)
+                return self.flyembed(url)
             arr = [int(n) for n in m.group(1).split(',')]
             cs4 = int(m.group(2))
             tx4 = int(m.group(3))
