@@ -1959,7 +1959,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re, requests, html
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
     try:
-        page_data = requests.get('https://thestreameast.top/', headers={'User-Agent': UA}, timeout=10).text
+        page_data = requests.get('https://streameast.cool/', headers={'User-Agent': UA}, timeout=10).text
     except Exception:
         return None
     matches = re.findall(
@@ -1984,7 +1984,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <name>makelist2</name>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests, base64
+    import re, requests, base64, html
     try:
         from urllib.parse import urlparse
     except ImportError:
@@ -1996,6 +1996,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         try:
             headers   = {'User-Agent': UA, 'Referer': url}
             page_data = requests.get(url, headers=headers, timeout=10).text
+            feeds = re.findall(
+                r'<a class="mbf-r[^"]*" href="([^"]+)"[^>]*>.*?<span class="mbf-n">([^<]+)</span>',
+                page_data, re.S
+            )
+            if not feeds:
+                return None
+            feed_url = html.unescape(feeds[0][0]).strip()
+            headers   = {'User-Agent': UA, 'Referer': feed_url}
+            page_data = requests.get(feed_url, headers=headers, timeout=10).text
             m = re.search(r'(?i)<iframe[^>]+src="([^"]+)', page_data)
             if not m:
                 return None
@@ -2048,6 +2057,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <page>[makelist.param1]</page>
     </regex>
 </item>
+
 
 <plugin>
 <name>Testings</name>
