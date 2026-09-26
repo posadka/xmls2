@@ -300,6 +300,8 @@ class streamer:
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'streameast.cool', 'sportsurge']):
                 u = self.streameast(url)
+            elif 'streameast.vg' in url:
+                u = self.streameast_vg(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top']):
@@ -515,6 +517,36 @@ class streamer:
             return f'{source}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('streameast', url, e)
+            return None
+
+    @_guard
+    def streameast_vg(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            feeds = re.findall(
+                r'<a class="mbf-r[^"]*" href="([^"]+)"[^>]*>.*?'
+                r'<span class="mbf-n">([^<]+)</span>'
+                r'(?:<span class="mbf-q[^"]*">([^<]*)</span>)?',
+                page_data, re.S
+            )
+            if not feeds:
+                log(f'streameast_vg: no feeds found | {url}', xbmc.LOGERROR)
+                return None
+            if len(feeds) == 1:
+                choice = 0
+            else:
+                labels = [
+                    f'{html.unescape(name).strip()} ({quality.strip()})' if quality.strip()
+                    else html.unescape(name).strip()
+                    for _, name, quality in feeds
+                ]
+                choice = xbmcgui.Dialog().select('Choose Feed', labels)
+            if choice == -1:
+                return None
+            feed_url = html.unescape(feeds[choice][0]).strip()
+            return self.resolve(feed_url)
+        except Exception as e:
+            _log_error('streameast_vg', url, e)
             return None
 
     @_guard
