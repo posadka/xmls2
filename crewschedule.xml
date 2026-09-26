@@ -81,14 +81,7 @@ def _base_url(url):
 
 
 def _to_local(dt_utc):
-    """Convert an aware UTC datetime to local wall-clock time without relying on
-    datetime.astimezone()'s automatic system-timezone lookup. Kodi on Xbox (UWP
-    sandbox) doesn't reliably support that lookup - it can raise or silently
-    return UTC unchanged - but time.timezone / time.altzone still work there,
-    so the local offset is computed from those directly instead."""
-    is_dst = bool(time.daylight) and time.localtime().tm_isdst > 0
-    offset = timedelta(seconds=-(time.altzone if is_dst else time.timezone))
-    return dt_utc.astimezone(timezone.utc) + offset
+    return dt_utc.astimezone()
 
 
 def _guard(func):
@@ -1258,26 +1251,26 @@ class streamer:
             base      = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             matches = re.findall(
-                r'<a href="(/live/[^"]+)" class="block">\s*'
-                r'<article[^>]*>.*?'
-                r'<time[^>]+data-utc="([^"]*)"[^>]*>.*?'
-                r'<h3[^>]*>([^<]+)</h3>.*?'
-                r'aria-label="versus".*?'
-                r'<h3[^>]*>([^<]+)</h3>',
+                r'<a class="match-card" href="([^"]+)">\s*'
+                r'<div class="match-time">(.*?)</div>\s*'
+                r'<div class="match-teams">(.*?)</div>',
                 page_data, re.S
             )
             results = []
-            for href, iso_ts, team1, team2 in matches:
-                team1 = html.unescape(team1).strip()
-                team2 = html.unescape(team2).strip()
-                title = f'{team1} vs {team2}'
+            for href, time_block, teams_block in matches:
                 time_str = ''
-                if iso_ts:
+                time_match = re.search(r'<time[^>]+dateTime="([^"]+)"', time_block)
+                if time_match:
                     try:
-                        dt = _to_local(datetime.fromisoformat(iso_ts))
-                        time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
+                        dt = datetime.strptime(time_match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc)
+                        time_str = _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
                     except Exception:
                         pass
+                teams = re.findall(r'<strong>([^<]+)</strong>', teams_block)
+                teams = [html.unescape(t).strip() for t in teams if t.strip()]
+                if not teams:
+                    continue
+                title = ' vs '.join(teams)
                 results.append((urljoin(base, href), self._label(time_str, title)))
             return results or None
         except Exception as e:
