@@ -1868,21 +1868,64 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         ]]></listrepeat>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import requests
-    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    import re, requests, html
     try:
-        page_data = requests.get('https://streame.center', headers={'User-Agent': UA}, timeout=10).json()
+        from urllib.parse import urljoin
+    except ImportError:
+        from urlparse import urljoin
+    from datetime import datetime
+    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    site = 'https://streame.center'
+    try:
+        headers = {
+            'User-Agent': UA,
+            'Referer': site + '/',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        }
+        resp = requests.get(site, headers=headers, timeout=10)
+        page_data = resp.text
     except Exception:
         return None
+    games = re.findall(r'(?is)<article\s+class=["\']game-card-row["\'][^>]*>(.*?)</article>', page_data)
     results = []
-    for item in page_data:
-        name  = item.get('name') or item.get('gameName') or 'Unknown'
-        video = item.get('videoUrl') or ''
-        for n, u in enumerate(video.split(';'), 1):
-            href = u.split('<')[0].strip()
-            if not href:
+    for game in games:
+        status_match = re.search(r'(?is)<span[^>]*\bclass=["\']([^"\']*\bgame-card-status\b[^"\']*)["\'][^>]*>\s*(.*?)\s*</span>', game)
+        time_match  = re.search(r'(?is)<time[^>]*?\sdateTime=["\']([^"\']+)["\']', game)
+        title_match = re.search(r'(?is)<h3[^>]*>\s*(.*?)\s*</h3>', game)
+        if not title_match:
+            continue
+        name = html.unescape(re.sub(r'<[^>]+>', '', title_match.group(1))).strip()
+        name = re.sub(r'\s+', ' ', name)
+        is_live = bool(status_match) and 'game-card-status-live' in status_match.group(1).lower()
+        start = ''
+        if time_match:
+            try:
+                dt = datetime.strptime(time_match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ')
+                start = dt.strftime('%I:%M %p').lstrip('0')
+            except Exception:
+                start = ''
+        title = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (start, name) if start else '[COLOR orange]%s[/COLOR]' % name
+        if is_live:
+            title = '[COLOR red]LIVE[/COLOR] ' + title
+        sources = re.findall(
+            r'(?is)<div\s+class=["\']game-card-source["\'][^>]*>.*?'
+            r'<a\s+class=["\']game-card-open-link["\'][^>]+href=["\']([^"\']+)["\'][^>]*>\s*(.*?)\s*</a>',
+            game
+        )
+        seen = set()
+        for href, source_label in sources:
+            href = html.unescape(href).strip()
+            if href.startswith('//'):
+                href = 'https:' + href
+            elif not href.startswith('http'):
+                href = urljoin(resp.url, href)
+            if not href or href in seen:
                 continue
-            label = '[COLOR orange]%s[/COLOR]' % name if n == 1 else '[COLOR orange]%s (Stream %s)[/COLOR]' % (name, n)
+            seen.add(href)
+            label = title
+            if len(sources) > 1:
+                source_name = html.unescape(re.sub(r'<[^>]+>', '', source_label)).strip()
+                label += ' [COLOR orange](%s)[/COLOR]' % source_name
             results.append((href, label))
     return results or None
 ]]></expres>
@@ -1892,44 +1935,105 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <name>makelist2</name>
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
-    import re, requests
+    import re, requests, base64, html, json, threading
     try:
-        from urllib.parse import urlparse
+        from urllib.parse import urlparse, urljoin
     except ImportError:
-        from urlparse import urlparse
-    import xbmc, xbmcgui, threading
+        from urlparse import urlparse, urljoin
+    import xbmc, xbmcgui
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
     url = '[makelist.param1]'
+
+    def get_iframe_src(data):
+        m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', data, re.I)
+        if not m:
+            return None
+        src = m.group(1).strip()
+        return 'https:' + src if src.startswith('//') else src
+
+    def base_url(u):
+        parsed = urlparse(u)
+        return '%s://%s' % (parsed.scheme, parsed.netloc)
+
+    def decrypt_streams_center(page_html, referer):
+        base   = base_url(referer)
+        origin = base + '/'
+
+        m = re.search(r'const streamUrls\s*=\s*(\[.*?\]);', page_html)
+        if m:
+            try:
+                urls = json.loads(m.group(1))
+            except Exception:
+                urls = []
+            urls = [u for u in urls if u]
+            if not urls:
+                return None
+            if len(urls) == 1:
+                stream_url = urls[0]
+            else:
+                choice = xbmcgui.Dialog().select('Choose Stream', [urlparse(u).netloc for u in urls])
+                if choice == -1:
+                    return None
+                stream_url = urls[choice]
+            return '%s|Referer=%s&Origin=%s&User-Agent=%s' % (stream_url, origin, base, UA)
+
+        m = re.search(r'const streamUrl\s*=\s*"([^"]*)"', page_html)
+        if m:
+            try:
+                stream_url = json.loads('"' + m.group(1) + '"')
+            except Exception:
+                stream_url = m.group(1).replace('\\/', '/')
+            if not stream_url:
+                return None
+            return '%s|Referer=%s&Origin=%s&User-Agent=%s' % (stream_url, origin, base, UA)
+
+        m = re.search(r'input:\s*"([^"]+)"', page_html)
+        if not m:
+            return None
+        resp = requests.post(
+            urljoin(origin, 'embed/decrypt.php'),
+            data={'input': m.group(1)},
+            headers={
+                'User-Agent':   UA,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Referer':      referer,
+            },
+            timeout=10
+        ).text.strip()
+        if not resp or not resp.startswith('http'):
+            return None
+        if '.m3u8' in resp:
+            return '%s|Referer=%s&Origin=%s&User-Agent=%s' % (resp, origin, base, UA)
+        player_html = requests.get(resp, headers={'User-Agent': UA, 'Referer': referer}, timeout=10).text
+        m = re.search(r'const streamUrls = (\[.*?\]);', player_html)
+        if not m:
+            return None
+        urls = json.loads(m.group(1))
+        if not urls:
+            return None
+        if len(urls) == 1:
+            stream_url = urls[0]
+        else:
+            choice = xbmcgui.Dialog().select('Choose Stream', [urlparse(u).netloc for u in urls])
+            if choice == -1:
+                return None
+            stream_url = urls[choice]
+        player_base   = base_url(resp)
+        player_origin = player_base + '/'
+        return '%s|Referer=%s&Origin=%s&User-Agent=%s' % (stream_url, player_origin, player_base, UA)
+
     def fetch():
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=10).text
-            m = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', page_data, re.I)
-            if not m:
+            page_resp = requests.get(url, headers={'User-Agent': UA}, timeout=10)
+            page_data = page_resp.text
+            iframe1   = get_iframe_src(page_data)
+            if not iframe1:
                 return None
-            iframe1 = m.group(1).strip()
-            if iframe1.startswith('//'):
-                iframe1 = 'https:' + iframe1
-            iframe1_html = requests.get(iframe1, headers={'Referer': url, 'User-Agent': UA}, timeout=10).text
-            m = re.search(r'input:\s*"([^"]+)"', iframe1_html)
-            if not m:
-                return None
-            parsed  = urlparse(iframe1)
-            origin  = '%s://%s/' % (parsed.scheme, parsed.netloc)
-            resp = requests.post(
-                origin + 'embed/decrypt.php',
-                data={'input': m.group(1)},
-                headers={
-                    'User-Agent': UA,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Referer': iframe1,
-                },
-                timeout=10
-            ).text.strip()
-            if not resp or not resp.startswith('http'):
-                return None
-            return '%s|Referer=%s&User-Agent=%s' % (resp, origin, UA)
+            iframe_html = requests.get(iframe1, headers={'Referer': page_resp.url, 'User-Agent': UA}, timeout=10).text
+            return decrypt_streams_center(iframe_html, iframe1)
         except Exception:
             return None
+
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
     result = [None]
