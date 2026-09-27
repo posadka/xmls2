@@ -80,7 +80,26 @@ def _base_url(url):
     return f'{parsed.scheme}://{parsed.netloc}'
 
 
+_IS_XBOX = None
+
+
+def _is_xbox():
+    global _IS_XBOX
+    if _IS_XBOX is None:
+        try:
+            _IS_XBOX = bool(xbmc.getCondVisibility('System.Platform.Xbox'))
+        except Exception:
+            _IS_XBOX = False
+    return _IS_XBOX
+
+
 def _to_local(dt_utc):
+    """Convert an aware UTC datetime to local wall-clock time. Skipped on Xbox
+    (UWP sandbox) - datetime.astimezone()'s system-timezone lookup isn't
+    reliable there, so times are left in UTC on that platform rather than
+    crashing or silently returning wrong values."""
+    if _is_xbox():
+        return dt_utc.astimezone(timezone.utc)
     return dt_utc.astimezone()
 
 
