@@ -1977,24 +1977,29 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import re, requests, html
+    from urllib.parse import urljoin
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    base = 'https://streameast.cool'
     try:
-        page_data = requests.get('https://streameast.cool/', headers={'User-Agent': UA}, timeout=10).text
+        page_data = requests.get(base + '/', headers={'User-Agent': UA}, timeout=10).text
     except Exception:
         return None
     matches = re.findall(
-        r'(?s)<li class="f1-podium--item[^"]*">\s*<a href="([^"]+)".*?'
+        r'(?s)<li[^>]*\bclass=["\'][^"\']*\bf1-podium--item\b[^"\']*["\'][^>]*>\s*'
+        r'<a\s+href=["\']([^"\']+)["\'].*?'
         r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
         r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
-        r'data.*?>([^<]*)',
+        r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*>',
         page_data
     )
     results = []
-    for href, league, teams, timestamp in matches:
-        href   = href.strip()
-        league = html.unescape(league).strip()
-        teams  = html.unescape(teams).strip()
-        label  = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, teams)
+    for href, league, teams, time_cls in matches:
+        href    = urljoin(base, html.unescape(href).strip())
+        league  = html.unescape(league).strip()
+        teams   = html.unescape(teams).strip()
+        is_live = 'btn-live' in time_cls
+        status  = '[COLOR red]LIVE[/COLOR]' if is_live else ''
+        label   = f'[COLOR dodgerblue]{league}[/COLOR] {status} [COLOR orange]{teams}[/COLOR]'
         results.append((href, label))
     return results or None
 ]]></expres>
