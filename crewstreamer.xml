@@ -1802,6 +1802,9 @@ class streamer:
             if not embed_url:
                 log(f'flyembed: no embed iframe | {url}', xbmc.LOGERROR)
                 return None
+            if any(d in embed_url for d in ('timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd')):
+                log(f'flyembed: embed iframe is a timstreams-family host, delegating | {embed_url}', xbmc.LOGWARNING)
+                return self.timstreams(embed_url)
             embed_resp = requests.get(
                 embed_url,
                 headers={'Referer': url, 'User-Agent': UA},
