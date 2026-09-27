@@ -1879,7 +1879,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     try:
         headers = {
             'User-Agent': UA,
-            'Referer': site + '/',
+            'Referer': 'https://streamecenter.live/',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         }
         resp = requests.get(site, headers=headers, timeout=10)
@@ -1891,10 +1891,10 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     for game in games:
         status_match = re.search(r'(?is)<span[^>]*\bclass=["\']([^"\']*\bgame-card-status\b[^"\']*)["\'][^>]*>\s*(.*?)\s*</span>', game)
         time_match  = re.search(r'(?is)<time[^>]*?\sdateTime=["\']([^"\']+)["\']', game)
-        title_match = re.search(r'(?is)<h3[^>]*>\s*(.*?)\s*</h3>', game)
+        title_match = re.search(r'(?is)<h3[^>]*\baria-label=["\']([^"\']*)["\']', game)
         if not title_match:
             continue
-        name = html.unescape(re.sub(r'<[^>]+>', '', title_match.group(1))).strip()
+        name = html.unescape(title_match.group(1)).strip()
         name = re.sub(r'\s+', ' ', name)
         is_live = bool(status_match) and 'game-card-status-live' in status_match.group(1).lower()
         start = ''
