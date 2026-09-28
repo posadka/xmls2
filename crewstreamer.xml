@@ -81,7 +81,7 @@ def _dlhd_token(headers):
         return None
 
 
-def _publish_live_manifest(upstream_url, headers, name_prefix):
+def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
     """For genuine live streams: the proxy re-fetches upstream_url fresh on every
     manifest request instead of caching one snapshot, since a live media playlist
     keeps sliding forward with new segments.
@@ -93,15 +93,24 @@ def _publish_live_manifest(upstream_url, headers, name_prefix):
     this one - skip the local proxy entirely and hand the manifest straight to
     the player instead, so blocked regions still get to play even though they
     lose the proxy-side handling. Any other outcome (timeout, non-403 error)
-    falls through to the normal proxy path rather than guessing."""
+    falls through to the normal proxy path rather than guessing.
+
+    Pass `session` when the resolver already made its earlier requests (page
+    load, domain lookup, etc.) through a requests.Session() - any cookies that
+    session picked up along the way (e.g. an anti-bot/CDN clearance cookie set
+    on first contact with the site) are carried through to this probe AND to
+    every later re-fetch the segment proxy itself makes, instead of being
+    dropped by starting a fresh, cookie-less connection each time."""
+    getter = session.get if session is not None else requests.get
     try:
-        probe = requests.get(upstream_url, headers=headers or {}, timeout=TIMEOUT)
+        probe = getter(upstream_url, headers=headers or {}, timeout=TIMEOUT)
         if probe.status_code == 403:
-            log(f'{name_prefix}: upstream manifest 403 on probe, bypassing segment proxy', xbmc.LOGWARNING)
+            log(f'{name_prefix}: upstream manifest 403 on probe (session={session is not None}), bypassing segment proxy', xbmc.LOGWARNING)
             return _publish_direct_hls(upstream_url, headers)
     except Exception as e:
         log(f'{name_prefix}: upstream manifest probe failed, falling back to proxy path: {e}', xbmc.LOGWARNING)
-    local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix)
+    cookies = requests.utils.dict_from_cookiejar(session.cookies) if session is not None else None
+    local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix, cookies=cookies)
     if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
@@ -1163,7 +1172,8 @@ class streamer:
         try:
             origin, referer = _origin_referer(url)
             headers = {'Referer': referer, 'User-Agent': UA}
-            page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
+            session   = requests.Session()
+            page_data = session.get(url, headers=headers, timeout=TIMEOUT).text
             if not page_data:
                 log(f'roxiestreams: empty page | {url}', xbmc.LOGERROR)
                 return None
@@ -1176,7 +1186,7 @@ class streamer:
                 fetch_m = re.search(r"fetch\('([^']+)", page_data)
                 try:
                     domain_url  = urljoin(origin, fetch_m.group(1)) if fetch_m else None
-                    domain_text = requests.get(domain_url, headers=headers, timeout=TIMEOUT).text
+                    domain_text = session.get(domain_url, headers=headers, timeout=TIMEOUT).text
                     domains = [d.strip() for d in domain_text.splitlines() if d.strip()]
                 except Exception:
                     domains = ['shadow-ran.online']
@@ -1200,7 +1210,8 @@ class streamer:
                     return None
                 stream_url = m3u8_list[choice]
             log(f'roxiestreams stream_url: {stream_url}', xbmc.LOGERROR)
-            return _publish_direct_hls(stream_url, {**headers, 'Origin': origin})
+            stream_headers = {**headers, 'Origin': origin}
+            return _publish_live_manifest(stream_url, stream_headers, 'roxiestreams', session=session)
         except Exception as e:
             _log_error('roxiestreams', url, e)
             return None
