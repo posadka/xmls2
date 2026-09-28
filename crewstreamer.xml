@@ -342,6 +342,8 @@ class streamer:
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
+            elif 'trendy48.site' in url:
+                u = self.trendy48(url)
             elif 'streamed.pk' in url:
                 u = self.streamed(url)
             elif '720pstream.cx' in url:
@@ -533,21 +535,49 @@ class streamer:
                 r'(?:<span class="mbf-q[^"]*">([^<]*)</span>)?',
                 page_data, re.S
             )
-            if not feeds:
+            if feeds:
+                if len(feeds) == 1:
+                    choice = 0
+                else:
+                    labels = [
+                        f'{html.unescape(name).strip()} ({quality.strip()})' if quality.strip()
+                        else html.unescape(name).strip()
+                        for _, name, quality in feeds
+                    ]
+                    choice = xbmcgui.Dialog().select('Choose Feed', labels)
+                if choice == -1:
+                    return None
+                feed_url = html.unescape(feeds[choice][0]).strip()
+                return self.resolve(feed_url)
+
+            sections = re.findall(r'(?s)<section class="sg[^"]*">(.*?)</section>', page_data)
+            sr_feeds = []
+            for section in sections:
+                group_m = re.search(r'<h2 class="sgn">([^<]+)</h2>', section)
+                group   = html.unescape(group_m.group(1)).strip() if group_m else ''
+                entries = re.findall(
+                    r'(?s)<a class="sr[^"]*"\s+href="[^"]*"\s+data-e="([^"]+)"\s+data-q="[^"]*">(.*?)</a>',
+                    section
+                )
+                for embed_url, block in entries:
+                    quality_m = re.search(r'<span class="sq[^"]*">([^<]*)</span>', block)
+                    label_m   = re.search(r'<span class="sl">([^<]+)</span>', block)
+                    quality   = html.unescape(quality_m.group(1)).strip() if quality_m else ''
+                    label     = html.unescape(label_m.group(1)).strip() if label_m else ''
+                    name      = ' - '.join(p for p in (group, label) if p)
+                    if quality:
+                        name = f'{name} ({quality})' if name else quality
+                    sr_feeds.append((html.unescape(embed_url).strip(), name or embed_url))
+            if not sr_feeds:
                 log(f'streameast_vg: no feeds found | {url}', xbmc.LOGERROR)
                 return None
-            if len(feeds) == 1:
+            if len(sr_feeds) == 1:
                 choice = 0
             else:
-                labels = [
-                    f'{html.unescape(name).strip()} ({quality.strip()})' if quality.strip()
-                    else html.unescape(name).strip()
-                    for _, name, quality in feeds
-                ]
-                choice = xbmcgui.Dialog().select('Choose Feed', labels)
+                choice = xbmcgui.Dialog().select('Choose Feed', [name for _, name in sr_feeds])
             if choice == -1:
                 return None
-            feed_url = html.unescape(feeds[choice][0]).strip()
+            feed_url = sr_feeds[choice][0]
             return self.resolve(feed_url)
         except Exception as e:
             _log_error('streameast_vg', url, e)
@@ -2344,6 +2374,24 @@ class streamer:
             return _publish_direct_hls(stream_url, {'User-Agent': UA, 'Referer': referer, 'Origin': origin})
         except Exception as e:
             _log_error('xyzstreams_nfl', url, e)
+            return None
+
+    @_guard
+    def trendy48(self, url):
+        try:
+            page_data = requests.get(
+                url,
+                headers={'User-Agent': UA, 'Referer': 'https://foxxy.st/'},
+                timeout=TIMEOUT
+            ).text
+            m = re.search(r'f\.src\s*=\s*"([^"]+)"', page_data) or re.search(r'<iframe[^>]+src="([^"]+)"', page_data)
+            if not m:
+                log(f'trendy48: no iframe src found | {url}', xbmc.LOGERROR)
+                return None
+            iframe_url = html.unescape(m.group(1)).strip()
+            return self.resolve(iframe_url)
+        except Exception as e:
+            _log_error('trendy48', url, e)
             return None
 
     @_guard
