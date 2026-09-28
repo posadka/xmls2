@@ -95,12 +95,7 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
     lose the proxy-side handling. Any other outcome (timeout, non-403 error)
     falls through to the normal proxy path rather than guessing.
 
-    Pass `session` when the resolver already made its earlier requests (page
-    load, domain lookup, etc.) through a requests.Session() - any cookies that
-    session picked up along the way (e.g. an anti-bot/CDN clearance cookie set
-    on first contact with the site) are carried through to this probe AND to
-    every later re-fetch the segment proxy itself makes, instead of being
-    dropped by starting a fresh, cookie-less connection each time."""
+    Pass session to reuse an existing requests.Session (and its cookies)."""
     getter = session.get if session is not None else requests.get
     try:
         probe = getter(upstream_url, headers=headers or {}, timeout=TIMEOUT)
@@ -309,7 +304,7 @@ class streamer:
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'streameast.cool', 'sportsurge']):
                 u = self.streameast(url)
-            elif 'streameast.vg' in url:
+            elif any(x in url for x in ['streameast.vg', 'foxxy.st']):
                 u = self.streameast_vg(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
