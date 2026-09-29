@@ -1040,7 +1040,18 @@ class streamer:
     @_guard
     def timstreams(self, url):
         try:
-            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            origin  = _base_url(url)
+            headers = {
+                'User-Agent': UA,
+                'Referer': origin + '/',
+                'Accept': 'application/json, text/plain, */*',
+            }
+            resp = requests.get(url, headers=headers, timeout=TIMEOUT)
+            try:
+                data = resp.json()
+            except Exception:
+                log(f'timstreams: bad JSON status={resp.status_code} | {url} | body: {resp.text[:200]!r}', xbmc.LOGERROR)
+                return None
             results = []
             for ch in data.get('channels', []):
                 for s in ch.get('streams', []):
