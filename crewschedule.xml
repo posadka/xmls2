@@ -1153,22 +1153,25 @@ class streamer:
                 'User-Agent': UA,
                 'Referer': origin + '/',
                 'Accept': 'application/json, text/plain, */*',
+                'Accept-Encoding': 'identity',
             }
             session = requests.Session()
             resp = session.get(url, headers=headers, timeout=TIMEOUT)
+            body = resp.content.decode('utf-8', errors='replace')
             try:
                 data = resp.json()
             except Exception:
-                cookie_val = _solve_lyrashield(resp.text)
+                cookie_val = _solve_lyrashield(body)
                 if not cookie_val:
-                    log(f'timstreams: bad JSON status={resp.status_code} | {url} | body: {resp.text[:200]!r}', xbmc.LOGERROR)
+                    log(f'timstreams: bad JSON status={resp.status_code} enc={resp.headers.get("Content-Encoding")} | {url} | body: {body[:200]!r}', xbmc.LOGERROR)
                     return None
                 session.cookies.set('LyraShield-vA', cookie_val, domain=urlparse(origin).netloc)
                 resp = session.get(url, headers=headers, timeout=TIMEOUT)
+                body = resp.content.decode('utf-8', errors='replace')
                 try:
                     data = resp.json()
                 except Exception:
-                    log(f'timstreams: bad JSON after challenge solve status={resp.status_code} | {url} | body: {resp.text[:200]!r}', xbmc.LOGERROR)
+                    log(f'timstreams: bad JSON after challenge solve status={resp.status_code} enc={resp.headers.get("Content-Encoding")} | {url} | body: {body[:200]!r}', xbmc.LOGERROR)
                     return None
             results = []
             for ch in data.get('channels', []):
