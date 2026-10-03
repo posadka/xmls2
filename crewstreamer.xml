@@ -59,10 +59,10 @@ def _is_media(url):
 
 
 def _guard(func):
-    def wrapper(self, url):
+    def wrapper(self, url, *args, **kwargs):
         if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
             return None
-        return func(self, url)
+        return func(self, url, *args, **kwargs)
     wrapper.__name__ = func.__name__
     return wrapper
 
@@ -1840,7 +1840,7 @@ class streamer:
                 return None
             if any(d in embed_url for d in ('timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd')):
                 log(f'flyembed: embed iframe is a timstreams-family host, delegating | {embed_url}', xbmc.LOGWARNING)
-                return self.timstreams(embed_url)
+                return self.timstreams(embed_url, url)
             embed_resp = requests.get(
                 embed_url,
                 headers={'Referer': url, 'User-Agent': UA},
@@ -2195,9 +2195,12 @@ class streamer:
             return None
 
     @_guard
-    def timstreams(self, url):
+    def timstreams(self, url, referer=None):
         try:
-            resp = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            req_headers = {'User-Agent': UA}
+            if referer:
+                req_headers['Referer'] = referer
+            resp = requests.get(url, headers=req_headers, timeout=TIMEOUT)
             page_data = resp.text
             origin = _base_url(resp.url)
             m = re.search(
