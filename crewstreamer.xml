@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import zlib
 import json
 import base64
 import time
@@ -330,6 +331,8 @@ class streamer:
                 u = self.iframe_gs(url)
             elif 'runid.xyz' in url:
                 u = self.runid(url)
+            elif 'gsports.lat' in url:
+                u = self.gsports(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st', 'gozo']):
                 u = self.ovostreams(url)
             elif 'ovostream.net' in url:
@@ -548,6 +551,8 @@ class streamer:
                 if choice == -1:
                     return None
                 feed_url = html.unescape(feeds[choice][0]).strip()
+                if 'trendy48.site' in feed_url:
+                    return self.trendy48(feed_url, url)
                 return self.resolve(feed_url)
 
             sections = re.findall(r'(?s)<section class="sg[^"]*">(.*?)</section>', page_data)
@@ -578,6 +583,8 @@ class streamer:
             if choice == -1:
                 return None
             feed_url = sr_feeds[choice][0]
+            if 'trendy48.site' in feed_url:
+                return self.trendy48(feed_url, url)
             return self.resolve(feed_url)
         except Exception as e:
             _log_error('streameast_vg', url, e)
@@ -1123,7 +1130,7 @@ class streamer:
                 return None
             picks = [
                 s for s in streams
-                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia'))
+                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat'))
             ]
             if not picks:
                 log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
@@ -1196,6 +1203,31 @@ class streamer:
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('iframe_gs', url, e)
+            return None
+
+    @_guard
+    def gsports(self, url):
+        try:
+            raw = requests.get(
+                _append_query_param(url, 'v', 'font.woff2'),
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=TIMEOUT
+            ).content
+            key = b'gs99'
+            try:
+                script = zlib.decompress(bytes(c ^ key[i % 4] for i, c in enumerate(raw)), -15).decode('utf-8', 'replace')
+            except Exception:
+                log(f'gsports: failed to decode payload | {url}', xbmc.LOGERROR)
+                return None
+            m = re.search(r"source:\s*'([^']+)'", script)
+            if not m:
+                log(f'gsports: no source match | {url}', xbmc.LOGERROR)
+                return None
+            stream_url = m.group(1)
+            origin, referer = _origin_referer(url)
+            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            _log_error('gsports', url, e)
             return None
 
     @_guard
@@ -2386,11 +2418,11 @@ class streamer:
             return None
 
     @_guard
-    def trendy48(self, url):
+    def trendy48(self, url, parent=None):
         try:
             page_data = requests.get(
                 url,
-                headers={'User-Agent': UA, 'Referer': 'https://foxxy.st/'},
+                headers={'User-Agent': UA, 'Referer': _origin_referer(parent)[1] if parent else 'https://fxtrend.st/'},
                 timeout=TIMEOUT
             ).text
             m = re.search(r'f\.src\s*=\s*"([^"]+)"', page_data) or re.search(r'<iframe[^>]+src="([^"]+)"', page_data)
