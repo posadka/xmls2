@@ -304,7 +304,7 @@ class streamer:
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'streameast.cool', 'sportsurge']):
                 u = self.streameast(url)
-            elif any(x in url for x in ['streameast.vg', 'foxxy.st']):
+            elif any(x in url for x in ['streameast.vg', 'foxxy.st', 'fxtrend']):
                 u = self.streameast_vg(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
