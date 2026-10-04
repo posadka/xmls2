@@ -1134,7 +1134,10 @@ class streamer:
                 choice = xbmcgui.Dialog().select('Choose Stream', [p.get('label', 'Stream') for p in picks])
             if choice == -1:
                 return None
-            return self.resolve(picks[choice]['value'])
+            pick = picks[choice]['value']
+            if 'iframe.gs' in pick:
+                return self.iframe_gs(pick, url)
+            return self.resolve(pick)
         except Exception as e:
             _log_error('methstreams', url, e)
             return None
@@ -1155,9 +1158,12 @@ class streamer:
             return None
 
     @_guard
-    def iframe_gs(self, url):
+    def iframe_gs(self, url, parent=None):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            page_headers = {'User-Agent': UA, 'Referer': parent or url}
+            if parent:
+                page_headers['Origin'] = _base_url(parent)
+            page_data = requests.get(url, headers=page_headers, timeout=TIMEOUT).text
             origin, referer = _origin_referer(url)
             mode_m = re.search(r'const\s+MODE\s*=\s*"([^"]+)"', page_data)
             mode = mode_m.group(1) if mode_m else 'direct'
