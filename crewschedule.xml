@@ -276,6 +276,8 @@ class streamer:
                 u = self.ovostreams(url)
             elif 'gozo' in url:
                 u = self.gozo(url)
+            elif 'gsports.lat' in url:
+                u = self.gsports(url)
             elif 'gstream24' in url:
                 u = self.gstream24(url)
             elif 'xyzstreams.st/nfl' in url:
@@ -1242,6 +1244,27 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('gozo', url, e)
+            return None
+
+    @_guard
+    def gsports(self, url):
+        try:
+            data = requests.get(
+                url,
+                headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'},
+                timeout=TIMEOUT
+            ).json()
+            results = []
+            for event in data.get('events') or []:
+                event_url = (event.get('url') or '').strip()
+                title     = html.unescape(event.get('title') or '').encode('ascii', 'ignore').decode('ascii').strip()
+                category  = html.unescape(event.get('category') or '').encode('ascii', 'ignore').decode('ascii').strip()
+                if not event_url or not title:
+                    continue
+                results.append((event_url, self._label(category, title)))
+            return results or None
+        except Exception as e:
+            _log_error('gsports', url, e)
             return None
 
     @_guard
