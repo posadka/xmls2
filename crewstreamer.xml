@@ -35,6 +35,8 @@ TAG = 'Streamer'
 
 MEDIA_EXTS = {'mp4', 'flv', 'm3u8'}
 TIMEOUT = 10
+FALLBACK_LIMIT = 3
+_PICK_STATE = {'active': False, 'auto': False, 'forced': None, 'picked': None, 'cancelled': False}
 
 
 def log(msg, level=xbmc.LOGINFO):
@@ -64,6 +66,44 @@ def _guard(func):
         if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
             return None
         return func(self, url, *args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+def _select(heading, labels):
+    if _PICK_STATE['auto']:
+        forced = _PICK_STATE['forced']
+        _PICK_STATE['forced'] = None
+        return forced if forced is not None and forced < len(labels) else 0
+    choice = xbmcgui.Dialog().select(heading, labels)
+    if choice == -1:
+        _PICK_STATE['cancelled'] = True
+    elif _PICK_STATE['picked'] is None:
+        _PICK_STATE['picked'] = (choice, list(labels))
+    return choice
+
+
+def _fallback(func):
+    def wrapper(self, url, *args, **kwargs):
+        if _PICK_STATE['active']:
+            return func(self, url, *args, **kwargs)
+        _PICK_STATE.update(active=True, auto=False, forced=None, picked=None, cancelled=False)
+        try:
+            result = func(self, url, *args, **kwargs)
+            picked = _PICK_STATE['picked']
+            if result or _PICK_STATE['cancelled'] or not picked:
+                return result
+            choice, labels = picked
+            for index in [i for i in range(len(labels)) if i != choice][:FALLBACK_LIMIT]:
+                log(f'fallback: {labels[choice]} did not resolve, trying {labels[index]} | {url}', xbmc.LOGWARNING)
+                _PICK_STATE.update(auto=True, forced=index)
+                result = func(self, url, *args, **kwargs)
+                if result:
+                    xbmcgui.Dialog().notification('The Crew', f'{labels[choice]} failed, using {labels[index]}', xbmcgui.NOTIFICATION_INFO, 3000)
+                    return result
+            return None
+        finally:
+            _PICK_STATE.update(active=False, auto=False, forced=None, picked=None)
     wrapper.__name__ = func.__name__
     return wrapper
 
@@ -176,7 +216,7 @@ class streamer:
             if len(urls) == 1:
                 stream_url = urls[0]
             else:
-                choice = xbmcgui.Dialog().select('Choose Stream', [_up(u).netloc for u in urls])
+                choice = _select('Choose Stream', [_up(u).netloc for u in urls])
                 if choice == -1:
                     return None
                 stream_url = urls[choice]
@@ -228,7 +268,7 @@ class streamer:
         if len(urls) == 1:
             stream_url = urls[0]
         else:
-            choice = xbmcgui.Dialog().select('Choose Stream', [_up(u).netloc for u in urls])
+            choice = _select('Choose Stream', [_up(u).netloc for u in urls])
             if choice == -1:
                 return None
             stream_url = urls[choice]
@@ -259,6 +299,7 @@ class streamer:
         b64 = reversed_str[::-1]
         return base64.b64decode(b64 + '==').decode('utf-8')
 
+    @_fallback
     def resolve(self, url):
         try:
             if 'epicmartial' in url:
@@ -496,7 +537,7 @@ class streamer:
                         re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', label))).strip()
                         for _, label in servers
                     ]
-                    choice = xbmcgui.Dialog().select('Choose Server', labels)
+                    choice = _select('Choose Server', labels)
                 if choice == -1:
                     return None
                 stream_id      = servers[choice][0]
@@ -547,7 +588,7 @@ class streamer:
                         else html.unescape(name).strip()
                         for _, name, quality in feeds
                     ]
-                    choice = xbmcgui.Dialog().select('Choose Feed', labels)
+                    choice = _select('Choose Feed', labels)
                 if choice == -1:
                     return None
                 feed_url = html.unescape(feeds[choice][0]).strip()
@@ -579,7 +620,7 @@ class streamer:
             if len(sr_feeds) == 1:
                 choice = 0
             else:
-                choice = xbmcgui.Dialog().select('Choose Feed', [name for _, name in sr_feeds])
+                choice = _select('Choose Feed', [name for _, name in sr_feeds])
             if choice == -1:
                 return None
             feed_url = sr_feeds[choice][0]
@@ -807,7 +848,7 @@ class streamer:
 
             links = re.findall(r'<a href="([^"]+)" class="btn btn-(?:primary|secondary)">([^<]+)</a>', page_data)
             if len(links) == 2:
-                choice = xbmcgui.Dialog().select('Choose Stream', [label for _, label in links])
+                choice = _select('Choose Stream', [label for _, label in links])
                 if choice == -1:
                     return None
                 url       = links[choice][0]
@@ -936,7 +977,7 @@ class streamer:
                 return None
             if len(results) == 1:
                 return results[0][0]
-            choice = xbmcgui.Dialog().select('Choose Source', [r[1] for r in results])
+            choice = _select('Choose Source', [r[1] for r in results])
             return results[choice][0] if choice != -1 else None
         except Exception as e:
             _log_error('naughtyblog', url, e)
@@ -1033,7 +1074,7 @@ class streamer:
                 links = []
 
             if len(links) >= 2:
-                choice = xbmcgui.Dialog().select('Choose Feed', [label for _, label in links])
+                choice = _select('Choose Feed', [label for _, label in links])
                 if choice == -1:
                     return None
                 chosen_url = links[choice][0]
@@ -1068,7 +1109,7 @@ class streamer:
                 if len(links) == 1:
                     choice = 0
                 else:
-                    choice = xbmcgui.Dialog().select('Choose Stream', [l['label'] for l in links])
+                    choice = _select('Choose Stream', [l['label'] for l in links])
                 if choice == -1:
                     return None
                 url = links[choice]['url']
@@ -1138,7 +1179,7 @@ class streamer:
             if len(picks) == 1:
                 choice = 0
             else:
-                choice = xbmcgui.Dialog().select('Choose Stream', [p.get('label', 'Stream') for p in picks])
+                choice = _select('Choose Stream', [p.get('label', 'Stream') for p in picks])
             if choice == -1:
                 return None
             pick = picks[choice]['value']
@@ -1268,7 +1309,7 @@ class streamer:
             if len(m3u8_list) == 1:
                 stream_url = m3u8_list[0]
             else:
-                choice = xbmcgui.Dialog().select('Select Stream', [f'Stream {i+1}' for i in range(len(m3u8_list))])
+                choice = _select('Select Stream', [f'Stream {i+1}' for i in range(len(m3u8_list))])
                 if choice == -1:
                     return None
                 stream_url = m3u8_list[choice]
@@ -1298,7 +1339,7 @@ class streamer:
                     choice = 0
                 else:
                     labels = [html.unescape(name).strip() for _, name in servers]
-                    choice = xbmcgui.Dialog().select('Choose Server', labels)
+                    choice = _select('Choose Server', labels)
                 if choice == -1:
                     return None
                 href, _ = servers[choice]
@@ -1673,7 +1714,7 @@ class streamer:
                     choice = 0
                 else:
                     labels = [html.unescape(label).strip() for _, label in servers]
-                    choice = xbmcgui.Dialog().select('Choose Server', labels)
+                    choice = _select('Choose Server', labels)
                 if choice == -1:
                     return None
                 stream_id  = servers[choice][0]
@@ -2067,7 +2108,7 @@ class streamer:
             if len(urls) == 1:
                 stream = urls[0]
             else:
-                choice = xbmcgui.Dialog().select('Choose Stream', [f'Stream {i+1}' for i in range(len(urls))])
+                choice = _select('Choose Stream', [f'Stream {i+1}' for i in range(len(urls))])
                 if choice == -1:
                     return None
                 stream = urls[choice]
@@ -2126,7 +2167,7 @@ class streamer:
             if len(links) == 1:
                 choice = 0
             else:
-                choice = xbmcgui.Dialog().select('Choose Stream', [l['label'] for l in links])
+                choice = _select('Choose Stream', [l['label'] for l in links])
             if choice == -1:
                 return None
             ch_url  = links[choice]['url']
@@ -2164,7 +2205,7 @@ class streamer:
         try:
             channels = json.loads(url)
             labels = [c['label'] for c in channels]
-            idx = xbmcgui.Dialog().select('Select Channel', labels)
+            idx = _select('Select Channel', labels)
             if idx == -1:
                 return None
             url = channels[idx]['url']
@@ -2346,7 +2387,7 @@ class streamer:
             if len(links) == 1:
                 choice = 0
             else:
-                choice = xbmcgui.Dialog().select('Choose Feed', [l['label'] for l in links])
+                choice = _select('Choose Feed', [l['label'] for l in links])
             if choice == -1:
                 return None
             master_url = links[choice]['url']
@@ -2407,7 +2448,7 @@ class streamer:
             if len(urls) == 1:
                 stream_url = urls[0]
             else:
-                choice = xbmcgui.Dialog().select('Choose Server', [f'Server {n}' for n, _ in servers])
+                choice = _select('Choose Server', [f'Server {n}' for n, _ in servers])
                 if choice == -1:
                     return None
                 stream_url = urls[choice]
@@ -2485,7 +2526,7 @@ class streamer:
             if len(options) == 1:
                 choice = 0
             else:
-                choice = xbmcgui.Dialog().select('Choose Quality', [o[2] for o in options])
+                choice = _select('Choose Quality', [o[2] for o in options])
             if choice == -1:
                 return None
 
@@ -2531,7 +2572,7 @@ class streamer:
             if len(sources) == 1:
                 choice = 0
             else:
-                choice = xbmcgui.Dialog().select('Choose Source', [s.get('source', '?').title() for s in sources])
+                choice = _select('Choose Source', [s.get('source', '?').title() for s in sources])
             if choice == -1:
                 return None
             src    = sources[choice]
@@ -2556,7 +2597,7 @@ class streamer:
                     hd      = 'HD' if s.get('hd') else 'SD'
                     viewers = s.get('viewers', 0)
                     labels.append(f'{lang} ({hd}) - {viewers} viewers')
-                pick = xbmcgui.Dialog().select('Choose Stream', labels)
+                pick = _select('Choose Stream', labels)
             if pick == -1:
                 return None
 
