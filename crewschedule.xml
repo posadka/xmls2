@@ -1371,13 +1371,15 @@ class streamer:
                     time_str = '[COLOR red]LIVE[/COLOR]'
                 else:
                     time_str = ''
-                    dt_str = game.get('datetime')
-                    if dt_str:
+                    when     = self._fmt_utc_ts(game.get('timestamp')) if game.get('timestamp') else ''
+                    dt_str   = game.get('datetime')
+                    if not when and dt_str:
                         try:
-                            dt = _to_local(datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc))
-                            time_str = f'[COLOR dodgerblue]{dt.strftime("%m/%d %I:%M %p").lstrip("0")}[/COLOR]'
+                            when = _to_local(datetime.fromisoformat(dt_str)).strftime('%m/%d %I:%M %p').lstrip('0')
                         except Exception:
                             pass
+                    if when:
+                        time_str = f'[COLOR dodgerblue]{when}[/COLOR]'
                 label = f'{time_str} [COLOR orange]{title}[/COLOR]'.strip()
                 results.append((json.dumps(links), label))
             return results or None
@@ -1416,13 +1418,15 @@ class streamer:
                     time_str = '[COLOR red]LIVE[/COLOR]'
                 else:
                     time_str = ''
-                    dt_str = game.get('datetime')
-                    if dt_str:
+                    when     = self._fmt_utc_ts(game.get('timestamp')) if game.get('timestamp') else ''
+                    dt_str   = game.get('datetime')
+                    if not when and dt_str:
                         try:
-                            dt = _to_local(datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S+00:00').replace(tzinfo=timezone.utc))
-                            time_str = f'[COLOR dodgerblue]{dt.strftime("%m/%d %I:%M %p").lstrip("0")}[/COLOR]'
+                            when = _to_local(datetime.fromisoformat(dt_str)).strftime('%m/%d %I:%M %p').lstrip('0')
                         except Exception:
                             pass
+                    if when:
+                        time_str = f'[COLOR dodgerblue]{when}[/COLOR]'
                 label = f'{time_str} [COLOR orange]{title}[/COLOR]'.strip()
                 results.append((urljoin(base + '/', page_path), label))
             return results or None
