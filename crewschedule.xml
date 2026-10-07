@@ -1293,6 +1293,15 @@ class streamer:
                 href     = html.unescape(href).strip()
                 if league.upper() == 'MLB' and re.search(r'-away/?$', href):
                     continue
+                clean_time = re.sub(r'(?i)\s*(?:UTC|GMT)\s*$', '', time_str).upper()
+                for fmt in ('%H:%M', '%H:%M:%S', '%I:%M %p', '%I:%M%p'):
+                    try:
+                        parsed = datetime.strptime(clean_time, fmt)
+                    except ValueError:
+                        continue
+                    utc_dt   = datetime.now(timezone.utc).replace(hour=parsed.hour, minute=parsed.minute, second=0, microsecond=0)
+                    time_str = _to_local(utc_dt).strftime('%I:%M %p').lstrip('0')
+                    break
                 if status.lower() == 'live':
                     status_label = '[COLOR red]LIVE[/COLOR]'
                 else:
