@@ -361,16 +361,21 @@ class streamer:
                 r'<a\s+href=["\']([^"\']+)["\'].*?'
                 r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
                 r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
-                r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*\bdata-zaman=["\'](\d+)["\'][^>]*>',
+                r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*\bdata-zaman=["\'](\d+)["\'][^>]*>\s*([^<]*?)\s*</span>',
                 page_data
             )
             results = []
-            for href, league, teams, time_cls, epoch in matches:
+            for href, league, teams, time_cls, epoch, time_text in matches:
                 href    = html.unescape(href).strip()
                 league  = html.unescape(league).strip()
                 teams   = html.unescape(teams).strip()
                 is_live = 'btn-live' in time_cls
-                status  = '[COLOR red]LIVE[/COLOR]' if is_live else self._fmt_utc_ts(epoch)
+                if is_live:
+                    status = '[COLOR red]LIVE[/COLOR]'
+                elif abs(time.time() - int(epoch)) > 7 * 86400:
+                    status = html.unescape(time_text).encode('ascii', 'ignore').decode('ascii').strip()
+                else:
+                    status = self._fmt_utc_ts(epoch)
                 title   = f'[COLOR dodgerblue]{league} {status}[/COLOR] [COLOR orange]{teams}[/COLOR]'
                 results.append((href, title))
             return results or None
