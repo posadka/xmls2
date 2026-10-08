@@ -9,6 +9,7 @@ import random
 import math
 import html
 import os
+import threading
 from datetime import datetime, timedelta
 
 import requests
@@ -36,7 +37,29 @@ TAG = 'Streamer'
 MEDIA_EXTS = {'mp4', 'flv', 'm3u8'}
 TIMEOUT = 10
 FALLBACK_LIMIT = 3
-_PICK_STATE = {'active': False, 'auto': False, 'forced': None, 'picked': None, 'cancelled': False}
+_PICK_STATE = {'active': False, 'auto': False, 'forced': None, 'picked': None, 'cancelled': False, 'quiet': False, 'searching': False}
+SEARCH_TIMEOUT = 25
+SCHEDULE_MODULE = 'https://raw.githubusercontent.com/posadka/xmls2/main/crewschedule.xml'
+SPORT_LIST_BASE = 'https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/sports/'
+SPORT_LISTS = [
+    ('NCAAB', r'ncaab|\bcbb\b|college.basketball', 'ncaa/ncaab.xml'),
+    ('NCAAF', r'ncaaf|\bcfb\b|college.football', 'ncaa/ncaa.xml'),
+    ('MLB', r'\bmlb|baseball', 'mlb/mlb.xml'),
+    ('NFL', r'\bnfl|redzone', 'nfl/nfl.xml'),
+    ('NBA', r'\bnba|basketball', 'nba/nba.xml'),
+    ('NHL', r'\bnhl|hockey', 'nhl/nhl.xml'),
+    ('UFC / MMA', r'\bufc|\bmma\b', 'ufc_mma/ufc.xml'),
+    ('Boxing', r'boxing', 'boxing/boxing.xml'),
+    ('WWE', r'\bwwe|\baew\b|wrestling', 'wwe/wwe.xml'),
+    ('F1', r'\bf1\b|formula', 'motor/f1.xml'),
+    ('MotoGP', r'motogp', 'motor/motogp.xml'),
+    ('NASCAR', r'nascar', 'nascar/nascar.xml'),
+    ('Soccer', r'soccer|\bfifa|premier league|la ?liga|serie a|bundesliga|champions league|\bmls\b', 'fifa/fifa.xml'),
+    ('Tennis', r'tennis|\batp\b|\bwta\b', 'tennis/tennis.xml'),
+    ('Golf', r'\bpga\b|golf', 'pga/pga.xml'),
+]
+_AMBIGUOUS_NICKNAMES = {'sox', 'city', 'united', 'fc', 'state', 'st', 'jays'}
+_TITLE_NOISE = {'live', 'stream', 'streams', 'watch', 'game', 'hd', 'the', 'from', 'now', 'hour', 'hours', 'minute', 'minutes', 'today', 'tomorrow', 'am', 'pm'}
 
 
 def log(msg, level=xbmc.LOGINFO):
@@ -75,7 +98,7 @@ def _select(heading, labels):
         forced = _PICK_STATE['forced']
         _PICK_STATE['forced'] = None
         return forced if forced is not None and forced < len(labels) else 0
-    choice = xbmcgui.Dialog().select(heading, labels)
+    choice = 0 if _PICK_STATE['quiet'] else xbmcgui.Dialog().select(heading, labels)
     if choice == -1:
         _PICK_STATE['cancelled'] = True
     elif _PICK_STATE['picked'] is None:
@@ -88,24 +111,167 @@ def _fallback(func):
         if _PICK_STATE['active']:
             return func(self, url, *args, **kwargs)
         _PICK_STATE.update(active=True, auto=False, forced=None, picked=None, cancelled=False)
+        result = None
         try:
             result = func(self, url, *args, **kwargs)
             picked = _PICK_STATE['picked']
-            if result or _PICK_STATE['cancelled'] or not picked:
-                return result
-            choice, labels = picked
-            for index in [i for i in range(len(labels)) if i != choice][:FALLBACK_LIMIT]:
-                log(f'fallback: {labels[choice]} did not resolve, trying {labels[index]} | {url}', xbmc.LOGWARNING)
-                _PICK_STATE.update(auto=True, forced=index)
-                result = func(self, url, *args, **kwargs)
-                if result:
-                    xbmcgui.Dialog().notification('The Crew', f'{labels[choice]} failed, using {labels[index]}', xbmcgui.NOTIFICATION_INFO, 3000)
-                    return result
-            return None
+            if not result and not _PICK_STATE['cancelled'] and picked:
+                choice, labels = picked
+                for index in [i for i in range(len(labels)) if i != choice][:FALLBACK_LIMIT]:
+                    log(f'fallback: {labels[choice]} did not resolve, trying {labels[index]} | {url}', xbmc.LOGWARNING)
+                    _PICK_STATE.update(auto=True, forced=index)
+                    result = func(self, url, *args, **kwargs)
+                    if result:
+                        if not _PICK_STATE['quiet']:
+                            xbmcgui.Dialog().notification('The Crew', f'{labels[choice]} failed, using {labels[index]}', xbmcgui.NOTIFICATION_INFO, 3000)
+                        break
         finally:
             _PICK_STATE.update(active=False, auto=False, forced=None, picked=None)
+        if result or _PICK_STATE['cancelled'] or _PICK_STATE['searching']:
+            return result
+        return _search_other_sources(self, url)
     wrapper.__name__ = func.__name__
     return wrapper
+
+
+def _title_sides(title):
+    text = html.unescape(re.sub(r'\[/?[A-Za-z]+[^\]]*\]', ' ', title)).lower()
+    text = re.sub(r'\([^)]*\)', ' ', text)
+    parts = re.split(r'\s+(?:vs\.?|v\.?|at)\s+|\s*@\s*', text)
+    if len(parts) >= 2:
+        parts = [parts[0], re.split(r'\s+[-|]\s+', parts[-1])[0]]
+    return [re.findall(r'[a-z0-9]+', part) for part in parts]
+
+
+def _team_key(words):
+    words = [w for w in words if w not in _TITLE_NOISE and not w.isdigit()]
+    if not words:
+        return []
+    if words[-1] in _AMBIGUOUS_NICKNAMES and len(words) > 1:
+        return words[-2:]
+    return words[-1:]
+
+
+def _same_event(query_title, candidate_title):
+    candidate = set(re.findall(r'[a-z0-9]+', html.unescape(re.sub(r'\[/?[A-Za-z]+[^\]]*\]', ' ', candidate_title)).lower()))
+    sides = _title_sides(query_title)
+    if len(sides) >= 2:
+        keys = [_team_key(sides[0]), _team_key(sides[-1])]
+        return all(key and all(w in candidate for w in key) for key in keys)
+    words = [w for w in (sides[0] if sides else []) if len(w) > 3 and w not in _TITLE_NOISE]
+    return bool(words) and sum(w in candidate for w in words) >= min(3, len(words))
+
+
+def _sport_sources(list_path):
+    window = xbmcgui.Window(10000)
+    cache_key = f'thecrew.search.{list_path}'
+    cached = window.getProperty(cache_key)
+    if cached:
+        return json.loads(cached)
+    page = requests.get(SPORT_LIST_BASE + list_path, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+    bases = {}
+    sources = []
+    for block in re.findall(r'(?s)<expres>(.*?)</expres>', page):
+        if 'client.schedule(' not in block:
+            continue
+        literal = re.search(r"client\.schedule\('([^']+)'\)", block)
+        if literal:
+            sources.append(literal.group(1))
+            continue
+        base_m = re.search(r"client\.request\('([^']+\.xml)'\)", block)
+        if not base_m:
+            continue
+        if base_m.group(1) not in bases:
+            try:
+                bases[base_m.group(1)] = re.findall(r'"([^"]*)', requests.get(base_m.group(1), headers={'User-Agent': UA}, timeout=TIMEOUT).text)[0]
+            except Exception:
+                bases[base_m.group(1)] = ''
+        base = bases[base_m.group(1)]
+        if not base:
+            continue
+        sport_m = re.search(r"sport\s*=\s*'([^']*)'", block)
+        sources.append(urljoin(base, sport_m.group(1)) if sport_m else base)
+    sources = list(dict.fromkeys(sources))
+    window.setProperty(cache_key, json.dumps(sources))
+    return sources
+
+
+def _run_schedules(module, sources, progress):
+    results = {}
+    lock = threading.Lock()
+    def work(source):
+        try:
+            items = module.streamer().resolve(source) or []
+        except Exception as e:
+            log(f'search: schedule failed | {source} | {e}', xbmc.LOGWARNING)
+            items = []
+        with lock:
+            results[source] = [i for i in items if isinstance(i, (list, tuple)) and len(i) >= 2]
+    threads = [threading.Thread(target=work, args=(source,), daemon=True) for source in sources]
+    for thread in threads:
+        thread.start()
+    deadline = time.time() + SEARCH_TIMEOUT
+    for done, thread in enumerate(threads, 1):
+        thread.join(max(0, deadline - time.time()))
+        progress.update(int(100 * done / max(1, len(threads))))
+    with lock:
+        return [(source, item) for source in sources for item in results.get(source, [])]
+
+
+def _search_other_sources(resolver, failed_url):
+    title = xbmc.getInfoLabel('ListItem.Label') or xbmc.getInfoLabel('ListItem.Title')
+    if not title.strip():
+        return None
+    context = ' '.join([title, failed_url, xbmc.getInfoLabel('Container.FolderName'), xbmc.getInfoLabel('Container.FolderPath')]).lower()
+    sport = next((entry for entry in SPORT_LISTS if re.search(entry[1], context)), None)
+    if not sport:
+        choice = xbmcgui.Dialog().select('Search other sites - which sport?', [entry[0] for entry in SPORT_LISTS])
+        if choice == -1:
+            return None
+        sport = SPORT_LISTS[choice]
+    _PICK_STATE['searching'] = True
+    try:
+        progress = xbmcgui.DialogProgressBG()
+        progress.create('The Crew', f'Searching other {sport[0]} sources...')
+        try:
+            failed_host = _up(failed_url).netloc
+            sources = [s for s in _sport_sources(sport[2]) if not failed_host or _up(s).netloc != failed_host]
+            found = _run_schedules(control.cdnImport(SCHEDULE_MODULE, 'crewschedule'), sources, progress)
+        finally:
+            progress.close()
+        matches = []
+        seen = {failed_url}
+        for source, (link, label) in found:
+            if link in seen or not _same_event(title, str(label)):
+                continue
+            seen.add(link)
+            matches.append((link, f'[COLOR gray]{_up(source).netloc}[/COLOR] {label}', _up(source).netloc))
+        log(f'search: {len(matches)} matches across {len(sources)} {sport[0]} sources | {title}')
+        if not matches:
+            xbmcgui.Dialog().notification('The Crew', 'No other sources found for this game', xbmcgui.NOTIFICATION_INFO, 3000)
+            return None
+        choice = xbmcgui.Dialog().select('Found on other sites', [match[1] for match in matches])
+        if choice == -1:
+            return None
+        order = [choice] + [i for i in range(len(matches)) if i != choice][:FALLBACK_LIMIT]
+        for attempt, index in enumerate(order):
+            _PICK_STATE['quiet'] = attempt > 0
+            try:
+                stream = resolver.resolve(matches[index][0])
+            except Exception as e:
+                log(f'search: {matches[index][0]} raised | {e}', xbmc.LOGERROR)
+                stream = None
+            finally:
+                _PICK_STATE['quiet'] = False
+            if stream:
+                if attempt:
+                    xbmcgui.Dialog().notification('The Crew', f'{matches[choice][2]} failed, using {matches[index][2]}', xbmcgui.NOTIFICATION_INFO, 3000)
+                return stream
+            if _PICK_STATE['cancelled']:
+                return None
+        return None
+    finally:
+        _PICK_STATE.update(searching=False, quiet=False)
 
 
 def _append_query_param(url, key, value):
@@ -298,6 +464,44 @@ class streamer:
         )
         b64 = reversed_str[::-1]
         return base64.b64decode(b64 + '==').decode('utf-8')
+
+    def search_page(self, query=None, sport=None):
+        try:
+            if not query:
+                query = xbmcgui.Dialog().input('Search events - team or name')
+            words = re.findall(r'[a-z0-9]+', (query or '').lower())
+            if not words:
+                return None
+            if sport:
+                entries = [e for e in SPORT_LISTS if e[0].lower() == sport.lower()] or SPORT_LISTS
+            else:
+                choice = xbmcgui.Dialog().select('Search which sport?', ['All sports'] + [e[0] for e in SPORT_LISTS])
+                if choice == -1:
+                    return None
+                entries = SPORT_LISTS if choice == 0 else [SPORT_LISTS[choice - 1]]
+            progress = xbmcgui.DialogProgressBG()
+            progress.create('The Crew', f'Searching for {query.strip()}...')
+            try:
+                sources = list(dict.fromkeys(src for entry in entries for src in _sport_sources(entry[2])))
+                found = _run_schedules(control.cdnImport(SCHEDULE_MODULE, 'crewschedule'), sources, progress)
+            finally:
+                progress.close()
+            results = []
+            seen = set()
+            for source, (link, label) in found:
+                label = html.unescape(str(label)).encode('ascii', 'ignore').decode('ascii').strip()
+                label_words = re.findall(r'[a-z0-9]+', re.sub(r'\[/?[A-Za-z]+[^\]]*\]', ' ', label).lower())
+                if link in seen or not all(any(lw.startswith(w) for lw in label_words) for w in words):
+                    continue
+                seen.add(link)
+                results.append((link, f'[COLOR gray]{_up(source).netloc}[/COLOR] {label}'))
+            log(f'search_page: {len(results)} results for {query!r} across {len(sources)} sources')
+            if not results:
+                xbmcgui.Dialog().notification('The Crew', f'No events found for {query.strip()}', xbmcgui.NOTIFICATION_INFO, 3000)
+            return results or None
+        except Exception as e:
+            _log_error('search_page', str(query), e)
+            return None
 
     @_fallback
     def resolve(self, url):
