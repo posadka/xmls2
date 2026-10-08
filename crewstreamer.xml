@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 import requests
 import xbmc
 import xbmcgui
+import xbmcaddon
 
 try:
     from Cryptodome.Cipher import AES,ChaCha20_Poly1305
@@ -84,9 +85,25 @@ def _is_media(url):
     return (_up(url).path).strip('/').split('/')[-1].split('.')[-1] in MEDIA_EXTS
 
 
+ALLOWED_ADDON = 'plugin.video.thecrew'
+_ALLOWED = []
+
+
+def _allowed():
+    if not _ALLOWED:
+        try:
+            caller = xbmcaddon.Addon().getAddonInfo('id')
+        except Exception:
+            caller = ''
+        _ALLOWED.append(caller == ALLOWED_ADDON)
+        if caller != ALLOWED_ADDON:
+            log(f'blocked: called from {caller or "unknown addon"}', xbmc.LOGWARNING)
+    return _ALLOWED[0]
+
+
 def _guard(func):
     def wrapper(self, url, *args, **kwargs):
-        if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
+        if not _allowed():
             return None
         return func(self, url, *args, **kwargs)
     wrapper.__name__ = func.__name__
@@ -108,6 +125,8 @@ def _select(heading, labels):
 
 def _fallback(func):
     def wrapper(self, url, *args, **kwargs):
+        if not _allowed():
+            return None
         if _PICK_STATE['active']:
             return func(self, url, *args, **kwargs)
         _PICK_STATE.update(active=True, auto=False, forced=None, picked=None, cancelled=False)
@@ -466,6 +485,8 @@ class streamer:
         return base64.b64decode(b64 + '==').decode('utf-8')
 
     def search_page(self, query=None, sport=None):
+        if not _allowed():
+            return None
         try:
             if not query:
                 query = xbmcgui.Dialog().input('Search events - team or name')
