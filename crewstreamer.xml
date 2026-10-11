@@ -1623,7 +1623,21 @@ class streamer:
                 log(f'gszone: no source match | {url} | script: {script[:300]!r}', xbmc.LOGERROR)
                 return None
             origin, referer = _origin_referer(url)
-            return f'{m.group(1)}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+            source          = urljoin(url, m.group(1))
+            stream_headers  = {'User-Agent': UA, 'Referer': referer, 'Origin': origin}
+            master_resp     = requests.get(source, headers=stream_headers, timeout=TIMEOUT)
+            allowed         = (master_resp.headers.get('access-control-allow-origin') or '').rstrip('/')
+            if not master_resp.text.lstrip().startswith('#EXTM3U') and allowed.startswith('http') and allowed != origin:
+                stream_headers = {'User-Agent': UA, 'Referer': allowed + '/', 'Origin': allowed}
+                master_resp    = requests.get(source, headers=stream_headers, timeout=TIMEOUT)
+            master = master_resp.text
+            if not master.lstrip().startswith('#EXTM3U'):
+                log(f'gszone: source is not a playlist | {source} | body: {master[:200]!r}', xbmc.LOGERROR)
+                return None
+            variants = re.findall(r'#EXT-X-STREAM-INF:[^\n]*?BANDWIDTH=(\d+)[^\n]*\n\s*([^#\s][^\n]*)', master)
+            if variants:
+                source = urljoin(source, max(variants, key=lambda v: int(v[0]))[1].strip())
+            return _publish_live_manifest(source, stream_headers, 'gszone')
         except Exception as e:
             _log_error('gszone', url, e)
             return None
