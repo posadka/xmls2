@@ -211,6 +211,21 @@ def _to_local(dt_utc):
     return dt_utc.astimezone()
 
 
+_MONTHS = {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6, 'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12}
+
+
+def _last_sunday(year, month):
+    d = datetime(year, month, 31)
+    return d - timedelta(days=(d.weekday() + 1) % 7)
+
+
+def _uk_to_utc(dt):
+    start  = _last_sunday(dt.year, 3) + timedelta(hours=1)
+    end    = _last_sunday(dt.year, 10) + timedelta(hours=2)
+    offset = 1 if start <= dt < end else 0
+    return (dt - timedelta(hours=offset)).replace(tzinfo=timezone.utc)
+
+
 def _guard(func):
     def wrapper(self, url):
         if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
@@ -880,11 +895,17 @@ class streamer:
                     if not iframe_url:
                         continue
                     try:
-                        h, m     = map(int, raw_time.split(':'))
-                        now_utc  = datetime.now(timezone.utc)
-                        dt_utc   = now_utc.replace(hour=h, minute=m, second=0, microsecond=0)
-                        dt_local = _to_local(dt_utc)
-                        time_str = dt_local.strftime('%I:%M %p').lstrip('0')
+                        tm   = re.match(r'\s*(\d{1,2}):(\d{2})\s*([AaPp][Mm])?', raw_time)
+                        h, m = int(tm.group(1)), int(tm.group(2))
+                        ampm = (tm.group(3) or '').upper()
+                        if ampm and h <= 12:
+                            h = h % 12 + (12 if ampm == 'PM' else 0)
+                        dm = re.match(r'\s*(\d{1,2})\s+([A-Za-z]{3})[A-Za-z]*\s*,?\s*(\d{4})', entry.get('Date') or '')
+                        if dm:
+                            dt_uk = datetime(int(dm.group(3)), _MONTHS[dm.group(2).lower()], int(dm.group(1)), h, m)
+                        else:
+                            dt_uk = datetime.now(timezone.utc).replace(tzinfo=None, hour=h, minute=m, second=0, microsecond=0)
+                        time_str = _to_local(_uk_to_utc(dt_uk)).strftime('%m/%d %I:%M %p').lstrip('0')
                     except Exception:
                         time_str = raw_time
                     label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
