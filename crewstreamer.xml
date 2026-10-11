@@ -600,7 +600,7 @@ class streamer:
                 u = self.iframe_gs(url)
             elif 'runid.xyz' in url:
                 u = self.runid(url)
-            elif 'gsports.lat' in url:
+            elif any(x in url for x in ['gsports.lat', 'gszone.top']):
                 u = self.gsports(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st', 'gozo']):
                 u = self.ovostreams(url)
@@ -1488,7 +1488,7 @@ class streamer:
                 return None
             picks = [
                 s for s in streams
-                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat'))
+                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat', 'gszone.top'))
             ]
             if not picks:
                 log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
@@ -1577,9 +1577,13 @@ class streamer:
             except Exception:
                 log(f'gsports: failed to decode payload | {url}', xbmc.LOGERROR)
                 return None
-            m = re.search(r"source:\s*'([^']+)'", script)
+            m = (
+                re.search(r"source:\s*'([^']+)'", script)
+                or re.search(r"loadSource\(\s*['\"]([^'\"]+)", script)
+                or re.search(r"['\"](https?://[^'\"]+\.m3u8[^'\"]*)['\"]", script)
+            )
             if not m:
-                log(f'gsports: no source match | {url}', xbmc.LOGERROR)
+                log(f'gsports: no source match | {url} | script: {script[:300]!r}', xbmc.LOGERROR)
                 return None
             stream_url = m.group(1)
             origin, referer = _origin_referer(url)
