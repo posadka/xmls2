@@ -340,7 +340,7 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
 
 def _publish_static_manifest(manifest_text, name_prefix):
     """For content with no separate upstream URL to re-fetch (e.g. parsed out of
-    embedded page state) — publishes a one-time snapshot."""
+    embedded page state) - publishes a one-time snapshot."""
     local_url = segmentproxy.register_static_manifest(manifest_text, name_prefix)
     if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
@@ -1080,10 +1080,13 @@ class streamer:
                 page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
 
             m          = re.search(r'(?s)<iframe[^>]*allow=[\'"]encrypted-media[^>]*src=[\'"]([^\'"]+)', page_data)
-            if not m:
+            if m:
+                iframe_url = m.group(1)
+            elif '/live/' in url:
+                iframe_url = url
+            else:
                 log(f'volokit: no encrypted-media iframe | {url}', xbmc.LOGERROR)
                 return None
-            iframe_url = m.group(1)
 
             if 'embedhd.st' in iframe_url:
                 return self.embedhd_st(iframe_url)
