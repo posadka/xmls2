@@ -622,6 +622,8 @@ class streamer:
                 u = self.cx720p(url)
             elif 'gstream24' in url:
                 u = self.gstream24(url)
+            elif 'slapstreams' in url:
+                u = self.slapstreams(url)
             else:
                 u = self.generic(url)
             return u
@@ -1324,6 +1326,54 @@ class streamer:
             return self.resolve(iframe_url)
         except Exception as e:
             _log_error('gstream24', url, e)
+            return None
+
+    @_guard
+    def slapstreams(self, url, parent=None):
+        try:
+            if '/stream/' not in url:
+                page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+                feeds     = []
+                for href, label in re.findall(r'(?s)<a[^>]+href=["\']([^"\']*/stream/[^"\']+)["\'][^>]*>(.*?)</a>', page_data):
+                    feed_url = urljoin(url, html.unescape(href).strip())
+                    label    = ' '.join(html.unescape(re.sub(r'<[^>]+>', '', label)).split())
+                    if feed_url not in [f for f, _ in feeds]:
+                        feeds.append((feed_url, label or f'Link {len(feeds) + 1}'))
+                if not feeds:
+                    m = re.search(r'<iframe[^>]+src=["\']([^"\']*/stream/[^"\']+)', page_data)
+                    if not m:
+                        log(f'slapstreams: no feeds found | {url}', xbmc.LOGERROR)
+                        return None
+                    feeds.append((urljoin(url, html.unescape(m.group(1)).strip()), 'Link 1'))
+                if len(feeds) == 1:
+                    choice = 0
+                else:
+                    choice = _select('Choose Feed', [label for _, label in feeds])
+                if choice == -1:
+                    return None
+                return self.slapstreams(feeds[choice][0], url)
+
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': parent or url}, timeout=TIMEOUT).text
+            m = re.search(r'_d\s*=\s*\[\s*(\d+)\s*,\s*["\']([^"\']+)["\']\s*,\s*["\']([^"\']+)["\']', page_data)
+            if not m:
+                log(f'slapstreams: no stream params | {url}', xbmc.LOGERROR)
+                return None
+            data = requests.get(
+                urljoin(url, 'check_stream.php'),
+                params={'id': m.group(1), 'ts': m.group(2), 'pt': m.group(3)},
+                headers={'User-Agent': UA, 'Referer': url},
+                timeout=TIMEOUT
+            ).json()
+            stream_url = (data or {}).get('url')
+            if not stream_url:
+                log(f'slapstreams: no url in check_stream response | {url} | {data}', xbmc.LOGERROR)
+                return None
+            origin, referer = _origin_referer(url)
+            return _publish_live_manifest(
+                urljoin(url, stream_url), {'User-Agent': UA, 'Referer': referer, 'Origin': origin}, 'slapstreams'
+            )
+        except Exception as e:
+            _log_error('slapstreams', url, e)
             return None
 
     @_guard
