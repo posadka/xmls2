@@ -641,7 +641,12 @@ class streamer:
                 results.append((urljoin(base, html.unescape(href)), label))
 
             if not results:
-                log('streameast_ga: no matches found', xbmc.LOGERROR)
+                log(
+                    f'streameast_ga: no matches found | {page_resp.url} | status={page_resp.status_code} | '
+                    f'bytes={len(page_data)} | m-card={page_data.count("m-card")} | '
+                    f'team-names={page_data.count("data-team-names")} | head: {page_data[:160]!r}',
+                    xbmc.LOGERROR
+                )
                 return None
             return results
         except Exception as e:
@@ -1545,6 +1550,15 @@ class streamer:
                 time_str  = self._fmt_utc_dt(iso_ts, in_fmt='%Y-%m-%dT%H:%M:%SZ')
                 full_url  = urljoin(base, href)
                 results.append((full_url, self._label(time_str, title)))
+            if results and 'rz-text' in page_data:
+                try:
+                    game_page = requests.get(results[0][0], headers={'User-Agent': UA, 'Referer': url}, timeout=6).text
+                    for rz_href, rz_text in re.findall(r'(?s)<a\b[^>]*\bhref=["\']([^"\']+)["\'][^>]*>(.*?)</a>', game_page):
+                        if 'REDZONE' in re.sub(r'<[^>]+>', '', rz_text).upper():
+                            results.insert(0, (urljoin(base, html.unescape(rz_href)), self._label('', 'NFL RedZone')))
+                            break
+                except Exception as e:
+                    log(f'topstreamer: redzone lookup failed | {e}', xbmc.LOGWARNING)
             return results or None
         except Exception as e:
             _log_error('topstreamer', url, e)
