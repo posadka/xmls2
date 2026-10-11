@@ -639,7 +639,15 @@ class streamer:
                 return results
 
             parsed  = urlparse(url)
-            results = _cards(requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text, _base_url(url))
+            path    = parsed.path or '/'
+            if not path.endswith('/') and '.' not in path.rsplit('/', 1)[-1]:
+                path += '/'
+            suffix  = path + ('?' + parsed.query if parsed.query else '')
+            first   = requests.get(_base_url(url) + suffix, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            if first.status_code == 429:
+                log(f'streameast_ga: rate limited (429) | {_base_url(url) + suffix}', xbmc.LOGERROR)
+                return None
+            results = _cards(first.text, _base_url(url))
             if not results:
                 try:
                     mirror_page = requests.get(STREAMEAST_GA_MIRRORS, headers={'User-Agent': UA}, timeout=TIMEOUT).text
@@ -648,8 +656,7 @@ class streamer:
                     mirrors = []
                 for mirror in [m for m in mirrors if urlparse(m).netloc != parsed.netloc][:4]:
                     try:
-                        mirror_url = mirror + (parsed.path or '/') + ('?' + parsed.query if parsed.query else '')
-                        results    = _cards(requests.get(mirror_url, headers={'User-Agent': UA}, timeout=6).text, mirror)
+                        results = _cards(requests.get(mirror + suffix, headers={'User-Agent': UA}, timeout=6).text, mirror)
                     except Exception:
                         results = []
                     if results:
