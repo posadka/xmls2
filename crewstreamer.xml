@@ -1685,7 +1685,21 @@ class streamer:
                     return None
                 stream_url = m3u8_list[choice]
             log(f'roxiestreams stream_url: {stream_url}', xbmc.LOGERROR)
-            stream_headers = {**headers, 'Origin': origin}
+            chrome_m = re.search(r'Chrome/(\d+)', UA)
+            chrome_v = chrome_m.group(1) if chrome_m else '152'
+            stream_headers = {
+                **headers,
+                'Origin': origin,
+                'Accept': '*/*',
+                'Accept-Language': 'en-US,en;q=0.7',
+                'Priority': 'u=1, i',
+                'Sec-CH-UA': f'"Chromium";v="{chrome_v}", "Not?A_Brand";v="24", "Google Chrome";v="{chrome_v}"',
+                'Sec-CH-UA-Mobile': '?0',
+                'Sec-CH-UA-Platform': '"macOS"',
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'cross-site',
+            }
             return _publish_live_manifest(stream_url, stream_headers, 'roxiestreams', session=session)
         except Exception as e:
             _log_error('roxiestreams', url, e)
