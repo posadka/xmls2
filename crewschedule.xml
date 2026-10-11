@@ -1402,6 +1402,9 @@ class streamer:
                     except Exception:
                         pass
                 results.append((html.unescape(link_m.group(1)).strip(), self._label(time_str, title)))
+            channel_m = re.search(r'<a href="([^"]+)" class="nav-link">\s*(NHL Network)\s*</a>', page_data)
+            if channel_m:
+                results.insert(0, (html.unescape(channel_m.group(1)).strip(), self._label('', channel_m.group(2))))
             return results or None
         except Exception as e:
             _log_error('slapstreams', url, e)
