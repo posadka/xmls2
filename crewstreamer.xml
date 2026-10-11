@@ -1918,39 +1918,73 @@ class streamer:
             r2 = requests.get(player_url, headers=headers2, timeout=TIMEOUT)
             ptext = r2.text
 
-            csrftoken_b64   = _find(r'const\s*csrftoken\s*=\s*"([^"]+)"', ptext)
-            playerId        = _find(r'const\s*playerId\s*=\s*"([^"]+)"', ptext)
-            sCode_raw       = _find(r'const\s*sCode\s*=\s*decodeSr\s*\(\s*\[([\d,\s]+)\]', ptext)
-            strUnqId        = _find(r'const\s*strUnqId\s*=\s*"([^"]+)"', ptext)
-            session_id      = _find(r'const\s*session_id\s*=\s*"([^"]+)"', ptext)
-            expireTs        = _find(r'const\s*expireTs\s*=\s*parseInt\s*\("([^"]+)"', ptext)
-            edgeHostId      = _find(r'const\s*edgeHostId\s*=\s*"([^"]+)"', ptext)
-            videoSource_raw = _find(r'const\s*videoSource\s*=\s*bota\s*\(\s*decodeSr\s*\(\s*\[([\d,\s]+)\]', ptext)
-            secTokenB64     = _find(r'const\s*secTokenUrl\s*=\s*bota\("([^"]+)"\)', ptext)
+            def _var(name):
+                return _find(r'(?<![\w$])' + re.escape(name) + r'="([^"]+)"', ptext) if name else None
 
-            if not all([csrftoken_b64, playerId, sCode_raw, strUnqId, session_id, expireTs, edgeHostId, videoSource_raw, secTokenB64]):
-                log(f'embedsportsme: missing player page constants | {player_url}', xbmc.LOGERROR)
-                return None
+            call_m     = re.search(r'\{scode:"([^"]+)",ts:\w+,session_id:"([^"]+)",device_id:([\w$]+)\}', ptext)
+            source_raw = _find(r'String\.fromCharCode\(\.\.\.\[([\d,\s]+)\]\)', ptext)
+            if call_m and source_raw:
+                s_code        = call_m.group(1)
+                session_id    = call_m.group(2)
+                playerId      = _var(call_m.group(3))
+                strUnqId      = _var(_find(r'stream=\$\{encodeURIComponent\(([\w$]+)\)\}', ptext))
+                expireTs      = _find(r'=parseInt\((\d{9,}),10\)\|\|0', ptext)
+                edgeHostId    = _find(r'host_id=`\+encodeURIComponent\("([^"]+)"\)', ptext)
+                sec_name      = _find(r'`\$\{([\w$]+)\}\?scode=', ptext)
+                sec_b64       = _find(r'(?<![\w$])' + re.escape(sec_name) + r'=[\w$]+\("([^"]+)"\)', ptext) if sec_name else None
+                csrf_b64      = _find(r'"X-CSRF-Auth":[\w$]+\("([^"]+)"\)', ptext)
+                if not all([playerId, strUnqId, expireTs, edgeHostId, sec_b64, csrf_b64]):
+                    log(f'embedsportsme: missing player page constants | {player_url}', xbmc.LOGERROR)
+                    return None
+                csrf          = base64.b64decode(csrf_b64 + '=' * (-len(csrf_b64) % 4)).decode()
+                sec_token_url = base64.b64decode(sec_b64 + '=' * (-len(sec_b64) % 4)).decode()
+                source_b64    = ''.join(chr(int(n)) for n in source_raw.split(',') if n.strip())
+                video_source  = base64.b64decode(source_b64 + '=' * (-len(source_b64) % 4)).decode()
+                auth_url      = _with_query(
+                    sec_token_url, scode=s_code, stream=strUnqId,
+                    expires=expireTs, u_id=playerId, session_id=session_id, host_id=edgeHostId
+                )
+            else:
+                csrftoken_b64   = _find(r'const\s*csrftoken\s*=\s*"([^"]+)"', ptext)
+                playerId        = _find(r'const\s*playerId\s*=\s*"([^"]+)"', ptext)
+                sCode_raw       = _find(r'const\s*sCode\s*=\s*decodeSr\s*\(\s*\[([\d,\s]+)\]', ptext)
+                strUnqId        = _find(r'const\s*strUnqId\s*=\s*"([^"]+)"', ptext)
+                session_id      = _find(r'const\s*session_id\s*=\s*"([^"]+)"', ptext)
+                expireTs        = _find(r'const\s*expireTs\s*=\s*parseInt\s*\("([^"]+)"', ptext)
+                edgeHostId      = _find(r'const\s*edgeHostId\s*=\s*"([^"]+)"', ptext)
+                videoSource_raw = _find(r'const\s*videoSource\s*=\s*bota\s*\(\s*decodeSr\s*\(\s*\[([\d,\s]+)\]', ptext)
+                secTokenB64     = _find(r'const\s*secTokenUrl\s*=\s*bota\("([^"]+)"\)', ptext)
 
-            csrf          = _b64x2(csrftoken_b64)
-            s_code        = ''.join(chr(int(n)) for n in sCode_raw.split(',') if n.strip())
-            video_source  = _b64x2(bytes(int(n) for n in videoSource_raw.split(',') if n.strip()))
-            sec_token_url = base64.b64decode(secTokenB64).decode()
+                if not all([csrftoken_b64, playerId, sCode_raw, strUnqId, session_id, expireTs, edgeHostId, videoSource_raw, secTokenB64]):
+                    log(f'embedsportsme: missing player page constants | {player_url}', xbmc.LOGERROR)
+                    return None
 
-            auth_url = _with_query(
-                f'{sec_token_url}/', scode=s_code, stream=strUnqId,
-                expires=expireTs, u_id=playerId, session_id=session_id, host_id=edgeHostId
+                csrf          = _b64x2(csrftoken_b64)
+                s_code        = ''.join(chr(int(n)) for n in sCode_raw.split(',') if n.strip())
+                video_source  = _b64x2(bytes(int(n) for n in videoSource_raw.split(',') if n.strip()))
+                sec_token_url = base64.b64decode(secTokenB64).decode()
+
+                auth_url = _with_query(
+                    f'{sec_token_url}/', scode=s_code, stream=strUnqId,
+                    expires=expireTs, u_id=playerId, session_id=session_id, host_id=edgeHostId
+                )
+            edm_origin = f'https://{edm}'
+            auth = requests.get(
+                auth_url,
+                headers={
+                    'User-Agent': UA, 'X-CSRF-Auth': csrf, 'Accept': 'application/json',
+                    'Referer': edm_origin + '/', 'Origin': edm_origin,
+                },
+                timeout=TIMEOUT
             )
-            auth = requests.get(auth_url, headers={'X-CSRF-Auth': csrf, 'Accept': 'application/json'}, timeout=TIMEOUT)
 
             device_id = playerId
             try:
                 device_id = auth.json().get('device_id') or device_id
             except Exception:
-                pass
+                log(f'embedsportsme: auth reply not json | status={auth.status_code} | body: {auth.text[:200]!r}', xbmc.LOGERROR)
 
             stream_url  = _with_query(video_source, u_id=device_id)
-            edm_origin  = f'https://{edm}'
             final_headers = {'User-Agent': UA, 'Referer': edm_origin + '/', 'Origin': edm_origin}
 
             check = requests.get(stream_url, headers=final_headers, timeout=TIMEOUT)
