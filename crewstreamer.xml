@@ -34,6 +34,11 @@ from resources.lib.modules import control, client, workers, jsunpack, hunter, se
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36'
 
 TAG = 'Streamer'
+STREAMEAST_GA_HOSTS = (
+    'streameast.ga', 'streameast.cf', 'streameast.ch', 'streameast.ec', 'streameast.fi', 'streameast.fm',
+    'streameast.is', 'streameast.ml', 'streameast.ms', 'streameast.ph', 'streameast.ps', 'streameast.sg',
+    'streameast.sk', 'thestreameast.fun', 'thestreameast.ru', 'thestreameast.su', 'thestreameast.online',
+)
 
 MEDIA_EXTS = {'mp4', 'flv', 'm3u8'}
 TIMEOUT = 10
@@ -538,7 +543,7 @@ class streamer:
                 u = self.volokit(url)
             elif 'playoffsstream' in url:
                 u = self.playoff(url)
-            elif any(x in url for x in ['streameast.ga', 'thestreameast.online']):
+            elif any(x in url for x in STREAMEAST_GA_HOSTS):
                 u = self.streameast_ga(url)
             elif 'naughtyblog' in url:
                 u = self.naughtyblog(url)
