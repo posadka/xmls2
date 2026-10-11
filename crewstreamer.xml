@@ -580,7 +580,7 @@ class streamer:
                 u = self.buffstreams(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top']):
                 u = self.crackstreams(url)
-            elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia']):
+            elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia', 'taifood-blog']):
                 u = self.embedsports(url)
             elif 'embed.st' in url:
                 u = self.embed_st(url)
@@ -600,8 +600,10 @@ class streamer:
                 u = self.iframe_gs(url)
             elif 'runid.xyz' in url:
                 u = self.runid(url)
-            elif any(x in url for x in ['gsports.lat', 'gszone.top']):
+            elif 'gsports.lat' in url:
                 u = self.gsports(url)
+            elif 'gszone.top' in url:
+                u = self.gszone(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st', 'gozo']):
                 u = self.ovostreams(url)
             elif 'ovostream.net' in url:
@@ -1488,7 +1490,7 @@ class streamer:
                 return None
             picks = [
                 s for s in streams
-                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat', 'gszone.top'))
+                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat', 'gszone.top', 'taifood-blog'))
             ]
             if not picks:
                 log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
@@ -1577,19 +1579,53 @@ class streamer:
             except Exception:
                 log(f'gsports: failed to decode payload | {url}', xbmc.LOGERROR)
                 return None
-            m = (
-                re.search(r"source:\s*'([^']+)'", script)
-                or re.search(r"loadSource\(\s*['\"]([^'\"]+)", script)
-                or re.search(r"['\"](https?://[^'\"]+\.m3u8[^'\"]*)['\"]", script)
-            )
+            m = re.search(r"source:\s*'([^']+)'", script)
             if not m:
-                log(f'gsports: no source match | {url} | script: {script[:300]!r}', xbmc.LOGERROR)
+                log(f'gsports: no source match | {url}', xbmc.LOGERROR)
                 return None
             stream_url = m.group(1)
             origin, referer = _origin_referer(url)
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('gsports', url, e)
+            return None
+
+    @_guard
+    def gszone(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r'\}\("([A-Za-z0-9+/=]+)",\s*(\d+)\)', page_data)
+            if not m:
+                log(f'gszone: no loader found | {url}', xbmc.LOGERROR)
+                return None
+            xor_key = int(m.group(2))
+            loader  = ''.join(chr(c ^ xor_key) for c in base64.b64decode(m.group(1)))
+            path_m  = re.search(r"fetch\('([^']+)'\)", loader)
+            key_m   = re.search(r"k='([^']+)'", loader)
+            if not path_m or not key_m:
+                log(f'gszone: loader format changed | {url} | loader: {loader[:300]!r}', xbmc.LOGERROR)
+                return None
+            key = key_m.group(1).encode('utf-8')
+            raw = requests.get(
+                urljoin(url, path_m.group(1)), headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT
+            ).content
+            try:
+                script = zlib.decompress(bytes(c ^ key[i % len(key)] for i, c in enumerate(raw)), -15).decode('utf-8', 'replace')
+            except Exception:
+                log(f'gszone: failed to decode payload | {url}', xbmc.LOGERROR)
+                return None
+            m = (
+                re.search(r"loadSource\(\s*['\"]([^'\"]+)", script)
+                or re.search(r"source:\s*['\"]([^'\"]+)", script)
+                or re.search(r"['\"](https?://[^'\"]+\.m3u8[^'\"]*)['\"]", script)
+            )
+            if not m:
+                log(f'gszone: no source match | {url} | script: {script[:300]!r}', xbmc.LOGERROR)
+                return None
+            origin, referer = _origin_referer(url)
+            return f'{m.group(1)}|User-Agent={UA}&Referer={referer}&Origin={origin}'
+        except Exception as e:
+            _log_error('gszone', url, e)
             return None
 
     @_guard
@@ -1893,7 +1929,7 @@ class streamer:
     @_guard
     def embedsports(self, url):
         try:
-            if not any(h in url for h in ('embedsports.top', 'pooembed', 'embedindia')):
+            if not any(h in url for h in ('embedsports.top', 'pooembed', 'embedindia', 'taifood-blog')):
                 page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']*(?:embedsports\.top|pooembed)[^"\']+)', page_data, re.I)
                 if not m:
@@ -1921,7 +1957,7 @@ class streamer:
                 return bytes([tag]) + _varint(len(value)) + value
 
             segments = url.rstrip('/').split('/')
-            SINGLE_PATH_HOSTS = ('pooembed', 'embedindia')
+            SINGLE_PATH_HOSTS = ('pooembed', 'embedindia', 'taifood-blog')
             if any(h in host for h in SINGLE_PATH_HOSTS):
                 path    = '/'.join(segments[4:])
                 payload = _field(1, path.encode())
@@ -1941,7 +1977,7 @@ class streamer:
                 'referer':      url,
                 'user-agent':   UA,
             }
-            fetch = requests.post(urljoin(origin, '/fetch'), data=payload, headers=headers, timeout=TIMEOUT)
+            fetch = requests.post(urljoin(origin, '/fetch'), data=payload, headers=headers, timeout=TIMEOUT, verify='taifood-blog' not in host)
             log(f'embedsports DEBUG status={fetch.status_code} headers={dict(fetch.headers)}', xbmc.LOGERROR)
             log(f'embedsports DEBUG content[:200]={fetch.content[:200]}', xbmc.LOGERROR)
             if not fetch.content:
