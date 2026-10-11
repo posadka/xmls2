@@ -1413,6 +1413,9 @@ class streamer:
             origin  = _base_url(url)
             headers = {'Referer': origin, 'User-Agent': UA}
             page_data = requests.get(url, headers=headers, timeout=TIMEOUT).text
+            m = re.search(r'<script[^>]+src=["\']([^"\']*/player-js/player\.js[^"\']*)["\'][^>]*\bdata-id=["\'](\d+)["\']', page_data)
+            if m:
+                return self.watchfast(urljoin(url, m.group(1)), m.group(2), url)
             m = re.search(r'fid\s*=\s*"([^"]+)"', page_data)
             if not m:
                 log(f'embedhd: no fid match | {url}', xbmc.LOGERROR)
@@ -1450,6 +1453,24 @@ class streamer:
             )
         except Exception as e:
             _log_error('embedhd', url, e)
+            return None
+
+    @_guard
+    def watchfast(self, url, player_id, parent):
+        try:
+            origin, referer = _origin_referer(parent)
+            headers = {'User-Agent': UA, 'Referer': referer, 'Origin': origin}
+            data    = requests.get(
+                urljoin(url, 'config.php'), params={'id': player_id}, headers=headers, timeout=TIMEOUT
+            ).json()
+            player  = (data or {}).get('player') or {}
+            source  = player.get('src') or player.get('srcBase')
+            if not source:
+                log(f'watchfast: no src in config | {url} | id={player_id} | {str(data)[:200]}', xbmc.LOGERROR)
+                return None
+            return _publish_live_manifest(urljoin(url, source), headers, 'watchfast')
+        except Exception as e:
+            _log_error('watchfast', url, e)
             return None
 
     @_guard
