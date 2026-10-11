@@ -594,7 +594,12 @@ class streamer:
             if not path.endswith('/') and '.' not in path.rsplit('/', 1)[-1]:
                 path += '/'
             base      = _base_url(url)
-            page_resp = requests.get(base + path + ('?' + parsed.query if parsed.query else ''), headers={'User-Agent': UA}, timeout=TIMEOUT)
+            page_url  = base + path + ('?' + parsed.query if parsed.query else '')
+            session   = requests.Session()
+            page_resp = session.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            if urlparse(page_resp.url).netloc != parsed.netloc or 'm-card' not in page_resp.text:
+                log(f'streameast_ga: retry after handoff | {page_resp.status_code} {page_resp.url} hops={len(page_resp.history)}', xbmc.LOGINFO)
+                page_resp = session.get(page_url, headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT)
             if page_resp.status_code == 429:
                 log(f'streameast_ga: rate limited (429) | {page_resp.url}', xbmc.LOGERROR)
                 return None
