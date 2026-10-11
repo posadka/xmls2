@@ -515,7 +515,11 @@ class streamer:
                 dt_match = re.search(r"timeTo\(new Date\('([^']+)'\)", block)
                 if dt_match:
                     try:
-                        dt       = datetime.strptime(dt_match.group(1), '%b %d %Y %H:%M:%S +00:00')
+                        raw_dt = dt_match.group(1).strip()
+                        try:
+                            dt = datetime.strptime(raw_dt, '%Y-%m-%d %H:%M:%S +00:00')
+                        except ValueError:
+                            dt = datetime.strptime(raw_dt, '%b %d %Y %H:%M:%S +00:00')
                         dt       = _to_local(dt.replace(tzinfo=timezone.utc))
                         time_str = dt.strftime('%m/%d %I:%M %p').lstrip('0')
                         label    = self._label(time_str, teams)
