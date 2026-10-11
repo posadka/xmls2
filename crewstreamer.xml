@@ -538,7 +538,7 @@ class streamer:
                 u = self.volokit(url)
             elif 'playoffsstream' in url:
                 u = self.playoff(url)
-            elif 'streameast.ga' in url:
+            elif any(x in url for x in ['streameast.ga', 'thestreameast.online']):
                 u = self.streameast_ga(url)
             elif 'naughtyblog' in url:
                 u = self.naughtyblog(url)
