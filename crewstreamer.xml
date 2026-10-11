@@ -2808,6 +2808,9 @@ class streamer:
                 embed_url  = url
                 embed_html = page_resp.text
             stream_id = _up(embed_url).query
+            id_m      = re.search(r'(?:^|&)streamid=([^&]+)', stream_id)
+            if id_m:
+                stream_id = unquote(id_m.group(1))
             if not stream_id:
                 log(f'xyzstreams_nfl: no stream id in embed url | {embed_url}', xbmc.LOGERROR)
                 return None
