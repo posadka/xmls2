@@ -226,6 +226,18 @@ def _uk_to_utc(dt):
     return (dt - timedelta(hours=offset)).replace(tzinfo=timezone.utc)
 
 
+def _nth_sunday(year, month, n):
+    d = datetime(year, month, 1)
+    return d + timedelta(days=(6 - d.weekday()) % 7 + 7 * (n - 1))
+
+
+def _et_to_utc(dt):
+    start  = _nth_sunday(dt.year, 3, 2) + timedelta(hours=2)
+    end    = _nth_sunday(dt.year, 11, 1) + timedelta(hours=2)
+    offset = 4 if start <= dt < end else 5
+    return (dt + timedelta(hours=offset)).replace(tzinfo=timezone.utc)
+
+
 def _guard(func):
     def wrapper(self, url):
         if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
@@ -295,6 +307,8 @@ class streamer:
                 u = self.gsports(url)
             elif 'gstream24' in url:
                 u = self.gstream24(url)
+            elif 'slapstreams' in url:
+                u = self.slapstreams(url)
             elif 'xyzstreams.st/nfl' in url:
                 u = self.xyzstreams_nfl(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
@@ -1361,6 +1375,36 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('gstream24', url, e)
+            return None
+
+    @_guard
+    def slapstreams(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            rows      = re.findall(r'(?s)<tr class="singele_match_date[^"]*">(.*?)</tr>', page_data)
+            results   = []
+            for row in rows:
+                link_m = re.search(r'<td class="lplay_button">\s*<a[^>]+href="([^"]+)"', row)
+                vs_m   = re.search(r'(?s)<td class="teamvs">\s*<a[^>]*>(.*?)<span class="mtdate">([^<]*)</span>', row)
+                if not link_m or not vs_m:
+                    continue
+                title    = ' '.join(html.unescape(re.sub(r'<[^>]+>', '', vs_m.group(1))).split())
+                time_m   = re.search(r'<td class="matchtime"[^>]*>\s*(\d{1,2}):(\d{2})', row)
+                date_m   = re.match(r'\s*([A-Za-z]{3})[A-Za-z]*\s+(\d{1,2})\s*,?\s*(\d{4})', vs_m.group(2))
+                time_str = ''
+                if time_m and date_m:
+                    try:
+                        dt_et = datetime(
+                            int(date_m.group(3)), _MONTHS[date_m.group(1).lower()], int(date_m.group(2)),
+                            int(time_m.group(1)) % 12 + 12, int(time_m.group(2))
+                        )
+                        time_str = _to_local(_et_to_utc(dt_et)).strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        pass
+                results.append((html.unescape(link_m.group(1)).strip(), self._label(time_str, title)))
+            return results or None
+        except Exception as e:
+            _log_error('slapstreams', url, e)
             return None
 
     @_guard
