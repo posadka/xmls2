@@ -385,16 +385,24 @@ class streamer:
     def streameast(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
-            matches = re.findall(
-                r'(?s)<li[^>]*\bclass=["\'][^"\']*\bf1-podium--item\b[^"\']*["\'][^>]*>\s*'
-                r'<a\s+href=["\']([^"\']+)["\'].*?'
-                r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
-                r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
-                r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*\bdata-zaman=["\'](\d+)["\'][^>]*>\s*([^<]*?)\s*</span>',
+            blocks  = re.findall(
+                r'(?s)<li[^>]*\bclass=["\'][^"\']*\bf1-podium--item\b[^"\']*["\'][^>]*>(.*?)</li>',
                 page_data
             )
+            matches = []
+            for block in blocks:
+                m = re.search(
+                    r'(?s)<a\s+href=["\']([^"\']+)["\'].*?'
+                    r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
+                    r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
+                    r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*\bdata-zaman=["\'](\d+)["\'][^>]*>(.*)',
+                    block
+                )
+                if m:
+                    matches.append(m.groups())
             results = []
             for href, league, teams, time_cls, epoch, time_text in matches:
+                time_text = ' '.join(re.sub(r'<[^>]+>', ' ', time_text).split())
                 href    = html.unescape(href).strip()
                 league  = html.unescape(league).strip()
                 teams   = html.unescape(teams).strip()
