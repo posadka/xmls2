@@ -755,10 +755,16 @@ class streamer:
                 r'(?s)id="stream-btn-(\d+)"[^>]*?class="[^"]*"[^>]*>(.*?)</div>',
                 page_data
             )
-            tmpl = re.search(
-                r"document\.getElementById\('wp_player'\)\.src\s*=\s*'([^']+)'\s*\+\s*streamId\s*\+\s*'([^']+)'",
-                page_data
-            )
+            tmpl_re = r"getElementById\(['\"]wp_player['\"]\)\.src\s*=\s*['\"]([^'\"]+)['\"]\s*\+\s*streamId\s*\+\s*['\"]([^'\"]+)['\"]"
+            tmpl    = re.search(tmpl_re, page_data)
+            if servers and not tmpl:
+                for js_url in re.findall(r'<script[^>]+src="([^"]*game[^"]*\.js[^"]*)"', page_data):
+                    try:
+                        tmpl = re.search(tmpl_re, requests.get(urljoin(url, js_url), headers=headers, timeout=TIMEOUT).text)
+                    except Exception:
+                        tmpl = None
+                    if tmpl:
+                        break
             if servers and tmpl:
                 if len(servers) == 1:
                     choice = 0
@@ -794,6 +800,15 @@ class streamer:
                     log(f'streameast: no source var match | {iframe_url}', xbmc.LOGERROR)
                     return None
                 source = m.group(1)
+            if not _up(source).path.lower().endswith('.m3u8'):
+                stream_headers = {'User-Agent': UA, 'Origin': origin}
+                master         = requests.get(source, headers=stream_headers, timeout=TIMEOUT).text
+                variants       = re.findall(r'#EXT-X-STREAM-INF:[^\n]*?BANDWIDTH=(\d+)[^\n]*\n\s*([^#\s][^\n]*)', master)
+                if variants:
+                    source = urljoin(source, max(variants, key=lambda v: int(v[0]))[1].strip())
+                if master.lstrip().startswith('#EXTM3U'):
+                    return _publish_live_manifest(source, stream_headers, 'streameast')
+                log(f'streameast: source is not a playlist | {source} | body: {master[:200]!r}', xbmc.LOGERROR)
             return f'{source}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('streameast', url, e)
