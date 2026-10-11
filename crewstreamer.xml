@@ -331,7 +331,10 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
     except Exception as e:
         log(f'{name_prefix}: upstream manifest probe failed, falling back to proxy path: {e}', xbmc.LOGWARNING)
     cookies = requests.utils.dict_from_cookiejar(session.cookies) if session is not None else None
-    local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix, cookies=cookies)
+    if cookies:
+        local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix, cookies=cookies)
+    else:
+        local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix)
     if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
