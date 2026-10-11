@@ -255,7 +255,7 @@ class streamer:
                 u = self.korast(url)
             elif 'volokit' in url:
                 u = self.volokit(url)
-            elif 'streameast.ga' in url:
+            elif any(x in url for x in ['streameast.ga', 'thestreameast.online']):
                 u = self.streameast_ga(url)
             elif 'shd247' in url:
                 u = self.shd(url)
@@ -592,7 +592,7 @@ class streamer:
                     return ''
 
             matches = re.findall(
-                r'(?s)<div\s+class="m-card\b[^"]*"([^>]*)>.*?<a\s+class="m-card__link"\s+href="([^"]+)"',
+                r'(?s)<div\s+(class="m-card\b[^"]*"[^>]*)>.*?<a\s+class="m-card__link"\s+href="([^"]+)"',
                 page_data
             )
             results = []
