@@ -1708,7 +1708,12 @@ class streamer:
     @_guard
     def streameast_ga(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            session   = requests.Session()
+            page_resp = session.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            if _up(page_resp.url).netloc != _up(url).netloc or ('se-stream' not in page_resp.text and '<iframe' not in page_resp.text):
+                log(f'streameast_ga: retry after handoff | {page_resp.status_code} {page_resp.url} hops={len(page_resp.history)}', xbmc.LOGINFO)
+                page_resp = session.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT)
+            page_data = page_resp.text
             base = _base_url(url)
             li_blocks = re.findall(r'(?s)<li\s+class="se-stream([^"]*)">(.*?)</li>', page_data)
             servers = []
@@ -1730,7 +1735,7 @@ class streamer:
                 href, _ = servers[choice]
                 chosen_url = urljoin(base, href)
                 if chosen_url != url:
-                    page_data = requests.get(
+                    page_data = session.get(
                         chosen_url,
                         headers={'User-Agent': UA, 'Referer': url},
                         timeout=TIMEOUT
