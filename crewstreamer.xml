@@ -1881,7 +1881,16 @@ class streamer:
             edm      = _find(r'edm\s*=\s*"([^"]+)"', text)
             gameCat  = _find(r'gameCat\s*=\s*"([^"]+)"', text)
             gameText = _find(r'gameText\s*=\s*"([^"]+)"', text)
-            if not all([zmid, pid, edm, gameCat, gameText]):
+            player   = None
+            tag_m    = re.search(r'<script[^>]*\bdata-pldm=[^>]*>', text)
+            if tag_m:
+                attrs   = dict(re.findall(r'\bdata-([a-z]+)=["\']([^"\']*)["\']', tag_m.group(0)))
+                edm     = attrs.get('pldm', '').strip()
+                pid     = attrs.get('pid', '').strip()
+                zmid    = attrs.get('play', '').strip()
+                gameCat = attrs.get('gc', '').strip() or 'sports'
+                player  = attrs.get('player', '').strip() or 'jw'
+            if not all([zmid, pid, edm, gameCat]) or not (tag_m or gameText):
                 log(f'embedsportsme: missing zmid/pid/edm/gameCat/gameText | {url}', xbmc.LOGERROR)
                 return None
 
@@ -1891,11 +1900,18 @@ class streamer:
                 return None
             config = json.loads(site_m.group(1))
 
-            player_params = {
-                'pid': pid, 'gacat': gameText, 'gatxt': gameCat, 'v': zmid,
-                'csrf': config['csrf'], 'csrf_ip': config['csrf_ip'],
-                'expires': config['sec_expires'], 'sec_hash': config['sec_hash'],
-            }
+            if tag_m:
+                player_params = {
+                    'pid': pid, 'v': zmid, 'player': player,
+                    'csrf': config['csrf'], 'csrf_ip': config['csrf_ip'],
+                    'expires': config['sec_expires'], 'sec_hash': config['sec_hash'],
+                }
+            else:
+                player_params = {
+                    'pid': pid, 'gacat': gameText, 'gatxt': gameCat, 'v': zmid,
+                    'csrf': config['csrf'], 'csrf_ip': config['csrf_ip'],
+                    'expires': config['sec_expires'], 'sec_hash': config['sec_hash'],
+                }
             player_url = f'https://{edm}/sd0embed/{gameCat}?' + urlencode(player_params)
 
             headers2 = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
