@@ -188,6 +188,49 @@ def _solve_lyrashield(page_data):
     return bytes(a ^ b for a, b in zip(pt, iv)).hex()
 
 
+
+def _solve_lyrashield_fe(page_data):
+    m = re.search(r'document\.cookie\s*=\s*"([\w-]+)="\s*\+\s*toHex\(\s*slowAES\.decrypt\(\s*(\w+)\s*,\s*2\s*,\s*(\w+)\s*,\s*(\w+)\s*\)\s*\)', page_data)
+    if not m:
+        return None
+    name, ct_var, key_var, iv_var = m.groups()
+    arrays = {}
+    for am in re.finditer(r'var\s+(\w+)\s*=\s*\[((?:\s*"(?:[^"\\]|\\.)*"\s*,?)+)\]', page_data):
+        arrays[am.group(1)] = [x.encode('latin-1').decode('unicode_escape') for x in re.findall(r'"((?:[^"\\]|\\.)*)"', am.group(2))]
+
+    def _str(expr):
+        expr = expr.strip()
+        sm = re.match(r'^"((?:[^"\\]|\\.)*)"$', expr)
+        if sm:
+            return sm.group(1).encode('latin-1').decode('unicode_escape')
+        am = re.match(r'^(\w+)\[(\d+)\]$', expr)
+        if am and am.group(1) in arrays:
+            return arrays[am.group(1)][int(am.group(2))]
+        return None
+
+    values = {}
+    for vm in re.finditer(r'(\w+)\s*=\s*(atob|toNumbers)\(\s*([^()]*?)\s*\)', page_data):
+        var, fn, arg = vm.groups()
+        src = values.get(arg) if arg in values else _str(arg)
+        if src is None:
+            continue
+        if fn == 'atob':
+            values[var] = base64.b64decode(src).decode('latin-1')
+        else:
+            values[var] = bytes.fromhex(src)
+    key, iv, ct = values.get(key_var), values.get(iv_var), values.get(ct_var)
+    if not all(isinstance(v, bytes) for v in (key, iv, ct)) or len(key) != 16 or len(iv) != 16 or not ct or len(ct) % 16:
+        return None
+    out = b''
+    prev = iv
+    for i in range(0, len(ct), 16):
+        block = ct[i:i + 16]
+        pt = _aes128_decrypt_block(list(key), list(block))
+        out += bytes(a ^ b for a, b in zip(pt, prev))
+        prev = block
+    return name, out.hex()
+
+
 _IS_XBOX = None
 
 
@@ -1256,11 +1299,15 @@ class streamer:
             try:
                 data = resp.json()
             except Exception:
-                cookie_val = _solve_lyrashield(body)
+                solved = _solve_lyrashield_fe(body)
+                if solved:
+                    cookie_name, cookie_val = solved
+                else:
+                    cookie_name, cookie_val = 'LyraShield-vA', _solve_lyrashield(body)
                 if not cookie_val:
                     log(f'timstreams: bad JSON status={resp.status_code} enc={resp.headers.get("Content-Encoding")} | {url} | body: {body[:200]!r}', xbmc.LOGERROR)
                     return None
-                session.cookies.set('LyraShield-vA', cookie_val, domain=urlparse(origin).netloc)
+                session.cookies.set(cookie_name, cookie_val, domain=urlparse(origin).netloc, path='/')
                 resp = session.get(url, headers=headers, timeout=TIMEOUT)
                 body = resp.content.decode('utf-8', errors='replace')
                 try:
