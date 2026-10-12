@@ -566,7 +566,7 @@ class streamer:
                 u = self.ripplestreamsfouru(url)
             elif any(x in url for x in ['kora']):
                 u = self.korast(url)
-            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd']):
+            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd']):
                 u = self.timstreams(url)
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
@@ -2359,7 +2359,7 @@ class streamer:
             if not embed_url:
                 log(f'flyembed: no embed iframe | {url}', xbmc.LOGERROR)
                 return None
-            if any(d in embed_url for d in ('timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd')):
+            if any(d in embed_url for d in ('timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd')):
                 log(f'flyembed: embed iframe is a timstreams-family host, delegating | {embed_url}', xbmc.LOGWARNING)
                 return self.timstreams(embed_url, url)
             embed_resp = requests.get(
