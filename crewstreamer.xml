@@ -2764,13 +2764,28 @@ class streamer:
             tx4 = int(m.group(3))
             decoded = ''.join(chr(((n ^ cs4) - tx4 + 256) % 256) for n in arr)
             m = re.search(r'SIGNED_URL\s*=\s*"([^"]+)"', decoded)
-            if not m:
+            lm = None if m else re.search(r'loadStreamUrl\(\s*"([^"]+)"', decoded)
+            if lm:
+                token_url = lm.group(1).replace('\\/', '/')
+                tk = token_url.rstrip('/').rsplit('/', 1)[-1]
+                tresp = requests.get(token_url, headers={'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, timeout=TIMEOUT)
+                raw = tresp.content
+                if tresp.status_code != 200 or len(raw) < 2 or not tk:
+                    log(f'timstreams: token fetch failed status={tresp.status_code} bytes={len(raw)} | {token_url}', xbmc.LOGERROR)
+                    return None
+                seed = raw[0]
+                stream_url = ''.join(chr(raw[i] ^ ord(tk[(i - 1) % len(tk)]) ^ ((seed + i - 1) & 255)) for i in range(1, len(raw))).strip()
+                if not stream_url.startswith('http'):
+                    log(f'timstreams: token decode gave no url | {token_url} | {stream_url[:80]!r}', xbmc.LOGERROR)
+                    return None
+            elif not m:
                 log(f'timstreams: no SIGNED_URL in decoded payload | {url}', xbmc.LOGERROR)
                 return None
-            try:
-                stream_url = json.loads('"' + m.group(1) + '"')
-            except Exception:
-                stream_url = m.group(1).replace('\\/', '/')
+            else:
+                try:
+                    stream_url = json.loads('"' + m.group(1) + '"')
+                except Exception:
+                    stream_url = m.group(1).replace('\\/', '/')
             stream_url = re.sub(r'(?<!:)/{2,}', '/', stream_url)
             headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
             return _publish_live_manifest(stream_url, headers, 'timstreams')
@@ -2916,6 +2931,8 @@ class streamer:
                 log(f'trendy48: no iframe src found | {url}', xbmc.LOGERROR)
                 return None
             iframe_url = html.unescape(m.group(1)).strip()
+            if any(d in iframe_url for d in ('timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd')):
+                return self.timstreams(iframe_url, url)
             return self.resolve(iframe_url)
         except Exception as e:
             _log_error('trendy48', url, e)
