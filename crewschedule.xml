@@ -352,6 +352,8 @@ class streamer:
                 u = self.gstream24(url)
             elif 'slapstreams' in url:
                 u = self.slapstreams(url)
+            elif 'dudestream' in url:
+                u = self.dudestream(url)
             elif 'xyzstreams.st/nfl' in url:
                 u = self.xyzstreams_nfl(url)
             elif any(x in url for x in ['xyzstreams', 'guide.alexyoung65656.workers.dev']):
@@ -1460,6 +1462,43 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('gstream24', url, e)
+            return None
+
+    @_guard
+    def dudestream(self, url):
+        try:
+            pattern = (
+                r'(?s)<article[^>]*>.*?<h4 class="entry-title[^"]*"><a href="([^"]+)">([^<]+)</a></h4>'
+                r'.*?<span class="mg-blog-date">.*?<a [^>]*>\s*([^<]+?)\s*</a>'
+            )
+            today     = datetime.now().strftime('%B %d, %Y').replace(' 0', ' ')
+            first_url = url.split('/page/')[0].rstrip('/') + '/'
+            page_data = requests.get(first_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            matches   = re.findall(pattern, page_data)
+            page_no   = 2
+            while matches and page_no <= 6 and ('/page/%d/' % page_no) in page_data:
+                if not any(d.strip().replace(' 0', ' ') == today for _, _, d in matches[-3:]):
+                    break
+                page_data = requests.get(f'{first_url}page/{page_no}/', headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                more = re.findall(pattern, page_data)
+                if not more:
+                    break
+                matches += more
+                page_no += 1
+            results = []
+            seen    = set()
+            for href, title, date_txt in matches:
+                if href in seen:
+                    continue
+                seen.add(href)
+                date_txt = date_txt.strip()
+                label    = 'Today' if date_txt.replace(' 0', ' ') == today else date_txt
+                results.append((href, self._label(label, html.unescape(title).strip())))
+            if not results:
+                log(f'dudestream: no matches found | {url}', xbmc.LOGERROR)
+            return results or None
+        except Exception as e:
+            _log_error('dudestream', url, e)
             return None
 
     @_guard

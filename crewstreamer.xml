@@ -626,6 +626,8 @@ class streamer:
                 u = self.gstream24(url)
             elif 'slapstreams' in url:
                 u = self.slapstreams(url)
+            elif 'dudestream' in url:
+                u = self.dudestream(url)
             else:
                 u = self.generic(url)
             return u
@@ -1343,6 +1345,31 @@ class streamer:
             return self.resolve(iframe_url)
         except Exception as e:
             _log_error('gstream24', url, e)
+            return None
+
+    @_guard
+    def dudestream(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text
+            frames = []
+            for src in re.findall(r"<iframe[^>]+src=['\"]([^'\"]+)['\"]", page_data):
+                src = html.unescape(src).strip()
+                if src.startswith('//'):
+                    src = 'https:' + src
+                if src.startswith('http') and src not in frames and not any(x in src for x in ('googletagmanager', 'facebook.com', 'disqus', 'youtube.com/embed')):
+                    frames.append(src)
+            if not frames:
+                log(f'dudestream: no player iframe | {url}', xbmc.LOGERROR)
+                return None
+            if len(frames) == 1:
+                choice = 0
+            else:
+                choice = _select('Choose Stream', [f'Stream {i + 1} - {_up(f).netloc}' for i, f in enumerate(frames)])
+            if choice == -1:
+                return None
+            return self.resolve(frames[choice])
+        except Exception as e:
+            _log_error('dudestream', url, e)
             return None
 
     @_guard
