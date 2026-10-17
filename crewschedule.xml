@@ -1296,7 +1296,12 @@ class streamer:
                 'Accept-Encoding': 'identity',
             }
             session = requests.Session()
-            resp = session.get(url, headers=headers, timeout=TIMEOUT)
+            try:
+                resp = session.get(url, headers=headers, timeout=TIMEOUT)
+            except requests.exceptions.SSLError:
+                log(f'timstreams: certificate check failed, retrying without it | {url}', xbmc.LOGWARNING)
+                session.verify = False
+                resp = session.get(url, headers=headers, timeout=TIMEOUT)
             body = resp.content.decode('utf-8', errors='replace')
             try:
                 data = resp.json()
