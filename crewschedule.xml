@@ -752,11 +752,13 @@ class streamer:
             )
             results = []
             for href, name, timestr in matches:
-                try:
-                    dt      = datetime.strptime(timestr.strip(), '%B %d, %Y %I:%M %p') + timedelta(hours=2)
-                    timestr = dt.strftime('%B %d, %Y %I:%M %p')
-                except Exception:
-                    pass
+                for fmt in ('%B %d, %Y %I:%M %p', '%b %d, %Y %I:%M %p'):
+                    try:
+                        dt      = datetime.strptime(timestr.strip(), fmt) + timedelta(hours=2)
+                        timestr = dt.strftime('%B %d, %Y %I:%M %p')
+                        break
+                    except Exception:
+                        pass
                 name = html.unescape(name).strip()
                 results.append((urljoin(base, href), self._label(timestr.strip(), name)))
             return results or None
