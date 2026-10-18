@@ -725,7 +725,7 @@ class streamer:
             origin, referer = _origin_referer(iframe_url)
             iframe_html = requests.get(
                 iframe_url,
-                headers={'Referer': referer, 'Origin': origin, 'User-Agent': UA},
+                headers={'Referer': _base_url(url) + '/', 'User-Agent': UA},
                 timeout=TIMEOUT
             ).text
             m = re.search(
@@ -733,7 +733,11 @@ class streamer:
                 iframe_html
             )
             if not m:
-                log(f'givemereddit: no packed script found | {iframe_url}', xbmc.LOGERROR)
+                direct = re.search(r'src:\s*["\']([^"\']+\.m3u8[^"\']*)["\']', iframe_html)
+                if direct:
+                    src = direct.group(1).replace('\\/', '/')
+                    return f'{src}|Referer={referer}&Origin={origin}&User-Agent={UA}&Accept=application/x-mpegURL,*/*'
+                log(f'givemereddit: no packed script or m3u8 found | {iframe_url}', xbmc.LOGERROR)
                 return None
             unpacked = hunter.hunter(
                 m.group(1), int(m.group(2)), m.group(3),
