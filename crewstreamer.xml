@@ -1906,7 +1906,7 @@ class streamer:
                 log(f'embed_st: decrypt failed or missing key header | {url}', xbmc.LOGERROR)
                 return None
 
-            return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': url, 'Origin': origin}, 'embed_st')
+            return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, 'embed_st')
         except Exception as e:
             _log_error('embed_st', url, e)
             return None
