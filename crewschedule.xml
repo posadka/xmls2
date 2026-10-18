@@ -981,7 +981,24 @@ class streamer:
             data    = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for entry in data:
-                if 'iframeURL' in entry:
+                if 'IframeURL' in entry:
+                    iframe_url = (entry.get('IframeURL') or '').strip()
+                    if not iframe_url:
+                        continue
+                    team1  = html.unescape((entry.get('Team1') or '').strip())
+                    team2  = html.unescape((entry.get('Team2') or '').strip())
+                    league = html.unescape((entry.get('League') or entry.get('Sport') or '').strip())
+                    d_txt  = (entry.get('MatchDate') or '').strip()
+                    t_txt  = (entry.get('MatchStartTime') or '').strip()
+                    try:
+                        dt_utc   = datetime.strptime(f'{d_txt} {t_txt}', '%Y-%m-%d %H:%M').replace(tzinfo=timezone.utc)
+                        time_str = _to_local(dt_utc).strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        time_str = t_txt
+                    title = f'{team1} vs {team2}' if team2 else team1
+                    label = f'[COLOR dodgerblue]{league} {time_str}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    results.append((iframe_url, label))
+                elif 'iframeURL' in entry:
                     team1      = html.unescape((entry.get('Team 1 ') or entry.get('Team1') or '').strip())
                     team2      = html.unescape((entry.get('Team2') or '').strip())
                     league     = html.unescape((entry.get('League') or '').strip())
