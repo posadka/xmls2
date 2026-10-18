@@ -1863,7 +1863,7 @@ class streamer:
                 if choice == -1:
                     return None
                 url = links[choice]['url']
-            return self.embed_st(url)
+            return self.rockystream(url)
         except Exception as e:
             _log_error('rockyembed', url, e)
             return None
