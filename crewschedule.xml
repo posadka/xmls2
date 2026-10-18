@@ -311,7 +311,7 @@ class streamer:
                 u = self.playoff(url)
             elif 'flyembed' in url:
                 u = self.flyembed(url)
-            elif 'embedhd' in url:
+            elif any(x in url for x in ['embedhd', 'rockylive']):
                 u = self.embedhd(url)
             elif 'sharkstreams' in url:
                 u = self.sharkstreams(url)
@@ -1048,10 +1048,18 @@ class streamer:
     @_guard
     def embedhd(self, url):
         try:
-            page_data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            feed_url, _, frag = url.partition('#')
+            want      = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            w_league  = [x.strip().lower() for x in want.get('league', '').replace('+', ' ').split('|') if x.strip()]
+            w_sport   = [x.strip().lower() for x in want.get('sport', '').replace('+', ' ').split('|') if x.strip()]
+            page_data = requests.get(feed_url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results   = []
             for day in page_data.get('days', []):
                 for event in day.get('items', []):
+                    if w_league and (event.get('league') or '').strip().lower() not in w_league:
+                        continue
+                    if w_sport and (event.get('sport') or '').strip().lower() not in w_sport:
+                        continue
                     title   = event.get('title', '')
                     league  = event.get('league', '').upper()
                     status  = event.get('status', '')

@@ -582,6 +582,8 @@ class streamer:
                 u = self.crackstreams(url)
             elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia', 'taifood-blog']):
                 u = self.embedsports(url)
+            elif 'rockyembed.st' in url:
+                u = self.embedhd_st(url)
             elif 'embed.st' in url:
                 u = self.embed_st(url)
             elif 'embedsports.me' in url:
