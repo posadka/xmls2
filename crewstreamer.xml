@@ -564,7 +564,7 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['rippleplays.cfd', 'ripplestream.cyou']):
                 u = self.ripplestreamsfouru(url)
-            elif any(x in url for x in ['kora']):
+            elif any(x in url for x in ['kora', 'vertex.st']):
                 u = self.korast(url)
             elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd']):
                 u = self.timstreams(url)
@@ -583,7 +583,7 @@ class streamer:
             elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia', 'taifood-blog']):
                 u = self.embedsports(url)
             elif 'rockyembed.st' in url:
-                u = self.embedhd_st(url)
+                u = self.rockyembed(url)
             elif 'embed.st' in url:
                 u = self.embed_st(url)
             elif 'embedsports.me' in url:
@@ -1846,6 +1846,27 @@ class streamer:
         ct_with_tag = raw[12:]
         cipher  = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=nonce)
         return cipher.decrypt_and_verify(ct_with_tag[:-16], ct_with_tag[-16:]).decode('utf-8').strip()
+
+    @_guard
+    def rockyembed(self, url):
+        try:
+            try:
+                links = json.loads(url)
+            except (ValueError, TypeError):
+                links = None
+            if isinstance(links, list):
+                links = [l for l in links if isinstance(l, dict) and l.get('url')]
+                if not links:
+                    log('rockyembed: empty links list', xbmc.LOGERROR)
+                    return None
+                choice = 0 if len(links) == 1 else _select('Choose Stream', [l.get('label') or l['url'] for l in links])
+                if choice == -1:
+                    return None
+                url = links[choice]['url']
+            return self.embed_st(url)
+        except Exception as e:
+            _log_error('rockyembed', url, e)
+            return None
 
     @_guard
     def embed_st(self, url):
