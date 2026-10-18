@@ -978,12 +978,22 @@ class streamer:
     @_guard
     def flyembed(self, url):
         try:
-            data    = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            feed_url, _, frag = url.partition('#')
+            want    = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            w_sport = [x.strip().lower() for x in want.get('sport', '').replace('+', ' ').split('|') if x.strip()]
+            w_league = [x.strip().lower() for x in want.get('league', '').replace('+', ' ').split('|') if x.strip()]
+            data    = requests.get(feed_url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for entry in data:
                 if 'IframeURL' in entry:
                     iframe_url = (entry.get('IframeURL') or '').strip()
                     if not iframe_url:
+                        continue
+                    e_sport  = (entry.get('Sport') or '').strip().lower()
+                    e_league = (entry.get('League') or '').strip().lower()
+                    if w_sport and e_sport not in w_sport:
+                        continue
+                    if w_league and not any(w in e_league for w in w_league):
                         continue
                     team1  = html.unescape((entry.get('Team1') or '').strip())
                     team2  = html.unescape((entry.get('Team2') or '').strip())
