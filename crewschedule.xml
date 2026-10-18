@@ -1206,9 +1206,17 @@ class streamer:
     @_guard
     def korast(self, url):
         try:
-            data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
+            feed_url, _, frag = url.partition('#')
+            want     = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            w_sport  = [x.strip().lower() for x in want.get('sport', '').replace('+', ' ').split('|') if x.strip()]
+            w_league = [x.strip().lower() for x in want.get('league', '').replace('+', ' ').split('|') if x.strip()]
+            data = requests.get(feed_url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results = []
             for match in data.get('matches', []):
+                if w_sport and (match.get('sport') or '').strip().lower() not in w_sport:
+                    continue
+                if w_league and (match.get('league') or '').strip().lower() not in w_league:
+                    continue
                 team1 = match.get('team1', '')
                 team2 = match.get('team2', '')
                 title = f'{team1} vs {team2}' if team1 and team2 else team1
