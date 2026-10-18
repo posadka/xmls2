@@ -598,7 +598,7 @@ class streamer:
                 u = self.embedhd_pk(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'methstreams.gs']):
                 u = self.methstreams(url)
-            elif 'iframe.gs' in url:
+            elif any(x in url for x in ['iframe.gs', 'yield.gs']):
                 u = self.iframe_gs(url)
             elif 'runid.xyz' in url:
                 u = self.runid(url)
@@ -1523,7 +1523,7 @@ class streamer:
                 return None
             picks = [
                 s for s in streams
-                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat', 'gszone.top', 'taifood-blog'))
+                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'yield.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat', 'gszone.top', 'taifood-blog'))
             ]
             if not picks:
                 log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
@@ -1535,7 +1535,7 @@ class streamer:
             if choice == -1:
                 return None
             pick = picks[choice]['value']
-            if 'iframe.gs' in pick:
+            if 'iframe.gs' in pick or 'yield.gs' in pick:
                 return self.iframe_gs(pick, url)
             return self.resolve(pick)
         except Exception as e:
