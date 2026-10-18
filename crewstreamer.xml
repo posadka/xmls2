@@ -608,7 +608,7 @@ class streamer:
                 u = self.ovostreams(url)
             elif 'ovostream.net' in url:
                 u = self.ovostream_net(url)
-            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.ws']):
+            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.ws', 'mystreamseast.cx']):
                 u = self.givemereddit(url)
             elif 'xyzstreams.st/nfl-' in url or 'xyzstreams.st/247.html' in url:
                 u = self.xyzstreams_nfl(url)
