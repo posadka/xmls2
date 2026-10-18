@@ -238,7 +238,7 @@ def _is_xbox():
     global _IS_XBOX
     if _IS_XBOX is None:
         try:
-            _IS_XBOX = bool(xbmc.getCondVisibility('System.Platform.Xbox'))
+            _IS_XBOX = bool(xbmc.getCondVisibility('System.Platform.Xbox') or xbmc.getCondVisibility('System.Platform.UWP'))
         except Exception:
             _IS_XBOX = False
     return _IS_XBOX
@@ -250,8 +250,11 @@ def _to_local(dt_utc):
     reliable there, so times are left in UTC on that platform rather than
     crashing or silently returning wrong values."""
     if _is_xbox():
-        return dt_utc.astimezone(timezone.utc)
-    return dt_utc.astimezone()
+        return dt_utc if dt_utc.tzinfo is None else dt_utc.astimezone(timezone.utc)
+    try:
+        return dt_utc.astimezone()
+    except Exception:
+        return dt_utc if dt_utc.tzinfo is None else dt_utc.astimezone(timezone.utc)
 
 
 _MONTHS = {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6, 'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12}
