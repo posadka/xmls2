@@ -1990,10 +1990,14 @@ class streamer:
                 playerId      = _var(call_m.group(3))
                 strUnqId      = _var(_find(r'stream=\$\{encodeURIComponent\(([\w$]+)\)\}', ptext))
                 expireTs      = _find(r'=parseInt\((\d{9,}),10\)\|\|0', ptext)
-                edgeHostId    = _find(r'host_id=`\+encodeURIComponent\("([^"]+)"\)', ptext)
+                edgeHostId    = _find(r'host_id=`\+encodeURIComponent\("([^"]+)"\)', ptext) or _find(r'host_id=\$\{encodeURIComponent\("([^"]+)"\)\}', ptext)
                 sec_name      = _find(r'`\$\{([\w$]+)\}\?scode=', ptext)
                 sec_b64       = _find(r'(?<![\w$])' + re.escape(sec_name) + r'=[\w$]+\("([^"]+)"\)', ptext) if sec_name else None
                 csrf_b64      = _find(r'"X-CSRF-Auth":[\w$]+\("([^"]+)"\)', ptext)
+                if not csrf_b64:
+                    csrf_key = _find(r'(?<![\w$])([\w$]+)="X-CSRF-Auth"', ptext)
+                    if csrf_key:
+                        csrf_b64 = _find(r'\[' + re.escape(csrf_key) + r'\]:[\w$]+\("([^"]+)"\)', ptext)
                 if not all([playerId, strUnqId, expireTs, edgeHostId, sec_b64, csrf_b64]):
                     log(f'embedsportsme: missing player page constants | {player_url}', xbmc.LOGERROR)
                     return None
