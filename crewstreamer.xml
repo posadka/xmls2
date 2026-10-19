@@ -313,9 +313,6 @@ def _dlhd_token(headers):
         return None
 
 
-_PROXY_MODULE = []
-
-
 def _chacha20_xor(key, nonce, data):
     def rotl(v, c):
         return ((v << c) & 0xffffffff) | (v >> (32 - c))
@@ -351,21 +348,6 @@ def _chacha20_xor(key, nonce, data):
     return bytes(out)
 
 
-def _proxy():
-    if not _PROXY_MODULE:
-        mod = segmentproxy
-        try:
-            path = os.path.join(control.dataPath, 'crewproxy.py')
-            if os.path.isfile(path):
-                loaded = control.load_source('crewproxy', path)
-                if all(hasattr(loaded, n) for n in ('register_live_manifest', 'register_static_manifest', 'register_ws_manifest')):
-                    mod = loaded
-        except Exception as e:
-            log(f'crewproxy load failed, using module copy: {e}', xbmc.LOGWARNING)
-        _PROXY_MODULE.append(mod)
-    return _PROXY_MODULE[0]
-
-
 def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
     """For genuine live streams: the proxy re-fetches upstream_url fresh on every
     manifest request instead of caching one snapshot, since a live media playlist
@@ -391,9 +373,9 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
         log(f'{name_prefix}: upstream manifest probe failed, falling back to proxy path: {e}', xbmc.LOGWARNING)
     cookies = requests.utils.dict_from_cookiejar(session.cookies) if session is not None else None
     if cookies:
-        local_url = _proxy().register_live_manifest(upstream_url, headers, name_prefix, cookies=cookies)
+        local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix, cookies=cookies)
     else:
-        local_url = _proxy().register_live_manifest(upstream_url, headers, name_prefix)
+        local_url = segmentproxy.register_live_manifest(upstream_url, headers, name_prefix)
     if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
@@ -403,7 +385,7 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
 def _publish_static_manifest(manifest_text, name_prefix):
     """For content with no separate upstream URL to re-fetch (e.g. parsed out of
     embedded page state) - publishes a one-time snapshot."""
-    local_url = _proxy().register_static_manifest(manifest_text, name_prefix)
+    local_url = segmentproxy.register_static_manifest(manifest_text, name_prefix)
     if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
@@ -415,7 +397,7 @@ def _publish_direct_hls(stream_url, headers):
 
 
 def _publish_ws_manifest(manifest_text, headers, ws_config, name_prefix):
-    local_url = _proxy().register_ws_manifest(manifest_text, headers, name_prefix, ws_config)
+    local_url = segmentproxy.register_ws_manifest(manifest_text, headers, name_prefix, ws_config)
     if not local_url:
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
