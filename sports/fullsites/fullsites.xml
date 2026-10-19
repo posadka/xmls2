@@ -1223,10 +1223,47 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
             except Exception:
                 return None
             if 'embed.st/' in target:
+                import struct
                 try:
                     from Cryptodome.Cipher import ChaCha20_Poly1305
                 except ImportError:
-                    from Crypto.Cipher import ChaCha20_Poly1305
+                    try:
+                        from Crypto.Cipher import ChaCha20_Poly1305
+                    except ImportError:
+                        ChaCha20_Poly1305 = None
+                def _chacha20_xor(key, nonce, data):
+                    def rotl(v, c):
+                        return ((v << c) & 0xffffffff) | (v >> (32 - c))
+                    def qr(x, a, b, c, d):
+                        x[a] = (x[a] + x[b]) & 0xffffffff
+                        x[d] = rotl(x[d] ^ x[a], 16)
+                        x[c] = (x[c] + x[d]) & 0xffffffff
+                        x[b] = rotl(x[b] ^ x[c], 12)
+                        x[a] = (x[a] + x[b]) & 0xffffffff
+                        x[d] = rotl(x[d] ^ x[a], 8)
+                        x[c] = (x[c] + x[d]) & 0xffffffff
+                        x[b] = rotl(x[b] ^ x[c], 7)
+                    const = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
+                    k = list(struct.unpack('<8I', key))
+                    n = list(struct.unpack('<3I', nonce))
+                    out = bytearray()
+                    counter = 1
+                    for pos in range(0, len(data), 64):
+                        state = const + k + [counter] + n
+                        x = list(state)
+                        for _ in range(10):
+                            qr(x, 0, 4, 8, 12)
+                            qr(x, 1, 5, 9, 13)
+                            qr(x, 2, 6, 10, 14)
+                            qr(x, 3, 7, 11, 15)
+                            qr(x, 0, 5, 10, 15)
+                            qr(x, 1, 6, 11, 12)
+                            qr(x, 2, 7, 8, 13)
+                            qr(x, 3, 4, 9, 14)
+                        block = struct.pack('<16I', *[(x[i] + state[i]) & 0xffffffff for i in range(16)])
+                        out.extend(c ^ block[i] for i, c in enumerate(data[pos:pos + 64]))
+                        counter += 1
+                    return bytes(out)
                 def varint(n):
                     out = bytearray()
                     while True:
@@ -1269,8 +1306,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
                     return None
                 decoded = bytes(((b - 0x21 + 71) % 94) + 0x21 for b in cipher_b64)
                 raw = base64.b64decode(decoded + b'=' * (-len(decoded) % 4))
-                cipher = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=raw[:12])
-                source = cipher.decrypt_and_verify(raw[12:-16], raw[-16:]).decode('utf-8').strip()
+                if ChaCha20_Poly1305 is None:
+                    source = _chacha20_xor(key.encode('utf-8'), raw[:12], raw[12:-16]).decode('utf-8').strip()
+                else:
+                    cipher = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=raw[:12])
+                    source = cipher.decrypt_and_verify(raw[12:-16], raw[-16:]).decode('utf-8').strip()
                 return (
                     source
                     + '|Referer=' + quote_plus(e_origin + '/')

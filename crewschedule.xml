@@ -17,8 +17,12 @@ try:
     from Cryptodome.Cipher import AES
     from Cryptodome.Util import Counter
 except ImportError:
-    from Crypto.Cipher import AES
-    from Crypto.Util import Counter
+    try:
+        from Crypto.Cipher import AES
+        from Crypto.Util import Counter
+    except ImportError:
+        AES = None
+        Counter = None
 
 try:
     from urllib import urlencode, quote_plus, urlparse, urljoin
