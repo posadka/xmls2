@@ -301,7 +301,9 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if any(x in url for x in ['kora', 'topsurge.st']):
+            if 'sportsupa' in url:
+                u = self.sportsupa(url)
+            elif any(x in url for x in ['kora', 'topsurge.st']):
                 u = self.korast(url)
             elif 'volokit' in url:
                 u = self.volokit(url)
@@ -1742,6 +1744,79 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def sportsupa(self, url):
+        try:
+            page_url, _, frag = url.partition('#')
+            want    = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            sport   = want.get('sport', '').strip().lower() or 'all'
+            base    = _base_url(page_url)
+            headers = {'User-Agent': UA, 'Referer': base + '/'}
+            page    = requests.get(base + '/', headers=headers, timeout=TIMEOUT).text
+            api_m   = re.search(r"\bAPI\s*=\s*'([^']+)'", page)
+            main_m  = re.search(r"\bMAIN_API\s*=\s*'([^']+)'", page)
+            if not api_m:
+                log(f'sportsupa: API base not found | {url}', xbmc.LOGERROR)
+                return None
+            api   = api_m.group(1).rstrip('/')
+            path  = '/matches/all' if sport == 'all' else '/matches/' + sport
+            games = requests.get(api + path, headers=headers, timeout=TIMEOUT).json() or []
+            main_items = {}
+            if main_m:
+                try:
+                    main_items = (requests.get(main_m.group(1).rstrip('/') + '/main', headers=headers, timeout=TIMEOUT).json() or {}).get('items') or {}
+                except Exception as e:
+                    log(f'sportsupa: main list failed | {e}', xbmc.LOGWARNING)
+
+            def norm(i):
+                return re.sub(r'[^a-z0-9]', '-', str(i or 'unknown'), flags=re.I)[:60]
+
+            results = []
+
+            def add(game, main):
+                sources = game.get('sources') or []
+                main    = [{'url': m['url'], 'language': m.get('language') or ''} for m in (main or []) if isinstance(m, dict) and m.get('url')]
+                if not sources and not main:
+                    return
+                teams = game.get('teams') or {}
+                home  = (teams.get('home') or {}).get('name')
+                away  = (teams.get('away') or {}).get('name')
+                title = f'{away} vs {home}' if home and away else (game.get('title') or '')
+                if not title:
+                    return
+                time_str = ''
+                ts = game.get('date')
+                if ts:
+                    try:
+                        time_str = _to_local(datetime.fromtimestamp(ts / 1000, tz=timezone.utc)).strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        pass
+                if main:
+                    title = f'{title} [COLOR lime](MAIN)[/COLOR]'
+                link = json.dumps({'sportsupa': True, 'base': _base_url(api), 'sources': sources, 'main': main})
+                results.append((link, self._label(time_str, title)))
+
+            cutoff = time.time() * 1000 - 7 * 86400 * 1000
+            seen   = set()
+            for game in games:
+                ts = game.get('date') or 0
+                if ts > 1000000 and ts < cutoff:
+                    continue
+                nid = norm(game.get('id'))
+                seen.add(nid)
+                add(game, (main_items.get(nid) or {}).get('streams'))
+            for nid, rec in main_items.items():
+                meta = (rec or {}).get('meta') or {}
+                if nid in seen or not meta:
+                    continue
+                if sport != 'all' and (meta.get('category') or '').lower() != sport:
+                    continue
+                add(meta, rec.get('streams'))
+            return results or None
+        except Exception as e:
+            _log_error('sportsupa', url, e)
             return None
 
     @_guard

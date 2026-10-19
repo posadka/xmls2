@@ -571,7 +571,9 @@ class streamer:
     @_fallback
     def resolve(self, url):
         try:
-            if 'epicmartial' in url:
+            if '"sportsupa"' in url:
+                u = self.sportsupa(url)
+            elif 'epicmartial' in url:
                 u = self.epicmartial(url)
             elif 'castweb' in url:
                 u = self.epicmartial(url)
@@ -3172,4 +3174,25 @@ class streamer:
             return self.resolve(embed_url)
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def sportsupa(self, url):
+        try:
+            data    = json.loads(url)
+            main    = [m for m in (data.get('main') or []) if isinstance(m, dict) and m.get('url')]
+            sources = [s for s in (data.get('sources') or []) if isinstance(s, dict)]
+            labels  = [f'Main Stream {i + 1} ({m["language"]})' if m.get('language') else f'Main Stream {i + 1}' for i, m in enumerate(main)]
+            labels += [(s.get('source') or '?').title() for s in sources]
+            if not labels:
+                log('sportsupa: no main streams or sources', xbmc.LOGERROR)
+                return None
+            choice = 0 if len(labels) == 1 else _select('Choose Source', labels)
+            if choice == -1:
+                return None
+            if choice < len(main):
+                return self.resolve(main[choice]['url'])
+            return self.streamed(json.dumps({'base': data.get('base'), 'sources': [sources[choice - len(main)]]}))
+        except Exception as e:
+            _log_error('sportsupa', url, e)
             return None
