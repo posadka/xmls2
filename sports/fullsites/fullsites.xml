@@ -1173,7 +1173,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import requests
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
     try:
-        page_data = requests.get('https://embedhd.st/api-event.php', headers={'User-Agent': UA}, timeout=10).json()
+        page_data = requests.get('https://rockylive.st/api-event.php', headers={'User-Agent': UA}, timeout=10).json()
     except Exception:
         return None
     results = []
@@ -1222,6 +1222,61 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
                 target = base64.b64decode(m.group(1)).decode('utf-8')
             except Exception:
                 return None
+            if 'embed.st/' in target:
+                try:
+                    from Cryptodome.Cipher import ChaCha20_Poly1305
+                except ImportError:
+                    from Crypto.Cipher import ChaCha20_Poly1305
+                def varint(n):
+                    out = bytearray()
+                    while True:
+                        b = n & 0x7F
+                        n >>= 7
+                        out.append(b | 0x80 if n else b)
+                        if not n:
+                            return bytes(out)
+                def field(num, val):
+                    return bytes([(num << 3) | 2]) + varint(len(val)) + val
+                e_origin = 'https://embed.st'
+                segs = target.split('#')[0].rstrip('/').split('/')
+                payload = field(1, segs[-3].encode()) + field(2, segs[-2].encode()) + field(3, segs[-1].encode())
+                resp = requests.post(e_origin + '/fetch', data=payload, headers={'User-Agent': UA, 'Referer': target, 'Origin': e_origin, 'Content-Type': 'application/octet-stream'}, timeout=10)
+                ac  = resp.headers.get('access-control-expose-headers')
+                key = resp.headers.get(ac) if ac else None
+                if not key or not resp.content:
+                    return None
+                content = resp.content
+                i = 0
+                cipher_b64 = None
+                while i < len(content):
+                    tag = content[i]
+                    i += 1
+                    length = 0
+                    shift = 0
+                    while True:
+                        b = content[i]
+                        i += 1
+                        length |= (b & 0x7F) << shift
+                        if not (b & 0x80):
+                            break
+                        shift += 7
+                    value = content[i:i + length]
+                    i += length
+                    if (tag >> 3) == 1:
+                        cipher_b64 = value
+                        break
+                if not cipher_b64:
+                    return None
+                decoded = bytes(((b - 0x21 + 71) % 94) + 0x21 for b in cipher_b64)
+                raw = base64.b64decode(decoded + b'=' * (-len(decoded) % 4))
+                cipher = ChaCha20_Poly1305.new(key=key.encode('utf-8'), nonce=raw[:12])
+                source = cipher.decrypt_and_verify(raw[12:-16], raw[-16:]).decode('utf-8').strip()
+                return (
+                    source
+                    + '|Referer=' + quote_plus(e_origin + '/')
+                    + '&Origin='  + quote_plus(e_origin)
+                    + '&User-Agent=' + quote_plus(UA)
+                )
             if '.m3u8' in target:
                 t_parsed  = urlparse(target)
                 t_referer = '%s://%s' % (t_parsed.scheme, t_parsed.netloc)
@@ -1538,14 +1593,21 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         page_data = requests.get(base + '/', headers={'User-Agent': UA}, timeout=10).text
     except Exception:
         return None
-    matches = re.findall(
-        r'(?s)<li[^>]*\bclass=["\'][^"\']*\bf1-podium--item\b[^"\']*["\'][^>]*>\s*'
-        r'<a\s+href=["\']([^"\']+)["\'].*?'
-        r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
-        r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
-        r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*>',
+    blocks = re.findall(
+        r'(?s)<li[^>]*\bclass=["\'][^"\']*\bf1-podium--item\b[^"\']*["\'][^>]*>(.*?)</li>',
         page_data
     )
+    matches = []
+    for block in blocks:
+        mm = re.search(
+            r'(?s)<a\s+href=["\']([^"\']+)["\'].*?'
+            r'f1-podium--rank[^>]*>([^<]+)</span>.*?'
+            r'd-md-inline[^>]*>\s*([^<]+?)\s*</span>.*?'
+            r'<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*>',
+            block
+        )
+        if mm:
+            matches.append(mm.groups())
     results = []
     for href, league, teams, time_cls in matches:
         href    = urljoin(base, html.unescape(href).strip())
@@ -1573,25 +1635,47 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
     url = '[makelist.param1]'
 
-    def get_feeds():
-        headers   = {'User-Agent': UA, 'Referer': url}
+    try:
+        from urllib.parse import urljoin
+    except ImportError:
+        from urlparse import urljoin
+    headers = {'User-Agent': UA, 'Referer': url}
+    try:
         page_data = requests.get(url, headers=headers, timeout=10).text
-        feeds = re.findall(
-            r'<a class="mbf-r[^"]*" href="([^"]+)"[^>]*>.*?'
-            r'<span class="mbf-n">([^<]+)</span>'
-            r'(?:<span class="mbf-q[^"]*">([^<]*)</span>)?',
-            page_data, re.S
-        )
-        return feeds
+    except Exception:
+        page_data = ''
+    servers = re.findall(r'(?s)id="stream-btn-(\d+)"[^>]*?class="[^"]*"[^>]*>(.*?)</div>', page_data)
+    tmpl_re = r"getElementById\(['\"]wp_player['\"]\)\.src\s*=\s*['\"]([^'\"]+)['\"]\s*\+\s*streamId\s*\+\s*['\"]([^'\"]+)['\"]"
+    tmpl = re.search(tmpl_re, page_data)
+    if servers and not tmpl:
+        for js_url in re.findall(r'<script[^>]+src="([^"]*game[^"]*\.js[^"]*)"', page_data):
+            try:
+                tmpl = re.search(tmpl_re, requests.get(urljoin(url, js_url), headers=headers, timeout=10).text)
+            except Exception:
+                tmpl = None
+            if tmpl:
+                break
+    iframe_url = None
+    if servers and tmpl:
+        if len(servers) == 1:
+            choice = 0
+        else:
+            labels = [re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', lb))).strip() for _, lb in servers]
+            choice = xbmcgui.Dialog().select('Choose Server', labels)
+        if choice == -1:
+            return
+        iframe_url = tmpl.group(1) + servers[choice][0] + tmpl.group(2)
+    else:
+        im = re.search(r'(?is)<iframe[^>]+src="([^"]+)', page_data)
+        if im:
+            iframe_url = im.group(1)
 
-    def resolve_feed(feed_url):
+    if not iframe_url:
+        xbmcgui.Dialog().notification('THE CREW SPORTS', 'No feeds found for this event.', xbmcgui.NOTIFICATION_ERROR, 3000)
+        return
+
+    def resolve_feed(iframe_url):
         try:
-            headers     = {'User-Agent': UA, 'Referer': feed_url}
-            page_data   = requests.get(feed_url, headers=headers, timeout=10).text
-            m           = re.search(r'(?i)<iframe[^>]+src="([^"]+)', page_data)
-            if not m:
-                return None
-            iframe_url  = m.group(1)
             iframe_html = requests.get(iframe_url, headers=headers, timeout=10).text
             parsed  = urlparse(iframe_url)
             referer = '%s://%s/' % (parsed.scheme, parsed.netloc)
@@ -1606,35 +1690,18 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
                 if not sm:
                     return None
                 source = sm.group(1)
+            if not urlparse(source).path.lower().endswith('.m3u8'):
+                master = requests.get(source, headers={'User-Agent': UA, 'Origin': origin}, timeout=10).text
+                variants = re.findall(r'#EXT-X-STREAM-INF:[^\n]*?BANDWIDTH=(\d+)[^\n]*\n\s*([^#\s][^\n]*)', master)
+                if variants:
+                    source = urljoin(source, max(variants, key=lambda v: int(v[0]))[1].strip())
             return '%s|User-Agent=%s&Referer=%s&Origin=%s' % (
                 source, quote_plus(UA), quote_plus(referer), quote_plus(origin)
             )
         except Exception:
             return None
 
-    try:
-        feeds = get_feeds()
-    except Exception:
-        feeds = []
-
-    if not feeds:
-        dlg = xbmcgui.Dialog()
-        dlg.notification('THE CREW SPORTS', 'No feeds found for this event.', xbmcgui.NOTIFICATION_ERROR, 3000)
-        return
-
-    if len(feeds) == 1:
-        choice = 0
-    else:
-        labels = []
-        for _, name, quality in feeds:
-            name = html.unescape(name).strip()
-            quality = (quality or '').strip()
-            labels.append('%s (%s)' % (name, quality) if quality else name)
-        choice = xbmcgui.Dialog().select('Choose Feed', labels)
-    if choice == -1:
-        return
-
-    feed_url = html.unescape(feeds[choice][0]).strip()
+    feed_url = iframe_url
 
     pDialog = xbmcgui.DialogProgress()
     pDialog.create('[B][COLOR orchid]THE CREW SPORTS[/COLOR][/B]', 'The Crew Is Loading Your Event Please Wait....')
