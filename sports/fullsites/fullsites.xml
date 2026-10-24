@@ -1482,11 +1482,11 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         from urlparse import urljoin
     from datetime import datetime
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
-    site = 'https://streamecenter.live/game-cards/embed'
+    site = 'https://streamcenter.st/game-cards/embed'
     try:
         headers = {
             'User-Agent': UA,
-            'Referer': 'https://streamecenter.live/',
+            'Referer': 'https://streamcenter.st/',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         }
         resp = requests.get(site, headers=headers, timeout=10)
