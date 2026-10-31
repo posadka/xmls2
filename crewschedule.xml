@@ -1926,6 +1926,15 @@ class streamer:
                 link = json.dumps({'sportsupa': True, 'base': _base_url(api), 'sources': sources, 'main': main})
                 results.append((link, self._label(time_str, title)))
 
+            groups = {
+                'american-football': {'american-football', 'cfb', 'nfl', 'ncaaf'},
+                'basketball': {'basketball', 'nba', 'ncaab', 'wnba'},
+                'hockey': {'hockey', 'ice-hockey', 'nhl'},
+                'football': {'football', 'soccer'},
+                'fight': {'fight', 'combat-sports', 'mma', 'ufc', 'boxing'},
+                'motor-sports': {'motor-sports', 'motorsports', 'f1'},
+                'baseball': {'baseball', 'mlb'},
+            }
             cutoff = time.time() * 1000 - 7 * 86400 * 1000
             seen   = set()
             for game in games:
@@ -1941,7 +1950,10 @@ class streamer:
                 meta = (rec or {}).get('meta') or {}
                 if nid in seen or not meta:
                     continue
-                if sport != 'all' and (meta.get('category') or '').lower() != sport:
+                if sport != 'all' and (meta.get('category') or '').lower() not in groups.get(sport, {sport}):
+                    continue
+                m_ts = meta.get('date') or 0
+                if not m_ts or m_ts < time.time() * 1000 - 6 * 3600 * 1000:
                     continue
                 add(meta, rec.get('streams'))
             return results or None

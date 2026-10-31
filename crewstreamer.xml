@@ -667,7 +667,7 @@ class streamer:
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
-            elif 'trendy48.site' in url:
+            elif any(x in url for x in ['trendy48.site', 'trendy48.online']):
                 u = self.trendy48(url)
             elif 'streamed.pk' in url:
                 u = self.streamed(url)
