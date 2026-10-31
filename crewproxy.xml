@@ -1,0 +1,1010 @@
+# -*- coding: utf-8 -*-
+
+import os
+import re
+import json
+import math
+import zlib
+import gzip
+import time
+import socket
+import ssl
+import struct
+import hashlib
+import base64
+import uuid
+import random
+import threading
+import http.server
+from urllib.parse import urlparse, parse_qs, unquote, quote_plus, urljoin
+
+import requests
+import xbmc
+import xbmcvfs
+import xbmcgui
+
+TAG = 'SegmentProxy'
+TIMEOUT = 10
+AD_TIMEOUT = 6
+
+TS_PACKET_SIZE = 188
+TS_SYNC_BYTE = 0x47
+
+PORT_PROPERTY = 'thecrew.segmentproxy.port'
+DIR_PROPERTY = 'thecrew.segmentproxy.manifestdir'
+MANIFEST_REFRESH_INTERVAL = 2.0
+
+WS_GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
+WS_SOCKET_TIMEOUT = 5
+WS_IDLE_TIMEOUT = 120
+WS_KEEP_SEGMENTS = 6
+
+_manifest_dir = None
+_server_started = False
+_start_lock = threading.Lock()
+_manifest_cache = {}
+_manifest_cache_lock = threading.Lock()
+_manifest_sessions = {}
+_ws_streams = {}
+_ws_lock = threading.Lock()
+_placeholder_cache = {}
+
+
+def log(msg, level=xbmc.LOGINFO):
+    xbmc.log(f'{TAG} {msg}', level)
+
+
+def _get_with_retry(url, headers=None, timeout=TIMEOUT, session=None, attempts=3, backoff=0.3):
+    """requests.get (or session.get) with a couple of quick retries on a
+    transient connection failure - a dead/flapping CDN edge node refusing the
+    connection or timing out often recovers a moment later (a different
+    connection in the pool lands on a healthy node, or the node itself comes
+    back), so one failure shouldn't immediately fail the whole segment/manifest
+    fetch. Only retries connection-level errors, not bad HTTP status codes -
+    those are handled by the caller since a 4xx/5xx isn't going to change on
+    a bare retry."""
+    getter = session.get if session is not None else requests.get
+    last_exc = None
+    for attempt in range(attempts):
+        try:
+            return getter(url, headers=headers or {}, timeout=timeout)
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+            last_exc = e
+            if attempt < attempts - 1:
+                time.sleep(backoff * (attempt + 1))
+    raise last_exc
+
+
+def _find_ts_start(data):
+    scan_limit = min(4096, len(data) - (5 * TS_PACKET_SIZE))
+    for offset in range(scan_limit):
+        if data[offset] != TS_SYNC_BYTE:
+            continue
+        aligned = True
+        for k in range(1, 5):
+            idx = offset + k * TS_PACKET_SIZE
+            if idx >= len(data) or data[idx] != TS_SYNC_BYTE:
+                aligned = False
+                break
+        if aligned:
+            return offset
+    return 0
+
+
+PNG_SIGNATURE = b'\x89PNG\r\n\x1a\n'
+PIXEL_MAGIC = b'TIKTIKPX'
+_SWAR_MASKS = {}
+
+
+def _swar_masks(n):
+    masks = _SWAR_MASKS.get(n)
+    if masks is None:
+        masks = (int.from_bytes(b'\x7f' * n, 'big'), int.from_bytes(b'\x80' * n, 'big'))
+        _SWAR_MASKS[n] = masks
+    return masks
+
+
+def _swar_add(a, b, n):
+    low, high = _swar_masks(n)
+    return ((a & low) + (b & low)) ^ ((a ^ b) & high)
+
+
+def _png_unfilter(inflated, width, height, bpp):
+    stride = width * bpp
+    out = bytearray(height * stride)
+    prior = bytes(stride)
+    pos = 0
+    for row in range(height):
+        ftype = inflated[pos]
+        line = inflated[pos + 1:pos + 1 + stride]
+        pos += stride + 1
+        if ftype == 0:
+            cur = bytes(line)
+        elif ftype == 1:
+            acc = int.from_bytes(line, 'big')
+            shift = bpp
+            while shift < stride:
+                acc = _swar_add(acc, acc >> (8 * shift), stride)
+                shift *= 2
+            cur = acc.to_bytes(stride, 'big')
+        elif ftype == 2:
+            cur = _swar_add(int.from_bytes(line, 'big'), int.from_bytes(prior, 'big'), stride).to_bytes(stride, 'big')
+        elif ftype == 3:
+            buf = bytearray(line)
+            for i in range(stride):
+                left = buf[i - bpp] if i >= bpp else 0
+                buf[i] = (buf[i] + ((left + prior[i]) >> 1)) & 0xFF
+            cur = bytes(buf)
+        elif ftype == 4:
+            buf = bytearray(line)
+            for i in range(stride):
+                if i >= bpp:
+                    a = buf[i - bpp]
+                    c = prior[i - bpp]
+                else:
+                    a = 0
+                    c = 0
+                b = prior[i]
+                pa = b - c
+                pb = a - c
+                pc = pa + pb
+                if pa < 0:
+                    pa = -pa
+                if pb < 0:
+                    pb = -pb
+                if pc < 0:
+                    pc = -pc
+                if pa <= pb and pa <= pc:
+                    pred = a
+                elif pb <= pc:
+                    pred = b
+                else:
+                    pred = c
+                buf[i] = (buf[i] + pred) & 0xFF
+            cur = bytes(buf)
+        else:
+            raise ValueError(f'bad png filter {ftype}')
+        out[row * stride:(row + 1) * stride] = cur
+        prior = cur
+    return bytes(out)
+
+
+def _decode_pixel_segment(data):
+    if not data.startswith(PNG_SIGNATURE):
+        return None
+    pos = len(PNG_SIGNATURE)
+    width = height = bpp = 0
+    idat = []
+    while pos + 8 <= len(data):
+        length = struct.unpack('>I', data[pos:pos + 4])[0]
+        ctype = data[pos + 4:pos + 8]
+        body = data[pos + 8:pos + 8 + length]
+        pos += 12 + length
+        if ctype == b'IHDR':
+            width, height, depth, color, _, _, interlace = struct.unpack('>IIBBBBB', body[:13])
+            bpp = {0: 1, 2: 3, 4: 2, 6: 4}.get(color, 0)
+            if depth != 8 or interlace != 0 or not bpp:
+                return None
+        elif ctype == b'IDAT':
+            idat.append(body)
+        elif ctype == b'IEND':
+            break
+    if not idat or not width or not height:
+        return None
+    raw = _png_unfilter(zlib.decompress(b''.join(idat)), width, height, bpp)
+    if not raw.startswith(PIXEL_MAGIC):
+        return None
+    size = struct.unpack('>I', raw[8:12])[0]
+    body = raw[12:12 + size]
+    return gzip.decompress(body) if body[:2] == b'\x1f\x8b' else body
+
+
+def _unwrap_segment(data):
+    if data[:8] == PNG_SIGNATURE:
+        try:
+            decoded = _decode_pixel_segment(data)
+            if decoded:
+                return decoded
+        except Exception as e:
+            log(f'pixel segment decode failed: {e}', xbmc.LOGWARNING)
+    offset = _find_ts_start(data)
+    return data[offset:]
+
+
+def _snapshot_to_playlist(text):
+    try:
+        data = json.loads(text)
+    except ValueError:
+        return None
+    segments = [s for s in (data.get('segments') or []) if isinstance(s, dict) and s.get('url')]
+    if not segments:
+        return None
+    longest = max(float(s.get('duration') or 0) for s in segments)
+    target = int(math.ceil(max(float(data.get('target_duration') or 0), longest, 1)))
+    first = segments[0]
+    lines = [
+        '#EXTM3U',
+        '#EXT-X-VERSION:3',
+        f'#EXT-X-TARGETDURATION:{target}',
+        f'#EXT-X-MEDIA-SEQUENCE:{int(first.get("sn") or 0)}',
+        f'#EXT-X-DISCONTINUITY-SEQUENCE:{int(first.get("cc") or 0)}',
+    ]
+    previous = None
+    for seg in segments:
+        if previous is not None and seg.get('cc') != previous.get('cc'):
+            lines.append('#EXT-X-DISCONTINUITY')
+        lines.append(f'#EXTINF:{float(seg.get("duration") or 0):.3f},')
+        lines.append(seg['url'])
+        previous = seg
+    return '\n'.join(lines) + '\n'
+
+
+def _rewrite_manifest(manifest_text, base_url, port, manifest_id, mark_ads=False):
+    lines = []
+    for line in manifest_text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith('#EXT-X-KEY') and 'URI="' in stripped:
+            def _proxy_key_uri(m):
+                abs_key_url = urljoin(base_url, m.group(1))
+                return 'URI="' + f'http://127.0.0.1:{port}/key?mid={quote_plus(manifest_id)}&url=' + quote_plus(abs_key_url) + '"'
+            stripped = re.sub(r'URI="([^"]+)"', _proxy_key_uri, stripped)
+            lines.append(stripped)
+        elif stripped and not stripped.startswith('#'):
+            abs_url = urljoin(base_url, stripped)
+            if urlparse(abs_url).path.lower().endswith('.m3u8'):
+                # This isn't a media segment - it's a nested sub-playlist (e.g. a
+                # bitrate-variant playlist referenced from a master playlist).
+                # Routing it through /seg would just pass its text through
+                # unrewritten (it isn't MPEG-TS binary, so _unwrap_segment is a
+                # no-op), leaving its own segment references un-proxied and
+                # pointed at our own server with no query string once FFmpeg
+                # resolves them relatively - which 400s forever. Route these
+                # through /submanifest instead, which fetches and rewrites them
+                # the same way the top-level manifest is rewritten.
+                sub_url = f'http://127.0.0.1:{port}/submanifest?mid={quote_plus(manifest_id)}&url=' + quote_plus(abs_url)
+                lines.append(sub_url)
+                continue
+            seg_url = f'http://127.0.0.1:{port}/seg?mid={quote_plus(manifest_id)}&url=' + quote_plus(abs_url)
+            if mark_ads and '/ephemeral/' not in abs_url:
+                seg_url += '&ad=1'
+            lines.append(seg_url)
+        else:
+            lines.append(line)
+    return '\n'.join(lines)
+
+
+def _recipe_path(manifest_id):
+    return os.path.join(_manifest_dir, f'{manifest_id}.json')
+
+
+def _static_path(manifest_id):
+    return os.path.join(_manifest_dir, f'{manifest_id}.m3u8')
+
+
+def _read_recipe(path):
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _get_manifest_session(manifest_id):
+    with _manifest_cache_lock:
+        s = _manifest_sessions.get(manifest_id)
+        if s is None:
+            s = requests.Session()
+            _manifest_sessions[manifest_id] = s
+        return s
+
+
+def _fetch_and_rewrite(manifest_id, recipe_path, attempts=3):
+    """Fetch the real upstream playlist, validate, rewrite segment lines through
+    the proxy, and update the cache. Returns the rewritten text, or None on
+    failure - on failure the existing cache entry (if any) is left untouched,
+    so a transient origin hiccup doesn't take down an otherwise-fine stream.
+
+    attempts defaults to 3 for the background-refresh path (playback is
+    already running off the cache, so a few extra seconds retrying costs
+    nothing) but must be passed as 1 for the very first, cache-empty fetch:
+    that one blocks the player's OpenInputStream call directly, and Kodi gives
+    up on that after ~30s, so stacking multiple 10s-timeout retries there
+    risks burning the whole budget on a dead origin and losing the race to
+    Kodi's own timeout instead of failing fast."""
+    try:
+        with open(recipe_path, 'r', encoding='utf-8') as f:
+            recipe = json.load(f)
+        session = _get_manifest_session(manifest_id)
+        if recipe.get('cookies') and not len(session.cookies):
+            session.cookies.update(recipe['cookies'])
+        resp = _get_with_retry(recipe['url'], headers=recipe.get('headers') or {}, timeout=TIMEOUT, session=session, attempts=attempts)
+        if resp.status_code != 200:
+            log(f'live manifest refetch bad status {resp.status_code} | {recipe["url"]} | body: {resp.text[:200]!r}', xbmc.LOGERROR)
+            return None
+        text = resp.text
+        if text.lstrip().startswith('{'):
+            converted = _snapshot_to_playlist(text)
+            if converted:
+                text = converted
+        if not text.lstrip().startswith('#EXTM3U'):
+            log(f'live manifest refetch invalid | {recipe["url"]} | body: {text[:200]!r}', xbmc.LOGERROR)
+            return None
+        rewritten = _rewrite_manifest(text, resp.url, get_port(), manifest_id)
+        with _manifest_cache_lock:
+            _manifest_cache[manifest_id] = {'data': rewritten, 'time': time.time(), 'refreshing': False}
+        return rewritten
+    except Exception as e:
+        log(f'live manifest refetch error: {e}', xbmc.LOGERROR)
+        return None
+
+
+def _background_refresh(manifest_id, recipe_path):
+    try:
+        _fetch_and_rewrite(manifest_id, recipe_path)
+    finally:
+        with _manifest_cache_lock:
+            entry = _manifest_cache.get(manifest_id)
+            if entry is not None:
+                entry['refreshing'] = False
+
+
+class _WSStop(Exception):
+    pass
+
+
+class _WebSocket:
+    def __init__(self, host, path, origin, user_agent, port=443, secure=True):
+        self.host = host
+        self.path = path
+        self.origin = origin
+        self.user_agent = user_agent
+        self.port = port
+        self.secure = secure
+        self.sock = None
+        self.buf = bytearray()
+
+    def connect(self):
+        raw = socket.create_connection((self.host, self.port), timeout=10)
+        if self.secure:
+            try:
+                ctx = ssl.create_default_context(cafile=requests.certs.where())
+            except Exception:
+                ctx = ssl.create_default_context()
+            self.sock = ctx.wrap_socket(raw, server_hostname=self.host)
+        else:
+            self.sock = raw
+        self.sock.settimeout(10)
+        key = base64.b64encode(os.urandom(16)).decode()
+        request = (
+            f'GET {self.path} HTTP/1.1\r\n'
+            f'Host: {self.host}\r\n'
+            'Upgrade: websocket\r\n'
+            'Connection: Upgrade\r\n'
+            f'Sec-WebSocket-Key: {key}\r\n'
+            'Sec-WebSocket-Version: 13\r\n'
+            f'Origin: {self.origin}\r\n'
+            f'User-Agent: {self.user_agent}\r\n'
+            '\r\n'
+        )
+        self.sock.sendall(request.encode('utf-8'))
+        while b'\r\n\r\n' not in self.buf:
+            chunk = self.sock.recv(4096)
+            if not chunk:
+                raise ConnectionError('websocket handshake: connection closed')
+            self.buf += chunk
+        end = self.buf.index(b'\r\n\r\n') + 4
+        head = bytes(self.buf[:end]).decode('latin-1')
+        del self.buf[:end]
+        status_line = head.split('\r\n', 1)[0]
+        if ' 101 ' not in status_line:
+            raise ConnectionError(f'websocket handshake refused: {status_line} | {head[:300]!r}')
+        expected = base64.b64encode(hashlib.sha1((key + WS_GUID).encode()).digest()).decode()
+        accept = ''
+        for line in head.split('\r\n')[1:]:
+            if line.lower().startswith('sec-websocket-accept:'):
+                accept = line.split(':', 1)[1].strip()
+        if accept != expected:
+            raise ConnectionError('websocket handshake: bad accept key')
+        self.sock.settimeout(WS_SOCKET_TIMEOUT)
+
+    def _read_exact(self, n, should_stop):
+        while len(self.buf) < n:
+            try:
+                chunk = self.sock.recv(65536)
+            except socket.timeout:
+                if should_stop():
+                    raise _WSStop()
+                continue
+            if not chunk:
+                raise ConnectionError('websocket closed by peer')
+            self.buf += chunk
+        data = bytes(self.buf[:n])
+        del self.buf[:n]
+        return data
+
+    def _send_frame(self, opcode, payload=b''):
+        header = bytearray([0x80 | opcode])
+        n = len(payload)
+        if n < 126:
+            header.append(0x80 | n)
+        elif n < 65536:
+            header.append(0x80 | 126)
+            header += struct.pack('>H', n)
+        else:
+            header.append(0x80 | 127)
+            header += struct.pack('>Q', n)
+        mask = os.urandom(4)
+        header += mask
+        masked = bytes(b ^ mask[i % 4] for i, b in enumerate(payload))
+        self.sock.sendall(bytes(header) + masked)
+
+    def send_text(self, text):
+        self._send_frame(0x1, text.encode('utf-8'))
+
+    def recv_message(self, should_stop):
+        parts = bytearray()
+        msg_opcode = None
+        while True:
+            hdr = self._read_exact(2, should_stop)
+            fin = hdr[0] & 0x80
+            opcode = hdr[0] & 0x0F
+            masked = hdr[1] & 0x80
+            length = hdr[1] & 0x7F
+            if length == 126:
+                length = struct.unpack('>H', self._read_exact(2, should_stop))[0]
+            elif length == 127:
+                length = struct.unpack('>Q', self._read_exact(8, should_stop))[0]
+            mask = self._read_exact(4, should_stop) if masked else None
+            payload = self._read_exact(length, should_stop) if length else b''
+            if mask:
+                payload = bytes(b ^ mask[i % 4] for i, b in enumerate(payload))
+            if opcode == 0x8:
+                raise ConnectionError('websocket close frame received')
+            if opcode == 0x9:
+                self._send_frame(0xA, payload)
+                continue
+            if opcode == 0xA:
+                continue
+            if opcode in (0x1, 0x2):
+                msg_opcode = opcode
+                parts = bytearray(payload)
+            elif opcode == 0x0:
+                parts += payload
+            if fin:
+                return msg_opcode, bytes(parts)
+
+    def close(self):
+        try:
+            self._send_frame(0x8, b'')
+        except Exception:
+            pass
+        try:
+            self.sock.close()
+        except Exception:
+            pass
+
+
+class _WSStream:
+    def __init__(self, manifest_id, recipe):
+        self.manifest_id = manifest_id
+        self.recipe = recipe
+        self.lock = threading.Lock()
+        self.text = recipe.get('initial') or ''
+        self.last_request = time.time()
+        self.stop = False
+        self.dead = False
+        self.messages_logged = 0
+        self.paints = 0
+        self.had_ads = False
+        self.skip_ads = bool(recipe.get('skip_ads'))
+        self.segments = []
+        self.seen = set()
+        self.next_seq = 0
+        self.disc_seq = 0
+        self.in_ad_break = False
+        self.version = '6'
+        self.target = '10'
+        if self.skip_ads:
+            self._ingest(self.text)
+        self.thread = threading.Thread(target=self._run, name='CrewWebSocket', daemon=True)
+        self.thread.start()
+
+    def _should_stop(self):
+        return self.stop or (time.time() - self.last_request) > WS_IDLE_TIMEOUT
+
+    def _ingest(self, text):
+        ver_m = re.search(r'#EXT-X-VERSION:(\d+)', text)
+        tgt_m = re.search(r'#EXT-X-TARGETDURATION:(\d+)', text)
+        if ver_m:
+            self.version = ver_m.group(1)
+        if tgt_m:
+            self.target = tgt_m.group(1)
+        base = self.recipe.get('subfolder') or ''
+        placeholder_url = self.recipe.get('placeholder') or ''
+        extinf = None
+        for raw in text.splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            if line.startswith('#EXTINF'):
+                extinf = line
+                continue
+            if line.startswith('#EXT-X-DISCONTINUITY') and not line.startswith('#EXT-X-DISCONTINUITY-SEQUENCE'):
+                # Real transitions are decided from ad-vs-content below, not this
+                # tag: a single break can carry several of these (one per ad
+                # pod), and re-triggering a discontinuity for each would force
+                # needless codec re-inits even though the placeholder never changes.
+                continue
+            if line.startswith('#'):
+                continue
+            full = urljoin(base, line)
+            is_ad = '/ephemeral/' not in full
+            # Content segment URLs get re-signed (new Expires/Signature) but keep
+            # the same path, so path-only identifies "the same slot". Ad-tracking
+            # URLs are the opposite: several distinct ad slots share one path
+            # (e.g. /targeting/analytics) and differ only in their query string,
+            # so the full URL is what makes each slot unique.
+            key = full if is_ad else full.split('?', 1)[0]
+            if is_ad:
+                if placeholder_url and key not in self.seen:
+                    self.seen.add(key)
+                    disc = not self.in_ad_break
+                    self.in_ad_break = True
+                    self.segments.append({'seq': self.next_seq, 'disc': disc, 'extinf': extinf or '#EXTINF:6.000,', 'url': placeholder_url})
+                    if disc:
+                        log(f'ws ad break started, filling with placeholder | seq={self.next_seq}')
+                    self.next_seq += 1
+                elif key not in self.seen:
+                    # No placeholder available for this stream: fall back to
+                    # dropping the break entirely, as before.
+                    self.seen.add(key)
+                    self.in_ad_break = True
+            else:
+                if key not in self.seen:
+                    self.seen.add(key)
+                    disc = self.in_ad_break
+                    self.in_ad_break = False
+                    self.segments.append({'seq': self.next_seq, 'disc': disc, 'extinf': extinf or '#EXTINF:6.000,', 'url': full})
+                    if disc:
+                        log(f'ws content resumed after ad break | seq={self.next_seq}')
+                    self.next_seq += 1
+            extinf = None
+        while len(self.segments) > WS_KEEP_SEGMENTS:
+            if self.segments.pop(0)['disc']:
+                self.disc_seq += 1
+
+    def _render(self):
+        if not self.segments:
+            return ''
+        lines = [
+            '#EXTM3U',
+            f'#EXT-X-VERSION:{self.version}',
+            f'#EXT-X-TARGETDURATION:{self.target}',
+            f'#EXT-X-MEDIA-SEQUENCE:{self.segments[0]["seq"]}',
+            f'#EXT-X-DISCONTINUITY-SEQUENCE:{self.disc_seq}',
+            '#EXT-X-INDEPENDENT-SEGMENTS',
+        ]
+        for seg in self.segments:
+            if seg['disc']:
+                lines.append('#EXT-X-DISCONTINUITY')
+            lines.append(seg['extinf'])
+            lines.append(seg['url'])
+        return '\n'.join(lines)
+
+    def current_text(self):
+        with self.lock:
+            if self.skip_ads:
+                return self._render() or self.text
+            return self.text
+
+    def _handle(self, data):
+        try:
+            msg = json.loads(data.decode('utf-8'))
+        except Exception:
+            return
+        if not isinstance(msg, dict):
+            return
+        if self.messages_logged < 5:
+            self.messages_logged += 1
+            log(f'ws message | type={msg.get("type")!r} keys={sorted(msg.keys())}')
+        if msg.get('type') != 'paint':
+            return
+        renditions = (msg.get('result') or {}).get('renditions') or {}
+        text = renditions.get(self.recipe.get('rendition'))
+        if not text:
+            log(f'ws paint without rendition {self.recipe.get("rendition")!r} | have {sorted(renditions.keys())}', xbmc.LOGERROR)
+            return
+        seq_m = re.search(r'#EXT-X-MEDIA-SEQUENCE:(\d+)', text)
+        ad_lines = sum(1 for ln in text.splitlines() if ln.startswith('http') and '/ephemeral/' not in ln)
+        if (ad_lines > 0) != self.had_ads:
+            self.had_ads = ad_lines > 0
+            log(f'ws playlist ad segments={ad_lines} | media-sequence={seq_m.group(1) if seq_m else "?"}')
+        with self.lock:
+            if self.skip_ads:
+                self._ingest(text)
+            else:
+                self.text = text
+        self.paints += 1
+        if self.paints <= 3:
+            log(f'ws paint #{self.paints} | media-sequence={seq_m.group(1) if seq_m else "?"}')
+
+    def _run(self):
+        recipe = self.recipe
+        hosts = recipe.get('hosts') or []
+        attempt = 0
+        try:
+            while not self._should_stop() and hosts:
+                host = hosts[attempt % len(hosts)]
+                ws = None
+                try:
+                    ws = _WebSocket(
+                        host, recipe.get('path') or '/websocket', recipe.get('origin') or '',
+                        (recipe.get('headers') or {}).get('User-Agent', '')
+                    )
+                    ws.connect()
+                    request = {
+                        'jsonrpc': '2.0',
+                        'method': 'start',
+                        'id': 0,
+                        'params': {
+                            'connid': str(uuid.uuid4()),
+                            'channel': recipe.get('channel'),
+                            'is_publisher': bool(recipe.get('is_publisher')),
+                            'is_cdn': False,
+                            'version': 1,
+                        },
+                    }
+                    ws.send_text(json.dumps(request))
+                    log(f'ws connected | {host} | channel={recipe.get("channel")!r} | skip_ads={self.skip_ads}')
+                    while True:
+                        _, data = ws.recv_message(self._should_stop)
+                        self._handle(data)
+                except _WSStop:
+                    break
+                except Exception as e:
+                    log(f'ws error | {host} | {e}', xbmc.LOGERROR)
+                finally:
+                    if ws is not None:
+                        ws.close()
+                attempt += 1
+                delay = min(15, 2 ** min(attempt, 4)) + random.random()
+                waited = 0.0
+                while waited < delay and not self._should_stop():
+                    time.sleep(0.1)
+                    waited += 0.1
+        finally:
+            self.dead = True
+            with _ws_lock:
+                if _ws_streams.get(self.manifest_id) is self:
+                    del _ws_streams[self.manifest_id]
+            log(f'ws stopped | {self.manifest_id}')
+
+
+def _ws_manifest_text(manifest_id, recipe):
+    with _ws_lock:
+        stream = _ws_streams.get(manifest_id)
+        if stream is None or stream.dead:
+            stream = _WSStream(manifest_id, recipe)
+            _ws_streams[manifest_id] = stream
+    stream.last_request = time.time()
+    text = stream.current_text()
+    return _rewrite_manifest(text, recipe.get('subfolder') or '', get_port(), manifest_id, mark_ads=True)
+
+
+def _get_placeholder(url, headers):
+    if not url:
+        return None
+    cached = _placeholder_cache.get(url)
+    if cached:
+        return cached
+    try:
+        resp = _get_with_retry(url, headers=headers, timeout=TIMEOUT)
+        if resp.status_code == 200 and resp.content:
+            _placeholder_cache[url] = _unwrap_segment(resp.content)
+            return _placeholder_cache[url]
+        log(f'placeholder segment bad status {resp.status_code} | {url}', xbmc.LOGERROR)
+    except Exception as e:
+        log(f'placeholder segment error {url}: {e}', xbmc.LOGERROR)
+    return None
+
+
+def _fetch_ad_segment(target, headers, placeholder_url):
+    if placeholder_url and target == placeholder_url:
+        payload = _get_placeholder(placeholder_url, headers)
+        if payload is not None:
+            log(f'placeholder segment served (cached) | {len(payload)} bytes')
+        return payload
+    try:
+        resp = _get_with_retry(target, headers=headers, timeout=AD_TIMEOUT, attempts=2)
+        if resp.status_code == 200 and resp.content:
+            payload = _unwrap_segment(resp.content)
+            log(f'ad segment served | {len(payload)} bytes')
+            return payload
+        log(f'ad segment bad status {resp.status_code} | {target}', xbmc.LOGERROR)
+    except Exception as e:
+        log(f'ad segment error {target}: {e}', xbmc.LOGERROR)
+    payload = _get_placeholder(placeholder_url, headers)
+    if payload is not None:
+        log('ad segment replaced by placeholder')
+    return payload
+
+
+class _Handler(http.server.BaseHTTPRequestHandler):
+    def log_message(self, fmt, *args):
+        pass
+
+    def do_GET(self):
+        log(f'do_GET entry | {self.path}')  # TEMP diagnostic - remove once the silent-30s hang is root-caused
+        parsed = urlparse(self.path)
+
+        if parsed.path.startswith('/manifest/'):
+            manifest_id = parsed.path[len('/manifest/'):]
+            if manifest_id.endswith('.m3u8'):
+                manifest_id = manifest_id[:-5]
+
+            recipe_path = _recipe_path(manifest_id)
+            recipe = _read_recipe(recipe_path) if os.path.exists(recipe_path) else None
+            if recipe is not None and recipe.get('type') == 'ws':
+                rewritten = _ws_manifest_text(manifest_id, recipe)
+            elif os.path.exists(recipe_path):
+                # Live source: a live HLS media playlist keeps sliding forward
+                # with new segments, so the underlying content needs periodic
+                # re-fetching. But blocking each client request on a fresh
+                # network round-trip causes a visible stall on every reload -
+                # instead, always serve whatever's cached immediately (even if
+                # a little stale) and refresh it in the background, so the
+                # client is never held up waiting on the real origin except
+                # for the very first request.
+                with _manifest_cache_lock:
+                    cached = _manifest_cache.get(manifest_id)
+
+                if cached is None:
+                    rewritten = _fetch_and_rewrite(manifest_id, recipe_path, attempts=1)
+                    if rewritten is None:
+                        self.send_response(502)
+                        self.end_headers()
+                        return
+                else:
+                    rewritten = cached['data']
+                    age = time.time() - cached['time']
+                    if age >= MANIFEST_REFRESH_INTERVAL and not cached.get('refreshing'):
+                        cached['refreshing'] = True
+                        threading.Thread(
+                            target=_background_refresh,
+                            args=(manifest_id, recipe_path),
+                            name='ManifestRefresh',
+                            daemon=True,
+                        ).start()
+            else:
+                # Static source: content has no separate upstream URL to re-fetch
+                # (e.g. embedded page state) - serve the one-time snapshot as-is.
+                try:
+                    with open(_static_path(manifest_id), 'r', encoding='utf-8') as f:
+                        rewritten = f.read()
+                except Exception:
+                    self.send_response(404)
+                    self.end_headers()
+                    return
+
+            payload = rewritten.encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if parsed.path == '/submanifest':
+            qs     = parse_qs(parsed.query)
+            target = qs.get('url', [None])[0]
+            if not target:
+                self.send_response(400)
+                self.end_headers()
+                return
+            mid = qs.get('mid', [None])[0]
+            sub_headers = {}
+            if mid:
+                try:
+                    with open(_recipe_path(mid), 'r', encoding='utf-8') as f:
+                        sub_headers = json.load(f).get('headers') or {}
+                except Exception:
+                    pass
+
+            try:
+                resp = _get_with_retry(target, headers=sub_headers, timeout=TIMEOUT)
+                if resp.status_code != 200:
+                    log(f'submanifest fetch bad status {resp.status_code} | {target}', xbmc.LOGERROR)
+                    self.send_response(502)
+                    self.end_headers()
+                    return
+                text = resp.text
+                if not text.lstrip().startswith('#EXTM3U'):
+                    log(f'submanifest fetch invalid | {target} | body: {text[:200]!r}', xbmc.LOGERROR)
+                    self.send_response(502)
+                    self.end_headers()
+                    return
+                # Recurse through the same rewrite logic used for the top-level
+                # manifest, so this sub-playlist's own segment (and, in theory,
+                # further nested playlist) references get proxied too.
+                rewritten = _rewrite_manifest(text, resp.url, get_port(), mid or '')
+                payload = rewritten.encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+            except Exception as e:
+                log(f'submanifest fetch error {target}: {e}', xbmc.LOGERROR)
+                try:
+                    self.send_response(502)
+                    self.end_headers()
+                except Exception:
+                    pass
+            return
+
+        if parsed.path == '/key':
+            qs     = parse_qs(parsed.query)
+            target = qs.get('url', [None])[0]
+            if not target:
+                self.send_response(400)
+                self.end_headers()
+                return
+            mid = qs.get('mid', [None])[0]
+            key_headers = {}
+            if mid:
+                try:
+                    with open(_recipe_path(mid), 'r', encoding='utf-8') as f:
+                        key_headers = json.load(f).get('headers') or {}
+                except Exception:
+                    pass
+
+            try:
+                resp = _get_with_retry(target, headers=key_headers, timeout=TIMEOUT)
+                if resp.status_code != 200:
+                    log(f'key fetch bad status {resp.status_code} | {target}', xbmc.LOGERROR)
+                    self.send_response(502)
+                    self.end_headers()
+                    return
+                payload = resp.content
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/octet-stream')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+            except Exception as e:
+                log(f'key fetch error {target}: {e}', xbmc.LOGERROR)
+                try:
+                    self.send_response(502)
+                    self.end_headers()
+                except Exception:
+                    pass
+            return
+
+        qs = parse_qs(parsed.query)
+        target = qs.get('url', [None])[0]
+        if not target:
+            self.send_response(400)
+            self.end_headers()
+            return
+        is_ad = qs.get('ad', [None])[0] == '1'
+
+        mid = qs.get('mid', [None])[0]
+        seg_headers = {}
+        placeholder_url = ''
+        if mid:
+            try:
+                with open(_recipe_path(mid), 'r', encoding='utf-8') as f:
+                    seg_recipe = json.load(f)
+                seg_headers = seg_recipe.get('headers') or {}
+                placeholder_url = seg_recipe.get('placeholder') or ''
+            except Exception:
+                pass
+
+        try:
+            if is_ad:
+                payload = _fetch_ad_segment(target, seg_headers, placeholder_url)
+                if payload is None:
+                    self.send_response(502)
+                    self.end_headers()
+                    return
+            else:
+                resp = _get_with_retry(target, headers=seg_headers, timeout=TIMEOUT)
+                if resp.status_code != 200:
+                    log(f'segment fetch bad status {resp.status_code} | {target}', xbmc.LOGERROR)
+                    self.send_response(502)
+                    self.end_headers()
+                    return
+                payload = _unwrap_segment(resp.content)
+            self.send_response(200)
+            self.send_header('Content-Type', 'video/mp2t')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+        except Exception as e:
+            log(f'segment fetch error {target}: {e}', xbmc.LOGERROR)
+            try:
+                self.send_response(502)
+                self.end_headers()
+            except Exception:
+                pass
+
+
+def start():
+    """Start the persistent segment-unwrap proxy once for the whole Kodi session.
+    Call from crewservice.start(). Safe to call more than once (no-op after first)."""
+    global _manifest_dir, _server_started
+    with _start_lock:
+        if _server_started:
+            return
+        _manifest_dir = xbmcvfs.translatePath('special://temp/thecrew_manifests/')
+        try:
+            os.makedirs(_manifest_dir, exist_ok=True)
+        except Exception:
+            pass
+        server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), _Handler)
+        port = server.server_address[1]
+        thread = threading.Thread(target=server.serve_forever, name='CrewSegmentProxy', daemon=True)
+        thread.start()
+        win = xbmcgui.Window(10000)
+        win.setProperty(PORT_PROPERTY, str(port))
+        win.setProperty(DIR_PROPERTY, _manifest_dir)
+        _server_started = True
+        log(f'started on 127.0.0.1:{port}, manifest dir={_manifest_dir}')
+
+
+def get_port():
+    """Read the running proxy's port from the shared window property.
+    Returns None if the service hasn't started it yet."""
+    val = xbmcgui.Window(10000).getProperty(PORT_PROPERTY)
+    return int(val) if val else None
+
+
+def get_manifest_dir():
+    val = xbmcgui.Window(10000).getProperty(DIR_PROPERTY)
+    return val or None
+
+
+def register_live_manifest(upstream_url, headers, name_prefix, cookies=None):
+    """Register an upstream media-playlist URL for LIVE re-fetching on every
+    /manifest/<id>.m3u8 request, instead of caching one static snapshot.
+    Use this for real live streams where the upstream playlist keeps sliding
+    forward with new segments. Returns the local proxy URL, or None if the
+    service hasn't started yet."""
+    port = get_port()
+    manifest_dir = get_manifest_dir()
+    if not port or not manifest_dir:
+        return None
+    manifest_id = f'{name_prefix}_{int(time.time() * 1000)}'
+    recipe = {'url': upstream_url, 'headers': headers or {}}
+    if cookies:
+        recipe['cookies'] = cookies
+    with open(os.path.join(manifest_dir, f'{manifest_id}.json'), 'w', encoding='utf-8') as f:
+        json.dump(recipe, f)
+    return f'http://127.0.0.1:{port}/manifest/{manifest_id}.m3u8'
+
+
+def register_static_manifest(manifest_text, name_prefix):
+    """Register a one-time manifest snapshot with no separate upstream URL to
+    re-fetch (e.g. content parsed out of embedded page state). Returns the
+    local proxy URL, or None if the service hasn't started yet."""
+    port = get_port()
+    manifest_dir = get_manifest_dir()
+    if not port or not manifest_dir:
+        return None
+    manifest_id = f'{name_prefix}_{int(time.time() * 1000)}'
+    with open(os.path.join(manifest_dir, f'{manifest_id}.m3u8'), 'w', encoding='utf-8') as f:
+        f.write(manifest_text)
+    return f'http://127.0.0.1:{port}/manifest/{manifest_id}.m3u8'
+
+
+def register_ws_manifest(initial_text, headers, name_prefix, ws_config):
+    port = get_port()
+    manifest_dir = get_manifest_dir()
+    if not port or not manifest_dir:
+        return None
+    manifest_id = f'{name_prefix}_{int(time.time() * 1000)}'
+    recipe = {'type': 'ws', 'headers': headers or {}, 'initial': initial_text}
+    recipe.update(ws_config)
+    with open(os.path.join(manifest_dir, f'{manifest_id}.json'), 'w', encoding='utf-8') as f:
+        json.dump(recipe, f)
+    return f'http://127.0.0.1:{port}/manifest/{manifest_id}.m3u8'
