@@ -1062,6 +1062,31 @@ class streamer:
             w_sport   = [x.strip().lower() for x in want.get('sport', '').replace('+', ' ').split('|') if x.strip()]
             page_data = requests.get(feed_url, headers={'User-Agent': UA}, timeout=TIMEOUT).json()
             results   = []
+            if isinstance(page_data, dict) and isinstance(page_data.get('events'), list):
+                def norm(x):
+                    return re.sub(r'[\s_-]+', '', (x or '').strip().lower())
+                aliases = {'ncaaf': ['collegefootball'], 'ncaab': ['collegebasketball'], 'ncaam': ['collegebasketball'], 'ufc': ['mma'], 'nfl': ['nfl', 'nflchannels']}
+                wanted = set()
+                for x in w_league + w_sport:
+                    wanted.update(norm(v) for v in aliases.get(norm(x), [x]))
+                now = time.time()
+                for event in page_data['events']:
+                    embed = (event.get('embed_url') or '').strip()
+                    title = html.unescape(event.get('title') or '').strip()
+                    if not embed or not title:
+                        continue
+                    league = (event.get('league') or '').strip()
+                    if wanted and not ({norm(league), norm(event.get('league_slug'))} & wanted):
+                        continue
+                    ts = event.get('start_timestamp')
+                    if event.get('always_live'):
+                        label = f'[COLOR red]24/7[/COLOR] [COLOR dodgerblue]{league.upper()}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    elif ts and ts <= now <= ts + 4 * 3600:
+                        label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league.upper()}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    else:
+                        label = f'[COLOR dodgerblue]{league.upper()} {self._fmt_utc_ts(ts) if ts else ""}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    results.append((embed, label))
+                return results or None
             for day in page_data.get('days', []):
                 for event in day.get('items', []):
                     if w_league and (event.get('league') or '').strip().lower() not in w_league:
@@ -1806,7 +1831,13 @@ class streamer:
                 return None
             api   = api_m.group(1).rstrip('/')
             path  = '/matches/all' if sport == 'all' else '/matches/' + sport
-            games = requests.get(api + path, headers=headers, timeout=TIMEOUT).json() or []
+            try:
+                games = requests.get(api + path, headers=headers, timeout=TIMEOUT).json()
+            except Exception as e:
+                log(f'sportsupa: match list failed | {e}', xbmc.LOGWARNING)
+                games = []
+            if not isinstance(games, list):
+                games = []
             main_items = {}
             if main_m:
                 try:
@@ -1845,6 +1876,8 @@ class streamer:
             cutoff = time.time() * 1000 - 7 * 86400 * 1000
             seen   = set()
             for game in games:
+                if not isinstance(game, dict):
+                    continue
                 ts = game.get('date') or 0
                 if ts > 1000000 and ts < cutoff:
                     continue

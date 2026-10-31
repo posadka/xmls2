@@ -2787,6 +2787,16 @@ class streamer:
                 api_url = f'{origin}/api/player.php?id={channel_id}'
                 api_data = requests.get(api_url, headers={'Referer': url, 'User-Agent': UA}, timeout=TIMEOUT).json()
                 stream_url = api_data.get('url')
+                if stream_url and 'm3u8' not in stream_url:
+                    player_url = stream_url
+                    cfg_url = f'{player_url}{"&" if "?" in player_url else "?"}ppcfg=1&_={int(time.time() * 1000)}'
+                    cfg = requests.get(cfg_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
+                    stream_url = cfg.get('src') or cfg.get('srcBase')
+                    if not stream_url:
+                        log(f'korast: no src in player config | {player_url}', xbmc.LOGERROR)
+                        return None
+                    p_origin = _base_url(player_url)
+                    return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': p_origin + '/', 'Origin': p_origin}, 'korast')
             else:
                 api_url = f'{url}{"&" if "?" in url else "?"}ppcfg=1&_={int(time.time() * 1000)}'
                 cfg = requests.get(api_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
