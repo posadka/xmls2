@@ -573,6 +573,10 @@ class streamer:
         try:
             if '"sportsupa"' in url:
                 u = self.sportsupa(url)
+            elif any(x in url for x in ['mutstreams', '://mut.st']):
+                u = self.mutstreams(url)
+            elif 'embedder.st' in url:
+                u = self.embedder(url)
             elif 'epicmartial' in url:
                 u = self.epicmartial(url)
             elif 'castweb' in url:
@@ -3174,6 +3178,57 @@ class streamer:
             return self.resolve(embed_url)
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def mutstreams(self, url):
+        try:
+            base = _base_url(url)
+            m    = re.search(r'/watch/([^/?#]+)', url)
+            if not m:
+                log(f'mutstreams: no slug in url | {url}', xbmc.LOGERROR)
+                return None
+            api  = f'{base}/api/watch/{m.group(1)}/sources'
+            data = requests.get(api, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
+            streams = [st for st in (data.get('streams') or []) if isinstance(st, dict) and st.get('embedUrl')]
+            if not streams:
+                log(f'mutstreams: no streams | {api}', xbmc.LOGERROR)
+                return None
+            labels = []
+            for st in streams:
+                label = (st.get('label') or f'Stream {st.get("streamNo") or len(labels) + 1}').strip()
+                src   = (st.get('source') or '').upper()
+                lang  = (st.get('language') or '').strip()
+                labels.append(f'{src} - {label} ({lang})' if lang else f'{src} - {label}')
+            choice = 0 if len(streams) == 1 else _select('Choose Stream', labels)
+            if choice == -1:
+                return None
+            embed_url = streams[choice]['embedUrl'].strip()
+            if embed_url.startswith('//'):
+                embed_url = 'https:' + embed_url
+            return self.resolve(embed_url)
+        except Exception as e:
+            _log_error('mutstreams', url, e)
+            return None
+
+    @_guard
+    def embedder(self, url):
+        try:
+            origin = _base_url(url)
+            m      = re.search(r'/embed/(.+?)/?$', _up(url).path)
+            if not m:
+                log(f'embedder: unexpected embed url | {url}', xbmc.LOGERROR)
+                return None
+            headers = {'User-Agent': UA, 'Referer': url}
+            data    = requests.get(f'{origin}/playback/{m.group(1)}', headers=headers, timeout=TIMEOUT).json()
+            path    = (data or {}).get('url') if isinstance(data, dict) else None
+            if not path:
+                log(f'embedder: no playback url | {url}', xbmc.LOGERROR)
+                return None
+            stream_url = urljoin(origin + '/', path)
+            return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': url, 'Origin': origin}, 'embedder')
+        except Exception as e:
+            _log_error('embedder', url, e)
             return None
 
     @_guard

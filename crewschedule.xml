@@ -303,6 +303,8 @@ class streamer:
         try:
             if 'sportsupa' in url:
                 u = self.sportsupa(url)
+            elif any(x in url for x in ['mutstreams', '://mut.st']):
+                u = self.mutstreams(url)
             elif any(x in url for x in ['kora', 'topsurge.st']):
                 u = self.korast(url)
             elif 'volokit' in url:
@@ -1744,6 +1746,48 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def mutstreams(self, url):
+        try:
+            page_url, _, frag = url.partition('#')
+            want    = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            w_sport = [x.strip().lower() for x in want.get('sport', '').replace('+', ' ').split('|') if x.strip() and x.strip().lower() != 'all']
+            base    = _base_url(page_url)
+            page    = requests.get(base + '/', headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).text
+            m = re.search(r'(?s)<script[^>]+id=["\']initial-stream-data["\'][^>]*>(.*?)</script>', page)
+            if not m:
+                log(f'mutstreams: stream data not found | {url}', xbmc.LOGERROR)
+                return None
+            results = []
+            for group in json.loads(m.group(1)) or []:
+                for game in group.get('streams') or []:
+                    gid = (game.get('groupId') or group.get('title') or '').strip().lower()
+                    if w_sport and gid not in w_sport:
+                        continue
+                    href  = (game.get('url') or '').strip()
+                    title = html.unescape(game.get('title') or '').strip()
+                    if not href or not title or not game.get('sources'):
+                        continue
+                    when = (game.get('time') or '').strip()
+                    time_str = ''
+                    tm = re.match(r'(\d{1,2}:\d{2}\s*[AP]M)\s*PT\s*-\s*\((\d{1,2}/\d{1,2}/\d{4})\)', when, re.I)
+                    if tm:
+                        try:
+                            dt = datetime.strptime(f'{tm.group(2)} {tm.group(1).upper()}', '%m/%d/%Y %I:%M %p')
+                            time_str = _to_local(_et_to_utc(dt + timedelta(hours=3))).strftime('%m/%d %I:%M %p').lstrip('0')
+                        except Exception:
+                            time_str = ''
+                        label = self._label(time_str, title)
+                    elif '24/7' in when:
+                        label = f'[COLOR red]24/7[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    else:
+                        label = self._label('', title)
+                    results.append((urljoin(base, href), label))
+            return results or None
+        except Exception as e:
+            _log_error('mutstreams', url, e)
             return None
 
     @_guard
