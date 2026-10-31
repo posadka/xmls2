@@ -192,6 +192,12 @@ def _decode_pixel_segment(data):
     if not idat or not width or not height:
         return None
     raw = _png_unfilter(zlib.decompress(b''.join(idat)), width, height, bpp)
+    if bpp == 4:
+        rgb = bytearray(raw)
+        del rgb[3::4]
+        raw = bytes(rgb)
+    elif bpp != 3:
+        return None
     if not raw.startswith(PIXEL_MAGIC):
         return None
     size = struct.unpack('>I', raw[8:12])[0]
