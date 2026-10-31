@@ -1358,26 +1358,29 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
 def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     import requests
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
+    import time
     try:
-        page_data = requests.get('https://rockylive.st/api-event.php', headers={'User-Agent': UA}, timeout=10).json()
+        page_data = requests.get('https://rockylive.st/api/events.php?limit=1000', headers={'User-Agent': UA}, timeout=10).json()
     except Exception:
         return None
     results = []
-    for day in page_data.get('days', []):
-        for event in day.get('items', []):
-            title   = event.get('title', '')
-            league  = event.get('league', '').upper()
-            status  = event.get('status', '')
-            streams = event.get('streams', [])
-            if not streams:
-                continue
-            if status == 'LIVE':
-                label = '[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
-            else:
-                label = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
-            link = streams[0].get('link', '')
-            if link:
-                results.append((link, label))
+    now = time.time()
+    for event in page_data.get('events', []):
+        title  = event.get('title', '')
+        league = (event.get('league') or '').upper()
+        link   = event.get('embed_url', '')
+        ts     = event.get('start_timestamp') or 0
+        if not link or not title:
+            continue
+        if event.get('always_live'):
+            label = '[COLOR red]24/7[/COLOR] [COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
+        elif ts and ts <= now <= ts + 4 * 3600:
+            label = '[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
+        elif ts and ts + 4 * 3600 < now:
+            continue
+        else:
+            label = '[COLOR dodgerblue]%s %s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, time.strftime('%m/%d %I:%M %p', time.localtime(ts)) if ts else '', title)
+        results.append((link, label))
     return results or None
 ]]></expres>
         <page></page>
@@ -1503,6 +1506,9 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
                     + '&Origin='  + quote_plus(e_origin)
                     + '&User-Agent=' + quote_plus(UA)
                 )
+            if 'taifood-blog' in target:
+                from resources.lib.modules import client
+                return client.external(target)
             if '.m3u8' in target:
                 t_parsed  = urlparse(target)
                 t_referer = '%s://%s' % (t_parsed.scheme, t_parsed.netloc)
