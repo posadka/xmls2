@@ -371,6 +371,8 @@ class streamer:
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
+            elif 'ppv.st' in url:
+                u = self.ppv(url)
             elif 'streamed.pk' in url:
                 u = self.streamed(url)
             elif '720pstream.cx' in url:
@@ -1771,6 +1773,57 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def ppv(self, url):
+        try:
+            base  = _base_url(url)
+            m     = re.search(r'/matches/([^/?#]+)', url)
+            sport = (m.group(1) if m else 'all').strip().lower()
+            cats  = {
+                'american-football': ['american football'],
+                'basketball': ['basketball'],
+                'football': ['football'],
+                'soccer': ['football'],
+                'hockey': ['ice hockey'],
+                'baseball': ['baseball'],
+                'fight': ['combat sports', 'wrestling'],
+                'motor-sports': ['motorsports'],
+                'golf': ['golf'],
+                'tennis': ['tennis'],
+                'cricket': ['cricket'],
+                'rugby': ['rugby'],
+                'afl': ['australian football'],
+            }.get(sport)
+            data = requests.get(base + '/api/streams', headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).json()
+            now  = time.time()
+            results = []
+            for group in data.get('streams') or []:
+                category = (group.get('category') or '').strip()
+                if sport != 'all' and (not cats or category.lower() not in cats):
+                    continue
+                for game in group.get('streams') or []:
+                    title = html.unescape(game.get('name') or '').strip()
+                    feeds = [game] + list(game.get('substreams') or [])
+                    feeds = [{'label': (f.get('source_tag') or f'Stream {i}').strip(), 'url': f.get('iframe')} for i, f in enumerate(feeds, 1) if f.get('iframe')]
+                    if not title or not feeds:
+                        continue
+                    starts = game.get('starts_at') or 0
+                    ends   = game.get('ends_at') or 0
+                    if game.get('always_live'):
+                        label = f'[COLOR red]24/7[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    elif starts and starts <= now <= (ends or starts + 4 * 3600):
+                        label = f'[COLOR red]LIVE[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    elif ends and ends < now:
+                        continue
+                    else:
+                        label = self._label(self._fmt_utc_ts(starts) if starts else '', title)
+                    link = feeds[0]['url'] if len(feeds) == 1 else json.dumps({'ppv': True, 'feeds': feeds})
+                    results.append((link, label))
+            return results or None
+        except Exception as e:
+            _log_error('ppv', url, e)
             return None
 
     @_guard
