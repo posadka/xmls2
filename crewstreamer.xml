@@ -3252,7 +3252,7 @@ class streamer:
                 if choice == -1:
                     return None
                 embed_url = urljoin(base + '/', sources[choice]['url'])
-            page = requests.get(embed_url, headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).text
+            page = requests.get(embed_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             quality = (re.search(r"const\s+QUALITY\s*=\s*'([^']*)'", page) or [None, ''])[1]
             suffix  = (re.search(r"const\s+SOURCE_SUFFIX\s*=\s*'([^']*)'", page) or [None, ''])[1]
             v_m     = re.search(r"const\s+VARIANT\s*=\s*'([^']+)'", page)
