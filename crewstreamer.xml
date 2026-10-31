@@ -575,6 +575,8 @@ class streamer:
                 u = self.sportsupa(url)
             elif '"ppv": true' in url:
                 u = self.ppv(url)
+            elif any(x in url for x in ['strmfree', 'streamfree.top']):
+                u = self.strmfree(url)
             elif any(x in url for x in ['mutstreams', '://mut.st']):
                 u = self.mutstreams(url)
             elif 'embedder.st' in url:
@@ -3208,6 +3210,62 @@ class streamer:
             return self.resolve(embed_url)
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def strmfree(self, url):
+        try:
+            base = _base_url(url)
+            m    = re.search(r'/(?:player|embed)/[^/]+/([^/?#]+)', url)
+            if not m:
+                log(f'strmfree: no stream key in url | {url}', xbmc.LOGERROR)
+                return None
+            key     = m.group(1)
+            headers = {'User-Agent': UA, 'Referer': url}
+            if '/embed/' in url:
+                embed_url = url
+            else:
+                data    = requests.get(f'{base}/api/v1/sources/{key}', headers=headers, timeout=TIMEOUT).json()
+                sources = [s for s in (data.get('sources') or []) if isinstance(s, dict) and s.get('url')]
+                if not sources:
+                    log(f'strmfree: no sources | {url}', xbmc.LOGERROR)
+                    return None
+                choice = 0 if len(sources) == 1 else _select('Choose Quality', [s.get('quality') or f'Stream {i}' for i, s in enumerate(sources, 1)])
+                if choice == -1:
+                    return None
+                embed_url = urljoin(base + '/', sources[choice]['url'])
+            page = requests.get(embed_url, headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).text
+            quality = (re.search(r"const\s+QUALITY\s*=\s*'([^']*)'", page) or [None, ''])[1]
+            suffix  = (re.search(r"const\s+SOURCE_SUFFIX\s*=\s*'([^']*)'", page) or [None, ''])[1]
+            v_m     = re.search(r"const\s+VARIANT\s*=\s*'([^']+)'", page)
+            k_m     = re.search(r"/get-stream-key/([^'\"`]+)", page)
+            if not v_m or not k_m:
+                log(f'strmfree: player constants not found | {embed_url}', xbmc.LOGERROR)
+                return None
+            variant = v_m.group(1) + quality + suffix
+            tokens  = {}
+            t_m     = re.search(r'const\s+_0x\s*=\s*(\{.*?\});', page, re.S)
+            if t_m:
+                try:
+                    tokens = json.loads(t_m.group(1))
+                except ValueError:
+                    tokens = {}
+            info = requests.get(f'{base}/get-stream-key/{k_m.group(1)}', headers={'User-Agent': UA, 'Referer': embed_url}, timeout=TIMEOUT).json()
+            if info.get('is_external') and info.get('external_url'):
+                return self.resolve(info['external_url'])
+            server = info.get('server_name') or 'origin'
+            if server == 'externalcdn':
+                path = f'/live-externalcdn/{variant}/index.m3u8'
+            elif server != 'origin':
+                path = f'/live-cdn/{variant}/index.m3u8'
+            else:
+                path = f'/live/{variant}/index.m3u8'
+            tok = tokens.get(quality) or {}
+            if tok:
+                path += f'?_t={tok.get("_t", "")}&_e={tok.get("_e", "")}&_n={tok.get("_n", "")}'
+            return _publish_live_manifest(base + path, {'User-Agent': UA, 'Referer': embed_url, 'Origin': base}, 'strmfree')
+        except Exception as e:
+            _log_error('strmfree', url, e)
             return None
 
     @_guard

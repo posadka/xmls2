@@ -371,6 +371,8 @@ class streamer:
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
+            elif any(x in url for x in ['strmfree', 'streamfree.top']):
+                u = self.strmfree(url)
             elif 'ppv.st' in url:
                 u = self.ppv(url)
             elif 'streamed.pk' in url:
@@ -1773,6 +1775,51 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('streamed', url, e)
+            return None
+
+    @_guard
+    def strmfree(self, url):
+        try:
+            page_url, _, frag = url.partition('#')
+            want  = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            sport = want.get('sport', '').strip().lower() or 'all'
+            cats  = {
+                'american-football': ['football'],
+                'basketball': ['basketball'],
+                'football': ['soccer'],
+                'soccer': ['soccer'],
+                'hockey': ['hockey'],
+                'baseball': ['baseball'],
+                'fight': ['combat'],
+                'motor-sports': ['racing'],
+                'tennis': ['tennis'],
+                'cricket': ['cricket'],
+            }.get(sport)
+            base = _base_url(page_url)
+            data = requests.get(base + '/streams', headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).json()
+            now  = time.time()
+            results = []
+            for category, games in (data.get('streams') or {}).items():
+                if sport != 'all' and (not cats or category.lower() not in cats):
+                    continue
+                for game in games or []:
+                    key   = (game.get('stream_key') or '').strip()
+                    title = html.unescape(game.get('name') or '').strip()
+                    if not key or not title:
+                        continue
+                    league = (game.get('league') or '').strip()
+                    ts     = game.get('match_timestamp') or 0
+                    if ts and ts <= now <= ts + 4 * 3600:
+                        label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    elif ts and ts + 4 * 3600 < now:
+                        continue
+                    else:
+                        when  = self._fmt_utc_ts(ts) if ts else ''
+                        label = f'[COLOR dodgerblue]{league} {when}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    results.append((f'{base}/player/{category}/{key}', label))
+            return results or None
+        except Exception as e:
+            _log_error('strmfree', url, e)
             return None
 
     @_guard
