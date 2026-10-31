@@ -2341,12 +2341,30 @@ class streamer:
             if not iframe1:
                 log(f'streamcenter: no iframe found | {url}', xbmc.LOGERROR)
                 return None
-            iframe_html = requests.get(
-                iframe1,
-                headers={'Referer': page_resp.url, 'User-Agent': UA},
-                timeout=TIMEOUT
-            ).text
-            return self._decrypt_streams_center(iframe_html, iframe1)
+            referer     = page_resp.url
+            frame_url   = iframe1
+            iframe_html = ''
+            for _ in range(3):
+                iframe_html = requests.get(
+                    frame_url,
+                    headers={'Referer': referer, 'User-Agent': UA},
+                    timeout=TIMEOUT
+                ).text
+                cdn_m = re.search(r'const\s+cdnUrl\s*=\s*"([^"]+)"', iframe_html)
+                if cdn_m:
+                    origin = _base_url(frame_url)
+                    return _publish_live_manifest(
+                        cdn_m.group(1),
+                        {'User-Agent': UA, 'Referer': frame_url, 'Origin': origin},
+                        'streamcenter'
+                    )
+                if re.search(r'const streamUrls?\s*=|input:\s*"', iframe_html):
+                    break
+                nested = self._get_iframe_src(iframe_html)
+                if not nested:
+                    break
+                referer, frame_url = frame_url, urljoin(frame_url, nested)
+            return self._decrypt_streams_center(iframe_html, frame_url)
         except Exception as e:
             _log_error('streamcenter', url, e)
             return None
