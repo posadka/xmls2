@@ -1011,7 +1011,7 @@ class streamer:
                     d_txt  = (entry.get('MatchDate') or '').strip()
                     t_txt  = (entry.get('MatchStartTime') or '').strip()
                     try:
-                        dt_utc   = datetime.strptime(f'{d_txt} {t_txt}', '%Y-%m-%d %H:%M').replace(tzinfo=timezone.utc)
+                        dt_utc   = (datetime.strptime(f'{d_txt} {t_txt}', '%Y-%m-%d %H:%M') - timedelta(hours=5)).replace(tzinfo=timezone.utc)
                         time_str = _to_local(dt_utc).strftime('%m/%d %I:%M %p').lstrip('0')
                     except Exception:
                         time_str = t_txt
