@@ -349,51 +349,6 @@ def _chacha20_xor(key, nonce, data):
 
 
 _PROXY_MODULE = []
-_XBOX = []
-
-
-def _is_xbox():
-    if not _XBOX:
-        try:
-            _XBOX.append(bool(xbmc.getCondVisibility('System.Platform.UWP')))
-        except Exception:
-            _XBOX.append(False)
-    return _XBOX[0]
-
-
-def _plays_direct(probe, headers, getter):
-    text, base = probe.text, probe.url
-    if not text.lstrip().startswith('#EXTM3U'):
-        return False
-    if '#EXT-X-STREAM-INF' in text:
-        variant = next((l.strip() for l in text.splitlines() if l.strip() and not l.strip().startswith('#')), None)
-        if not variant:
-            return False
-        resp = getter(urljoin(base, variant), headers=headers, timeout=TIMEOUT)
-        if resp.status_code != 200 or not resp.text.lstrip().startswith('#EXTM3U'):
-            return False
-        text, base = resp.text, resp.url
-    segs = [l.strip() for l in text.splitlines() if l.strip() and not l.strip().startswith('#')]
-    if not segs:
-        return False
-    if re.search(r'#EXT-X-KEY:[^\n]*METHOD=AES-128', text):
-        return True
-    resp = getter(urljoin(base, segs[-1]), headers=headers, timeout=TIMEOUT, stream=True)
-    try:
-        if resp.status_code not in (200, 206):
-            return False
-        head = b''
-        for chunk in resp.iter_content(1024):
-            head += chunk
-            if len(head) >= 400:
-                break
-    finally:
-        resp.close()
-    if len(head) > 376 and head[0] == 0x47 and head[188] == 0x47 and head[376] == 0x47:
-        return True
-    if head[4:8] in (b'ftyp', b'styp', b'moof') or head[:3] == b'ID3':
-        return True
-    return False
 
 
 def _proxy():
@@ -427,20 +382,14 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
 
     Pass session to reuse an existing requests.Session (and its cookies)."""
     getter = session.get if session is not None else requests.get
-    cookies = requests.utils.dict_from_cookiejar(session.cookies) if session is not None else None
     try:
         probe = getter(upstream_url, headers=headers or {}, timeout=TIMEOUT)
         if probe.status_code == 403:
             log(f'{name_prefix}: upstream manifest 403 on probe (session={session is not None}), bypassing segment proxy', xbmc.LOGWARNING)
             return _publish_direct_hls(upstream_url, headers)
-        if _is_xbox() and probe.status_code == 200 and _plays_direct(probe, headers or {}, getter):
-            direct_headers = dict(headers or {})
-            if cookies:
-                direct_headers['Cookie'] = '; '.join(f'{k}={v}' for k, v in cookies.items())
-            log(f'{name_prefix}: xbox, plain segments, playing direct', xbmc.LOGINFO)
-            return _publish_direct_hls(upstream_url, direct_headers)
     except Exception as e:
         log(f'{name_prefix}: upstream manifest probe failed, falling back to proxy path: {e}', xbmc.LOGWARNING)
+    cookies = requests.utils.dict_from_cookiejar(session.cookies) if session is not None else None
     if cookies:
         local_url = _proxy().register_live_manifest(upstream_url, headers, name_prefix, cookies=cookies)
     else:

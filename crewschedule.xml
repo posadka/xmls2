@@ -248,17 +248,21 @@ def _is_xbox():
     return _IS_XBOX
 
 
+class _NoTime(object):
+    def strftime(self, fmt):
+        return ''
+
+    def date(self):
+        raise ValueError('no time on xbox')
+
+
 def _to_local(dt_utc):
-    """Convert an aware UTC datetime to local wall-clock time. Skipped on Xbox
-    (UWP sandbox) - datetime.astimezone()'s system-timezone lookup isn't
-    reliable there, so times are left in UTC on that platform rather than
-    crashing or silently returning wrong values."""
     if _is_xbox():
-        return dt_utc if dt_utc.tzinfo is None else dt_utc.astimezone(timezone.utc)
+        return _NoTime()
     try:
         return dt_utc.astimezone()
     except Exception:
-        return dt_utc if dt_utc.tzinfo is None else dt_utc.astimezone(timezone.utc)
+        return _NoTime()
 
 
 _MONTHS = {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6, 'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12}
