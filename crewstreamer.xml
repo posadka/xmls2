@@ -667,7 +667,7 @@ class streamer:
                 u = self.embedhd_pk(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'methstreams.gs']):
                 u = self.methstreams(url)
-            elif any(x in url for x in ['iframe.gs', 'yield.gs']):
+            elif any(x in url for x in ['iframe.gs', 'yield.gs', 'yieldz.gs']):
                 u = self.iframe_gs(url)
             elif 'runid.xyz' in url:
                 u = self.runid(url)
@@ -687,7 +687,7 @@ class streamer:
                 u = self.xyzstreams(url)
             elif 'topstreamer.site' in url:
                 u = self.topstreamer(url)
-            elif any(x in url for x in ['trendy48.site', 'trendy48.online']):
+            elif any(x in url for x in ['trendy48.site', 'trendy48.online', 'trend48.st']):
                 u = self.trendy48(url)
             elif 'streamed.pk' in url:
                 u = self.streamed(url)
@@ -1611,7 +1611,7 @@ class streamer:
             if choice == -1:
                 return None
             pick = picks[choice]['value'].strip()
-            if 'iframe.gs' in pick or 'yield.gs' in pick:
+            if any(h in pick for h in ('iframe.gs', 'yield.gs', 'yieldz.gs')):
                 return self.iframe_gs(pick, url)
             if 'cdnlivetv' in pick:
                 return self.cdnlivetv(pick, url)
