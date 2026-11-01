@@ -311,7 +311,7 @@ class streamer:
                 u = self.volokit(url)
             elif 'streameast.ga' in url:
                 u = self.streameast_ga(url)
-            elif 'shd247' in url:
+            elif any(x in url for x in ['shd247', 'streamhd247']):
                 u = self.shd(url)
             elif 'roxiestreams' in url:
                 u = self.roxiestreams(url)
@@ -349,7 +349,7 @@ class streamer:
                 u = self.fsportshd(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
                 u = self.sportssonline(url)
-            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.is', 'streamseast.ws', 'mystreamseast.cx']):
+            elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.is', 'streamseast.ws', 'mystreamseast.cx', 'streamseast.dad']):
                 u = self.givemereddit(url)
             elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'methstreams.gs']):
                 u = self.methstreams(url)
