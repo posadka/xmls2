@@ -699,6 +699,12 @@ class streamer:
                 u = self.slapstreams(url)
             elif 'dudestream' in url:
                 u = self.dudestream(url)
+            elif 'cdnlivetv' in url:
+                u = self.cdnlivetv(url)
+            elif 'ptouch.' in url:
+                u = self.ptouch(url)
+            elif 'gblog.asia' in url:
+                u = self.gblog(url)
             else:
                 u = self.generic(url)
             return u
@@ -1592,20 +1598,27 @@ class streamer:
                 return None
             picks = [
                 s for s in streams
-                if any(h in (s.get('value') or '') for h in ('iframe.gs', 'yield.gs', 'runid.xyz', 'streame.center', 'flyembed', 'embedindia', 'gsports.lat', 'gszone.top', 'taifood-blog'))
+                if isinstance(s, dict) and re.match(r'https?://', (s.get('value') or '').strip(), re.I)
             ]
             if not picks:
-                log(f'methstreams: no supported links in allStreams | {url}', xbmc.LOGERROR)
+                log(f'methstreams: no links in allStreams | {url}', xbmc.LOGERROR)
                 return None
-            if len(picks) == 1:
-                choice = 0
-            else:
-                choice = _select('Choose Stream', [p.get('label', 'Stream') for p in picks])
+            labels = [
+                f'{(p.get("label") or f"Link {i}").strip()} ({_up(p["value"].strip()).netloc})'
+                for i, p in enumerate(picks, 1)
+            ]
+            choice = 0 if len(picks) == 1 else _select('Choose Stream', labels)
             if choice == -1:
                 return None
-            pick = picks[choice]['value']
+            pick = picks[choice]['value'].strip()
             if 'iframe.gs' in pick or 'yield.gs' in pick:
                 return self.iframe_gs(pick, url)
+            if 'cdnlivetv' in pick:
+                return self.cdnlivetv(pick, url)
+            if 'ptouch.' in pick:
+                return self.ptouch(pick, url)
+            if 'gblog.asia' in pick:
+                return self.gblog(pick, url)
             return self.resolve(pick)
         except Exception as e:
             _log_error('methstreams', url, e)
@@ -1624,6 +1637,103 @@ class streamer:
             return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
         except Exception as e:
             _log_error('runid', url, e)
+            return None
+
+    @_guard
+    def cdnlivetv(self, url, parent=None):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': parent or url}, timeout=TIMEOUT).text
+            parts = dict(re.findall(r"var\s+(\w+)\s*=\s*'([A-Za-z0-9_\-+/=]*)'\s*;", page))
+            expr  = re.search(r'var\s+\w+\s*=\s*((?:\w+\(\w+\)\s*\+\s*)+\w+\(\w+\))\s*;', page)
+            if not expr:
+                log(f'cdnlivetv: no stream url expression | {url} | len={len(page)}', xbmc.LOGERROR)
+                return None
+            names = re.findall(r'\w+\((\w+)\)', expr.group(1))
+            if not all(n in parts for n in names):
+                log(f'cdnlivetv: missing url fragments | {url}', xbmc.LOGERROR)
+                return None
+
+            def _ub64(value):
+                value = value.replace('-', '+').replace('_', '/')
+                return base64.b64decode(value + '=' * (-len(value) % 4)).decode('utf-8', 'ignore')
+
+            stream_url = ''.join(_ub64(parts[n]) for n in names).strip()
+            if not stream_url.startswith('http'):
+                log(f'cdnlivetv: decoded url invalid | {url} | {stream_url[:80]!r}', xbmc.LOGERROR)
+                return None
+            headers = {'User-Agent': UA, 'Referer': url, 'Origin': _base_url(url)}
+            probe = requests.get(stream_url, headers=headers, timeout=TIMEOUT)
+            if probe.status_code != 200 or not probe.text.lstrip().startswith('#EXTM3U'):
+                log(f'cdnlivetv: playlist not available status={probe.status_code} body={probe.text[:60]!r} | {url}', xbmc.LOGERROR)
+                return None
+            return _publish_live_manifest(stream_url, headers, 'cdnlivetv')
+        except Exception as e:
+            _log_error('cdnlivetv', url, e)
+            return None
+
+    @_guard
+    def gblog(self, url, parent=None):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': parent or 'https://crackstreams.mx/'}, timeout=TIMEOUT).text
+            m = re.search(r'\}\("([A-Za-z0-9+/=]+)",(\d+)\)', page)
+            if not m:
+                log(f'gblog: no xor loader on page | {url} | len={len(page)}', xbmc.LOGERROR)
+                return None
+            xor_key = int(m.group(2))
+            loader  = ''.join(chr(b ^ xor_key) for b in bytearray(base64.b64decode(m.group(1))))
+            path_m  = re.search(r"fetch\('([^']+)'", loader)
+            key_m   = re.search(r"\bk='([^']+)'", loader)
+            if not path_m or not key_m:
+                log(f'gblog: loader format changed | {url} | {loader[:120]!r}', xbmc.LOGERROR)
+                return None
+            key  = key_m.group(1)
+            blob = bytearray(requests.get(urljoin(url, path_m.group(1)), headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).content)
+            for i in range(len(blob)):
+                blob[i] ^= ord(key[i % len(key)])
+            js = zlib.decompress(bytes(blob), -15).decode('utf-8', 'ignore')
+            src_m = re.search(r'\.src\s*=\s*[\'"]([^\'"]+)[\'"]', js)
+            if not src_m:
+                direct = re.search(r'https?://[^\'"\s]+\.m3u8[^\'"\s]*', js)
+                if direct:
+                    origin = _base_url(url)
+                    return _publish_live_manifest(direct.group(0), {'User-Agent': UA, 'Referer': url, 'Origin': origin}, 'gblog')
+                log(f'gblog: no player src in decoded script | {url} | {js[:120]!r}', xbmc.LOGERROR)
+                return None
+            src = src_m.group(1).strip()
+            if src.startswith('//'):
+                src = 'https:' + src
+            if any(d in src for d in ('timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd')):
+                return self.timstreams(src, url)
+            return self.resolve(src)
+        except Exception as e:
+            _log_error('gblog', url, e)
+            return None
+
+    @_guard
+    def ptouch(self, url, parent=None):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': parent or url}, timeout=TIMEOUT).text
+            mode   = (re.search(r'const\s+MODE\s*=\s*"([^"]*)"', page) or [None, 'direct'])[1]
+            direct = (re.search(r'const\s+DIRECT_STREAM_URL\s*=\s*"([^"]+)"', page) or [None, ''])[1]
+            worker = (re.search(r'const\s+WORKER_URL\s*=\s*"([^"]+)"', page) or [None, ''])[1]
+            origin = _base_url(url)
+            headers = {'User-Agent': UA, 'Referer': url, 'Origin': origin}
+            stream_url = ''
+            if mode == 'direct' and direct:
+                stream_url = direct
+            elif worker:
+                data = requests.get(worker, headers=headers, timeout=TIMEOUT).json()
+                if data.get('success') and data.get('stream'):
+                    stream_url = data['stream']
+                else:
+                    log(f'ptouch: worker gave no stream | {data.get("message")} | {url}', xbmc.LOGERROR)
+            if not stream_url:
+                log(f'ptouch: no stream url on page | {url} | len={len(page)}', xbmc.LOGERROR)
+                return None
+            stream_url = stream_url.replace('\\/', '/')
+            return _publish_live_manifest(stream_url, headers, 'ptouch')
+        except Exception as e:
+            _log_error('ptouch', url, e)
             return None
 
     @_guard
