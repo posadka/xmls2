@@ -829,7 +829,7 @@ class streamer:
             elif any(x in url for x in ['kora', 'vertex.st']):
                 u = self.korast(url)
             elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd']):
-                u = self.timstreams(url)
+                u = self.timstreams(url, 'https://tim-streams.com/')
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
             elif any(x in url for x in ['streame.center', 'streams.center', 'streamecenter', 'streamcenter']):
