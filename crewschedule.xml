@@ -1883,7 +1883,20 @@ class streamer:
 
             titles = _terms('title')
             pages = [urljoin(base, 'index.php')]
-            if params.get('cat'):
+            if frag == 'cats':
+                index = requests.get(pages[0], headers=headers, timeout=TIMEOUT).text
+                block = re.search(r'<div[^>]+class="filters"[^>]*>(.*?)</div>', index, re.I | re.S)
+                results = []
+                for href, text in (re.findall(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', block.group(1), re.I | re.S) if block else []):
+                    name = _ascii(text)
+                    href = html.unescape(href).strip()
+                    if 'cat=' not in href or not name or "'" in href:
+                        continue
+                    results.append((urljoin(base, href), f'[COLOR orange]{name}[/COLOR]'))
+                return results or None
+            if 'cat=' in seed:
+                pages = [seed]
+            elif params.get('cat'):
                 wants = _terms('cat')
                 index = requests.get(pages[0], headers=headers, timeout=TIMEOUT).text
                 block = re.search(r'<div[^>]+class="filters"[^>]*>(.*?)</div>', index, re.I | re.S)
@@ -1904,7 +1917,7 @@ class streamer:
             seen = set()
             results = []
             for page_url in pages:
-                page = requests.get(page_url, headers=headers, timeout=TIMEOUT).text
+                page = resp.text if page_url == seed else requests.get(page_url, headers=headers, timeout=TIMEOUT).text
                 cut = re.search(r'<h2\s+class="collapsible-header\b', page, re.I)
                 if cut:
                     page = page[:cut.start()]
