@@ -305,7 +305,9 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if 'sportsupa' in url:
+            if any(x in url for x in ['dlive.sx', 'thedaddy.pk']):
+                u = self.daddylive(url)
+            elif 'sportsupa' in url:
                 u = self.sportsupa(url)
             elif any(x in url for x in ['mutstreams', '://mut.st']):
                 u = self.mutstreams(url)
@@ -1834,6 +1836,114 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('strmfree', url, e)
+            return None
+
+    @_guard
+    def daddylive(self, url):
+        try:
+            seed, _, frag = url.partition('#')
+            resp = requests.get(seed, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            base = _base_url(resp.url) + '/'
+            headers = {'User-Agent': UA, 'Referer': base}
+
+            def _ascii(text):
+                return re.sub(r'\s+', ' ', html.unescape(text).encode('ascii', 'ignore').decode('ascii')).strip()
+
+            def _pack(chans):
+                packed = json.dumps({'daddylive': True, 'base': base, 'channels': chans})
+                return packed.replace("'", '\\u0027').replace('&', '\\u0026').replace('<', '\\u003c').replace('>', '\\u003e')
+
+            if frag == 'channels':
+                page = requests.post(urljoin(base, '24-7-channels.php'), headers=headers, timeout=TIMEOUT).text
+                results = []
+                for m in re.finditer(
+                    r'<a\s+class="card"[^>]*?href="(?P<href>[^"]+)"[^>]*?data-title="(?P<dt>[^"]*)"[^>]*>'
+                    r'.*?<div\s+class="card__title">\s*(?P<title>.*?)\s*</div>'
+                    r'.*?ID:\s*(?P<id>\d+)\s*</div>',
+                    page, re.I | re.S
+                ):
+                    name = _ascii(m.group('title')) or _ascii(m.group('dt'))
+                    if '18+' in name or '18+' in m.group('dt'):
+                        continue
+                    name = re.sub(r'^\s*\d+(?=[A-Za-z])', '', name).strip()
+                    if not name:
+                        continue
+                    results.append((_pack([{'name': name, 'id': m.group('id')}]), f'[COLOR orange]{name}[/COLOR]'))
+                return results or None
+
+            params = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+
+            def _terms(key):
+                return [w.strip().lower() for w in params.get(key, '').split('|') if w.strip()]
+
+            def _cat_match(want, name, href):
+                if want.startswith('='):
+                    return name == want[1:]
+                return want in name or want in href
+
+            titles = _terms('title')
+            pages = [urljoin(base, 'index.php')]
+            if params.get('cat'):
+                wants = _terms('cat')
+                index = requests.get(pages[0], headers=headers, timeout=TIMEOUT).text
+                block = re.search(r'<div[^>]+class="filters"[^>]*>(.*?)</div>', index, re.I | re.S)
+                anchors = re.findall(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', block.group(1), re.I | re.S) if block else []
+                pages = []
+                for href, text in anchors:
+                    if 'cat=' not in href:
+                        continue
+                    name = _ascii(text).lower()
+                    if any(_cat_match(w, name, href.lower()) for w in wants):
+                        full = urljoin(base, html.unescape(href))
+                        if full not in pages:
+                            pages.append(full)
+                if not pages:
+                    log(f'daddylive: no category matched {wants} | {url}', xbmc.LOGWARNING)
+                    return None
+            now = datetime.now(timezone.utc)
+            seen = set()
+            results = []
+            for page_url in pages:
+                page = requests.get(page_url, headers=headers, timeout=TIMEOUT).text
+                cut = re.search(r'<h2\s+class="collapsible-header\b', page, re.I)
+                if cut:
+                    page = page[:cut.start()]
+                for time_str, raw_title, block in re.findall(
+                    r'<div\s+class="schedule__event">.*?'
+                    r'<div\s+class="schedule__eventHeader"[^>]*?>\s*'
+                    r'(?:<[^>]+>)*?'
+                    r'<span\s+class="schedule__time"[^>]*data-time="([^"]+)"[^>]*>.*?</span>\s*'
+                    r'<span\s+class="schedule__eventTitle">\s*([^<]+)\s*</span>.*?'
+                    r'</div>\s*'
+                    r'<div\s+class="schedule__channels">(.*?)</div>',
+                    page, re.I | re.S
+                ):
+                    title = _ascii(raw_title)
+                    if not title or (titles and not any(t in title.lower() for t in titles)):
+                        continue
+                    chans = []
+                    for href, attr in re.findall(r'<a[^>]+href="([^"]+)"[^>]*title="([^"]*)"', block, re.I | re.S):
+                        cid = (re.search(r'[?&]id=(\d+)', href) or [None, ''])[1]
+                        if cid and cid.strip('0') and all(c['id'] != cid for c in chans):
+                            chans.append({'name': _ascii(attr) or 'Channel ' + cid, 'id': cid})
+                    if not chans:
+                        continue
+                    key = (title.lower(), time_str.strip())
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    when = ''
+                    tm = re.match(r'(\d{1,2}):(\d{2})', time_str.strip())
+                    if tm:
+                        try:
+                            dt = now.replace(hour=int(tm.group(1)), minute=int(tm.group(2)), second=0, microsecond=0)
+                            when = _to_local(dt).strftime('%I:%M %p').lstrip('0')
+                        except Exception:
+                            when = ''
+                    results.append((_pack(chans), self._label(when, title)))
+            return results or None
+        except Exception as e:
+            _log_error('daddylive', url, e)
             return None
 
     @_guard

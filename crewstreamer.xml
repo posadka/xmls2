@@ -366,7 +366,19 @@ def _proxy():
     return _PROXY_MODULE[0]
 
 
-def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
+def _with_playlist_token(stream_url, token_url, headers):
+    try:
+        token = requests.get(token_url, headers=headers or {}, timeout=TIMEOUT).json().get('token') or ''
+    except Exception as e:
+        log(f'playlist token fetch failed: {e}', xbmc.LOGWARNING)
+        token = ''
+    if not token:
+        return stream_url
+    sep = '&' if '?' in stream_url else '?'
+    return f'{stream_url}{sep}t={quote_plus(token)}&_={int(time.time() * 1000)}'
+
+
+def _publish_live_manifest(upstream_url, headers, name_prefix, session=None, token_url=None):
     """For genuine live streams: the proxy re-fetches upstream_url fresh on every
     manifest request instead of caching one snapshot, since a live media playlist
     keeps sliding forward with new segments.
@@ -382,15 +394,22 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None):
 
     Pass session to reuse an existing requests.Session (and its cookies)."""
     getter = session.get if session is not None else requests.get
+    probe_url = _with_playlist_token(upstream_url, token_url, headers) if token_url else upstream_url
     try:
-        probe = getter(upstream_url, headers=headers or {}, timeout=TIMEOUT)
+        probe = getter(probe_url, headers=headers or {}, timeout=TIMEOUT)
         if probe.status_code == 403:
             log(f'{name_prefix}: upstream manifest 403 on probe (session={session is not None}), bypassing segment proxy', xbmc.LOGWARNING)
-            return _publish_direct_hls(upstream_url, headers)
+            return _publish_direct_hls(probe_url, headers)
     except Exception as e:
         log(f'{name_prefix}: upstream manifest probe failed, falling back to proxy path: {e}', xbmc.LOGWARNING)
     cookies = requests.utils.dict_from_cookiejar(session.cookies) if session is not None else None
-    if cookies:
+    if token_url:
+        try:
+            local_url = _proxy().register_live_manifest(upstream_url, headers, name_prefix, token_url=token_url)
+        except TypeError:
+            log(f'{name_prefix}: proxy has no token renewal, using one-time token', xbmc.LOGWARNING)
+            local_url = _proxy().register_live_manifest(probe_url, headers, name_prefix)
+    elif cookies:
         local_url = _proxy().register_live_manifest(upstream_url, headers, name_prefix, cookies=cookies)
     else:
         local_url = _proxy().register_live_manifest(upstream_url, headers, name_prefix)
@@ -412,6 +431,178 @@ def _publish_static_manifest(manifest_text, name_prefix):
 
 def _publish_direct_hls(stream_url, headers):
     return f'{stream_url}|' + '&'.join(f'{k}={v}' for k, v in headers.items())
+
+
+def _dl_origin(url):
+    u = _up(url)
+    return f'{u.scheme}://{u.netloc}'
+
+
+def _dl_fetch(url, referer=None):
+    headers = {'User-Agent': UA}
+    if referer:
+        headers['Referer'] = referer
+    try:
+        return requests.get(url, headers=headers, timeout=TIMEOUT).text
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        time.sleep(0.4)
+        return requests.get(url, headers=headers, timeout=TIMEOUT).text
+
+
+def _dl_iframe(page, page_url):
+    m = re.search(r'<iframe[^>]+src="([^"]+)"', page, re.I)
+    return urljoin(page_url, html.unescape(m.group(1)).strip()) if m else None
+
+
+def _dl_econfig(encoded):
+    s = base64.b64decode(encoded).decode('utf-8')
+    size = math.ceil(len(s) / 4)
+    chunks = [s[i * size:(i + 1) * size] for i in range(4)]
+    perm = [2, 0, 3, 1]
+    reordered = [''] * 4
+    for i in range(4):
+        c = chunks[i]
+        c = c[:3] + c[4:]
+        reordered[perm[i]] = base64.b64decode(c).decode('utf-8')
+    return json.loads(base64.b64decode(''.join(reordered)).decode('utf-8'))
+
+
+def _dl_token_stream(token_url, page_url):
+    origin = _dl_origin(page_url)
+    tk = token_url.rstrip('/').rsplit('/', 1)[-1]
+    try:
+        resp = requests.get(token_url, headers={'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, timeout=TIMEOUT)
+    except Exception as e:
+        log(f'daddylive: token fetch failed {e}', xbmc.LOGERROR)
+        return None
+    raw = resp.content
+    if resp.status_code != 200 or len(raw) < 2 or not tk:
+        log(f'daddylive: bad token reply {resp.status_code} | {token_url}', xbmc.LOGERROR)
+        return None
+    seed = raw[0]
+    url = ''.join(chr(raw[i] ^ ord(tk[(i - 1) % len(tk)]) ^ ((seed + i - 1) & 255)) for i in range(1, len(raw))).strip()
+    return url if url.startswith('http') else None
+
+
+def _dl_payload(page, page_url=None):
+    m = re.search(r'(?:var|let|const)\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)', page)
+    if not m:
+        return None
+    key1 = int(m.group(2))
+    key2 = int(m.group(3))
+    decoded = ''.join(chr(((int(n) ^ key1) - key2 + 256) % 256) for n in m.group(1).split(','))
+    lm = re.search(r'loadStreamUrl\(\s*"([^"]+)"', decoded)
+    if lm and page_url:
+        return _dl_token_stream(lm.group(1).replace('\\/', '/'), page_url)
+    m = re.search(r'SIGNED_URL\s*=\s*"([^"]+)"', decoded) or re.search(r'\burl\s*=\s*"([^"]+)"', decoded)
+    return m.group(1).replace('\\/', '/') if m else None
+
+
+def _dl_cast(player_url, referer):
+    embed_url = _dl_iframe(_dl_fetch(player_url, referer), player_url)
+    if not embed_url:
+        return None
+    page = _dl_fetch(embed_url, player_url)
+    stream_url = None
+    m = re.search(r"window\._econfig='([^']+)'", page)
+    if m:
+        try:
+            cfg = _dl_econfig(m.group(1))
+            stream_url = cfg.get('stream_url_nop2p') or cfg.get('stream_url')
+        except Exception as e:
+            log(f'daddylive: _econfig decode failed {e}', xbmc.LOGWARNING)
+    stream_url = stream_url or _dl_payload(page, embed_url)
+    return (stream_url, embed_url) if stream_url else None
+
+
+def _dl_plus(player_url, referer):
+    embed_url = _dl_iframe(_dl_fetch(player_url, referer), player_url)
+    if not embed_url:
+        return None
+    stream_url = _dl_payload(_dl_fetch(embed_url, player_url), embed_url)
+    return (stream_url, embed_url) if stream_url else None
+
+
+def _dl_casting(player_url, referer):
+    outer_url = _dl_iframe(_dl_fetch(player_url, referer), player_url)
+    if not outer_url:
+        return None
+    embed_url = _dl_iframe(_dl_fetch(outer_url, player_url), outer_url)
+    if not embed_url:
+        return None
+    m = re.search(r'const\s+streamUrls\s*=\s*(\[[^\]]*\])', _dl_fetch(embed_url, outer_url))
+    if not m:
+        return None
+    for entry in json.loads(m.group(1)):
+        if isinstance(entry, dict):
+            entry = next((entry[k] for k in ('url', 'src', 'file', 'stream_url') if isinstance(entry.get(k), str) and entry[k]), None)
+        if isinstance(entry, str) and entry:
+            return entry, embed_url
+    return None
+
+
+def _dl_watch(player_url, referer):
+    embed_url = _dl_iframe(_dl_fetch(player_url, referer), player_url)
+    if not embed_url:
+        return None
+    page = _dl_fetch(embed_url, player_url)
+    m = re.search(r'const\s+SRC\s*=\s*"([^"]+)"', page)
+    if not m:
+        return None
+    src = m.group(1).replace('\\/', '/')
+    edge = re.search(r'const\s+EDGE\s*=\s*"([^"]+)"', page)
+    channel = re.search(r'const\s+CHANNEL\s*=\s*"([^"]+)"', page)
+    if edge and channel and 'playlist-token' in page:
+        return src, embed_url, f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
+    return src, embed_url
+
+
+def _dl_b64_url(encoded):
+    try:
+        text = base64.b64decode(encoded + '=' * (-len(encoded) % 4)).decode('utf-8', 'ignore')
+    except Exception:
+        return None
+    m = re.search(r"atob\('([^']+)'\)", text)
+    if m:
+        return _dl_b64_url(m.group(1))
+    m = re.search(r'(?:https?:)?//[^\s"\'<>]+', text)
+    return m.group(0) if m else None
+
+
+def _dl_next_hop(page, page_url):
+    m = re.search(r'data-encoded="([^"]+)"', page)
+    if m and _dl_b64_url(m.group(1)):
+        return urljoin(page_url, _dl_b64_url(m.group(1)))
+    m = re.search(r'"([A-Za-z0-9+/=]{40,})"\s*;\s*eval\(atob', page)
+    if m and _dl_b64_url(m.group(1)):
+        return urljoin(page_url, _dl_b64_url(m.group(1)))
+    m = re.search(r"iframe\.src\s*=\s*'([^']+)'\s*\+\s*encodeURIComponent", page)
+    if m:
+        channel = re.sub(r'[/\\.?&=]', '', (parse_qs(_up(page_url).query).get('id') or [''])[0].strip())
+        if channel:
+            return urljoin(page_url, m.group(1) + quote_plus(channel))
+    m = re.search(r'f\.src\s*=\s*"([^"]+)"', page) or re.search(r'<ifr(?:\'\+\')?ame[^>]+src="((?:https?:)?//[^"]+)"', page, re.I)
+    if m:
+        return urljoin(page_url, html.unescape(m.group(1)).strip())
+    return None
+
+
+def _dl_player(player_url, referer):
+    url = player_url
+    for _ in range(10):
+        page = _dl_fetch(url, referer)
+        stream_url = _dl_payload(page, url)
+        if stream_url:
+            return stream_url, url
+        nxt = _dl_next_hop(page, url)
+        if not nxt:
+            return None
+        referer = None if 'referrerpolicy="no-referrer"' in page else _dl_origin(url) + '/'
+        url = nxt
+    return None
+
+
+_DL_PLAYERS = {'stream': _dl_watch, 'cast': _dl_cast, 'watch': _dl_watch, 'plus': _dl_plus, 'casting': _dl_casting, 'player': _dl_player, 'hub': _dl_watch}
 
 
 def _publish_ws_manifest(manifest_text, headers, ws_config, name_prefix):
@@ -589,7 +780,9 @@ class streamer:
     @_fallback
     def resolve(self, url):
         try:
-            if '"sportsupa"' in url:
+            if '"daddylive": true' in url or (any(x in url for x in ['dlive.sx', 'thedaddy.pk']) and 'watch.php' in url):
+                u = self.daddylive(url)
+            elif '"sportsupa"' in url:
                 u = self.sportsupa(url)
             elif '"ppv": true' in url:
                 u = self.ppv(url)
@@ -3425,6 +3618,62 @@ class streamer:
             return _publish_live_manifest(base + path, {'User-Agent': UA, 'Referer': embed_url, 'Origin': base}, 'strmfree')
         except Exception as e:
             _log_error('strmfree', url, e)
+            return None
+
+    @_guard
+    def daddylive(self, url):
+        try:
+            if url.lstrip().startswith('{'):
+                data = json.loads(url)
+                base = (data.get('base') or '').rstrip('/') + '/'
+                chans = [c for c in (data.get('channels') or []) if isinstance(c, dict) and str(c.get('id') or '').strip()]
+            else:
+                base = _dl_origin(url) + '/'
+                cid = (parse_qs(_up(url).query).get('id') or [''])[0]
+                chans = [{'name': 'Channel ' + cid, 'id': cid}] if cid else []
+            if not chans:
+                log(f'daddylive: no channels | {url[:200]}', xbmc.LOGERROR)
+                return None
+            pick = 0 if len(chans) == 1 else _select('Choose Channel', [c.get('name') or c['id'] for c in chans])
+            if pick == -1:
+                return None
+            cid = str(chans[pick]['id']).strip()
+            watch_url = urljoin(base, 'watch.php?id=' + quote_plus(cid))
+            page = _dl_fetch(watch_url, base)
+            options = []
+            for player_url, title in re.findall(r'data-url="([^"]+)"\s+title="([^"]+)"', page):
+                full = urljoin(watch_url, html.unescape(player_url).strip())
+                folder = _up(full).path.strip('/').split('/')[0]
+                if folder in _DL_PLAYERS:
+                    options.append((html.unescape(title).strip().title(), full, folder))
+            if not options:
+                options.append(('Player 2', urljoin(base, f'cast/stream-{cid}.php'), 'cast'))
+            choice = 0 if len(options) == 1 else _select('Choose Player', [o[0] for o in options])
+            if choice == -1:
+                return None
+            result = None
+            used = options[choice]
+            for label, player_url, folder in [options[choice]] + options[:choice] + options[choice + 1:]:
+                try:
+                    result = _DL_PLAYERS[folder](player_url, watch_url)
+                except Exception as e:
+                    log(f'daddylive: {label} raised {e}', xbmc.LOGWARNING)
+                    result = None
+                if result:
+                    used = (label, player_url, folder)
+                    break
+                log(f'daddylive: {label} did not resolve, trying next', xbmc.LOGWARNING)
+            if not result:
+                log(f'daddylive: no player resolved | {watch_url}', xbmc.LOGERROR)
+                return None
+            stream_url, embed_url = result[0], result[1]
+            token_url = result[2] if len(result) > 2 else None
+            origin = _dl_origin(embed_url)
+            headers = {'Referer': origin + '/', 'Origin': origin, 'User-Agent': UA}
+            log(f'daddylive: channel {cid} via {used[0]}', xbmc.LOGINFO)
+            return _publish_live_manifest(stream_url, headers, f'daddylive_{used[2]}', token_url=token_url)
+        except Exception as e:
+            _log_error('daddylive', url, e)
             return None
 
     @_guard

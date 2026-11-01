@@ -45,6 +45,7 @@ _start_lock = threading.Lock()
 _manifest_cache = {}
 _manifest_cache_lock = threading.Lock()
 _manifest_sessions = {}
+_manifest_tokens = {}
 _ws_streams = {}
 _ws_lock = threading.Lock()
 _placeholder_cache = {}
@@ -205,6 +206,45 @@ def _decode_pixel_segment(data):
     return gzip.decompress(body) if body[:2] == b'\x1f\x8b' else body
 
 
+TIK_RAW = b'TIKTIKRAW'
+TIK_GZ = b'TIKTIKTSGZ'
+
+
+def _is_ts(data, offset=0):
+    return len(data) > offset + TS_PACKET_SIZE and data[offset] == TS_SYNC_BYTE and data[offset + TS_PACKET_SIZE] == TS_SYNC_BYTE
+
+
+def _webp_exif_ts(data):
+    if len(data) < 16 or data[:4] != b'RIFF' or data[8:12] != b'WEBP':
+        return None
+    offset = 12
+    while offset + 8 <= len(data):
+        tag = data[offset:offset + 4]
+        size = struct.unpack_from('<I', data, offset + 4)[0]
+        offset += 8
+        if offset + size > len(data):
+            return None
+        if tag == b'EXIF':
+            chunk = data[offset:offset + size]
+            return chunk if _is_ts(chunk) else None
+        offset += size + (size & 1)
+    return None
+
+
+def _png_iend_ts(data):
+    offset = 8
+    while offset + 8 <= len(data):
+        size = struct.unpack_from('>I', data, offset)[0]
+        if size > len(data) - offset - 12:
+            return None
+        ctype = data[offset + 4:offset + 8]
+        end = offset + 12 + size
+        if ctype == b'IEND':
+            return data[end:] if _is_ts(data, end) else None
+        offset = end
+    return None
+
+
 def _unwrap_segment(data):
     if data[:8] == PNG_SIGNATURE:
         try:
@@ -213,6 +253,23 @@ def _unwrap_segment(data):
                 return decoded
         except Exception as e:
             log(f'pixel segment decode failed: {e}', xbmc.LOGWARNING)
+        tail = _png_iend_ts(data)
+        if tail:
+            return tail
+    exif = _webp_exif_ts(data)
+    if exif:
+        return exif
+    offset = data.find(TIK_RAW)
+    while offset >= 0:
+        if data[offset + len(TIK_RAW):offset + len(TIK_RAW) + 1] == b'G':
+            return data[offset + len(TIK_RAW):]
+        offset = data.find(TIK_RAW, offset + 1)
+    offset = data.find(TIK_GZ)
+    if offset >= 0:
+        try:
+            return gzip.decompress(data[offset + len(TIK_GZ):])
+        except Exception:
+            pass
     offset = _find_ts_start(data)
     return data[offset:]
 
@@ -304,6 +361,35 @@ def _get_manifest_session(manifest_id):
         return s
 
 
+def _playlist_token(manifest_id, recipe):
+    now = time.time()
+    with _manifest_cache_lock:
+        cached = _manifest_tokens.get(manifest_id)
+    if cached and now < cached['renew']:
+        return cached['token']
+    try:
+        data = requests.get(recipe['token_url'], headers=recipe.get('headers') or {}, timeout=TIMEOUT).json()
+        token = data.get('token') or ''
+        ttl = max(20, int(data.get('ttl') or 120))
+    except Exception as e:
+        log(f'playlist token fetch failed: {e}', xbmc.LOGERROR)
+        return cached['token'] if cached else ''
+    with _manifest_cache_lock:
+        _manifest_tokens[manifest_id] = {'token': token, 'renew': now + ttl / 2.0}
+    return token
+
+
+def _manifest_url(manifest_id, recipe):
+    url = recipe['url']
+    if not recipe.get('token_url'):
+        return url
+    token = _playlist_token(manifest_id, recipe)
+    if not token:
+        return url
+    sep = '&' if '?' in url else '?'
+    return f'{url}{sep}t={quote_plus(token)}&_={int(time.time() * 1000)}'
+
+
 def _fetch_and_rewrite(manifest_id, recipe_path, attempts=3):
     """Fetch the real upstream playlist, validate, rewrite segment lines through
     the proxy, and update the cache. Returns the rewritten text, or None on
@@ -323,7 +409,7 @@ def _fetch_and_rewrite(manifest_id, recipe_path, attempts=3):
         session = _get_manifest_session(manifest_id)
         if recipe.get('cookies') and not len(session.cookies):
             session.cookies.update(recipe['cookies'])
-        resp = _get_with_retry(recipe['url'], headers=recipe.get('headers') or {}, timeout=TIMEOUT, session=session, attempts=attempts)
+        resp = _get_with_retry(_manifest_url(manifest_id, recipe), headers=recipe.get('headers') or {}, timeout=TIMEOUT, session=session, attempts=attempts)
         if resp.status_code != 200:
             log(f'live manifest refetch bad status {resp.status_code} | {recipe["url"]} | body: {resp.text[:200]!r}', xbmc.LOGERROR)
             return None
@@ -970,7 +1056,7 @@ def get_manifest_dir():
     return val or None
 
 
-def register_live_manifest(upstream_url, headers, name_prefix, cookies=None):
+def register_live_manifest(upstream_url, headers, name_prefix, cookies=None, token_url=None):
     """Register an upstream media-playlist URL for LIVE re-fetching on every
     /manifest/<id>.m3u8 request, instead of caching one static snapshot.
     Use this for real live streams where the upstream playlist keeps sliding
@@ -984,6 +1070,8 @@ def register_live_manifest(upstream_url, headers, name_prefix, cookies=None):
     recipe = {'url': upstream_url, 'headers': headers or {}}
     if cookies:
         recipe['cookies'] = cookies
+    if token_url:
+        recipe['token_url'] = token_url
     with open(os.path.join(manifest_dir, f'{manifest_id}.json'), 'w', encoding='utf-8') as f:
         json.dump(recipe, f)
     return f'http://127.0.0.1:{port}/manifest/{manifest_id}.m3u8'
