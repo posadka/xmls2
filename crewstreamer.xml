@@ -2053,9 +2053,40 @@ class streamer:
             def _var(name):
                 return _find(r'(?<![\w$])' + re.escape(name) + r'="([^"]+)"', ptext) if name else None
 
+            def _ub64(value):
+                value = value.strip().replace('-', '+').replace('_', '/')
+                return base64.b64decode(value + '=' * (-len(value) % 4)).decode()
+
+            def _js(name):
+                value = _find(r'(?<![\w$])' + re.escape(name) + r':"((?:[^"\\]|\\.)*)"', ptext)
+                return value.replace('\\/', '/') if value is not None else None
+
+            media_m    = re.search(r'mediaSource:\[([\d,\s]+)\]', ptext)
             call_m     = re.search(r'\{scode:"([^"]+)",ts:\w+,session_id:"([^"]+)",device_id:([\w$]+)\}', ptext)
             source_raw = _find(r'String\.fromCharCode\(\.\.\.\[([\d,\s]+)\]\)', ptext)
-            if call_m and source_raw:
+            if media_m:
+                auth_b64   = _js('authEndpoint')
+                csrf_b64   = _js('csrfToken')
+                s_code     = _js('scode')
+                strUnqId   = _js('stream')
+                session_id = _js('sessionId')
+                playerId   = _js('deviceId')
+                edgeHostId = _js('edgeHostId')
+                expireTs   = _find(r'(?<![\w$])expires:(\d+)', ptext)
+                if not all([auth_b64, csrf_b64, s_code, strUnqId, session_id, playerId, edgeHostId, expireTs]):
+                    log(f'embedsportsme: missing player config values | {player_url}', xbmc.LOGERROR)
+                    return None
+                media         = ''.join(chr(int(n)) for n in media_m.group(1).split(',') if n.strip()).strip()
+                video_source  = media if re.match(r'https?://', media, re.I) else _ub64(media)
+                sec_token_url = auth_b64 if re.match(r'https?://', auth_b64, re.I) else _ub64(auth_b64)
+                if not _up(sec_token_url).path:
+                    sec_token_url += '/'
+                csrf     = _ub64(csrf_b64)
+                auth_url = _with_query(
+                    sec_token_url, scode=s_code, stream=strUnqId,
+                    expires=expireTs, u_id=playerId, session_id=session_id, host_id=edgeHostId
+                )
+            elif call_m and source_raw:
                 s_code        = call_m.group(1)
                 session_id    = call_m.group(2)
                 playerId      = _var(call_m.group(3))
