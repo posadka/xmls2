@@ -181,7 +181,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://methstreams.ms[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
@@ -243,7 +243,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://methstreams.ms[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
@@ -305,7 +305,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://methstreams.ms[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
@@ -429,7 +429,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     result = [None]
     done = [False]
     def fetch():
-        result[0] = client.external('https://methstreams.ms[makelist.param1]')
+        result[0] = client.external('[makelist.param1]')
         done[0] = True
     t = threading.Thread(target=fetch)
     t.start()
