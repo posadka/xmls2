@@ -1386,7 +1386,10 @@ class streamer:
                 log(f'volokit: no encrypted-media iframe | {url}', xbmc.LOGERROR)
                 return None
 
-            if 'embedhd.st' in iframe_url:
+            if 'taifood-blog' in iframe_url:
+                return self.resolve(iframe_url)
+
+            elif 'embedhd.st' in iframe_url:
                 return self.embedhd_st(iframe_url)
 
             elif 'embedhd.pk' in iframe_url:
@@ -1464,10 +1467,13 @@ class streamer:
                         decoded, {'User-Agent': UA, 'Referer': f'{origin}/', 'Origin': origin}, 'volokit'
                     )
 
-            m = re.search(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
-            if m:
+            srcs = [
+                s for s in re.findall(r'source\s*[:=]\s*[\'"]([^\'"]+)', iframe_html)
+                if s.startswith('http') and 'github.com' not in s
+            ]
+            if srcs:
                 return _publish_live_manifest(
-                    m.group(1), {'User-Agent': UA, 'Referer': f'{origin}/', 'Origin': origin}, 'volokit'
+                    srcs[0], {'User-Agent': UA, 'Referer': f'{origin}/', 'Origin': origin}, 'volokit'
                 )
 
             log(f'volokit: falling through to embedsports | {iframe_url}', xbmc.LOGERROR)
