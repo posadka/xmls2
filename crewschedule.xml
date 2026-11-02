@@ -256,11 +256,16 @@ class _NoTime(object):
         raise ValueError('no time on xbox')
 
 
+_EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
+
+
 def _to_local(dt_utc):
     if _is_xbox():
         return _NoTime()
     try:
-        return dt_utc.astimezone()
+        if dt_utc.tzinfo is None:
+            return dt_utc
+        return datetime(*time.localtime((dt_utc - _EPOCH).total_seconds())[:6])
     except Exception:
         return _NoTime()
 
