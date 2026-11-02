@@ -782,6 +782,19 @@ class streamer:
         try:
             if '"daddylive": true' in url or (any(x in url for x in ['dlive.sx', 'thedaddy.pk']) and 'watch.php' in url):
                 u = self.daddylive(url)
+            elif 'streameast.gold' in url:
+                u = self.streameastgold(url)
+            elif 'sports247.ru/watch' in url:
+                u = self.sports247(url)
+            elif 'xlivestreamer' in url and 'watch.php' in url and 'ch=' in url:
+                cid = (parse_qs(_up(url).query).get('ch') or [''])[0]
+                u = self.daddylive(json.dumps({'daddylive': True, 'base': 'https://dlive.sx/', 'channels': [{'name': 'Channel ' + cid, 'id': cid}]})) if cid else None
+            elif 'dembed.st/' in url:
+                u = self.dembed(url)
+            elif 'matchix.org/embed' in url:
+                u = self.matchix(url)
+            elif 'nexa.st' in url and not url.lstrip().startswith('['):
+                u = self.sportzone(json.dumps([{'label': 'Nexa', 'url': url}]))
             elif '"sportsupa"' in url:
                 u = self.sportsupa(url)
             elif '"ppv": true' in url:
@@ -898,6 +911,9 @@ class streamer:
                 u = self.ptouch(url)
             elif 'gblog.asia' in url:
                 u = self.gblog(url)
+            elif getattr(self, '_chasing', False):
+                self._unrouted = True
+                u = None
             else:
                 u = self.generic(url)
             return u
@@ -3624,6 +3640,154 @@ class streamer:
             return _publish_live_manifest(base + path, {'User-Agent': UA, 'Referer': embed_url, 'Origin': base}, 'strmfree')
         except Exception as e:
             _log_error('strmfree', url, e)
+            return None
+
+    @_guard
+    def dembed(self, url, referer=None):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': referer or url}, timeout=TIMEOUT).text
+            src = re.search(r'const\s+SRC\s*=\s*"([^"]+)"', page)
+            if not src:
+                log(f'dembed: no SRC | {url}', xbmc.LOGERROR)
+                return None
+            stream_url = src.group(1).replace('\\/', '/')
+            edge = re.search(r'const\s+EDGE\s*=\s*"([^"]+)"', page)
+            channel = re.search(r'const\s+CHANNEL\s*=\s*"([^"]+)"', page)
+            token_url = None
+            if edge and channel and 'playlist-token' in page:
+                token_url = f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
+            origin = _dl_origin(url)
+            headers = {'Referer': origin + '/', 'Origin': origin, 'User-Agent': UA}
+            return _publish_live_manifest(stream_url, headers, 'dembed', token_url=token_url)
+        except Exception as e:
+            _log_error('dembed', url, e)
+            return None
+
+    @_guard
+    def matchix(self, url):
+        try:
+            sid = (parse_qs(_up(url).query).get('s') or [''])[0]
+            if not sid:
+                log(f'matchix: no stream id | {url}', xbmc.LOGERROR)
+                return None
+            origin = _dl_origin(url)
+            base = origin
+            try:
+                data = requests.get(f'{origin}/api/direct/decide?l={quote_plus(sid)}', headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
+                base = (data.get('base') or origin).rstrip('/')
+            except Exception as e:
+                log(f'matchix: decide failed, using origin | {e}', xbmc.LOGWARNING)
+            headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+            return _publish_live_manifest(f'{base}/api/direct/{quote_plus(sid)}.m3u8', headers, 'matchix')
+        except Exception as e:
+            _log_error('matchix', url, e)
+            return None
+
+    def _chase(self, url, referer, depth=0):
+        self._chasing = True
+        self._unrouted = False
+        try:
+            result = self.resolve(url)
+        finally:
+            self._chasing = False
+        if result or not self._unrouted:
+            return result
+        if depth >= 4:
+            return self.generic(url)
+        try:
+            resp = requests.get(url, headers={'User-Agent': UA, 'Referer': referer}, timeout=TIMEOUT)
+            page = resp.text
+        except Exception as e:
+            log(f'chase: fetch failed {e} | {url}', xbmc.LOGWARNING)
+            return None
+        for src in re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', page, re.I):
+            src = html.unescape(src).strip()
+            if src.startswith('//'):
+                src = 'https:' + src
+            nxt = urljoin(resp.url, src)
+            if not nxt.startswith('http') or any(x in nxt for x in ('chatango', 'lijit', 'sharethis', 'histats', 'cbox', 'google', 'facebook', 'twitter', 'youtube', 'disqus')):
+                continue
+            return self._chase(nxt, resp.url, depth + 1)
+        m = re.search(r'https?://[^\s\'"<>]+\.m3u8[^\s\'"<>]*', page.replace('\\/', '/'))
+        if m:
+            origin = _dl_origin(resp.url)
+            return _publish_live_manifest(m.group(0), {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, 'chase')
+        return self.generic(url)
+
+    @_guard
+    def sports247(self, url):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text
+            chans = []
+            for tag in re.findall(r'<[^>]+class="[^"]*channel-item[^"]*"[^>]*>', page):
+                emb = re.search(r'data-embed-url="([^"]+)"', tag)
+                if not emb:
+                    continue
+                target = html.unescape(emb.group(1)).strip()
+                inner = (parse_qs(_up(target).query).get('url') or [''])[0]
+                target = inner or urljoin(url, target)
+                name = html.unescape((re.search(r'data-channel-name="([^"]*)"', tag) or [None, ''])[1]).strip()
+                lang = (re.search(r'data-channel-lang="([^"]*)"', tag) or [None, ''])[1].strip()
+                label = (f'{name} ({lang})' if lang else name).encode('ascii', 'ignore').decode('ascii') or target
+                chans.append((label, target))
+            if not chans:
+                log(f'sports247: no channels on page | {url}', xbmc.LOGERROR)
+                return None
+            choice = 0 if len(chans) == 1 else _select('Choose Channel', [c[0] for c in chans])
+            if choice == -1:
+                return None
+            for label, target in [chans[choice]] + [c for i, c in enumerate(chans) if i != choice]:
+                result = self._chase(target, url)
+                if result:
+                    return result
+                log(f'sports247: {label} did not resolve, trying next | {target}', xbmc.LOGWARNING)
+            return None
+        except Exception as e:
+            _log_error('sports247', url, e)
+            return None
+
+    @_guard
+    def streameastgold(self, url):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text
+            options = []
+            for row in re.findall(r'(?s)<tr[^>]*>(.*?)</tr>', page):
+                link = re.search(r'value="([^"]+)"\s+id="linkk\d+"', row)
+                if not link:
+                    continue
+                href = html.unescape(link.group(1)).strip()
+                host = _up(href).netloc.lower()
+                if not href.startswith('http') or 'totalsportek' in host or 'streameast' in host:
+                    continue
+                cells = [re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', c))).strip() for c in re.findall(r'(?s)<td[^>]*>(.*?)</td>', row)]
+                cells = [c.encode('ascii', 'ignore').decode('ascii').strip() for c in cells]
+                name = cells[1] if len(cells) > 1 else host
+                lang = cells[4] if len(cells) > 4 else ''
+                chan = cells[6] if len(cells) > 6 else ''
+                label = f'{name or host} | {chan}' if chan else (name or host)
+                if lang:
+                    label += f' ({lang})'
+                options.append((label, href))
+            if not options:
+                log(f'streameastgold: no links on page yet | {url}', xbmc.LOGERROR)
+                return None
+            choice = 0 if len(options) == 1 else _select('Choose Stream', [o[0] for o in options])
+            if choice == -1:
+                return None
+            order = [options[choice]] + [o for i, o in enumerate(options) if i != choice][:4]
+            for label, href in order:
+                try:
+                    result = self._chase(href, url)
+                except Exception as e:
+                    log(f'streameastgold: {label} raised {e}', xbmc.LOGWARNING)
+                    result = None
+                if result:
+                    log(f'streameastgold: playing {label} | {href}', xbmc.LOGINFO)
+                    return result
+                log(f'streameastgold: {label} did not resolve, trying next | {href}', xbmc.LOGWARNING)
+            return None
+        except Exception as e:
+            _log_error('streameastgold', url, e)
             return None
 
     @_guard

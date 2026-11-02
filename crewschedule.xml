@@ -285,6 +285,13 @@ def _uk_to_utc(dt):
     return (dt - timedelta(hours=offset)).replace(tzinfo=timezone.utc)
 
 
+def _cet_to_utc(dt):
+    start  = _last_sunday(dt.year, 3) + timedelta(hours=2)
+    end    = _last_sunday(dt.year, 10) + timedelta(hours=3)
+    offset = 2 if start <= dt < end else 1
+    return (dt - timedelta(hours=offset)).replace(tzinfo=timezone.utc)
+
+
 def _nth_sunday(year, month, n):
     d = datetime(year, month, 1)
     return d + timedelta(days=(6 - d.weekday()) % 7 + 7 * (n - 1))
@@ -312,6 +319,10 @@ class streamer:
         try:
             if any(x in url for x in ['dlive.sx', 'thedaddy.pk']):
                 u = self.daddylive(url)
+            elif 'streameast.gold' in url:
+                u = self.streameastgold(url)
+            elif 'sports247.ru' in url:
+                u = self.sports247(url)
             elif 'sportsupa' in url:
                 u = self.sportsupa(url)
             elif any(x in url for x in ['mutstreams', '://mut.st']):
@@ -1962,6 +1973,100 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('daddylive', url, e)
+            return None
+
+    @_guard
+    def streameastgold(self, url):
+        try:
+            import threading
+            resp = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            base = _base_url(resp.url)
+            items = []
+            seen = set()
+            for block in re.split(r'<li class="f1-podium--item', resp.text)[1:]:
+                href = re.search(r'href="([^"]*/\d+)"', block)
+                title = re.search(r'MacBaslik[^>]*>\s*([^<]+)', block)
+                if not href or not title:
+                    continue
+                full = urljoin(base + '/', href.group(1))
+                if full in seen:
+                    continue
+                seen.add(full)
+                sport = (re.search(r'f1-podium--rank[^>]*>\s*([^<]+)', block) or [None, ''])[1].strip()
+                name = re.sub(r'\s+', ' ', html.unescape(title.group(1))).strip()
+                name = re.sub(r'\s+VS\s+', ' vs ', name).encode('ascii', 'ignore').decode('ascii').strip()
+                items.append({'url': full, 'title': name, 'sport': sport.encode('ascii', 'ignore').decode('ascii'), 'dt': None})
+
+            def _kickoff(item):
+                try:
+                    r = requests.get(item['url'], headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT, stream=True)
+                    data = b''
+                    for chunk in r.iter_content(4096):
+                        data += chunk
+                        if b'</head>' in data or len(data) > 32768:
+                            break
+                    r.close()
+                    m = re.search(r'(\d{4}-\d{2}-\d{2}),\s*(\d{1,2}:\d{2})', data.decode('utf-8', 'ignore'))
+                    if m:
+                        item['dt'] = datetime.strptime(f'{m.group(1)} {m.group(2)}', '%Y-%m-%d %H:%M').replace(tzinfo=timezone.utc)
+                except Exception:
+                    pass
+
+            threads = [threading.Thread(target=_kickoff, args=(i,)) for i in items]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join(TIMEOUT + 5)
+            now = datetime.now(timezone.utc)
+            results = []
+            far = datetime.max.replace(tzinfo=timezone.utc)
+            for item in sorted(items, key=lambda i: i['dt'] or far):
+                dt = item['dt']
+                if dt and dt + timedelta(hours=4) < now:
+                    continue
+                when = _to_local(dt).strftime('%I:%M %p').lstrip('0') if dt else ''
+                title = f'[COLOR yellow]{item["sport"]}[/COLOR] {item["title"]}' if item['sport'] else item['title']
+                label = self._label(when, title)
+                if dt and dt <= now:
+                    label = f'[COLOR red]LIVE[/COLOR] {label}'
+                results.append((item['url'], label))
+            return results or None
+        except Exception as e:
+            _log_error('streameastgold', url, e)
+            return None
+
+    @_guard
+    def sports247(self, url):
+        try:
+            resp = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT)
+            base = _base_url(resp.url)
+            results = []
+            for href, body in re.findall(r'(?s)<a href="(/watch/[^"]+)" class="match-card">(.*?)</a>', resp.text):
+                def _cls(name):
+                    m = re.search(r'class="%s"[^>]*>\s*([^<]*)' % name, body)
+                    return html.unescape(m.group(1)).strip() if m else ''
+                teams = [html.unescape(t).strip() for t in re.findall(r'class="team-name"[^>]*>\s*([^<]*)', body)]
+                title = ' vs '.join(t for t in teams if t) or href.rsplit('/', 1)[-1]
+                league = _cls('tournament-name')
+                title = f'{title} [COLOR yellow]{league}[/COLOR]' if league else title
+                title = title.encode('ascii', 'ignore').decode('ascii')
+                live = 'live-badge' in body
+                when = ''
+                if not live:
+                    tm = re.search(r'match-time-display[^>]*>\s*(\d{1,2}:\d{2})', body)
+                    day = re.search(r'(\d{4}-\d{2}-\d{2})/?$', href)
+                    if tm and day:
+                        try:
+                            when = _to_local(_cet_to_utc(datetime.strptime(f'{day.group(1)} {tm.group(1)}', '%Y-%m-%d %H:%M'))).strftime('%I:%M %p').lstrip('0')
+                        except Exception:
+                            when = ''
+                label = self._label(when, title)
+                if live:
+                    label = f'[COLOR red]LIVE[/COLOR] {label}'
+                results.append((urljoin(base + '/', href), label))
+            return results or None
+        except Exception as e:
+            _log_error('sports247', url, e)
             return None
 
     @_guard
