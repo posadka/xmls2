@@ -245,8 +245,26 @@ def _png_iend_ts(data):
     return None
 
 
+def _png_chunk_ts(data):
+    offset = 8
+    while offset + 8 <= len(data):
+        size = struct.unpack_from('>I', data, offset)[0]
+        if size > len(data) - offset - 12:
+            return None
+        body = data[offset + 8:offset + 8 + size]
+        if _is_ts(body):
+            return body
+        if data[offset + 4:offset + 8] == b'IEND':
+            return None
+        offset += 12 + size
+    return None
+
+
 def _unwrap_segment(data):
     if data[:8] == PNG_SIGNATURE:
+        raw = _png_chunk_ts(data)
+        if raw:
+            return raw
         try:
             decoded = _decode_pixel_segment(data)
             if decoded:
@@ -330,6 +348,7 @@ def _rewrite_manifest(manifest_text, base_url, port, manifest_id, mark_ads=False
             seg_url = f'http://127.0.0.1:{port}/seg?mid={quote_plus(manifest_id)}&url=' + quote_plus(abs_url)
             if mark_ads and '/ephemeral/' not in abs_url:
                 seg_url += '&ad=1'
+            seg_url += '&f=.ts'
             lines.append(seg_url)
         else:
             lines.append(line)
