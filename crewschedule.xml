@@ -930,7 +930,7 @@ class streamer:
                 if not title_match:
                     continue
                 name = html.unescape(
-                    re.sub(r'<[^>]+>', '', title_match.group(1))
+                    re.sub(r'<[^>]+>', ' ', title_match.group(1))
                 ).strip()
                 name = re.sub(r'\s+', ' ', name)
                 is_live = bool(status_match) and 'game-card-status-live' in status_match.group(1).lower()
