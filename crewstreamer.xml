@@ -2182,6 +2182,10 @@ class streamer:
             elif 'embedhd.pk' in iframe1:
                 return self.embedhd_pk(iframe1)
 
+            dl_m = re.search(r'(?:thedaddy\.pk|dlive\.sx)/stream/stream-(\d+)\.php', iframe1)
+            if dl_m:
+                return self.daddylive(json.dumps({'daddylive': True, 'base': _dl_origin(iframe1) + '/', 'channels': [{'name': 'Channel ' + dl_m.group(1), 'id': dl_m.group(1)}]}))
+
             iframe1_html = requests.get(
                 iframe1,
                 headers={'Referer': url, 'User-Agent': UA},
@@ -2844,12 +2848,28 @@ class streamer:
             if not iframe2:
                 log(f'crackstreams: no iframe2 | {iframe1}', xbmc.LOGERROR)
                 return None
-            iframe2_html = requests.get(
-                iframe2,
-                headers={'Referer': iframe1, 'User-Agent': UA},
-                timeout=TIMEOUT
-            ).text
-            return self._decrypt_streams_center(iframe2_html, iframe2)
+            referer, frame_url = iframe1, iframe2
+            frame_html = ''
+            for _ in range(3):
+                frame_html = requests.get(
+                    frame_url,
+                    headers={'Referer': referer, 'User-Agent': UA},
+                    timeout=TIMEOUT
+                ).text
+                cdn_m = re.search(r'const\s+cdnUrl\s*=\s*"([^"]+)"', frame_html)
+                if cdn_m:
+                    return _publish_live_manifest(
+                        cdn_m.group(1),
+                        {'User-Agent': UA, 'Referer': frame_url, 'Origin': _base_url(frame_url)},
+                        'crackstreams'
+                    )
+                if re.search(r'const streamUrls?\s*=|input:\s*"', frame_html):
+                    break
+                nested = self._get_iframe_src(frame_html)
+                if not nested:
+                    break
+                referer, frame_url = frame_url, urljoin(frame_url, nested)
+            return self._decrypt_streams_center(frame_html, frame_url)
         except Exception as e:
             _log_error('crackstreams', url, e)
             return None
