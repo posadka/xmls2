@@ -433,6 +433,16 @@ def _publish_direct_hls(stream_url, headers):
     return f'{stream_url}|' + '&'.join(f'{k}={v}' for k, v in headers.items())
 
 
+def _dl_base():
+    try:
+        text = requests.get('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/daddy.xml', headers={'User-Agent': UA}, timeout=TIMEOUT).text
+        m = re.search(r'"([^"]+)"', text)
+        return m.group(1).rstrip('/') + '/' if m else None
+    except Exception as e:
+        log(f'daddylive: base url fetch failed: {e}', xbmc.LOGWARNING)
+        return None
+
+
 def _dl_origin(url):
     u = _up(url)
     return f'{u.scheme}://{u.netloc}'
@@ -788,7 +798,8 @@ class streamer:
                 u = self.sports247(url)
             elif 'xlivestreamer' in url and 'watch.php' in url and 'ch=' in url:
                 cid = (parse_qs(_up(url).query).get('ch') or [''])[0]
-                u = self.daddylive(json.dumps({'daddylive': True, 'base': 'https://dlive.sx/', 'channels': [{'name': 'Channel ' + cid, 'id': cid}]})) if cid else None
+                dl_base = _dl_base() if cid else None
+                u = self.daddylive(json.dumps({'daddylive': True, 'base': dl_base, 'channels': [{'name': 'Channel ' + cid, 'id': cid}]})) if dl_base else None
             elif 'dembed.st/' in url:
                 u = self.dembed(url)
             elif 'matchix.org/embed' in url:
