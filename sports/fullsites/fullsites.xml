@@ -1643,7 +1643,7 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         elif ts and ts + 4 * 3600 < now:
             continue
         else:
-            label = '[COLOR dodgerblue]%s %s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, time.strftime('%m/%d %I:%M %p', time.localtime(ts)) if ts else '', title)
+            label = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (league, title)
         results.append((link, label))
     return results or None
 ]]></expres>
@@ -1874,7 +1874,6 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         from urllib.parse import urljoin
     except ImportError:
         from urlparse import urljoin
-    from datetime import datetime
     UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36'
     site = 'https://streamcenter.st/game-cards/embed'
     try:
@@ -1891,21 +1890,13 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
     results = []
     for game in games:
         status_match = re.search(r'(?is)<span[^>]*\bclass=["\']([^"\']*\bgame-card-status\b[^"\']*)["\'][^>]*>\s*(.*?)\s*</span>', game)
-        time_match  = re.search(r'(?is)<time[^>]*?\sdateTime=["\']([^"\']+)["\']', game)
         title_match = re.search(r'(?is)<h3[^>]*\baria-label=["\']([^"\']*)["\']', game)
         if not title_match:
             continue
         name = html.unescape(title_match.group(1)).strip()
         name = re.sub(r'\s+', ' ', name)
         is_live = bool(status_match) and 'game-card-status-live' in status_match.group(1).lower()
-        start = ''
-        if time_match:
-            try:
-                dt = datetime.strptime(time_match.group(1), '%Y-%m-%dT%H:%M:%S.%fZ')
-                start = dt.strftime('%I:%M %p').lstrip('0')
-            except Exception:
-                start = ''
-        title = '[COLOR dodgerblue]%s[/COLOR] [COLOR orange]%s[/COLOR]' % (start, name) if start else '[COLOR orange]%s[/COLOR]' % name
+        title = '[COLOR orange]%s[/COLOR]' % name
         if is_live:
             title = '[COLOR red]LIVE[/COLOR] ' + title
         sources = re.findall(
@@ -2104,15 +2095,15 @@ def GetLSProData(page_data,Cookie_Jar,m,url = ''):
         if mm:
             t_m = re.search(r'(?s)<span[^>]*\bclass=["\']([^"\']*f1-podium--time[^"\']*)["\'][^>]*>(.*?)</span>', block)
             live = 'card-live-pill' in block or bool(t_m and 'btn-live' in t_m.group(1))
-            when = '' if live or not t_m else ' '.join(re.sub(r'<[^>]+>', ' ', html.unescape(t_m.group(2))).split())
-            matches.append(mm.groups() + (live, when))
+            matches.append(mm.groups() + (live,))
     results = []
-    for href, league, teams, is_live, when in matches:
+    for href, league, teams, is_live in matches:
         href    = urljoin(base, html.unescape(href).strip())
         league  = html.unescape(league).strip()
         teams   = ' '.join(html.unescape(teams).split())
-        status  = '[COLOR red]LIVE[/COLOR]' if is_live else when.encode('ascii', 'ignore').decode('ascii')
-        label   = f'[COLOR dodgerblue]{league}[/COLOR] {status} [COLOR orange]{teams}[/COLOR]'
+        label   = f'[COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{teams}[/COLOR]'
+        if is_live:
+            label = '[COLOR red]LIVE[/COLOR] ' + label
         results.append((href, label))
     return results or None
 ]]></expres>
