@@ -792,6 +792,9 @@ class streamer:
         try:
             if '"daddylive": true' in url or (any(x in url for x in ['dlive.sx', 'thedaddy.pk']) and 'watch.php' in url):
                 u = self.daddylive(url)
+            elif any(x in url for x in ['dlive.sx', 'thedaddy.pk']) and re.search(r'/stream-\d+\.php', url):
+                cid = re.search(r'/stream-(\d+)\.php', url).group(1)
+                u = self.daddylive(json.dumps({'daddylive': True, 'base': _dl_origin(url) + '/', 'channels': [{'name': 'Channel ' + cid, 'id': cid}]}))
             elif 'streameast.gold' in url:
                 u = self.streameastgold(url)
             elif 'sports247.ru/watch' in url:
