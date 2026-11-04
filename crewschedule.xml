@@ -2021,6 +2021,40 @@ class streamer:
                     if m:
                         item['dt'] = now + timedelta(hours=int(m.group(1) or 0), minutes=int(m.group(2)))
                 items.append(item)
+            if not items:
+                want = re.sub(r'-?streams?$', '', urlparse(url).path.strip('/').lower())
+                page = resp.text
+                if resp.status_code != 200 or 'nav-link2' not in page:
+                    page = requests.get(base + '/', headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                majors = ('nhl', 'nba', 'nfl', 'mlb', 'ncaa', 'tennis', 'cricket', 'boxing', 'ufc', 'mma', 'wwe', 'f1', 'formula', 'motogp', 'golf', 'nascar')
+                section = ''
+                for m in re.finditer(r'(?s)<div class="my-1">\s*<a [^>]*>.*?<span>([^<]*)</span>|<a [^>]*href="([^"]+)"[^>]*nav-link2[^>]*>(.*?)</a>', page):
+                    if m.group(1) is not None:
+                        section = re.sub(r'\s+', ' ', html.unescape(m.group(1))).encode('ascii', 'ignore').decode('ascii').strip()
+                        continue
+                    sec = section.lower()
+                    if want == 'soccer' and any(k in sec for k in majors):
+                        continue
+                    if want and want != 'soccer' and want not in sec:
+                        continue
+                    full = urljoin(base + '/', m.group(2))
+                    if urlparse(full).netloc != urlparse(base).netloc or full in seen:
+                        continue
+                    card = m.group(3)
+                    teams = [re.sub(r'\s+', ' ', html.unescape(t)).strip() for t in re.findall(r'<div class="col-12 my-auto">([^<]*)</div>', card)]
+                    teams = [t.encode('ascii', 'ignore').decode('ascii').strip() for t in teams if t.strip()]
+                    if not teams:
+                        continue
+                    state = re.search(r'(?s)<div class="col-3[^"]*">(.*?)</div>', card)
+                    state = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', state.group(1))).strip().lower() if state else ''
+                    if 'ended' in state:
+                        continue
+                    seen.add(full)
+                    item = {'url': full, 'title': ' vs '.join(teams[:2]), 'sport': section, 'dt': None, 'live': 'started' in state, 'fetch': False}
+                    t_m = re.search(r'(?:(\d+)\s*hr)?\D*(\d+)\s*min', state)
+                    if not item['live'] and t_m:
+                        item['dt'] = now + timedelta(hours=int(t_m.group(1) or 0), minutes=int(t_m.group(2)))
+                    items.append(item)
             items = [i for i in items if not i['dt'] or i['dt'] <= now + timedelta(hours=48)][:80]
 
             def _kickoff(item):
@@ -2261,6 +2295,30 @@ class streamer:
                 'motor-sports': {'motor-sports', 'motorsports', 'f1'},
                 'baseball': {'baseball', 'mlb'},
             }
+            ppv_main = {}
+            if not games and 'ppv.st' in api:
+                try:
+                    ppv_groups = requests.get(api + '/streams', headers=headers, timeout=TIMEOUT).json().get('streams') or []
+                except Exception as e:
+                    log(f'sportsupa: ppv list failed | {e}', xbmc.LOGWARNING)
+                    ppv_groups = []
+                for group in ppv_groups:
+                    cat = re.sub(r'[^a-z0-9]+', '-', str(group.get('category') or 'other').lower()).strip('-') or 'other'
+                    if sport != 'all' and cat not in groups.get(sport, {sport}):
+                        continue
+                    for ev in group.get('streams') or []:
+                        if not isinstance(ev, dict) or not ev.get('name'):
+                            continue
+                        subs = ev.get('substreams') or []
+                        subs = list(subs.values()) if isinstance(subs, dict) else list(subs)
+                        feeds = [{'url': f['iframe'], 'language': str(f.get('source_tag') or '').strip()} for f in [ev] + subs if isinstance(f, dict) and f.get('iframe')]
+                        ends = ev.get('ends_at') or 0
+                        if not feeds or (ends and ends < time.time()):
+                            continue
+                        starts = ev.get('starts_at') or 0
+                        gid = 'ppv-' + str(ev.get('id') or ev.get('uri_name') or ev.get('name'))
+                        games.append({'id': gid, 'title': html.unescape(ev['name']).strip(), 'category': cat, 'date': starts * 1000 if starts and starts < 1e11 else starts, 'sources': []})
+                        ppv_main[norm(gid)] = feeds
             cutoff = time.time() * 1000 - 7 * 86400 * 1000
             seen   = set()
             for game in games:
@@ -2271,7 +2329,7 @@ class streamer:
                     continue
                 nid = norm(game.get('id'))
                 seen.add(nid)
-                add(game, (main_items.get(nid) or {}).get('streams'))
+                add(game, (main_items.get(nid) or {}).get('streams') or ppv_main.get(nid))
             for nid, rec in main_items.items():
                 meta = (rec or {}).get('meta') or {}
                 if nid in seen or not meta:

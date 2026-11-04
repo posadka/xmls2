@@ -1037,6 +1037,11 @@ class streamer:
                 if direct:
                     src = direct.group(1).replace('\\/', '/')
                     return f'{src}|Referer={referer}&Origin={origin}&User-Agent={UA}&Accept=application/x-mpegURL,*/*'
+                nested = re.search(r'(?is)<iframe[^>]+src=["\']([^"\']+)', iframe_html)
+                if nested:
+                    nested_url = nested.group(1).strip()
+                    nested_url = 'https:' + nested_url if nested_url.startswith('//') else urljoin(iframe_url, nested_url)
+                    return self.resolve(nested_url)
                 log(f'givemereddit: no packed script or m3u8 found | {iframe_url}', xbmc.LOGERROR)
                 return None
             unpacked = hunter.hunter(
@@ -3191,6 +3196,14 @@ class streamer:
         except (ValueError, TypeError):
             pass
         try:
+            def _cfg(cfg_url):
+                text = requests.get(cfg_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+                try:
+                    return json.loads(text)
+                except ValueError:
+                    cfg_m = re.search(r'PP_STABLE_CONFIG\s*=\s*(\{.*?\});', text)
+                    return json.loads(cfg_m.group(1)) if cfg_m else {}
+
             origin = _base_url(url)
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             m = re.search(r'window\.loadPlayerChannel\((\d+)\)', page_data)
@@ -3202,7 +3215,7 @@ class streamer:
                 if stream_url and 'm3u8' not in stream_url:
                     player_url = stream_url
                     cfg_url = f'{player_url}{"&" if "?" in player_url else "?"}ppcfg=1&_={int(time.time() * 1000)}'
-                    cfg = requests.get(cfg_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
+                    cfg = _cfg(cfg_url)
                     stream_url = cfg.get('src') or cfg.get('srcBase')
                     if not stream_url:
                         log(f'korast: no src in player config | {player_url}', xbmc.LOGERROR)
@@ -3211,7 +3224,7 @@ class streamer:
                     return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': p_origin + '/', 'Origin': p_origin}, 'korast')
             else:
                 api_url = f'{url}{"&" if "?" in url else "?"}ppcfg=1&_={int(time.time() * 1000)}'
-                cfg = requests.get(api_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).json()
+                cfg = _cfg(api_url)
                 stream_url = cfg.get('src') or cfg.get('srcBase')
             if not stream_url:
                 log(f'korast: no stream_url found | {url}', xbmc.LOGERROR)
@@ -3802,6 +3815,20 @@ class streamer:
                 if lang:
                     label += f' ({lang})'
                 options.append((label, href))
+            if not options:
+                for row in re.findall(r'(?s)<div class="col-md-12 premium-stream-row">\s*<a [^>]*?href="([^"]+)"[^>]*>(.*?)</a>', page):
+                    href = html.unescape(row[0]).strip()
+                    host = _up(href).netloc.lower()
+                    if not href.startswith('http') or any(x in host for x in ('totalsportek', 'streameast', 't.me')):
+                        continue
+                    cells = [re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', c))).encode('ascii', 'ignore').decode('ascii').strip() for c in re.findall(r'(?s)<div class="col-md-\d[^"]*"[^>]*>(.*?)</div>', row[1])]
+                    name = cells[0] if cells else host
+                    chan = cells[1] if len(cells) > 1 else ''
+                    lang = cells[5] if len(cells) > 5 else ''
+                    label = f'{name or host} | {chan}' if chan else (name or host)
+                    if lang:
+                        label += f' ({lang})'
+                    options.append((label, href))
             if not options:
                 log(f'streameastgold: no links on page yet | {url}', xbmc.LOGERROR)
                 return None
