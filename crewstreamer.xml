@@ -3556,7 +3556,30 @@ class streamer:
                 if choice == -1:
                     return None
                 origin = _base_url(url)
-                return _publish_direct_hls(feeds[choice]['manifestUrl'], {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin})
+                feed_headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                master_url = feeds[choice]['manifestUrl']
+                try:
+                    master_resp = requests.get(master_url, headers=feed_headers, timeout=TIMEOUT)
+                    master = master_resp.text
+                except Exception as e:
+                    log(f'topstreamer: master fetch failed {e} | {master_url}', xbmc.LOGWARNING)
+                    master = ''
+                variants = re.findall(r'(#EXT-X-STREAM-INF:[^\n]*?BANDWIDTH=(\d+)[^\n]*)\n\s*([^#\s][^\n]*)', master)
+                if not master.lstrip().startswith('#EXTM3U') or not variants:
+                    return _publish_direct_hls(master_url, feed_headers)
+                inf, _, v_url = max(variants, key=lambda v: int(v[1]))
+                lines = ['#EXTM3U', '#EXT-X-VERSION:7', '#EXT-X-INDEPENDENT-SEGMENTS']
+                group_m = re.search(r'AUDIO="([^"]+)"', inf)
+                if group_m:
+                    audio = [a for a in re.findall(r'#EXT-X-MEDIA:[^\n]*', master) if 'TYPE=AUDIO' in a and f'GROUP-ID="{group_m.group(1)}"' in a]
+                    audio = [a for a in audio if 'DEFAULT=YES' in a][:1] or audio[:1]
+                    for a in audio:
+                        lines.append(re.sub(r'URI="([^"]+)"', lambda m: 'URI="' + urljoin(master_resp.url, m.group(1)) + '"', a))
+                    if not audio:
+                        inf = re.sub(r',?AUDIO="[^"]+"', '', inf)
+                lines.append(inf.strip())
+                lines.append(urljoin(master_resp.url, v_url.strip()))
+                return _publish_static_manifest('\n'.join(lines) + '\n', 'topstreamer')
 
             m = re.search(r'window\.masterinf\s*=\s*(\{.*?\})\s*;', page_data, re.S)
             if not m:
