@@ -926,7 +926,7 @@ class streamer:
             elif 'gblog.asia' in url:
                 u = self.gblog(url)
             elif 'xstream.st' in url:
-                u = self._decrypt_streams_center(requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text, url)
+                u = self.xstream(url)
             elif getattr(self, '_chasing', False):
                 self._unrouted = True
                 u = None
@@ -2776,6 +2776,30 @@ class streamer:
             return self._decrypt_streams_center(iframe_html, frame_url)
         except Exception as e:
             _log_error('streamcenter', url, e)
+            return None
+
+    @_guard
+    def xstream(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            m = re.search(r'const\s+streamUrls\s*=\s*(\[.*?\])\s*;', page_data, re.S)
+            if not m:
+                log(f'xstream: no streamUrls on page | {url}', xbmc.LOGERROR)
+                return None
+            try:
+                urls = [u for u in json.loads(m.group(1)) if isinstance(u, str) and u.startswith('http')]
+            except Exception:
+                urls = []
+            if not urls:
+                log(f'xstream: empty streamUrls | {url}', xbmc.LOGERROR)
+                return None
+            choice = 0 if len(urls) == 1 else _select('Choose Stream', [_up(u).netloc for u in urls])
+            if choice == -1:
+                return None
+            origin = _base_url(url)
+            return f'{urls[choice]}|Referer={origin}/&Origin={origin}&User-Agent={UA}'
+        except Exception as e:
+            _log_error('xstream', url, e)
             return None
 
     @_guard
