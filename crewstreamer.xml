@@ -925,6 +925,8 @@ class streamer:
                 u = self.ptouch(url)
             elif 'gblog.asia' in url:
                 u = self.gblog(url)
+            elif 'xstream.st' in url:
+                u = self._decrypt_streams_center(requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text, url)
             elif getattr(self, '_chasing', False):
                 self._unrouted = True
                 u = None
@@ -2739,6 +2741,12 @@ class streamer:
             page_resp = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT)
             page_data = page_resp.text
             iframe1   = self._get_iframe_src(page_data)
+            ev_m      = re.search(r'/watch/([^/?#]+)', url)
+            if not iframe1 and ev_m:
+                cards = requests.get(_base_url(url) + '/game-cards/embed', headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text
+                link_m = re.search(r'href=["\']([^"\']*/api/stream-link/iframe/' + re.escape(ev_m.group(1)) + r'/[^"\']+)["\']', cards)
+                if link_m:
+                    return self.streamcenter(urljoin(_base_url(url) + '/', html.unescape(link_m.group(1))))
             if not iframe1:
                 log(f'streamcenter: no iframe found | {url}', xbmc.LOGERROR)
                 return None
@@ -3503,6 +3511,29 @@ class streamer:
         try:
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
 
+            s_m = re.search(r'var\s+streams\s*=\s*\{', page_data)
+            if s_m:
+                try:
+                    streams, _ = json.JSONDecoder().raw_decode(page_data, s_m.end() - 1)
+                except Exception:
+                    streams = {}
+                feeds = []
+                for s in (streams.values() if isinstance(streams, dict) else []):
+                    if not isinstance(s, dict) or not s.get('manifestUrl'):
+                        continue
+                    if isinstance(s.get('clearkey'), dict) and s.get('clearkey'):
+                        continue
+                    feeds.append(s)
+                if not feeds:
+                    log(f'topstreamer: only encrypted feeds on page | {url}', xbmc.LOGERROR)
+                    return None
+                feeds.sort(key=lambda s: s.get('rank') if isinstance(s.get('rank'), int) else 999)
+                choice = 0 if len(feeds) == 1 else _select('Choose Stream', [s.get('name') or s.get('mediaId') or 'Stream' for s in feeds])
+                if choice == -1:
+                    return None
+                origin = _base_url(url)
+                return _publish_direct_hls(feeds[choice]['manifestUrl'], {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin})
+
             m = re.search(r'window\.masterinf\s*=\s*(\{.*?\})\s*;', page_data, re.S)
             if not m:
                 log(f'topstreamer: no masterinf found | {url}', xbmc.LOGERROR)
@@ -3759,6 +3790,20 @@ class streamer:
         if m:
             origin = _dl_origin(resp.url)
             return _publish_live_manifest(m.group(0), {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, 'chase')
+        encoded = re.findall(r'atob\(\s*["\']([A-Za-z0-9+/=]{16,})["\']\s*\)', page)
+        for name in re.findall(r'atob\(\s*([A-Za-z_$][\w$]*)\s*\)', page):
+            v_m = re.search(r'(?<![\w$])' + re.escape(name) + r'\s*=\s*["\']([A-Za-z0-9+/=]{16,})["\']', page)
+            if v_m:
+                encoded.append(v_m.group(1))
+        for enc in encoded:
+            try:
+                nxt = base64.b64decode(enc + '=' * (-len(enc) % 4)).decode('utf-8').strip()
+            except Exception:
+                continue
+            if nxt.startswith('//'):
+                nxt = 'https:' + nxt
+            if nxt.startswith('http'):
+                return self._chase(nxt, resp.url, depth + 1)
         return self.generic(url)
 
     @_guard
