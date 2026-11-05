@@ -877,7 +877,7 @@ class streamer:
                 u = self.embed_st(url)
             elif 'embedsports.me' in url:
                 u = self.embedsportsme(url)
-            elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline']):
+            elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline', 'sportsoonline']):
                 u = self.sportsonline(url)
             elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
                 u = self.embedhd_st(url)
