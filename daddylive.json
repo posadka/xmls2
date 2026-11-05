@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "base_url": "https://thedaddy.pk/",
+  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+  "players": {
+    "stream": "watch",
+    "cast": "cast",
+    "watch": "watch",
+    "plus": "plus",
+    "casting": "casting",
+    "player": "player",
+    "hub": "watch"
+  },
+  "proxied": [
+    "stream",
+    "watch",
+    "plus",
+    "player",
+    "hub"
+  ],
+  "b64_params": [
+    "data"
+  ],
+  "econfig_perm": [
+    2,
+    0,
+    3,
+    1
+  ],
+  "patterns": {
+    "filters": "<div[^>]+class=\"filters\"[^>]*>(.*?)</div>",
+    "filter_anchor": "<a[^>]+href=\"([^\"]+)\"[^>]*>(.*?)</a>",
+    "schedule_cut": "<h2\\s+class=\"collapsible-header\\b",
+    "event": "<div\\s+class=\"schedule__event\">.*?<div\\s+class=\"schedule__eventHeader\"[^>]*?>\\s*(?:<[^>]+>)*?<span\\s+class=\"schedule__time\"[^>]*data-time=\"([^\"]+)\"[^>]*>.*?</span>\\s*<span\\s+class=\"schedule__eventTitle\">\\s*([^<]+)\\s*</span>.*?</div>\\s*<div\\s+class=\"schedule__channels\">(.*?)</div>",
+    "event_channel": "<a[^>]+href=\"([^\"]+)\"[^>]*title=\"([^\"]*)\"[^>]*>(.*?)</a>",
+    "channel_block": "<div\\s+class=\"schedule__event\">.*?<div\\s+class=\"schedule__eventHeader\"[^>]*?>.*?</div>\\s*<div\\s+class=\"schedule__channels\">(.*?)</div>",
+    "card": "<a\\s+class=\"card\"[^>]*?href=\"(?P<href>[^\"]+)\"[^>]*?data-title=\"(?P<data_title>[^\"]*)\"[^>]*>.*?<div\\s+class=\"card__title\">\\s*(?P<title>.*?)\\s*</div>.*?ID:\\s*(?P<id>\\d+)\\s*</div>.*?</a>",
+    "buttons": "data-url=\"([^\"]+)\"\\s+title=\"([^\"]+)\"",
+    "iframe": "<iframe[^>]+src=\"([^\"]+)\"",
+    "econfig": "window\\._econfig='([^']+)'",
+    "payload": "(?:var|let|const)\\s+\\w+\\s*=\\s*\\[([\\d,\\s]+)\\]\\s*,\\s*\\w+\\s*=\\s*(\\d+)\\s*,\\s*\\w+\\s*=\\s*(\\d+)",
+    "load_stream": "loadStreamUrl\\(\\s*\"([^\"]+)\"",
+    "signed_url": "SIGNED_URL\\s*=\\s*\"([^\"]+)\"",
+    "plain_url": "\\burl\\s*=\\s*\"([^\"]+)\"",
+    "stream_urls": "const\\s+streamUrls\\s*=\\s*(\\[[^\\]]*\\])",
+    "watch_src": "const\\s+SRC\\s*=\\s*\"([^\"]+)\"",
+    "watch_edge": "const\\s+EDGE\\s*=\\s*\"([^\"]+)\"",
+    "watch_channel": "const\\s+CHANNEL\\s*=\\s*\"([^\"]+)\"",
+    "b64_atob": "atob\\('([^']+)'\\)",
+    "b64_url": "(?:https?:)?//[^\\s\"\\'<>]+",
+    "data_encoded": "data-encoded=\"([^\"]+)\"",
+    "eval_atob": "\"([A-Za-z0-9+/=]{40,})\"\\s*;\\s*eval\\(atob",
+    "iframe_concat": "iframe\\.src\\s*=\\s*'([^']+)'\\s*\\+\\s*encodeURIComponent",
+    "f_src": "f\\.src\\s*=\\s*\"([^\"]+)\"",
+    "iframe_any": "<ifr(?:\\'\\+\\')?ame[^>]+src=\"((?:https?:)?//[^\"]+)\""
+  }
+}
