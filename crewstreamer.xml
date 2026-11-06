@@ -790,9 +790,9 @@ class streamer:
     @_fallback
     def resolve(self, url):
         try:
-            if '"daddylive": true' in url or (any(x in url for x in ['dlive.sx', 'thedaddy.pk']) and 'watch.php' in url):
+            if '"daddylive": true' in url or (any(x in url for x in ['dlive.sx', 'thedaddy.pk', 'thedaddy.li']) and 'watch.php' in url):
                 u = self.daddylive(url)
-            elif any(x in url for x in ['dlive.sx', 'thedaddy.pk']) and re.search(r'/stream-\d+\.php', url):
+            elif any(x in url for x in ['dlive.sx', 'thedaddy.pk', 'thedaddy.li']) and re.search(r'/stream-\d+\.php', url):
                 cid = re.search(r'/stream-(\d+)\.php', url).group(1)
                 u = self.daddylive(json.dumps({'daddylive': True, 'base': _dl_origin(url) + '/', 'channels': [{'name': 'Channel ' + cid, 'id': cid}]}))
             elif 'streameast.gold' in url:
@@ -2203,7 +2203,7 @@ class streamer:
             elif 'embedhd.pk' in iframe1:
                 return self.embedhd_pk(iframe1)
 
-            dl_m = re.search(r'(?:thedaddy\.pk|dlive\.sx)/stream/stream-(\d+)\.php', iframe1)
+            dl_m = re.search(r'(?:thedaddy\.(?:pk|li)|dlive\.sx)/stream/stream-(\d+)\.php', iframe1)
             if dl_m:
                 return self.daddylive(json.dumps({'daddylive': True, 'base': _dl_origin(iframe1) + '/', 'channels': [{'name': 'Channel ' + dl_m.group(1), 'id': dl_m.group(1)}]}))
 

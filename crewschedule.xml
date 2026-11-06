@@ -317,7 +317,7 @@ class streamer:
 
     def resolve(self, url):
         try:
-            if any(x in url for x in ['dlive.sx', 'thedaddy.pk']):
+            if any(x in url for x in ['dlive.sx', 'thedaddy.pk', 'thedaddy.li']):
                 u = self.daddylive(url)
             elif 'streameast.gold' in url:
                 u = self.streameastgold(url)
@@ -652,6 +652,8 @@ class streamer:
                     last_time = time_text
                     try:
                         dt = datetime.strptime(f'{day} {time_text}', '%b %d, %Y %H:%M').replace(tzinfo=timezone.utc) + timedelta(days=rollover)
+                        if dt < _et_to_utc(datetime.strptime(day, '%b %d, %Y')):
+                            dt += timedelta(days=1)
                         time_str = _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
                     except Exception:
                         pass
