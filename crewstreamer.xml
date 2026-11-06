@@ -859,7 +859,7 @@ class streamer:
                 u = self.timstreams(url, 'https://tim-streams.com/')
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
-            elif any(x in url for x in ['streame.center', 'streams.center', 'streamecenter', 'streamcenter']):
+            elif any(x in url for x in ['streame.center', 'streams.center', 'streamecenter', 'streamcenter', 'streamec.st', 'embedcenter.st']):
                 u = self.streamcenter(url)
             elif any(x in url for x in ['istreameast.app', 'thestreameast.top', 'streameast.cool', 'sportsurge']):
                 u = self.streameast(url)
@@ -2734,6 +2734,14 @@ class streamer:
                 log(f'shd: empty iframe2 html | {iframe2_url}', xbmc.LOGERROR)
                 return None
             origin, referer = _origin_referer(iframe2_url)
+            su_m = re.search(r'const\s+streamUrls\s*=\s*(\[.*?\])\s*;', iframe2_html, re.S)
+            if su_m:
+                try:
+                    su = [u for u in json.loads(su_m.group(1)) if isinstance(u, str) and u.startswith('http')]
+                except Exception:
+                    su = []
+                if su:
+                    return f'{su[0]}|Referer={referer}&Origin={origin}&User-Agent={UA}'
             m       = re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', iframe2_html)
             if not m:
                 log(f'shd: no m3u8 match | {iframe2_url}', xbmc.LOGERROR)
@@ -3401,6 +3409,8 @@ class streamer:
             if not iframe1:
                 log(f'ripplestreamsfouru: no iframe1 | {url}', xbmc.LOGERROR)
                 return None
+            if 'dembed.st/' in iframe1:
+                return self.dembed(iframe1, url)
 
             iframe1_html = requests.get(
                 iframe1,
@@ -3800,6 +3810,24 @@ class streamer:
     def matchix(self, url):
         try:
             sid = (parse_qs(_up(url).query).get('s') or [''])[0]
+            slug_m = re.search(r'/embed/([^/?#]+)', url)
+            if not sid and slug_m:
+                api = _dl_origin(url) + '/api/'
+                api_headers = {'User-Agent': UA, 'Referer': url}
+                links = []
+                try:
+                    data = requests.get(api + 'matches/' + quote_plus(slug_m.group(1)), headers=api_headers, timeout=TIMEOUT).json()
+                    links = [l for l in (data.get('links') or []) if isinstance(l, dict) and l.get('id')]
+                    if not links:
+                        data = requests.post(api + 'resolve/' + quote_plus(slug_m.group(1)), headers=api_headers, timeout=TIMEOUT).json()
+                        links = [l for l in (data.get('links') or []) if isinstance(l, dict) and l.get('id')]
+                except Exception as e:
+                    log(f'matchix: match api failed | {e}', xbmc.LOGWARNING)
+                if links:
+                    pick = 0 if len(links) == 1 else _select('Choose Stream', [str(l.get('language') or 'Stream ' + str(l.get('streamNo') or i)) for i, l in enumerate(links, 1)])
+                    if pick == -1:
+                        return None
+                    sid = str(links[pick]['id'])
             if not sid:
                 log(f'matchix: no stream id | {url}', xbmc.LOGERROR)
                 return None
@@ -3825,6 +3853,13 @@ class streamer:
             self._chasing = False
         if result or not self._unrouted:
             return result
+        dl_m = re.search(r'/stream[- ](\d+)\.php', unquote(url))
+        if dl_m:
+            dl_base = _dl_base()
+            if dl_base:
+                result = self.daddylive(json.dumps({'daddylive': True, 'base': dl_base, 'channels': [{'name': 'Channel ' + dl_m.group(1), 'id': dl_m.group(1)}]}))
+                if result:
+                    return result
         if depth >= 4:
             return self.generic(url)
         try:
@@ -3844,10 +3879,29 @@ class streamer:
         sd_m = re.search(r'SERVER_DATA\s*=\s*\{[^;]*?"u"\s*:\s*"(https?:[^"]+)"', page)
         if sd_m:
             return self._chase(sd_m.group(1).replace('\\/', '/'), resp.url, depth + 1)
+        pu_m = re.search(r'PLAYER_URL\s*=\s*["\'](https?://[^"\']+)["\']', page)
+        if pu_m:
+            return self._chase(pu_m.group(1).strip(), resp.url, depth + 1)
+        enc_m = re.search(r'data-enc="([A-Za-z0-9+/=]{16,})"', page)
+        if enc_m:
+            try:
+                inner = base64.b64decode(base64.b64decode(enc_m.group(1)).decode('utf-8')[::-1])
+                nxt = ''.join(chr(b ^ 11) for b in bytearray(inner)).strip()
+            except Exception:
+                nxt = ''
+            if nxt.startswith('http'):
+                return self._chase(nxt, resp.url, depth + 1)
         m = re.search(r'https?://[^\s\'"<>]+\.m3u8[^\s\'"<>]*', page.replace('\\/', '/'))
         if m:
             origin = _dl_origin(resp.url)
             return _publish_live_manifest(m.group(0), {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, 'chase')
+        if 'unescape(' in page:
+            u_m = re.search(r'src\s*:\s*"((?:https?:)?//[^"]+\.m3u8[^"]*)"', unquote(page))
+            if u_m:
+                src = u_m.group(1).strip().replace(' ', '%20')
+                src = 'https:' + src if src.startswith('//') else src
+                origin = _dl_origin(resp.url)
+                return _publish_live_manifest(src, {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, 'chase')
         encoded = re.findall(r'atob\(\s*["\']([A-Za-z0-9+/=]{16,})["\']\s*\)', page)
         for name in re.findall(r'atob\(\s*([A-Za-z_$][\w$]*)\s*\)', page):
             v_m = re.search(r'(?<![\w$])' + re.escape(name) + r'\s*=\s*["\']([A-Za-z0-9+/=]{16,})["\']', page)
@@ -3860,6 +3914,9 @@ class streamer:
                 continue
             if nxt.startswith('//'):
                 nxt = 'https:' + nxt
+            if nxt.startswith('http') and '.m3u8' in nxt:
+                origin = _dl_origin(resp.url)
+                return _publish_live_manifest(nxt, {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, 'chase')
             if nxt.startswith('http'):
                 return self._chase(nxt, resp.url, depth + 1)
         return self.generic(url)
