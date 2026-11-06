@@ -1426,6 +1426,9 @@ class streamer:
             if 'taifood-blog' in iframe_url:
                 return self.resolve(iframe_url)
 
+            elif any(x in iframe_url for x in ['streamfree.top', 'strmfree']):
+                return self.strmfree(iframe_url)
+
             elif 'embedhd.st' in iframe_url:
                 return self.embedhd_st(iframe_url)
 
@@ -2165,7 +2168,7 @@ class streamer:
                 session = requests.Session()
                 page_data = session.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
             base = _base_url(url)
-            li_blocks = re.findall(r'(?s)<li\s+class="se-stream([^"]*)">(.*?)</li>', page_data)
+            li_blocks = re.findall(r'(?s)<li\s+class="se-stream([^"]*)"[^>]*>(.*?)</li>', page_data)
             servers = []
             for cls, block in li_blocks:
                 if 'is-pro' in cls:
@@ -2194,6 +2197,11 @@ class streamer:
 
             iframe1   = self._get_iframe_src(page_data, require_id=True)
             if not iframe1:
+                su_m = re.search(r"var\s+streamUrl\s*=\s*\(function\(\w+\)\{return\s+atob\(\w+\)\.split\(''\)\.reverse\(\)\.join\(''\)\}\)\('([A-Za-z0-9+/=]+)'\)", page_data)
+                if su_m:
+                    stream_url = base64.b64decode(su_m.group(1)).decode('utf-8', 'ignore')[::-1].strip()
+                    if stream_url.startswith('http'):
+                        return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': base + '/', 'Origin': base}, 'streameast_ga')
                 log(f'streameast_ga: no iframe1 (require_id) | {url}', xbmc.LOGERROR)
                 return None
 
@@ -3833,6 +3841,9 @@ class streamer:
             if not nxt.startswith('http') or any(x in nxt for x in ('chatango', 'lijit', 'sharethis', 'histats', 'cbox', 'google', 'facebook', 'twitter', 'youtube', 'disqus')):
                 continue
             return self._chase(nxt, resp.url, depth + 1)
+        sd_m = re.search(r'SERVER_DATA\s*=\s*\{[^;]*?"u"\s*:\s*"(https?:[^"]+)"', page)
+        if sd_m:
+            return self._chase(sd_m.group(1).replace('\\/', '/'), resp.url, depth + 1)
         m = re.search(r'https?://[^\s\'"<>]+\.m3u8[^\s\'"<>]*', page.replace('\\/', '/'))
         if m:
             origin = _dl_origin(resp.url)

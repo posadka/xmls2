@@ -844,6 +844,22 @@ class streamer:
                     time_str = ''
                 title = f'[COLOR dodgerblue]{time_str}[/COLOR] [COLOR orange]{team1} vs {team2}[/COLOR]'
                 results.append((full_url, title))
+            if not results:
+                months = {m: i for i, m in enumerate(['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'], 1)}
+                today = datetime.now().date()
+                for href, label, block in re.findall(r'(?s)<a class="matches card[^"]*"[^>]*href="([^"]+)"[^>]*aria-label="([^"]+)"[^>]*>(.*?)</a>', page_data):
+                    d_m = re.search(r'<p class="mb-0 mr-auto">\s*(([A-Z]{3}) (\d{1,2}) - (?:([A-Z]{3}) )?(\d{1,2}), (\d{4}))\s*</p>', block)
+                    if not d_m or d_m.group(2) not in months:
+                        continue
+                    try:
+                        end = datetime(int(d_m.group(6)), months.get(d_m.group(4) or d_m.group(2), 0), int(d_m.group(5))).date()
+                    except ValueError:
+                        continue
+                    if end < today or (end - today).days > 7:
+                        continue
+                    name = html.unescape(label).encode('ascii', 'ignore').decode('ascii').strip()
+                    when = d_m.group(1)
+                    results.append((urljoin(base, href), self._label(when, name)))
             return results or None
         except Exception as e:
             _log_error('givemereddit', url, e)
@@ -1226,14 +1242,17 @@ class streamer:
                 team1 = match.get('team1', '')
                 team2 = match.get('team2', '')
                 event = match.get('event') or match.get('name') or ''
-                title = f'{team1} vs {team2}' if team1 and team2 else event
+                title = f'{team1} vs {team2}' if team1 and team2 else (event or team1)
                 if not title:
                     continue
                 raw_time = match.get('time', '')
                 try:
-                    h, m = map(int, raw_time.split(':'))
-                    now_utc = datetime.now(timezone.utc)
-                    dt_utc = now_utc.replace(hour=h, minute=m, second=0, microsecond=0)
+                    if match.get('timestamp'):
+                        dt_utc = datetime.fromtimestamp(int(match['timestamp']) / 1000, tz=timezone.utc)
+                    else:
+                        h, m = map(int, raw_time.split(':'))
+                        now_utc = datetime.now(timezone.utc)
+                        dt_utc = now_utc.replace(hour=h, minute=m, second=0, microsecond=0)
                     time_str = _to_local(dt_utc).strftime('%I:%M %p').lstrip('0')
                 except Exception:
                     time_str = raw_time
@@ -1845,6 +1864,8 @@ class streamer:
                     ts     = game.get('match_timestamp') or 0
                     if ts and ts <= now <= ts + 4 * 3600:
                         label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                    elif ts and ts + 86400 < now:
+                        label = f'[COLOR red]24/7[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
                     elif ts and ts + 4 * 3600 < now:
                         continue
                     else:
