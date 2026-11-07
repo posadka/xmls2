@@ -803,6 +803,8 @@ class streamer:
                 cid = (parse_qs(_up(url).query).get('ch') or [''])[0]
                 dl_base = _dl_base() if cid else None
                 u = self.daddylive(json.dumps({'daddylive': True, 'base': dl_base, 'channels': [{'name': 'Channel ' + cid, 'id': cid}]})) if dl_base else None
+            elif 'xlivestreamer' in url and 'event.php' in url:
+                u = self.xlivestreamer(url)
             elif 'dembed.st/' in url:
                 u = self.dembed(url)
             elif 'matchix.org/embed' in url:
@@ -853,7 +855,7 @@ class streamer:
                 u = self.sportzone(url)
             elif any(x in url for x in ['rippleplays.cfd', 'ripplestream.cyou']):
                 u = self.ripplestreamsfouru(url)
-            elif any(x in url for x in ['kora', 'vertex.st']):
+            elif any(x in url for x in ['kora', 'vertex.st', 'virazo.sx']):
                 u = self.korast(url)
             elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd']):
                 u = self.timstreams(url, 'https://tim-streams.com/')
@@ -3421,6 +3423,8 @@ class streamer:
             if not iframe2:
                 log(f'ripplestreamsfouru: no iframe2 | {iframe1}', xbmc.LOGERROR)
                 return None
+            if 'dembed.st/' in iframe2:
+                return self.dembed(iframe2, iframe1)
 
             origin = _base_url(iframe2)
             iframe2_html = requests.get(
@@ -3554,6 +3558,8 @@ class streamer:
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
 
             s_m = re.search(r'var\s+streams\s*=\s*\{', page_data)
+            if not s_m and '/iframe/' in url and 'window.masterinf' not in page_data:
+                return self.topstreamer(url.replace('/iframe/', '/', 1))
             if s_m:
                 try:
                     streams, _ = json.JSONDecoder().raw_decode(page_data, s_m.end() - 1)
@@ -3804,6 +3810,26 @@ class streamer:
             return _publish_live_manifest(stream_url, headers, 'dembed', token_url=token_url)
         except Exception as e:
             _log_error('dembed', url, e)
+            return None
+
+    @_guard
+    def xlivestreamer(self, url):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text
+            chans = []
+            for cid, name in re.findall(r'watch\.php\?ch=(\d+)(?:(?:&amp;|&)name=([^"&]*))?', page):
+                if all(c['id'] != cid for c in chans):
+                    label = unquote(name.replace('+', ' ')).encode('ascii', 'ignore').decode('ascii').strip()
+                    chans.append({'name': label or 'Channel ' + cid, 'id': cid})
+            if not chans:
+                log(f'xlivestreamer: no channels on page | {url}', xbmc.LOGERROR)
+                return None
+            dl_base = _dl_base()
+            if not dl_base:
+                return None
+            return self.daddylive(json.dumps({'daddylive': True, 'base': dl_base, 'channels': chans}))
+        except Exception as e:
+            _log_error('xlivestreamer', url, e)
             return None
 
     @_guard

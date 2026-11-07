@@ -1479,9 +1479,12 @@ class streamer:
             base    = _base_url(url)
             results = []
             page    = 1
+            first_page = ''
             while True:
                 page_url  = url if page == 1 else urljoin(base, f'/page/{page}/')
                 page_data = requests.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                if page == 1:
+                    first_page = page_data
                 articles  = re.findall(r'<article id="post-\d+".*?</article>', page_data, re.S)
                 if not articles:
                     break
@@ -1500,6 +1503,18 @@ class streamer:
                 if not re.search(r'<a class="next page-numbers"', page_data):
                     break
                 page += 1
+            if not results:
+                feed_m = re.search(r'<link[^>]+type="application/rss\+xml"[^>]+href="([^"]+)"', first_page)
+                if feed_m:
+                    feed = requests.get(html.unescape(feed_m.group(1)), headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                    for item in re.findall(r'(?s)<item>(.*?)</item>', feed):
+                        link_m  = re.search(r'<link>([^<]+)</link>', item)
+                        title_m = re.search(r'<title>([^<]+)</title>', item)
+                        if not link_m or not title_m:
+                            continue
+                        date_m   = re.search(r'<pubDate>[A-Za-z]{3},\s*([^<]+?)\s+\d{2}:\d{2}', item)
+                        date_str = date_m.group(1).strip() if date_m else ''
+                        results.append((link_m.group(1).strip(), self._label(date_str, html.unescape(title_m.group(1)).strip())))
             return results or None
         except Exception as e:
             _log_error('ripplestream', url, e)
@@ -2014,7 +2029,7 @@ class streamer:
                 if not href:
                     continue
                 full = urljoin(base + '/', href.group(1))
-                if full in seen:
+                if full in seen or urlparse(full).netloc != urlparse(base).netloc:
                     continue
                 seen.add(full)
                 name = re.sub(r'<[^>]+>', ' ', title.group(1)) if title else ''
