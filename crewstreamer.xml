@@ -795,6 +795,8 @@ class streamer:
             elif any(x in url for x in ['dlive.sx', 'thedaddy.pk', 'thedaddy.li']) and re.search(r'/stream-\d+\.php', url):
                 cid = re.search(r'/stream-(\d+)\.php', url).group(1)
                 u = self.daddylive(json.dumps({'daddylive': True, 'base': _dl_origin(url) + '/', 'channels': [{'name': 'Channel ' + cid, 'id': cid}]}))
+            elif 'watchprowrestling' in url:
+                u = self.watchprowrestling(url)
             elif 'streameast.gold' in url:
                 u = self.streameastgold(url)
             elif 'sports247.ru/watch' in url:
@@ -3980,6 +3982,27 @@ class streamer:
             return None
 
     @_guard
+    def watchprowrestling(self, url):
+        _PICK_STATE['cancelled'] = True
+        data = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+        matches = re.findall(
+            r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
+            data,
+            re.I | re.S
+        )
+        results = []
+        for href, name in matches:
+            name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
+            if href and name:
+                results.append((href, name))
+        if not results:
+            log('WP playurl: no buttons found', xbmc.LOGWARNING)
+            return None
+        choice = 0 if len(results) == 1 else xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
+        if choice == -1:
+            return None
+        return [results[choice]]
+
     def streameastgold(self, url):
         try:
             page = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text

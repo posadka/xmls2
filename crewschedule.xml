@@ -319,6 +319,8 @@ class streamer:
         try:
             if any(x in url for x in ['dlive.sx', 'thedaddy.pk', 'thedaddy.li']):
                 u = self.daddylive(url)
+            elif 'watchprowrestling' in url:
+                u = self.watchprowrestling(url)
             elif 'streameast.gold' in url:
                 u = self.streameastgold(url)
             elif 'sports247.ru' in url:
@@ -2014,6 +2016,27 @@ class streamer:
             return None
 
     @_guard
+    def watchprowrestling(self, url):
+        base = url if url.endswith('/') else url + '/'
+        results = []
+        for page in range(1, 6):
+            page_url = base if page == 1 else f'{base}page/{page}/'
+            try:
+                data = requests.get(page_url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+            except Exception:
+                break
+            cards = re.findall(
+                r'<div class="mtube-card">.*?'
+                r'background-image:\s*url\(([^)]+)\).*?'
+                r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
+                data, re.S
+            )
+            if not cards:
+                break
+            for thumb, link, title in cards:
+                results.append((link, thumb, html.unescape(title).strip()))
+        return results or None
+
     def streameastgold(self, url):
         try:
             import threading

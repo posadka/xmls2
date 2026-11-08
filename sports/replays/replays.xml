@@ -17,28 +17,12 @@
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/boxing/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/boxing/')
 ]]></expres>
 <page></page>
 </regex>
@@ -52,30 +36,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -94,28 +57,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/mma/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/mma/')
 ]]></expres>
 <page></page>
 </regex>
@@ -129,30 +76,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -171,28 +97,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/wwe/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/wwe/')
 ]]></expres>
 <page></page>
 </regex>
@@ -205,30 +115,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -247,28 +137,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/aew/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/aew/')
 ]]></expres>
 <page></page>
 </regex>
@@ -281,31 +155,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    from resources.lib.modules import client, control
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -322,28 +175,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/impact-wrestling/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/impact-wrestling/')
 ]]></expres>
 <page></page>
 </regex>
@@ -356,30 +193,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -396,28 +213,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/roh/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/roh/')
 ]]></expres>
 <page>[makelist.param1]</page>
 </regex>
@@ -430,30 +231,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -470,28 +251,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/indy-shows/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/indy-shows/')
 ]]></expres>
 <page></page>
 </regex>
@@ -504,30 +269,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -544,28 +289,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/njpw/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/njpw/')
 ]]></expres>
 <page></page>
 </regex>
@@ -578,30 +307,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -618,28 +327,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/trending/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/trending/')
 ]]></expres>
 <page></page>
 </regex>
@@ -652,30 +345,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
@@ -692,28 +365,12 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
     from resources.lib.modules import client, control
-    import re, html, requests
+    import re
     if control.infoLabel('Container.PluginName') != 'plugin.video.thecrew':
         return
-    base = 'https://watchprowrestling.store/categorys/wwe/'
-    results = []
-    for page in range(1, 6):
-        page_url = base if page == 1 else f'{base}page/{page}/'
-        data = requests.get(page_url).text
-        if not data:
-            break
-        cards = re.findall(
-            r'<div class="mtube-card">.*?'
-            r'background-image:\s*url\(([^)]+)\).*?'
-            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
-            data, re.S
-        )
-        if not cards:
-            break
-        for thumb, link, title in cards:
-            title = html.unescape(title).strip()
-            results.append((link, thumb, title))
-    return results
+    base_url = client.request('https://raw.githubusercontent.com/posadka/xmls2/refs/heads/main/wp.xml')
+    base = re.findall('"([^"]*)', base_url)[0].rstrip('/')
+    return client.schedule(base + '/categorys/wwe/')
 ]]></expres>
 <page></page>
 </regex>
@@ -726,30 +383,10 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
 ]]></listrepeat>
 <expres><![CDATA[#$pyFunction
 def GetLSProData(page_data, Cookie_Jar, m, url=''):
-    import xbmc, xbmcgui, html, re
-    matches = re.findall(
-        r"""<a\s+href=['"]([^'"]+)['"][^>]*class=['"][^'"]*custom-button[^'"]*['"][^>]*>(.*?)</a>""",
-        page_data,
-        re.I | re.S
-    )
-    results = []
-    for href, name in matches:
-        name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-        if href and name:
-            results.append((href, name))
-    if not results:
-        xbmc.log('WP playurl: no buttons found', xbmc.LOGWARNING)
-        return
-    if len(results) == 1:
-        choice = 0
-    else:
-        choice = xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
-    if choice == -1:
-        return
-    href, name = results[choice]
-    return [(href, name)]
+    from resources.lib.modules import client
+    return client.external('[makelist.param1]')
 ]]></expres>
-<page>[makelist.param1]</page>
+<page></page>
 </regex>
 </item>
 
