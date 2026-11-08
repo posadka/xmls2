@@ -28,9 +28,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -105,9 +105,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -182,9 +182,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -258,9 +258,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -333,9 +333,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -407,9 +407,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -481,9 +481,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -555,9 +555,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -629,9 +629,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
@@ -703,9 +703,9 @@ def GetLSProData(page_data, Cookie_Jar, m, url=''):
         if not data:
             break
         cards = re.findall(
-            r'<div class="post-card">.*?'
-            r'<img class="post-image" src="([^"]+)".*?'
-            r'<h2 class="post-title"><a href="([^"]+)">([^<]+)</a>',
+            r'<div class="mtube-card">.*?'
+            r'background-image:\s*url\(([^)]+)\).*?'
+            r'<div class="card-title">\s*<a href="([^"]+)"[^>]*>([^<]+)</a>',
             data, re.S
         )
         if not cards:
