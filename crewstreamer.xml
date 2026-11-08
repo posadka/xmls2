@@ -562,7 +562,7 @@ def _dl_watch(player_url, referer):
     src = m.group(1).replace('\\/', '/')
     edge = re.search(r'const\s+EDGE\s*=\s*"([^"]+)"', page)
     channel = re.search(r'const\s+CHANNEL\s*=\s*"([^"]+)"', page)
-    if edge and channel and 'playlist-token' in page:
+    if edge and channel:
         return src, embed_url, f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
     return src, embed_url
 
@@ -3803,7 +3803,7 @@ class streamer:
             edge = re.search(r'const\s+EDGE\s*=\s*"([^"]+)"', page)
             channel = re.search(r'const\s+CHANNEL\s*=\s*"([^"]+)"', page)
             token_url = None
-            if edge and channel and 'playlist-token' in page:
+            if edge and channel:
                 token_url = f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
             origin = _dl_origin(url)
             headers = {'Referer': origin + '/', 'Origin': origin, 'User-Agent': UA}
