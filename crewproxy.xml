@@ -320,6 +320,35 @@ def _snapshot_to_playlist(text):
     return '\n'.join(lines) + '\n'
 
 
+def _manifest_problem(manifest_text):
+    """Validate ordinary HLS without logging sensitive playlist URLs or tokens.
+
+    Nonstandard sealed playlists are intentionally not decrypted here.
+    """
+    if not isinstance(manifest_text, str) or not manifest_text.lstrip().startswith('#EXTM3U'):
+        return 'response is not an HLS playlist (possibly sealed or an upstream error)'
+    lines = [line.strip() for line in manifest_text.splitlines() if line.strip()]
+    media_tags = ('#EXTINF:', '#EXT-X-STREAM-INF:', '#EXT-X-MAP:',
+                  '#EXT-X-PART:', '#EXT-X-PRELOAD-HINT:')
+    if not any(line.startswith(media_tags) for line in lines):
+        return 'playlist has no recognized media or variant entries (possibly sealed)'
+    # An EXTINF media entry must be followed by a URI, not another tag.
+    for index, line in enumerate(lines):
+        if line.startswith('#EXTINF:'):
+            if index + 1 >= len(lines) or lines[index + 1].startswith('#'):
+                return 'EXTINF entry has no media URI'
+    return None
+
+
+def _safe_source(url):
+    """Log only scheme and host; never expose CDN access tokens."""
+    try:
+        parsed = urlparse(url)
+        return '%s://%s/[redacted]' % (parsed.scheme, parsed.netloc)
+    except Exception:
+        return '[redacted]'
+
+
 def _rewrite_manifest(manifest_text, base_url, port, manifest_id, mark_ads=False):
     lines = []
     for line in manifest_text.splitlines():
@@ -430,7 +459,7 @@ def _fetch_and_rewrite(manifest_id, recipe_path, attempts=3):
             session.cookies.update(recipe['cookies'])
         resp = _get_with_retry(_manifest_url(manifest_id, recipe), headers=recipe.get('headers') or {}, timeout=TIMEOUT, session=session, attempts=attempts)
         if resp.status_code != 200:
-            log(f'live manifest refetch bad status {resp.status_code} | {recipe["url"]} | body: {resp.text[:200]!r}', xbmc.LOGERROR)
+            log(f'live manifest refetch HTTP {resp.status_code} | {_safe_source(recipe["url"])}', xbmc.LOGERROR)
             return None
         text = resp.text
         if text.lstrip().startswith('{'):
@@ -438,7 +467,11 @@ def _fetch_and_rewrite(manifest_id, recipe_path, attempts=3):
             if converted:
                 text = converted
         if not text.lstrip().startswith('#EXTM3U'):
-            log(f'live manifest refetch invalid | {recipe["url"]} | body: {text[:200]!r}', xbmc.LOGERROR)
+            log(f'live manifest refetch invalid | {_safe_source(recipe["url"])} | non-HLS response', xbmc.LOGERROR)
+            return None
+        problem = _manifest_problem(text)
+        if problem:
+            log(f'live manifest rejected | {_safe_source(recipe["url"])} | {problem}', xbmc.LOGERROR)
             return None
         rewritten = _rewrite_manifest(text, resp.url, get_port(), manifest_id)
         with _manifest_cache_lock:
@@ -924,13 +957,19 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             try:
                 resp = _get_with_retry(target, headers=sub_headers, timeout=TIMEOUT)
                 if resp.status_code != 200:
-                    log(f'submanifest fetch bad status {resp.status_code} | {target}', xbmc.LOGERROR)
+                    log(f'submanifest fetch HTTP {resp.status_code} | {_safe_source(target)}', xbmc.LOGERROR)
                     self.send_response(502)
                     self.end_headers()
                     return
                 text = resp.text
                 if not text.lstrip().startswith('#EXTM3U'):
-                    log(f'submanifest fetch invalid | {target} | body: {text[:200]!r}', xbmc.LOGERROR)
+                    log(f'submanifest fetch invalid | {_safe_source(target)} | non-HLS response', xbmc.LOGERROR)
+                    self.send_response(502)
+                    self.end_headers()
+                    return
+                problem = _manifest_problem(text)
+                if problem:
+                    log(f'submanifest rejected | {_safe_source(target)} | {problem}', xbmc.LOGERROR)
                     self.send_response(502)
                     self.end_headers()
                     return
