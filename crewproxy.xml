@@ -337,6 +337,17 @@ def _manifest_problem(manifest_text):
         if line.startswith('#EXTINF:'):
             if index + 1 >= len(lines) or lines[index + 1].startswith('#'):
                 return 'EXTINF entry has no media URI'
+    # A URI can be syntactically valid HLS but still be a sealed token, not
+    # a usable segment path. Flag suspicious cases rather than silently
+    # handing them to ffmpeg as if they were ordinary .ts files.
+    uri_lines = [line for line in lines if not line.startswith('#')]
+    opaque = 0
+    for uri in uri_lines:
+        path = urlparse(uri).path.rstrip('/').rsplit('/', 1)[-1]
+        if len(path) >= 160 and not re.search(r'\.(?:ts|m4s|mp4|aac|m3u8)(?:$|\?)', path, re.I):
+            opaque += 1
+    if uri_lines and opaque >= 2 and opaque == len(uri_lines):
+        return 'all segment entries look like opaque tokens; source may require playlist unsealing'
     return None
 
 
@@ -1060,7 +1071,7 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             else:
                 resp = _get_with_retry(target, headers=seg_headers, timeout=TIMEOUT)
                 if resp.status_code != 200:
-                    log(f'segment fetch bad status {resp.status_code} | {target}', xbmc.LOGERROR)
+                    log(f'segment fetch bad status {resp.status_code} | {_safe_source(target)}', xbmc.LOGERROR)
                     self.send_response(502)
                     self.end_headers()
                     return
@@ -1071,7 +1082,7 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(payload)
         except Exception as e:
-            log(f'segment fetch error {target}: {e}', xbmc.LOGERROR)
+            log(f'segment fetch error | {_safe_source(target)} | {type(e).__name__}', xbmc.LOGERROR)
             try:
                 self.send_response(502)
                 self.end_headers()
