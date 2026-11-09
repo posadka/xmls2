@@ -19,6 +19,16 @@ import http.server
 from urllib.parse import urlparse, parse_qs, unquote, quote_plus, urljoin
 
 import requests
+
+try:
+    from Cryptodome.Cipher import AES as _PlaylistAES
+    from Cryptodome.Util import Counter as _PlaylistCounter
+except ImportError:
+    try:
+        from Crypto.Cipher import AES as _PlaylistAES
+        from Crypto.Util import Counter as _PlaylistCounter
+    except ImportError:
+        _PlaylistAES = _PlaylistCounter = None
 import xbmc
 import xbmcvfs
 import xbmcgui
@@ -430,12 +440,79 @@ def _playlist_token(manifest_id, recipe):
         data = requests.get(recipe['token_url'], headers=recipe.get('headers') or {}, timeout=TIMEOUT).json()
         token = data.get('token') or ''
         ttl = max(20, int(data.get('ttl') or 120))
+        key = data.get('k')
+        # The JS indexes the key by the token response's key identifier.
+        key_id = data.get('kid') or data.get('key_id') or data.get('id')
     except Exception as e:
         log(f'playlist token fetch failed: {e}', xbmc.LOGERROR)
         return cached['token'] if cached else ''
     with _manifest_cache_lock:
-        _manifest_tokens[manifest_id] = {'token': token, 'renew': now + ttl / 2.0}
+        old = _manifest_tokens.get(manifest_id) or {}
+        _manifest_tokens[manifest_id] = {
+            'token': token, 'renew': now + ttl / 2.0,
+            'key': key or old.get('key'), 'key_id': key_id or old.get('key_id'),
+        }
     return token
+
+
+def _b64url_bytes(value):
+    value = value.strip().replace('-', '+').replace('_', '/')
+    return base64.b64decode(value + '=' * (-len(value) % 4), validate=True)
+
+
+def _unseal_playlist(text, manifest_id, recipe):
+    """Mirror daddy.min.js openPlaylist: AES-CTR with a 64-bit counter.
+
+    Leave ordinary HLS untouched. Fail closed on encrypted content when the
+    current token response doesn't provide a usable key; never proxy the
+    ciphertext as a segment URL.
+    """
+    if not recipe.get('token_url') or not text.lstrip().startswith('#EXTM3U'):
+        return text
+    lines = text.splitlines()
+    entries = [line.strip() for line in lines if line.strip() and not line.lstrip().startswith('#')]
+    if not entries:
+        return text
+    # The player recognizes sealed playlists by lack of a normal URI prefix.
+    # Check for base64url-looking opaque entries, rather than trying to
+    # decrypt regular relative/absolute paths.
+    sealed = all(re.fullmatch(r'[A-Za-z0-9_-]{80,}={0,2}', e) for e in entries)
+    if not sealed:
+        return text
+    with _manifest_cache_lock:
+        info = dict(_manifest_tokens.get(manifest_id) or {})
+    key_text = info.get('key')
+    if not key_text:
+        raise ValueError('sealed playlist: token response has no playback key k')
+    if _PlaylistAES is None or _PlaylistCounter is None:
+        raise ValueError('sealed playlist: install pycryptodome in Kodi Python')
+    key = _b64url_bytes(key_text)
+    if len(key) not in (16, 24, 32):
+        raise ValueError('sealed playlist: invalid AES key length')
+    sequence = 0
+    out = []
+    for line in lines:
+        item = line.strip()
+        if not item:
+            out.append(line)
+            continue
+        if item.startswith('#'):
+            m = re.match(r'#EXT-X-MEDIA-SEQUENCE:\s*(\d+)', item)
+            if m:
+                sequence = int(m.group(1))
+            out.append(line)
+            continue
+        counter = _PlaylistCounter.new(64, prefix=b'\x00' * 8,
+                                       initial_value=sequence & ((1 << 64) - 1),
+                                       little_endian=False)
+        cipher = _PlaylistAES.new(key, _PlaylistAES.MODE_CTR, counter=counter)
+        decrypted = cipher.decrypt(_b64url_bytes(item)).decode('utf-8')
+        if not decrypted or any(ord(c) < 32 for c in decrypted):
+            raise ValueError('sealed playlist: decrypted segment URI is invalid')
+        out.append(decrypted)
+        sequence += 1
+    log('sealed playlist decrypted successfully (segment URLs redacted)')
+    return '\n'.join(out) + '\n'
 
 
 def _manifest_url(manifest_id, recipe):
@@ -480,6 +557,7 @@ def _fetch_and_rewrite(manifest_id, recipe_path, attempts=3):
         if not text.lstrip().startswith('#EXTM3U'):
             log(f'live manifest refetch invalid | {_safe_source(recipe["url"])} | non-HLS response', xbmc.LOGERROR)
             return None
+        text = _unseal_playlist(text, manifest_id, recipe)
         problem = _manifest_problem(text)
         if problem:
             log(f'live manifest rejected | {_safe_source(recipe["url"])} | {problem}', xbmc.LOGERROR)
