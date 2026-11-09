@@ -533,13 +533,27 @@ def _dl_plus(player_url, referer):
     return (stream_url, embed_url) if stream_url else None
 
 
+def _dl_b64_parts(page):
+    m = re.search(r"function\s+(\w+)\(s\)\{s=s\.replace.*?\};((?:var\s+\w+='[^']*';)+)var\s+\w+=((?:\1\(\w+\)\+?)+);", page, re.S)
+    if not m:
+        return None
+    parts = dict(re.findall(r"var\s+(\w+)='([^']*)'", m.group(2)))
+    out = ''
+    for name in re.findall(r'\((\w+)\)', m.group(3)):
+        s = parts.get(name, '').replace('-', '+').replace('_', '/')
+        out += base64.b64decode(s + '=' * (-len(s) % 4)).decode('utf-8', 'ignore')
+    return out if out.startswith('http') else None
+
+
 def _dl_casting(player_url, referer):
-    outer_url = _dl_iframe(_dl_fetch(player_url, referer), player_url)
+    outer_url = _dl_iframe(re.sub(r'<!--.*?-->', '', _dl_fetch(player_url, referer), flags=re.S), player_url)
     if not outer_url:
         return None
-    embed_url = _dl_iframe(_dl_fetch(outer_url, player_url), outer_url)
+    outer_page = _dl_fetch(outer_url, player_url)
+    embed_url = _dl_iframe(outer_page, outer_url)
     if not embed_url:
-        return None
+        stream_url = _dl_b64_parts(outer_page)
+        return (stream_url, outer_url) if stream_url else None
     m = re.search(r'const\s+streamUrls\s*=\s*(\[[^\]]*\])', _dl_fetch(embed_url, outer_url))
     if not m:
         return None
@@ -562,8 +576,12 @@ def _dl_watch(player_url, referer):
     src = m.group(1).replace('\\/', '/')
     edge = re.search(r'const\s+EDGE\s*=\s*"([^"]+)"', page)
     channel = re.search(r'const\s+CHANNEL\s*=\s*"([^"]+)"', page)
+    ticket = re.search(r'const\s+TICKET\s*=\s*"([^"]+)"', page)
     if edge and channel:
-        return src, embed_url, f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
+        token_url = f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
+        if ticket:
+            token_url += f'&tk={quote_plus(ticket.group(1))}'
+        return src, embed_url, token_url
     return src, embed_url
 
 
@@ -602,6 +620,10 @@ def _dl_player(player_url, referer):
     for _ in range(10):
         page = _dl_fetch(url, referer)
         stream_url = _dl_payload(page, url)
+        if not stream_url:
+            m = re.search(r'streamUrl\s*:\s*"([^"]+)"', page)
+            if m:
+                stream_url = m.group(1).replace('\\/', '/')
         if stream_url:
             return stream_url, url
         nxt = _dl_next_hop(page, url)
@@ -3804,9 +3826,12 @@ class streamer:
             stream_url = src.group(1).replace('\\/', '/')
             edge = re.search(r'const\s+EDGE\s*=\s*"([^"]+)"', page)
             channel = re.search(r'const\s+CHANNEL\s*=\s*"([^"]+)"', page)
+            ticket = re.search(r'const\s+TICKET\s*=\s*"([^"]+)"', page)
             token_url = None
             if edge and channel:
                 token_url = f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
+                if ticket:
+                    token_url += f'&tk={quote_plus(ticket.group(1))}'
             origin = _dl_origin(url)
             headers = {'Referer': origin + '/', 'Origin': origin, 'User-Agent': UA}
             return _publish_live_manifest(stream_url, headers, 'dembed', token_url=token_url)
