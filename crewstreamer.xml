@@ -2471,7 +2471,28 @@ class streamer:
             media_m    = re.search(r'mediaSource:\[([\d,\s]+)\]', ptext)
             call_m     = re.search(r'\{scode:"([^"]+)",ts:\w+,session_id:"([^"]+)",device_id:([\w$]+)\}', ptext)
             source_raw = _find(r'String\.fromCharCode\(\.\.\.\[([\d,\s]+)\]\)', ptext)
-            if media_m:
+            cfg_m = re.search(r'window\.SecKeyPlayerConfig\s*\[\s*["\'][^"\']+["\']\s*\]\s*=\s*(\{.*?\})\s*;', ptext, re.S)
+            if cfg_m:
+                cfg = json.loads(cfg_m.group(1))
+                playerId = cfg.get('device_id')
+                s_code = cfg.get('sCode')
+                strUnqId = cfg.get('strUnqId')
+                session_id = cfg.get('session_id')
+                expireTs = cfg.get('expireTs')
+                edgeHostId = cfg.get('edgeHostId')
+                video_source = cfg.get('urlSource')
+                csrf = cfg.get('csrf_token')
+                sec_b64 = cfg.get('secTokenUrl')
+                if not all([playerId, s_code, strUnqId, session_id, expireTs, edgeHostId, video_source, csrf, sec_b64]):
+                    log(f'embedsportsme: incomplete SecKeyPlayerConfig | host={_up(player_url).netloc}', xbmc.LOGWARNING)
+                    return None
+                sec_token_url = _ub64(sec_b64)
+                auth_url = _with_query(
+                    sec_token_url, scode=s_code, stream=strUnqId,
+                    expires=expireTs, u_id=playerId, session_id=session_id, host_id=edgeHostId
+                )
+                log(f'embedsportsme: SecKeyPlayerConfig recognized | p2p_required={bool(cfg.get("requireP2P"))}')
+            elif media_m:
                 auth_b64   = _js('authEndpoint')
                 csrf_b64   = _js('csrfToken')
                 s_code     = _js('scode')
