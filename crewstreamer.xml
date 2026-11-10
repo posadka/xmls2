@@ -2449,15 +2449,6 @@ class streamer:
                 log(f'embedsportsme: player HTTP {r2.status_code} | host={_up(player_url).netloc}', xbmc.LOGWARNING)
                 return None
             ptext = r2.text
-            try:
-                capture_dir = os.path.join(control.dataPath, 'embedsportsme_diagnostics')
-                os.makedirs(capture_dir, exist_ok=True)
-                capture_path = os.path.join(capture_dir, 'player_%s.html' % datetime.now().strftime('%Y%m%d_%H%M%S_%f'))
-                with open(capture_path, 'w', encoding='utf-8') as capture_file:
-                    capture_file.write(ptext)
-                log('embedsportsme: player HTML saved | path=%s | status=%s | bytes=%s' % (capture_path, r2.status_code, len(ptext)), xbmc.LOGINFO)
-            except Exception as capture_error:
-                log('embedsportsme: player HTML capture failed | %s' % capture_error, xbmc.LOGWARNING)
             if ('Stream Player - Offline' in ptext or
                     'Stream is currently offline' in ptext):
                 log(f'embedsportsme: server returned offline placeholder | host={_up(player_url).netloc}', xbmc.LOGWARNING)
