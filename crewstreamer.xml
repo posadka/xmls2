@@ -2487,7 +2487,11 @@ class streamer:
                 expireTs = cfg.get('expireTs')
                 edgeHostId = cfg.get('edgeHostId')
                 video_source = cfg.get('urlSource')
-                csrf = cfg.get('csrf_token')
+                csrf = cfg.get('csrf_token') or ''
+                try:
+                    csrf = base64.b64decode(csrf + '=' * (-len(csrf) % 4)).decode('ascii')
+                except Exception:
+                    pass
                 sec_b64 = cfg.get('secTokenUrl')
                 if not all([playerId, s_code, strUnqId, session_id, expireTs, edgeHostId, video_source, csrf, sec_b64]):
                     log(f'embedsportsme: incomplete SecKeyPlayerConfig | host={_up(player_url).netloc}', xbmc.LOGWARNING)
