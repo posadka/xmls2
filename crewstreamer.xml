@@ -368,14 +368,20 @@ def _proxy():
 
 def _with_playlist_token(stream_url, token_url, headers):
     try:
-        token = requests.get(token_url, headers=headers or {}, timeout=TIMEOUT).json().get('token') or ''
+        response = requests.get(token_url, headers=headers or {}, timeout=TIMEOUT)
+        response.raise_for_status()
+        data = response.json()
+        token = data.get('token') if isinstance(data, dict) else None
+        if not isinstance(token, str) or not token.strip():
+            log('playlist token: response missing token', xbmc.LOGWARNING)
+            return None
+        ttl = data.get('ttl')
+        log(f'playlist token: received authorization (ttl={ttl})')
+        sep = '&' if '?' in stream_url else '?'
+        return f'{stream_url}{sep}t={quote_plus(token)}&_={int(time.time() * 1000)}'
     except Exception as e:
-        log(f'playlist token fetch failed: {e}', xbmc.LOGWARNING)
-        token = ''
-    if not token:
-        return stream_url
-    sep = '&' if '?' in stream_url else '?'
-    return f'{stream_url}{sep}t={quote_plus(token)}&_={int(time.time() * 1000)}'
+        log(f'playlist token: request failed: {e}', xbmc.LOGWARNING)
+        return None
 
 
 def _publish_live_manifest(upstream_url, headers, name_prefix, session=None, token_url=None):
@@ -395,6 +401,9 @@ def _publish_live_manifest(upstream_url, headers, name_prefix, session=None, tok
     Pass session to reuse an existing requests.Session (and its cookies)."""
     getter = session.get if session is not None else requests.get
     probe_url = _with_playlist_token(upstream_url, token_url, headers) if token_url else upstream_url
+    if token_url and not probe_url:
+        log(f'{name_prefix}: authorization unavailable', xbmc.LOGWARNING)
+        return None
     try:
         probe = getter(probe_url, headers=headers or {}, timeout=TIMEOUT)
         if probe.status_code == 403:
@@ -579,8 +588,10 @@ def _dl_watch(player_url, referer):
     ticket = re.search(r'const\s+TICKET\s*=\s*"([^"]+)"', page)
     if edge and channel:
         token_url = f'{edge.group(1).rstrip("/")}/api/playlist-token?slug={quote_plus(channel.group(1))}'
-        if ticket:
-            token_url += f'&tk={quote_plus(ticket.group(1))}'
+        if not ticket or not ticket.group(1).strip():
+            log('daddylive: player did not provide a TICKET credential', xbmc.LOGWARNING)
+            return None
+        token_url += f'&tk={quote_plus(ticket.group(1))}'
         return src, embed_url, token_url
     return src, embed_url
 
@@ -4216,6 +4227,9 @@ class streamer:
                 return None
             stream_url, embed_url = result[0], result[1]
             token_url = result[2] if len(result) > 2 else None
+            if _up(stream_url).netloc.endswith('wedd48c.top') and not token_url:
+                log('daddylive: signed playlist authorization unavailable', xbmc.LOGWARNING)
+                return None
             origin = _dl_origin(embed_url)
             headers = {'Referer': origin + '/', 'Origin': origin, 'User-Agent': UA}
             log(f'daddylive: channel {cid} via {used[0]}', xbmc.LOGINFO)
