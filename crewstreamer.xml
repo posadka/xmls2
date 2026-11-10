@@ -819,8 +819,6 @@ class streamer:
                 u = self.daddylive(json.dumps({'daddylive': True, 'base': _dl_origin(url) + '/', 'channels': [{'name': 'Channel ' + cid, 'id': cid}]}))
             elif 'watchprowrestling' in url:
                 u = self.watchprowrestling(url)
-            elif 'streameast.gold' in url:
-                u = self.streameastgold(url)
             elif 'sports247.ru/watch' in url:
                 u = self.sports247(url)
             elif 'xlivestreamer' in url and 'watch.php' in url and 'ch=' in url:
@@ -4088,64 +4086,6 @@ class streamer:
             return None
         return [results[choice]]
 
-    def streameastgold(self, url):
-        try:
-            page = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text
-            options = []
-            for row in re.findall(r'(?s)<tr[^>]*>(.*?)</tr>', page):
-                link = re.search(r'value="([^"]+)"\s+id="linkk\d+"', row)
-                if not link:
-                    continue
-                href = html.unescape(link.group(1)).strip()
-                host = _up(href).netloc.lower()
-                if not href.startswith('http') or 'totalsportek' in host or 'streameast' in host:
-                    continue
-                cells = [re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', c))).strip() for c in re.findall(r'(?s)<td[^>]*>(.*?)</td>', row)]
-                cells = [c.encode('ascii', 'ignore').decode('ascii').strip() for c in cells]
-                name = cells[1] if len(cells) > 1 else host
-                lang = cells[4] if len(cells) > 4 else ''
-                chan = cells[6] if len(cells) > 6 else ''
-                label = f'{name or host} | {chan}' if chan else (name or host)
-                if lang:
-                    label += f' ({lang})'
-                options.append((label, href))
-            if not options:
-                for row in re.findall(r'(?s)<div class="col-md-12 premium-stream-row">\s*<a [^>]*?href="([^"]+)"[^>]*>(.*?)</a>', page):
-                    href = html.unescape(row[0]).strip()
-                    host = _up(href).netloc.lower()
-                    if not href.startswith('http') or any(x in host for x in ('totalsportek', 'streameast', 't.me')):
-                        continue
-                    cells = [re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', c))).encode('ascii', 'ignore').decode('ascii').strip() for c in re.findall(r'(?s)<div class="col-md-\d[^"]*"[^>]*>(.*?)</div>', row[1])]
-                    name = cells[0] if cells else host
-                    chan = cells[1] if len(cells) > 1 else ''
-                    lang = cells[5] if len(cells) > 5 else ''
-                    label = f'{name or host} | {chan}' if chan else (name or host)
-                    if lang:
-                        label += f' ({lang})'
-                    options.append((label, href))
-            if not options:
-                log(f'streameastgold: no links on page yet | {url}', xbmc.LOGERROR)
-                return None
-            choice = 0 if len(options) == 1 else _select('Choose Stream', [o[0] for o in options])
-            if choice == -1:
-                return None
-            order = [options[choice]] + [o for i, o in enumerate(options) if i != choice][:4]
-            for label, href in order:
-                try:
-                    result = self._chase(href, url)
-                except Exception as e:
-                    log(f'streameastgold: {label} raised {e}', xbmc.LOGWARNING)
-                    result = None
-                if result:
-                    log(f'streameastgold: playing {label} | {href}', xbmc.LOGINFO)
-                    return result
-                log(f'streameastgold: {label} did not resolve, trying next | {href}', xbmc.LOGWARNING)
-            return None
-        except Exception as e:
-            _log_error('streameastgold', url, e)
-            return None
-
-    @_guard
     def daddylive(self, url):
         try:
             if url.lstrip().startswith('{'):
