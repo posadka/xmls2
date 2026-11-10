@@ -2430,9 +2430,23 @@ class streamer:
                 }
             player_url = f'https://{edm}/sd0embed/{gameCat}?' + urlencode(player_params)
 
-            headers2 = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+            edm_origin = _base_url(player_url)
+            headers2 = {
+                'User-Agent': UA,
+                'Referer': origin + '/',
+                'Origin': origin,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+            }
             r2 = requests.get(player_url, headers=headers2, timeout=TIMEOUT)
+            if r2.status_code != 200:
+                log(f'embedsportsme: player HTTP {r2.status_code} | host={_up(player_url).netloc}', xbmc.LOGWARNING)
+                return None
             ptext = r2.text
+            if ('Stream Player - Offline' in ptext or
+                    'Stream is currently offline' in ptext):
+                log(f'embedsportsme: server returned offline placeholder | host={_up(player_url).netloc}', xbmc.LOGWARNING)
+                return None
 
             def _var(name):
                 return _find(r'(?<![\w$])' + re.escape(name) + r'="([^"]+)"', ptext) if name else None
@@ -2485,7 +2499,7 @@ class streamer:
                     if csrf_key:
                         csrf_b64 = _find(r'\[' + re.escape(csrf_key) + r'\]:[\w$]+\("([^"]+)"\)', ptext)
                 if not all([playerId, strUnqId, expireTs, edgeHostId, sec_b64, csrf_b64]):
-                    log(f'embedsportsme: missing player page constants | {player_url}', xbmc.LOGERROR)
+                    log(f'embedsportsme: unsupported player format | host={_up(player_url).netloc} | html_bytes={len(ptext)}', xbmc.LOGWARNING)
                     return None
                 csrf          = base64.b64decode(csrf_b64 + '=' * (-len(csrf_b64) % 4)).decode()
                 sec_token_url = base64.b64decode(sec_b64 + '=' * (-len(sec_b64) % 4)).decode()
@@ -2507,7 +2521,7 @@ class streamer:
                 secTokenB64     = _find(r'const\s*secTokenUrl\s*=\s*bota\("([^"]+)"\)', ptext)
 
                 if not all([csrftoken_b64, playerId, sCode_raw, strUnqId, session_id, expireTs, edgeHostId, videoSource_raw, secTokenB64]):
-                    log(f'embedsportsme: missing player page constants | {player_url}', xbmc.LOGERROR)
+                    log(f'embedsportsme: unsupported player format | host={_up(player_url).netloc} | html_bytes={len(ptext)}', xbmc.LOGWARNING)
                     return None
 
                 csrf          = _b64x2(csrftoken_b64)
