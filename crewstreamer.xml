@@ -1184,14 +1184,16 @@ class streamer:
 
             sections = re.findall(r'(?s)<section class="sg[^"]*">(.*?)</section>', page_data)
             sr_feeds = []
+            current  = None
+            path     = _up(url).path.rstrip('/')
             for section in sections:
                 group_m = re.search(r'<h2 class="sgn">([^<]+)</h2>', section)
                 group   = html.unescape(group_m.group(1)).strip() if group_m else ''
                 entries = re.findall(
-                    r'(?s)<a class="sr[^"]*"\s+href="[^"]*"\s+data-e="([^"]+)"\s+data-q="[^"]*">(.*?)</a>',
+                    r'(?s)<a class="sr[^"]*"\s+href="([^"]*)"\s+data-e="([^"]+)"\s+data-q="[^"]*">(.*?)</a>',
                     section
                 )
-                for embed_url, block in entries:
+                for href, embed_url, block in entries:
                     quality_m = re.search(r'<span class="sq[^"]*">([^<]*)</span>', block)
                     label_m   = re.search(r'<span class="sl">([^<]+)</span>', block)
                     quality   = html.unescape(quality_m.group(1)).strip() if quality_m else ''
@@ -1200,9 +1202,13 @@ class streamer:
                     if quality:
                         name = f'{name} ({quality})' if name else quality
                     sr_feeds.append((html.unescape(embed_url).strip(), name or embed_url))
+                    if current is None and path and _up(html.unescape(href)).path.rstrip('/') == path:
+                        current = len(sr_feeds) - 1
             if not sr_feeds:
                 log(f'streameast_vg: no feeds found | {url}', xbmc.LOGERROR)
                 return None
+            if current:
+                sr_feeds.insert(0, sr_feeds.pop(current))
             if len(sr_feeds) == 1:
                 choice = 0
             else:
@@ -1210,7 +1216,7 @@ class streamer:
             if choice == -1:
                 return None
             feed_url = sr_feeds[choice][0]
-            if 'trendy48.site' in feed_url:
+            if any(h in feed_url for h in ('trendy48.site', 'gistero.st')):
                 return self.trendy48(feed_url, url)
             return self.resolve(feed_url)
         except Exception as e:
@@ -3583,6 +3589,9 @@ class streamer:
                 log(f'xyzstreams_nfl: no stream id in embed url | {embed_url}', xbmc.LOGERROR)
                 return None
             servers = re.findall(r"'(\d+)'\s*:\s*`([^`]*\$\{streamId\}[^`]*)`", embed_html)
+            path_m  = re.search(r"const\s+streamPath\s*=\s*`([^`]*)`", embed_html)
+            if not servers and path_m:
+                servers = [(n, t.replace('${streamPath}', path_m.group(1))) for n, t in re.findall(r"'(\d+)'\s*:\s*`([^`]*\$\{streamPath\}[^`]*)`", embed_html)]
             if not servers:
                 log(f'xyzstreams_nfl: no server templates in embed | {embed_url}', xbmc.LOGERROR)
                 return None
@@ -3595,6 +3604,18 @@ class streamer:
                     return None
                 stream_url = urls[choice]
             origin, referer = _origin_referer(embed_url)
+            key_m = re.search(r'const\s+SECRET_KEY\s*=\s*"([^"]+)"', embed_html)
+            if key_m and AES is not None:
+                try:
+                    import hashlib
+                    data  = requests.get(_base_url(stream_url) + '/api/token', headers={'User-Agent': UA, 'Referer': referer, 'Origin': origin}, timeout=TIMEOUT).json()
+                    raw   = AES.new(hashlib.sha256(key_m.group(1).encode('utf-8')).digest(), AES.MODE_CBC, bytes.fromhex(data['iv'])).decrypt(bytes.fromhex(data['token']))
+                    raw   = raw[:-raw[-1]] if raw and raw[-1] <= 16 else raw
+                    token = re.sub(r'[^\x20-\x7e]', '', raw.decode('utf-8', 'ignore')).strip()
+                    if token:
+                        stream_url += ('&' if '?' in stream_url else '?') + 'token=' + quote_plus(token) + '&server=1'
+                except Exception as e:
+                    log(f'xyzstreams_nfl: token fetch failed | {e}', xbmc.LOGWARNING)
             return _publish_direct_hls(stream_url, {'User-Agent': UA, 'Referer': referer, 'Origin': origin})
         except Exception as e:
             _log_error('xyzstreams_nfl', url, e)

@@ -325,7 +325,7 @@ class streamer:
                 u = self.streameastgold(url)
             elif 'sports247.ru' in url:
                 u = self.sports247(url)
-            elif 'sportsupa' in url:
+            elif any(x in url for x in ['sportsupa', 'spotsupa']):
                 u = self.sportsupa(url)
             elif any(x in url for x in ['mutstreams', '://mut.st']):
                 u = self.mutstreams(url)
