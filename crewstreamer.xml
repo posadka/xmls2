@@ -3261,42 +3261,125 @@ class streamer:
     @_guard
     def sportzone(self, url):
         try:
-            links = json.loads(url)
-            if not links:
-                log('sportzone: empty links list', xbmc.LOGERROR)
+            links = json.loads(url) if isinstance(url, str) and url.lstrip().startswith('[') else [{'label': 'Nexa', 'url': url}]
+            if not isinstance(links, list) or not links:
                 return None
-            if len(links) == 1:
-                choice = 0
-            else:
-                choice = _select('Choose Stream', [l['label'] for l in links])
+            choice = 0 if len(links) == 1 else _select('Choose Stream', [str(l.get('label') or 'Stream') for l in links])
             if choice == -1:
                 return None
-            ch_url  = links[choice]['url']
-            ch_id   = re.search(r'id=(\d+)', ch_url)
-            if not ch_id:
-                log(f'sportzone: no channel id in url | {ch_url}', xbmc.LOGERROR)
+            ch_url = str(links[choice].get('url') or '')
+            ch_id = (parse_qs(_up(ch_url).query).get('id') or [''])[0]
+            if not ch_id.isdigit():
+                log('sportzone: invalid channel id', xbmc.LOGWARNING)
                 return None
-            player_data = requests.get(
-                f'https://nizar.nexa.st/api/player.php?id={ch_id.group(1)}',
-                headers={'User-Agent': UA, 'Referer': 'https://nizar.nexa.st/', 'Origin': 'https://nizar.nexa.st'},
-                timeout=TIMEOUT
-            ).json()
-            embed_url    = player_data.get('url', '')
-            if not embed_url:
-                log(f'sportzone: no embed url in player response | {ch_url}', xbmc.LOGERROR)
+            session = requests.Session()
+            origin = _base_url(ch_url)
+            headers = {'User-Agent': UA, 'Accept': 'application/json, text/html, */*'}
+
+            def get_page(target, referer):
+                try:
+                    response = session.get(target, headers=dict(headers, Referer=referer), timeout=TIMEOUT)
+                    if response.status_code != 200:
+                        log(f'sportzone: HTTP {response.status_code} | host={_up(target).netloc} | path={_up(target).path}', xbmc.LOGWARNING)
+                        return None
+                    return response.text
+                except requests.RequestException as e:
+                    log(f'sportzone: request error | {e.__class__.__name__}', xbmc.LOGWARNING)
+                    return None
+
+            def parse_config(body):
+                if not body:
+                    return None
+                try:
+                    data = json.loads(body)
+                    if isinstance(data, dict):
+                        return data
+                except (ValueError, TypeError):
+                    pass
+                match = re.search(r'window\s*\.\s*_econfig\s*=\s*(["\'])(.*?)\1', body, re.S)
+                if match:
+                    try:
+                        return _dl_econfig(match.group(2).strip())
+                    except Exception as e:
+                        log(f'sportzone: _econfig decode failed | {e.__class__.__name__}', xbmc.LOGWARNING)
+                match = re.search(r'(?:PP_STABLE_CONFIG|playerConfig|config)\s*=\s*(\{.*?\})\s*;', body, re.S)
+                if match:
+                    try:
+                        return json.loads(match.group(1))
+                    except ValueError:
+                        pass
                 return None
-            embed_origin = _base_url(embed_url)
-            cfg_url      = embed_url + ('&' if '?' in embed_url else '?') + f'ppcfg=1&_={int(time.time() * 1000)}'
-            cfg          = requests.get(
-                cfg_url,
-                headers={'User-Agent': UA, 'Referer': embed_url},
-                timeout=TIMEOUT
-            ).json()
-            m3u8 = cfg.get('srcBase', '')
-            if not m3u8:
-                log(f'sportzone: no srcBase in cfg | {cfg_url}', xbmc.LOGERROR)
+
+            def stream_from_config(cfg, page_url):
+                if not isinstance(cfg, dict):
+                    return None
+                source = next((cfg.get(key) for key in ('stream_url_nop2p', 'url_nop2p', 'stream_url', 'src', 'srcBase', 'url') if cfg.get(key)), None)
+                if isinstance(source, dict):
+                    source = source.get('url') or source.get('src')
+                if not isinstance(source, str) or not source:
+                    return None
+                source = urljoin(page_url, html.unescape(source).replace('\\/', '/'))
+                if _up(source).scheme not in ('http', 'https'):
+                    return None
+                if _up(source).path.lower().endswith(('.m3u8', '.mp4', '.ts')) or 'manifest' in _up(source).path.lower():
+                    player_origin = _base_url(page_url)
+                    return _publish_direct_hls(source, {'User-Agent': UA, 'Referer': player_origin + '/', 'Origin': player_origin})
                 return None
-            return f'{m3u8}|User-Agent={UA}&Referer=https://tursatrueper.xyz/&Origin=https://tursatrueper.xyz'
+
+            api_url = urljoin(origin + '/', f'/api/player.php?id={ch_id}')
+            body = get_page(api_url, ch_url)
+            if not body:
+                return None
+            cfg = parse_config(body)
+            direct = stream_from_config(cfg, api_url)
+            if direct:
+                return direct
+            candidate = (cfg.get('embed') or cfg.get('url') or cfg.get('src') or cfg.get('srcBase')) if isinstance(cfg, dict) else None
+            if not candidate:
+                match = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', body, re.I)
+                if match:
+                    candidate = match.group(1)
+            if not candidate:
+                log('sportzone: no player URL or _econfig in API response', xbmc.LOGWARNING)
+                return None
+            embed_url = urljoin(api_url, html.unescape(str(candidate)).replace('\\/', '/'))
+            if _up(embed_url).scheme not in ('http', 'https'):
+                return None
+            if _up(embed_url).path.lower().endswith('.m3u8'):
+                return _publish_direct_hls(embed_url, {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin})
+            seen = set()
+            referer = api_url
+            for _ in range(4):
+                if embed_url in seen:
+                    break
+                seen.add(embed_url)
+                page = get_page(embed_url, referer)
+                if not page:
+                    break
+                cfg = parse_config(page)
+                direct = stream_from_config(cfg, embed_url)
+                if direct:
+                    return direct
+                if isinstance(cfg, dict):
+                    nxt = cfg.get('embed') or cfg.get('url') or cfg.get('src') or cfg.get('srcBase')
+                else:
+                    nxt = None
+                if not nxt:
+                    match = re.search(r'<iframe[^>]+(?:src|data-src)=["\']([^"\']+)', page, re.I)
+                    nxt = match.group(1) if match else None
+                if not nxt:
+                    cfg_url = _append_query_param(embed_url, 'ppcfg', '1')
+                    cfg_body = get_page(cfg_url, embed_url)
+                    direct = stream_from_config(parse_config(cfg_body), embed_url)
+                    if direct:
+                        return direct
+                    break
+                referer = embed_url
+                embed_url = urljoin(embed_url, html.unescape(str(nxt)).replace('\\/', '/'))
+                if _up(embed_url).scheme not in ('http', 'https'):
+                    break
+            log('sportzone: no playable stream in player configuration', xbmc.LOGWARNING)
+            return None
         except Exception as e:
             _log_error('sportzone', url, e)
             return None
