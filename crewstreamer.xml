@@ -2263,7 +2263,31 @@ class streamer:
             ).text
             iframe2 = self._get_iframe_src(iframe1_html)
             if not iframe2:
-                log(f'streameast_ga: no iframe2 | {iframe1}', xbmc.LOGERROR)
+                shaka_manifest = re.search(
+                    r'\b(?:var|let|const)\s+manifestUrl\s*=\s*("(?:\\.|[^"\\])*")',
+                    iframe1_html
+                )
+                if shaka_manifest:
+                    try:
+                        manifest_url = json.loads(shaka_manifest.group(1))
+                    except (ValueError, TypeError):
+                        manifest_url = ''
+                    if not manifest_url.startswith(('https://', 'http://')):
+                        log('streameast_ga: Shaka page has invalid manifestUrl', xbmc.LOGERROR)
+                        return None
+                    drm_present = bool(re.search(r'\bclearKeys\s*=|\bdrm\s*:', iframe1_html))
+                    if drm_present:
+                        log('streameast_ga: Player 1 uses Shaka with ClearKey DRM; '
+                            'a plain HLS URL is not sufficient for playback', xbmc.LOGWARNING)
+                        return None
+                    log('streameast_ga: Player 1 uses Shaka without an iframe2; '
+                        'found HLS manifest', xbmc.LOGINFO)
+                    return _publish_live_manifest(
+                        manifest_url,
+                        {'User-Agent': UA, 'Referer': iframe1, 'Origin': _base_url(iframe1)},
+                        'streameast_ga'
+                    )
+                log(f'streameast_ga: no iframe2 or Shaka manifest | {iframe1}', xbmc.LOGERROR)
                 return None
             iframe2_html = requests.get(
                 iframe2,
