@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 
 import os
 import re
@@ -342,14 +342,14 @@ def _manifest_problem(manifest_text):
                   '#EXT-X-PART:', '#EXT-X-PRELOAD-HINT:')
     if not any(line.startswith(media_tags) for line in lines):
         return 'playlist has no recognized media or variant entries (possibly sealed)'
-    
+    # An EXTINF media entry must be followed by a URI, not another tag.
     for index, line in enumerate(lines):
         if line.startswith('#EXTINF:'):
             if index + 1 >= len(lines) or lines[index + 1].startswith('#'):
                 return 'EXTINF entry has no media URI'
-    
-    
-    
+    # A URI can be syntactically valid HLS but still be a sealed token, not
+    # a usable segment path. Flag suspicious cases rather than silently
+    # handing them to ffmpeg as if they were ordinary .ts files.
     uri_lines = [line for line in lines if not line.startswith('#')]
     opaque = 0
     for uri in uri_lines:
@@ -383,15 +383,15 @@ def _rewrite_manifest(manifest_text, base_url, port, manifest_id, mark_ads=False
         elif stripped and not stripped.startswith('#'):
             abs_url = urljoin(base_url, stripped)
             if urlparse(abs_url).path.lower().endswith('.m3u8'):
-                
-                
-                
-                
-                
-                
-                
-                
-                
+                # This isn't a media segment - it's a nested sub-playlist (e.g. a
+                # bitrate-variant playlist referenced from a master playlist).
+                # Routing it through /seg would just pass its text through
+                # unrewritten (it isn't MPEG-TS binary, so _unwrap_segment is a
+                # no-op), leaving its own segment references un-proxied and
+                # pointed at our own server with no query string once FFmpeg
+                # resolves them relatively - which 400s forever. Route these
+                # through /submanifest instead, which fetches and rewrites them
+                # the same way the top-level manifest is rewritten.
                 sub_url = f'http://127.0.0.1:{port}/submanifest?mid={quote_plus(manifest_id)}&url=' + quote_plus(abs_url)
                 lines.append(sub_url)
                 continue
@@ -441,7 +441,7 @@ def _playlist_token(manifest_id, recipe):
         token = data.get('token') or ''
         ttl = max(20, int(data.get('ttl') or 120))
         key = data.get('k')
-        
+        # The JS indexes the key by the token response's key identifier.
         key_id = data.get('kid') or data.get('key_id') or data.get('id')
     except Exception as e:
         log(f'playlist token fetch failed: {e}', xbmc.LOGERROR)
@@ -473,9 +473,9 @@ def _unseal_playlist(text, manifest_id, recipe):
     entries = [line.strip() for line in lines if line.strip() and not line.lstrip().startswith('#')]
     if not entries:
         return text
-    
-    
-    
+    # The player recognizes sealed playlists by lack of a normal URI prefix.
+    # Check for base64url-looking opaque entries, rather than trying to
+    # decrypt regular relative/absolute paths.
     sealed = all(re.fullmatch(r'[A-Za-z0-9_-]{80,}={0,2}', e) for e in entries)
     if not sealed:
         return text
@@ -763,20 +763,20 @@ class _WSStream:
                 extinf = line
                 continue
             if line.startswith('#EXT-X-DISCONTINUITY') and not line.startswith('#EXT-X-DISCONTINUITY-SEQUENCE'):
-                
-                
-                
-                
+                # Real transitions are decided from ad-vs-content below, not this
+                # tag: a single break can carry several of these (one per ad
+                # pod), and re-triggering a discontinuity for each would force
+                # needless codec re-inits even though the placeholder never changes.
                 continue
             if line.startswith('#'):
                 continue
             full = urljoin(base, line)
             is_ad = '/ephemeral/' not in full
-            
-            
-            
-            
-            
+            # Content segment URLs get re-signed (new Expires/Signature) but keep
+            # the same path, so path-only identifies "the same slot". Ad-tracking
+            # URLs are the opposite: several distinct ad slots share one path
+            # (e.g. /targeting/analytics) and differ only in their query string,
+            # so the full URL is what makes each slot unique.
             key = full if is_ad else full.split('?', 1)[0]
             if is_ad:
                 if placeholder_url and key not in self.seen:
@@ -788,8 +788,8 @@ class _WSStream:
                         log(f'ws ad break started, filling with placeholder | seq={self.next_seq}')
                     self.next_seq += 1
                 elif key not in self.seen:
-                    
-                    
+                    # No placeholder available for this stream: fall back to
+                    # dropping the break entirely, as before.
                     self.seen.add(key)
                     self.in_ad_break = True
             else:
@@ -967,7 +967,7 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         pass
 
     def do_GET(self):
-        log(f'do_GET entry | {urlparse(self.path).path}')  
+        log(f'do_GET entry | {self.path}')  # TEMP diagnostic - remove once the silent-30s hang is root-caused
         parsed = urlparse(self.path)
 
         if parsed.path.startswith('/manifest/'):
@@ -980,14 +980,14 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             if recipe is not None and recipe.get('type') == 'ws':
                 rewritten = _ws_manifest_text(manifest_id, recipe)
             elif os.path.exists(recipe_path):
-                
-                
-                
-                
-                
-                
-                
-                
+                # Live source: a live HLS media playlist keeps sliding forward
+                # with new segments, so the underlying content needs periodic
+                # re-fetching. But blocking each client request on a fresh
+                # network round-trip causes a visible stall on every reload -
+                # instead, always serve whatever's cached immediately (even if
+                # a little stale) and refresh it in the background, so the
+                # client is never held up waiting on the real origin except
+                # for the very first request.
                 with _manifest_cache_lock:
                     cached = _manifest_cache.get(manifest_id)
 
@@ -1009,8 +1009,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                             daemon=True,
                         ).start()
             else:
-                
-                
+                # Static source: content has no separate upstream URL to re-fetch
+                # (e.g. embedded page state) - serve the one-time snapshot as-is.
                 try:
                     with open(_static_path(manifest_id), 'r', encoding='utf-8') as f:
                         rewritten = f.read()
@@ -1039,16 +1039,12 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             if mid:
                 try:
                     with open(_recipe_path(mid), 'r', encoding='utf-8') as f:
-                        sub_recipe = json.load(f)
-                        sub_headers = sub_recipe.get('headers') or {}
+                        sub_headers = json.load(f).get('headers') or {}
                 except Exception:
                     pass
 
             try:
-                sub_session = _get_manifest_session(mid) if mid else None
-                if sub_session is not None and 'sub_recipe' in locals() and sub_recipe.get('cookies'):
-                    sub_session.cookies.update(sub_recipe['cookies'])
-                resp = _get_with_retry(target, headers=sub_headers, timeout=TIMEOUT, session=sub_session)
+                resp = _get_with_retry(target, headers=sub_headers, timeout=TIMEOUT)
                 if resp.status_code != 200:
                     log(f'submanifest fetch HTTP {resp.status_code} | {_safe_source(target)}', xbmc.LOGERROR)
                     self.send_response(502)
@@ -1066,9 +1062,9 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                     self.send_response(502)
                     self.end_headers()
                     return
-                
-                
-                
+                # Recurse through the same rewrite logic used for the top-level
+                # manifest, so this sub-playlist's own segment (and, in theory,
+                # further nested playlist) references get proxied too.
                 rewritten = _rewrite_manifest(text, resp.url, get_port(), mid or '')
                 payload = rewritten.encode('utf-8')
                 self.send_response(200)
@@ -1077,7 +1073,7 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(payload)
             except Exception as e:
-                log(f'submanifest fetch error {_safe_source(target)}: {type(e).__name__}', xbmc.LOGERROR)
+                log(f'submanifest fetch error {target}: {e}', xbmc.LOGERROR)
                 try:
                     self.send_response(502)
                     self.end_headers()
@@ -1097,18 +1093,14 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             if mid:
                 try:
                     with open(_recipe_path(mid), 'r', encoding='utf-8') as f:
-                        key_recipe = json.load(f)
-                        key_headers = key_recipe.get('headers') or {}
+                        key_headers = json.load(f).get('headers') or {}
                 except Exception:
                     pass
 
             try:
-                key_session = _get_manifest_session(mid) if mid else None
-                if key_session is not None and 'key_recipe' in locals() and key_recipe.get('cookies'):
-                    key_session.cookies.update(key_recipe['cookies'])
-                resp = _get_with_retry(target, headers=key_headers, timeout=TIMEOUT, session=key_session)
+                resp = _get_with_retry(target, headers=key_headers, timeout=TIMEOUT)
                 if resp.status_code != 200:
-                    log(f'key fetch bad status {resp.status_code} | {_safe_source(target)}', xbmc.LOGERROR)
+                    log(f'key fetch bad status {resp.status_code} | {target}', xbmc.LOGERROR)
                     self.send_response(502)
                     self.end_headers()
                     return
@@ -1119,7 +1111,7 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(payload)
             except Exception as e:
-                log(f'key fetch error {_safe_source(target)}: {type(e).__name__}', xbmc.LOGERROR)
+                log(f'key fetch error {target}: {e}', xbmc.LOGERROR)
                 try:
                     self.send_response(502)
                     self.end_headers()
@@ -1137,7 +1129,6 @@ class _Handler(http.server.BaseHTTPRequestHandler):
 
         mid = qs.get('mid', [None])[0]
         seg_headers = {}
-        seg_recipe = {}
         placeholder_url = ''
         if mid:
             try:
@@ -1156,15 +1147,9 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                     self.end_headers()
                     return
             else:
-                
-                
-                
-                seg_session = _get_manifest_session(mid) if mid else None
-                if seg_session is not None and seg_recipe.get('cookies') and not len(seg_session.cookies):
-                    seg_session.cookies.update(seg_recipe['cookies'])
-                resp = _get_with_retry(target, headers=seg_headers, timeout=TIMEOUT, session=seg_session)
+                resp = _get_with_retry(target, headers=seg_headers, timeout=TIMEOUT)
                 if resp.status_code != 200:
-                    log(f'segment fetch bad status {resp.status_code} | {_safe_source(target)} | session={seg_session is not None}', xbmc.LOGERROR)
+                    log(f'segment fetch bad status {resp.status_code} | {_safe_source(target)}', xbmc.LOGERROR)
                     self.send_response(502)
                     self.end_headers()
                     return
