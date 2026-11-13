@@ -926,8 +926,6 @@ class streamer:
                 u = self.iframe_gs(url)
             elif 'runid.xyz' in url:
                 u = self.runid(url)
-            elif 'gsports.lat' in url:
-                u = self.gsports(url)
             elif 'gszone.top' in url:
                 u = self.gszone(url)
             elif any(x in url for x in ['ovostreams.com', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal', 'iframe.st', 'gozo']):
@@ -2058,29 +2056,6 @@ class streamer:
             return None
 
     @_guard
-    def gsports(self, url):
-        try:
-            raw = requests.get(
-                _append_query_param(url, 'v', 'font.woff2'),
-                headers={'User-Agent': UA, 'Referer': url},
-                timeout=TIMEOUT
-            ).content
-            key = b'gs99'
-            try:
-                script = zlib.decompress(bytes(c ^ key[i % 4] for i, c in enumerate(raw)), -15).decode('utf-8', 'replace')
-            except Exception:
-                log(f'gsports: failed to decode payload | {url}', xbmc.LOGERROR)
-                return None
-            m = re.search(r"source:\s*'([^']+)'", script)
-            if not m:
-                log(f'gsports: no source match | {url}', xbmc.LOGERROR)
-                return None
-            stream_url = m.group(1)
-            origin, referer = _origin_referer(url)
-            return f'{stream_url}|User-Agent={UA}&Referer={referer}&Origin={origin}'
-        except Exception as e:
-            _log_error('gsports', url, e)
-            return None
 
     @_guard
     def gszone(self, url):
