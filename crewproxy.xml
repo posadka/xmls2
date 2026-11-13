@@ -16,8 +16,6 @@ import uuid
 import random
 import threading
 import http.server
-import sys
-import importlib
 from urllib.parse import urlparse, parse_qs, unquote, quote_plus, urljoin
 
 import requests
@@ -62,8 +60,6 @@ _ws_streams = {}
 _ws_lock = threading.Lock()
 _placeholder_cache = {}
 _source_refreshing = set()
-_source_refresh_failures = {}
-SOURCE_REFRESH_COOLDOWN = 30.0
 
 
 def log(msg, level=xbmc.LOGINFO):
@@ -531,69 +527,41 @@ def _manifest_url(manifest_id, recipe):
     return f'{url}{sep}t={quote_plus(token)}&_={int(time.time() * 1000)}'
 
 
-def _load_timstreams_resolver():
-    """Load the resolver in Kodi's proxy service process, not just the UI process."""
-    try:
-        return importlib.import_module('resources.lib.modules.streamer').resolve_timstreams_source
-    except ImportError as first_error:
-        # Kodi services may start with a different sys.path than the plugin.
-        try:
-            import xbmcaddon
-            addon_root = xbmcaddon.Addon('plugin.video.thecrew').getAddonInfo('path')
-            if addon_root and addon_root not in sys.path:
-                sys.path.insert(0, addon_root)
-            return importlib.import_module('resources.lib.modules.streamer').resolve_timstreams_source
-        except Exception as second_error:
-            log('timstreams resolver import failed: %s: %s (initial: %s)' % (
-                type(second_error).__name__, str(second_error), str(first_error)), xbmc.LOGWARNING)
-            return None
-
-
 def _refresh_timstreams_source(manifest_id):
-    """Refresh a Tim Streams recipe, with a cooldown on failed attempts."""
+    """Re-resolve the original Tim Streams page and replace the upstream recipe.
+
+    Only one thread per manifest may refresh. The caller must not replay an old
+    segment against a new stream: Kodi should request the updated playlist.
+    """
     path = _recipe_path(manifest_id)
-    now = time.time()
     with _manifest_cache_lock:
-        if manifest_id in _source_refreshing or now < _source_refresh_failures.get(manifest_id, 0):
+        if manifest_id in _source_refreshing:
             return False
         _source_refreshing.add(manifest_id)
-    success = False
     try:
         recipe = _read_recipe(path)
         source = recipe.get('refresh_source') or {}
         if not source.get('url'):
             return False
-        resolver = _load_timstreams_resolver()
-        if resolver is None:
-            return False
-        resolved = resolver(source['url'], source.get('referer'))
+        from resources.lib.modules import streamer
+        resolved = streamer.resolve_timstreams_source(source['url'], source.get('referer'))
         if not resolved:
             log('timstreams source refresh did not resolve', xbmc.LOGWARNING)
             return False
         upstream, headers = resolved
-        if not upstream or upstream == recipe.get('url') and headers == recipe.get('headers'):
-            log('timstreams resolver returned unchanged upstream URL', xbmc.LOGWARNING)
-            return False
         recipe['url'], recipe['headers'] = upstream, headers
-        tmp_path = path + '.tmp'
-        with open(tmp_path, 'w', encoding='utf-8') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             json.dump(recipe, f)
-        os.replace(tmp_path, path)
         with _manifest_cache_lock:
             _manifest_cache.pop(manifest_id, None)
         log('timstreams source URL refreshed')
-        success = True
         return True
     except Exception as e:
-        log('timstreams source refresh failed: %s: %s' % (type(e).__name__, str(e)), xbmc.LOGWARNING)
+        log(f'timstreams source refresh failed: {type(e).__name__}', xbmc.LOGWARNING)
         return False
     finally:
         with _manifest_cache_lock:
             _source_refreshing.discard(manifest_id)
-            if success:
-                _source_refresh_failures.pop(manifest_id, None)
-            else:
-                _source_refresh_failures[manifest_id] = time.time() + SOURCE_REFRESH_COOLDOWN
 
 
 def _expired_signed_url(url, skew=20):
@@ -1103,12 +1071,6 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             ):
                 if _refresh_timstreams_source(manifest_id):
                     rewritten = _fetch_and_rewrite(manifest_id, recipe_path, attempts=1) or rewritten
-                # Never serve a playlist containing known-expired signed segments.
-                if any(_expired_signed_url(parse_qs(urlparse(line.strip()).query).get('url', [line.strip()])[0])
-                       for line in rewritten.splitlines() if line.strip() and not line.startswith('#')):
-                    self.send_response(503)
-                    self.end_headers()
-                    return
             payload = rewritten.encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
