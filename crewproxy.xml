@@ -59,7 +59,6 @@ _manifest_tokens = {}
 _ws_streams = {}
 _ws_lock = threading.Lock()
 _placeholder_cache = {}
-_source_refreshing = set()
 
 
 def log(msg, level=xbmc.LOGINFO):
@@ -525,51 +524,6 @@ def _manifest_url(manifest_id, recipe):
         return url
     sep = '&' if '?' in url else '?'
     return f'{url}{sep}t={quote_plus(token)}&_={int(time.time() * 1000)}'
-
-
-def _refresh_timstreams_source(manifest_id):
-    """Re-resolve the original Tim Streams page and replace the upstream recipe.
-
-    Only one thread per manifest may refresh. The caller must not replay an old
-    segment against a new stream: Kodi should request the updated playlist.
-    """
-    path = _recipe_path(manifest_id)
-    with _manifest_cache_lock:
-        if manifest_id in _source_refreshing:
-            return False
-        _source_refreshing.add(manifest_id)
-    try:
-        recipe = _read_recipe(path)
-        source = recipe.get('refresh_source') or {}
-        if not source.get('url'):
-            return False
-        from resources.lib.modules import streamer
-        resolved = streamer.resolve_timstreams_source(source['url'], source.get('referer'))
-        if not resolved:
-            log('timstreams source refresh did not resolve', xbmc.LOGWARNING)
-            return False
-        upstream, headers = resolved
-        recipe['url'], recipe['headers'] = upstream, headers
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(recipe, f)
-        with _manifest_cache_lock:
-            _manifest_cache.pop(manifest_id, None)
-        log('timstreams source URL refreshed')
-        return True
-    except Exception as e:
-        log(f'timstreams source refresh failed: {type(e).__name__}', xbmc.LOGWARNING)
-        return False
-    finally:
-        with _manifest_cache_lock:
-            _source_refreshing.discard(manifest_id)
-
-
-def _expired_signed_url(url, skew=20):
-    try:
-        values = parse_qs(urlparse(url).query).get('x-expires') or []
-        return bool(values) and float(values[0]) <= time.time() + skew
-    except (ValueError, TypeError, OverflowError):
-        return False
 
 
 def _fetch_and_rewrite(manifest_id, recipe_path, attempts=3):
@@ -1065,12 +1019,6 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                     self.end_headers()
                     return
 
-            if recipe and recipe.get('refresh_source') and any(
-                _expired_signed_url(parse_qs(urlparse(line.strip()).query).get("url", [line.strip()])[0]) for line in rewritten.splitlines()
-                if line.strip() and not line.startswith('#')
-            ):
-                if _refresh_timstreams_source(manifest_id):
-                    rewritten = _fetch_and_rewrite(manifest_id, recipe_path, attempts=1) or rewritten
             payload = rewritten.encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
@@ -1181,7 +1129,6 @@ class _Handler(http.server.BaseHTTPRequestHandler):
 
         mid = qs.get('mid', [None])[0]
         seg_headers = {}
-        seg_recipe = {}
         placeholder_url = ''
         if mid:
             try:
@@ -1200,18 +1147,9 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                     self.end_headers()
                     return
             else:
-                if mid and seg_recipe.get('refresh_source') and _expired_signed_url(target):
-                    if _refresh_timstreams_source(mid):
-                        _fetch_and_rewrite(mid, _recipe_path(mid), attempts=1)
-                    self.send_response(503)
-                    self.end_headers()
-                    return
                 resp = _get_with_retry(target, headers=seg_headers, timeout=TIMEOUT)
                 if resp.status_code != 200:
                     log(f'segment fetch bad status {resp.status_code} | {_safe_source(target)}', xbmc.LOGERROR)
-                    if resp.status_code in (401, 403, 410) and mid and seg_recipe.get('refresh_source'):
-                        if _refresh_timstreams_source(mid):
-                            _fetch_and_rewrite(mid, _recipe_path(mid), attempts=1)
                     self.send_response(502)
                     self.end_headers()
                     return
@@ -1265,7 +1203,7 @@ def get_manifest_dir():
     return val or None
 
 
-def register_live_manifest(upstream_url, headers, name_prefix, cookies=None, token_url=None, refresh_source=None):
+def register_live_manifest(upstream_url, headers, name_prefix, cookies=None, token_url=None):
     """Register an upstream media-playlist URL for LIVE re-fetching on every
     /manifest/<id>.m3u8 request, instead of caching one static snapshot.
     Use this for real live streams where the upstream playlist keeps sliding
@@ -1277,8 +1215,6 @@ def register_live_manifest(upstream_url, headers, name_prefix, cookies=None, tok
         return None
     manifest_id = f'{name_prefix}_{int(time.time() * 1000)}'
     recipe = {'url': upstream_url, 'headers': headers or {}}
-    if refresh_source:
-        recipe['refresh_source'] = refresh_source
     if cookies:
         recipe['cookies'] = cookies
     if token_url:
