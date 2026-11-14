@@ -3537,7 +3537,7 @@ class streamer:
             tx4 = int(m.group(3))
             decoded = ''.join(chr(((n ^ cs4) - tx4 + 256) % 256) for n in arr)
             m = re.search(r'SIGNED_URL\s*=\s*"([^"]+)"', decoded)
-            lm = None if m else re.search(r'loadStreamUrl\(\s*"([^"]+)"', decoded)
+            lm = None if m else (re.search(r'loadStreamUrl\(\s*"([^"]+)"', decoded) or re.search(r'"ticketUrl"\s*:\s*"([^"]+)"', decoded))
             if lm:
                 token_url = lm.group(1).replace('\\/', '/')
                 tk = token_url.rstrip('/').rsplit('/', 1)[-1]
@@ -3929,8 +3929,19 @@ class streamer:
                 data    = requests.get(f'{base}/api/v1/sources/{key}', headers=headers, timeout=TIMEOUT).json()
                 sources = [s for s in (data.get('sources') or []) if isinstance(s, dict) and s.get('url')]
                 if not sources:
-                    log(f'strmfree: no sources | {url}', xbmc.LOGERROR)
-                    return None
+                    page = requests.get(url, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                    b_m = re.search(r'const\s+BACKUP_SOURCES\s*=\s*(\[.*?\]);', page)
+                    try:
+                        backups = [b for b in json.loads(b_m.group(1)) if isinstance(b, dict) and b.get('url')] if b_m else []
+                    except ValueError:
+                        backups = []
+                    if not backups:
+                        log(f'strmfree: no sources | {url}', xbmc.LOGERROR)
+                        return None
+                    choice = 0 if len(backups) == 1 else _select('Choose Stream', [' '.join(p for p in (b.get('name'), b.get('quality')) if p) or f'Stream {i}' for i, b in enumerate(backups, 1)])
+                    if choice == -1:
+                        return None
+                    return self.resolve(backups[choice]['url'])
                 choice = 0 if len(sources) == 1 else _select('Choose Quality', [s.get('quality') or f'Stream {i}' for i, s in enumerate(sources, 1)])
                 if choice == -1:
                     return None

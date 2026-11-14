@@ -104,6 +104,7 @@ def _find_ts_start(data):
 
 PNG_SIGNATURE = b'\x89PNG\r\n\x1a\n'
 PIXEL_MAGIC = b'TIKTIKPX'
+KWP_MAGIC = b'KWP1'
 _SWAR_MASKS = {}
 
 
@@ -185,6 +186,7 @@ def _decode_pixel_segment(data):
         return None
     pos = len(PNG_SIGNATURE)
     width = height = bpp = 0
+    kwln = -1
     idat = []
     while pos + 8 <= len(data):
         length = struct.unpack('>I', data[pos:pos + 4])[0]
@@ -196,6 +198,8 @@ def _decode_pixel_segment(data):
             bpp = {0: 1, 2: 3, 4: 2, 6: 4}.get(color, 0)
             if depth != 8 or interlace != 0 or not bpp:
                 return None
+        elif ctype == b'kwLn' and length == 4:
+            kwln = struct.unpack('>I', body)[0]
         elif ctype == b'IDAT':
             idat.append(body)
         elif ctype == b'IEND':
@@ -209,6 +213,13 @@ def _decode_pixel_segment(data):
         raw = bytes(rgb)
     elif bpp != 3:
         return None
+    if 0 <= kwln <= len(raw):
+        raw = raw[:kwln]
+    if raw.startswith(KWP_MAGIC):
+        size = struct.unpack('>I', raw[4:8])[0]
+        if 8 + size > len(raw):
+            return None
+        return raw[8:8 + size]
     if not raw.startswith(PIXEL_MAGIC):
         return None
     size = struct.unpack('>I', raw[8:12])[0]
