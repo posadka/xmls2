@@ -2213,6 +2213,23 @@ class streamer:
 
             iframe1   = self._get_iframe_src(page_data, require_id=True)
             if not iframe1:
+                boot_m = re.search(r'_seEsBoot\s*=\s*(\{.*?\})\s*;', page_data)
+                if boot_m:
+                    try:
+                        boot = json.loads(boot_m.group(1))
+                        hs = requests.post(
+                            boot['hs'],
+                            data=json.dumps({'mt': boot['t'], 'q': 1}),
+                            headers={'User-Agent': UA, 'Content-Type': 'text/plain', 'Origin': base, 'Referer': base + '/'},
+                            timeout=TIMEOUT
+                        ).json()
+                    except Exception as e:
+                        log(f'streameast_ga: handshake request failed ({e}) | {url}', xbmc.LOGERROR)
+                        hs = {}
+                    q_url = str(hs.get('q') or '')
+                    if hs.get('ok') and q_url.startswith('http'):
+                        return _publish_live_manifest(q_url, {'User-Agent': UA, 'Referer': base + '/', 'Origin': base}, 'streameast_ga')
+                    log(f'streameast_ga: handshake returned no playlist ({hs.get("e")}) | {url}', xbmc.LOGERROR)
                 su_m = re.search(r"var\s+streamUrl\s*=\s*\(function\(\w+\)\{return\s+atob\(\w+\)\.split\(''\)\.reverse\(\)\.join\(''\)\}\)\('([A-Za-z0-9+/=]+)'\)", page_data)
                 if su_m:
                     stream_url = base64.b64decode(su_m.group(1)).decode('utf-8', 'ignore')[::-1].strip()
