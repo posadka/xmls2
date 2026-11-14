@@ -399,6 +399,8 @@ class streamer:
                 u = self.streamed(url)
             elif '720pstream.cx' in url:
                 u = self.cx720p(url)
+            elif 'mygoodstream.pw' in urlparse(url).netloc.lower():
+                u = self.mygoodstream(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -2287,4 +2289,80 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('cx720p', url, e)
+            return None
+
+    @_guard
+    def mygoodstream(self, url):
+        try:
+            origin = 'https://v2.mygoodstream.pw'
+            response = requests.get(origin + '/', headers={'User-Agent': UA, 'Accept': 'text/html'}, timeout=TIMEOUT)
+            response.raise_for_status()
+            page = response.text
+            results = []
+            seen = set()
+
+            def add_event(key, title, date='', event_time='', live=False):
+                key = str(key or '').strip()
+                match = re.search(r'(?<![0-9a-f])([0-9a-f]{24}|[0-9a-f]{32})(?![0-9a-f])', key, re.I)
+                if not match:
+                    return
+                event_id = match.group(1)
+                if event_id in seen:
+                    return
+                title = html.unescape(str(title or '')).strip()
+                if not title:
+                    return
+                seen.add(event_id)
+                stamp = ''
+                if date:
+                    try:
+                        raw = str(date).strip()
+                        if 'T' in raw:
+                            dt = datetime.fromisoformat(raw.replace('Z', '+00:00'))
+                        else:
+                            dt = datetime.strptime(raw[:10] + ' ' + str(event_time or '00:00:00')[:8], '%Y-%m-%d %H:%M:%S')
+                            dt = dt.replace(tzinfo=timezone.utc)
+                        stamp = _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        stamp = str(date)[:10] + (' ' + str(event_time)[:5] if event_time else '')
+                label = ('[COLOR red]LIVE[/COLOR] ' if live else '') + self._label(stamp, title)
+                results.append((origin + '/' + event_id, label))
+
+            def walk(value):
+                if isinstance(value, list):
+                    for child in value:
+                        walk(child)
+                elif isinstance(value, dict):
+                    key = value.get('matchKey') or value.get('eventId') or value.get('event_id') or value.get('slug') or ''
+                    team_a = value.get('teamA') or {}
+                    team_b = value.get('teamB') or {}
+                    if isinstance(team_a, dict):
+                        team_a = team_a.get('name') or ''
+                    if isinstance(team_b, dict):
+                        team_b = team_b.get('name') or ''
+                    title = value.get('eventName') or value.get('title') or value.get('name') or ''
+                    if team_a and team_b:
+                        title = str(team_a) + ' vs ' + str(team_b)
+                    if key and title:
+                        add_event(key, title, value.get('date') or value.get('startTime') or '', value.get('time') or '', value.get('live') or value.get('isLive') or False)
+                    for child in value.values():
+                        if isinstance(child, (dict, list)):
+                            walk(child)
+
+            for script in re.findall(r'<script[^>]*type=["\\\']application/json["\\\'][^>]*>(.*?)</script>', page, re.I | re.S):
+                try:
+                    walk(json.loads(html.unescape(script)))
+                except (ValueError, TypeError):
+                    pass
+            for script in re.findall(r'<script[^>]*id=["\\\']__NEXT_DATA__["\\\'][^>]*>(.*?)</script>', page, re.I | re.S):
+                try:
+                    walk(json.loads(html.unescape(script)))
+                except (ValueError, TypeError):
+                    pass
+            for href, text in re.findall(r'<a\\b[^>]*href=["\\\']([^"\\\']+)["\\\'][^>]*>(.*?)</a>', page, re.I | re.S):
+                label = ' '.join(re.sub(r'<[^>]+>', ' ', html.unescape(text)).split())
+                add_event(href, label)
+            return results or None
+        except Exception as e:
+            _log_error('mygoodstream', url, e)
             return None

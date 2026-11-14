@@ -656,6 +656,30 @@ def _publish_ws_manifest(manifest_text, headers, ws_config, name_prefix):
     return f'{local_url}|User-Agent={UA}'
 
 
+_MG_DRM = None
+
+
+def _mg_key_pair(channel):
+    raw = xbmcaddon.Addon(ALLOWED_ADDON).getSetting('mygoodstream_clearkey').strip()
+    if not raw:
+        return None
+    try:
+        pairs = json.loads(raw)
+    except (ValueError, TypeError):
+        pairs = {}
+        if ':' in raw:
+            kid, key = raw.split(':', 1)
+            pairs[kid.strip()] = key.strip()
+    if not isinstance(pairs, dict):
+        return None
+    for kid, key in pairs.items():
+        kid = str(kid).replace('-', '').strip().lower()
+        key = str(key).replace('-', '').strip().lower()
+        if re.fullmatch(r'[0-9a-f]{32}', kid) and re.fullmatch(r'[0-9a-f]{32}', key):
+            return kid, key
+    return None
+
+
 class streamer:
 
     def _get_iframe_src(self, data, require_id=False):
@@ -960,6 +984,8 @@ class streamer:
                 u = self.gblog(url)
             elif 'xstream.st' in url:
                 u = self.xstream(url)
+            elif 'mygoodstream.pw' in urlparse(url).netloc.lower():
+                u = self.mygoodstream(url)
             elif getattr(self, '_chasing', False):
                 self._unrouted = True
                 u = None
@@ -4210,6 +4236,17 @@ class streamer:
             return None
         return [results[choice]]
 
+    def configure_listitem(self, item):
+        config = _MG_DRM
+        if not config:
+            return False
+        item.setProperty('inputstream', 'inputstream.adaptive')
+        item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+        item.setProperty('inputstream.adaptive.license_type', 'org.w3.clearkey')
+        item.setProperty('inputstream.adaptive.license_key', config[0] + ':' + config[1])
+        return True
+
+
     def daddylive(self, url):
         try:
             if url.lstrip().startswith('{'):
@@ -4353,4 +4390,103 @@ class streamer:
             return self.streamed(json.dumps({'base': data.get('base'), 'sources': [sources[choice - len(main)]]}))
         except Exception as e:
             _log_error('sportsupa', url, e)
+            return None
+
+    def mygoodstream(self, url):
+        global _MG_DRM
+        _MG_DRM = None
+        try:
+            data = None
+            if isinstance(url, str) and url.lstrip().startswith('{'):
+                data = json.loads(url)
+                target = str(data.get('url') or data.get('link') or '')
+            else:
+                target = str(url)
+            parsed = _up(target)
+            base_url = _base_url(target) if parsed.scheme in ('http', 'https') and parsed.netloc else 'https://v2.mygoodstream.pw'
+            if parsed.hostname not in ('mygoodstream.pw', 'www.mygoodstream.pw', 'v2.mygoodstream.pw') and data is None:
+                return None
+            event = re.search(r'(?<![0-9a-f])([0-9a-f]{24}|[0-9a-f]{32})(?![0-9a-f])', parsed.path, re.I)
+            if not event and data:
+                event = re.search(r'^(?:[0-9a-f]{24}|[0-9a-f]{32})$', str(data.get('matchKey') or data.get('eventId') or ''), re.I)
+            headers = {'User-Agent': UA, 'Accept': 'application/json', 'Referer': target or base_url + '/', 'Origin': base_url}
+            if event:
+                event_id = event.group(1) if event.lastindex else event.group(0)
+                response = requests.get(base_url + '/api/' + event_id + '/config', headers=headers, timeout=TIMEOUT)
+                response.raise_for_status()
+                data = response.json()
+            elif data is None:
+                response = requests.get(target, headers={'User-Agent': UA, 'Referer': base_url + '/'}, timeout=TIMEOUT)
+                response.raise_for_status()
+                content_type = response.headers.get('Content-Type', '').lower()
+                if 'json' in content_type:
+                    data = response.json()
+                else:
+                    found = re.search(r'<script[^>]+type=["\']application/json["\'][^>]*>(.*?)</script>', response.text, re.I | re.S)
+                    if found:
+                        data = json.loads(html.unescape(found.group(1)))
+            if not isinstance(data, dict):
+                log('mygoodstream: no supported event or channel metadata at URL', xbmc.LOGWARNING)
+                return None
+            if data.get('externalUrl') or data.get('external_url') or data.get('isExternal'):
+                log('mygoodstream: external event is not a playable media stream', xbmc.LOGWARNING)
+                return None
+            channels = data.get('channels') or data.get('liveChannels') or []
+            if isinstance(channels, dict):
+                channels = list(channels.values())
+            if not channels and (data.get('manifestUrl') or data.get('streamUrl') or data.get('url')):
+                channels = [data]
+            choices = [c for c in channels if isinstance(c, dict)]
+            if not choices:
+                log('mygoodstream: no channels available', xbmc.LOGWARNING)
+                return None
+            if len(choices) > 1:
+                index = _select('MyGoodStream - Choose Channel', [str(c.get('name') or 'Channel ' + str(i + 1)) + (' [DRM]' if c.get('drm') else '') for i, c in enumerate(choices)])
+                if index < 0:
+                    return None
+                channel = choices[index]
+            else:
+                channel = choices[0]
+            if channel.get('externalUrl') or channel.get('external_url') or channel.get('isExternal'):
+                log('mygoodstream: external channel is not a playable media stream', xbmc.LOGWARNING)
+                return None
+            manifest = channel.get('manifestUrl') or channel.get('streamUrl') or channel.get('playlistUrl') or channel.get('url')
+            if isinstance(manifest, dict):
+                manifest = manifest.get('url') or manifest.get('manifestUrl')
+            if not manifest and isinstance(channel.get('sources'), list):
+                for source in channel['sources']:
+                    if isinstance(source, dict):
+                        manifest = source.get('url') or source.get('manifestUrl')
+                        if manifest:
+                            break
+            if not isinstance(manifest, str) or _up(manifest).scheme not in ('http', 'https'):
+                log('mygoodstream: channel has no usable manifest URL', xbmc.LOGWARNING)
+                return None
+            params = parse_qs(_up(manifest).query)
+            for key in ('expires', 'expire', 'exp', 'e'):
+                value = (params.get(key) or [None])[0]
+                if value and str(value).isdigit():
+                    expiry = int(value)
+                    if expiry > 100000000000:
+                        expiry //= 1000
+                    if expiry > 1000000000 and expiry <= int(time.time()):
+                        log('mygoodstream: stream URL has expired', xbmc.LOGWARNING)
+                        return None
+            if channel.get('drm'):
+                pair = _mg_key_pair(channel)
+                if not pair:
+                    log('mygoodstream: authorized ClearKey must be configured in addon setting mygoodstream_clearkey', xbmc.LOGWARNING)
+                    return None
+                _MG_DRM = pair
+            kind = str(channel.get('type') or '').lower()
+            if kind in ('hls', 'm3u8') or _up(manifest).path.lower().endswith('.m3u8'):
+                if channel.get('drm'):
+                    return None
+                return _publish_direct_hls(manifest, {'User-Agent': UA, 'Referer': base_url + '/', 'Origin': base_url})
+            if kind in ('dash', 'mpd') or _up(manifest).path.lower().endswith('.mpd'):
+                return manifest + '|User-Agent=' + quote_plus(UA) + '&Referer=' + quote_plus(target or base_url + '/') + '&Origin=' + quote_plus(base_url)
+            log('mygoodstream: unsupported channel format ' + kind, xbmc.LOGWARNING)
+            return None
+        except Exception as exc:
+            _log_error('mygoodstream', str(url)[:160], exc)
             return None
