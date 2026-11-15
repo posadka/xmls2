@@ -984,7 +984,7 @@ class streamer:
                 u = self.gblog(url)
             elif 'xstream.st' in url:
                 u = self.xstream(url)
-            elif 'mygoodstream.pw' in urlparse(url).netloc.lower():
+            elif 'mygoodstream.pw' in url:
                 u = self.mygoodstream(url)
             elif getattr(self, '_chasing', False):
                 self._unrouted = True
