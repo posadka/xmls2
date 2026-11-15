@@ -677,23 +677,38 @@ def _mg_strm_path(manifest, headers, drm=None, media_type='dash'):
             props.extend(['inputstream.adaptive.manifest_headers=' + encoded,
                           'inputstream.adaptive.stream_headers=' + encoded])
         if drm:
-            drm_type, license_value = drm
+            drm_type, license_value = drm[:2]
+            license_headers = drm[2] if len(drm) > 2 and isinstance(drm[2], dict) else {}
             if drm_type == 'org.w3.clearkey' and kodi_version < 21:
                 log('mygoodstream: ClearKey requires Kodi 21 or later', xbmc.LOGWARNING)
                 return None
+            if drm_type == 'org.w3.clearkey' and not license_value:
+                log('mygoodstream: no usable ClearKey or authorized license server for channel', xbmc.LOGWARNING)
+                return None
+            encoded_license_headers = urlencode(license_headers) if license_headers else ''
             if kodi_version >= 22:
+                license_config = {}
                 if license_value:
                     if drm_type == 'org.w3.clearkey' and re.fullmatch(r'[0-9a-fA-F]{32}:[0-9a-fA-F]{32}', license_value):
                         kid, key = license_value.split(':', 1)
-                        license_config = {'keyids': {kid.lower(): key.lower()}}
+                        license_config['keyids'] = {kid.lower(): key.lower()}
                     else:
-                        license_config = {'server_url': license_value}
-                    props.append('inputstream.adaptive.drm=' + json.dumps({drm_type: {'license': license_config}}, separators=(',', ':')))
+                        license_config['server_url'] = license_value
+                if encoded_license_headers:
+                    license_config['req_headers'] = encoded_license_headers
+                properties = {'license': license_config} if license_config else {}
+                props.append('inputstream.adaptive.drm=' + json.dumps({drm_type: properties}, separators=(',', ':')))
             elif kodi_version >= 21:
-                props.append('inputstream.adaptive.drm_legacy=' + drm_type + ('|' + license_value if license_value else ''))
+                value = drm_type + ('|' + license_value if license_value else '')
+                if encoded_license_headers:
+                    value += ('|' if license_value else '||') + encoded_license_headers
+                props.append('inputstream.adaptive.drm_legacy=' + value)
             elif license_value:
+                value = license_value
+                if encoded_license_headers:
+                    value += '|' + encoded_license_headers + '|R{SSM}|R'
                 props.extend(['inputstream.adaptive.license_type=' + drm_type,
-                              'inputstream.adaptive.license_key=' + license_value])
+                              'inputstream.adaptive.license_key=' + value])
         contents = ''.join('#KODIPROP:' + prop + '\n' for prop in props) + manifest + '\n'
         outfile = xbmcvfs.File(path, 'w')
         try:
@@ -4589,13 +4604,24 @@ class streamer:
                                    drm_info.get('type') or drm_info.get('scheme') or '').lower()
                     if not drm_type and (channel.get('clearkeyPairs') or drm_info.get('clearkeyPairs')):
                         drm_type = 'clearkey'
+                    license_headers = (license_info.get('headers') or
+                                       drm_info.get('licenseHeaders') or
+                                       drm_info.get('license_headers') or
+                                       channel.get('licenseHeaders') or
+                                       channel.get('license_headers') or {})
+                    if not isinstance(license_headers, dict):
+                        license_headers = {}
+                    else:
+                        license_headers = {str(k): str(v) for k, v in license_headers.items()
+                                           if isinstance(k, str) and isinstance(v, str) and
+                                           '\n' not in k + v and '\r' not in k + v}
                     if isinstance(license_url, str) and _up(license_url).scheme == 'https':
                         if drm_type in ('widevine', 'com.widevine.alpha'):
-                            drm_config = ('com.widevine.alpha', license_url)
+                            drm_config = ('com.widevine.alpha', license_url, license_headers)
                         elif drm_type in ('playready', 'com.microsoft.playready'):
-                            drm_config = ('com.microsoft.playready', license_url)
+                            drm_config = ('com.microsoft.playready', license_url, license_headers)
                         elif drm_type in ('clearkey', 'org.w3.clearkey'):
-                            drm_config = ('org.w3.clearkey', license_url)
+                            drm_config = ('org.w3.clearkey', license_url, license_headers)
                 if not drm_config:
                     declared_type = str(channel.get('drmType') or channel.get('licenseType') or '').lower()
                     if declared_type in ('widevine', 'com.widevine.alpha'):
