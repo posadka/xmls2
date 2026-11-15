@@ -905,6 +905,8 @@ class streamer:
                 u = self.buffstreams(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top']):
                 u = self.crackstreams(url)
+            elif 'crackstreams.st' in url:
+                u = self.crackstreamsst(url)
             elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia', 'taifood-blog']):
                 u = self.embedsports(url)
             elif 'rockyembed.st' in url:
@@ -3036,6 +3038,32 @@ class streamer:
             return self._decrypt_streams_center(frame_html, frame_url)
         except Exception as e:
             _log_error('crackstreams', url, e)
+            return None
+
+    @_guard
+    def crackstreamsst(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            feeds = re.findall(r'<a[^>]+href="(https://foxiy\.st/[^"]+/main/(\d+))"', page_data)
+            if not feeds:
+                log(f'crackstreamsst: no foxiy feeds | {url}', xbmc.LOGERROR)
+                return None
+            seen   = set()
+            unique = []
+            for href, num in feeds:
+                if href in seen:
+                    continue
+                seen.add(href)
+                unique.append((href, num))
+            if len(unique) == 1:
+                choice = 0
+            else:
+                choice = _select('Choose Feed', [f'Main {num}' for _, num in unique])
+            if choice == -1:
+                return None
+            return self.resolve(unique[choice][0])
+        except Exception as e:
+            _log_error('crackstreamsst', url, e)
             return None
 
     @_guard

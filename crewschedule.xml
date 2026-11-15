@@ -368,6 +368,8 @@ class streamer:
                 u = self.buffstreams(url)
             elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top']):
                 u = self.crackstreams(url)
+            elif 'crackstreams.st' in url:
+                u = self.crackstreamsst(url)
             elif any(x in url for x in ['fsportsshd', 'fsportshd']):
                 u = self.fsportshd(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline']):
@@ -1037,6 +1039,28 @@ class streamer:
             return None
 
     @_guard
+    def crackstreamsst(self, url):
+        try:
+            page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
+            matches   = re.findall(
+                r'"name":"([^"]+)","url":"(https://crackstreams\.st/event/[^"]+)"',
+                page_data
+            )
+            seen    = set()
+            results = []
+            for name, href in matches:
+                if href in seen:
+                    continue
+                seen.add(href)
+                title = html.unescape(name).strip()
+                if title:
+                    results.append((href, f'[COLOR orange]{title}[/COLOR]'))
+            return results or None
+        except Exception as e:
+            _log_error('crackstreamsst', url, e)
+            return None
+
+    @_guard
     def flyembed(self, url):
         try:
             feed_url, _, frag = url.partition('#')
@@ -1558,6 +1582,7 @@ class streamer:
                 r'<td>\s*<img[^>]+alt="([^"]*)"[^>]*>\s*</td>\s*'
                 r'<td>\s*([^<]*?)\s*</td>\s*'
                 r'<td>\s*([^<]*?)\s*</td>\s*'
+                r'<td>\s*[^<]*?\s*</td>\s*'
                 r'<td[^>]*>\s*([^<]*?)\s*</td>\s*'
                 r'<td>\s*<a href="([^"]+)"[^>]*>\s*WATCH\s*</a>',
                 page_data
