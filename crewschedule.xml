@@ -399,7 +399,7 @@ class streamer:
                 u = self.streamed(url)
             elif '720pstream.cx' in url:
                 u = self.cx720p(url)
-            elif 'mygoodstream.pw' in urlparse(url).netloc.lower():
+            elif 'mygoodstream.pw' in url:
                 u = self.mygoodstream(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
@@ -2260,6 +2260,63 @@ class streamer:
             return None
 
     @_guard
+    def mygoodstream(self, url):
+        try:
+            page_url, _, frag = url.partition('#')
+            want = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            w_cat = [x.strip().lower() for x in want.get('cat', '').replace('+', ' ').split('|') if x.strip()]
+            w_title = [x.strip().lower() for x in want.get('title', '').replace('+', ' ').split('|') if x.strip()]
+            base = _base_url(page_url)
+            headers = {'User-Agent': UA, 'Accept': 'application/json', 'Referer': base + '/'}
+            data = requests.get(base + '/api/matches', headers=headers, timeout=TIMEOUT).json()
+            events = [e for e in (data.get('live') or []) + (data.get('upcoming') or []) if isinstance(e, dict) and not e.get('is_external') and e.get('stream_id')]
+            if w_cat:
+                events = [e for e in events if str(e.get('category') or '').strip().lower() in w_cat]
+            if w_title:
+                events = [e for e in events if any(t in str(e.get('event_name') or '').lower() for t in w_title)]
+
+            def check(event):
+                try:
+                    cfg = requests.get(base + '/api/' + event['stream_id'] + '/config', headers=headers, timeout=TIMEOUT).json()
+                except Exception:
+                    return None
+                clean = [c for c in (cfg.get('channels') or []) if isinstance(c, dict) and c.get('manifestUrl') and not c.get('drm')]
+                return event if clean else None
+
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                playable = [e for e in pool.map(check, events) if e]
+            results = []
+            for event in playable:
+                title = html.unescape(f"{event.get('team_a') or ''} vs {event.get('team_b') or ''}".strip(' vs')) or html.unescape(event.get('event_name') or '')
+                league = html.unescape(event.get('event_name') or event.get('category') or '').strip()
+                if event.get('status') == 'live':
+                    label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                else:
+                    when = ''
+                    try:
+                        when = _to_local(datetime.strptime(event.get('start_utc', '')[:19], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc)).strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        pass
+                    label = f'[COLOR dodgerblue]{league} {when}[/COLOR] [COLOR orange]{title}[/COLOR]'
+                results.append((base + '/watch/' + event['stream_id'], label))
+            try:
+                chans = [] if frag else requests.get(base + '/api/livechannels', headers=headers, timeout=TIMEOUT).json().get('live_channels') or []
+            except Exception:
+                chans = []
+            for ch in chans:
+                if not isinstance(ch, dict) or ch.get('drm') or not ch.get('manifestUrl') or not ch.get('name'):
+                    continue
+                link = json.dumps({'url': base + '/', 'name': ch['name'], 'manifestUrl': ch['manifestUrl'], 'type': ch.get('type') or '', 'drm': False})
+                results.append((link, f'[COLOR red]24/7[/COLOR] [COLOR orange]{html.unescape(ch["name"])}[/COLOR]'))
+            if not results:
+                log(f'mygoodstream: no unprotected events or channels | events={len(events)}', xbmc.LOGWARNING)
+            return results or None
+        except Exception as e:
+            _log_error('mygoodstream', url, e)
+            return None
+
+    @_guard
     def cx720p(self, url):
         try:
             base      = _base_url(url)
@@ -2289,80 +2346,4 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('cx720p', url, e)
-            return None
-
-    @_guard
-    def mygoodstream(self, url):
-        try:
-            origin = 'https://v2.mygoodstream.pw'
-            response = requests.get(origin + '/', headers={'User-Agent': UA, 'Accept': 'text/html'}, timeout=TIMEOUT)
-            response.raise_for_status()
-            page = response.text
-            results = []
-            seen = set()
-
-            def add_event(key, title, date='', event_time='', live=False):
-                key = str(key or '').strip()
-                match = re.search(r'(?<![0-9a-f])([0-9a-f]{24}|[0-9a-f]{32})(?![0-9a-f])', key, re.I)
-                if not match:
-                    return
-                event_id = match.group(1)
-                if event_id in seen:
-                    return
-                title = html.unescape(str(title or '')).strip()
-                if not title:
-                    return
-                seen.add(event_id)
-                stamp = ''
-                if date:
-                    try:
-                        raw = str(date).strip()
-                        if 'T' in raw:
-                            dt = datetime.fromisoformat(raw.replace('Z', '+00:00'))
-                        else:
-                            dt = datetime.strptime(raw[:10] + ' ' + str(event_time or '00:00:00')[:8], '%Y-%m-%d %H:%M:%S')
-                            dt = dt.replace(tzinfo=timezone.utc)
-                        stamp = _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
-                    except Exception:
-                        stamp = str(date)[:10] + (' ' + str(event_time)[:5] if event_time else '')
-                label = ('[COLOR red]LIVE[/COLOR] ' if live else '') + self._label(stamp, title)
-                results.append((origin + '/' + event_id, label))
-
-            def walk(value):
-                if isinstance(value, list):
-                    for child in value:
-                        walk(child)
-                elif isinstance(value, dict):
-                    key = value.get('matchKey') or value.get('eventId') or value.get('event_id') or value.get('slug') or ''
-                    team_a = value.get('teamA') or {}
-                    team_b = value.get('teamB') or {}
-                    if isinstance(team_a, dict):
-                        team_a = team_a.get('name') or ''
-                    if isinstance(team_b, dict):
-                        team_b = team_b.get('name') or ''
-                    title = value.get('eventName') or value.get('title') or value.get('name') or ''
-                    if team_a and team_b:
-                        title = str(team_a) + ' vs ' + str(team_b)
-                    if key and title:
-                        add_event(key, title, value.get('date') or value.get('startTime') or '', value.get('time') or '', value.get('live') or value.get('isLive') or False)
-                    for child in value.values():
-                        if isinstance(child, (dict, list)):
-                            walk(child)
-
-            for script in re.findall(r'<script[^>]*type=["\\\']application/json["\\\'][^>]*>(.*?)</script>', page, re.I | re.S):
-                try:
-                    walk(json.loads(html.unescape(script)))
-                except (ValueError, TypeError):
-                    pass
-            for script in re.findall(r'<script[^>]*id=["\\\']__NEXT_DATA__["\\\'][^>]*>(.*?)</script>', page, re.I | re.S):
-                try:
-                    walk(json.loads(html.unescape(script)))
-                except (ValueError, TypeError):
-                    pass
-            for href, text in re.findall(r'<a\\b[^>]*href=["\\\']([^"\\\']+)["\\\'][^>]*>(.*?)</a>', page, re.I | re.S):
-                label = ' '.join(re.sub(r'<[^>]+>', ' ', html.unescape(text)).split())
-                add_event(href, label)
-            return results or None
-        except Exception as e:
-            _log_error('mygoodstream', url, e)
             return None
