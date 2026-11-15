@@ -2280,14 +2280,14 @@ class streamer:
                     cfg = requests.get(base + '/api/' + event['stream_id'] + '/config', headers=headers, timeout=TIMEOUT).json()
                 except Exception:
                     return None
-                clean = [c for c in (cfg.get('channels') or []) if isinstance(c, dict) and c.get('manifestUrl') and not c.get('drm')]
-                return event if clean else None
+                clean = [c for c in (cfg.get('channels') or []) if isinstance(c, dict) and c.get('manifestUrl')]
+                return (event, any(c.get('drm') for c in clean)) if clean else None
 
             from concurrent.futures import ThreadPoolExecutor
             with ThreadPoolExecutor(max_workers=8) as pool:
                 playable = [e for e in pool.map(check, events) if e]
             results = []
-            for event in playable:
+            for event, has_drm in playable:
                 title = html.unescape(f"{event.get('team_a') or ''} vs {event.get('team_b') or ''}".strip(' vs')) or html.unescape(event.get('event_name') or '')
                 league = html.unescape(event.get('event_name') or event.get('category') or '').strip()
                 if event.get('status') == 'live':
@@ -2299,18 +2299,18 @@ class streamer:
                     except Exception:
                         pass
                     label = f'[COLOR dodgerblue]{league} {when}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                results.append((base + '/watch/' + event['stream_id'], label))
+                results.append((base + '/watch/' + event['stream_id'], ('[COLOR gold]DRM[/COLOR] ' + label) if has_drm else label))
             try:
                 chans = [] if frag else requests.get(base + '/api/livechannels', headers=headers, timeout=TIMEOUT).json().get('live_channels') or []
             except Exception:
                 chans = []
             for ch in chans:
-                if not isinstance(ch, dict) or ch.get('drm') or not ch.get('manifestUrl') or not ch.get('name'):
+                if not isinstance(ch, dict) or not ch.get('manifestUrl') or not ch.get('name'):
                     continue
-                link = json.dumps({'url': base + '/', 'name': ch['name'], 'manifestUrl': ch['manifestUrl'], 'type': ch.get('type') or '', 'drm': False})
-                results.append((link, f'[COLOR red]24/7[/COLOR] [COLOR orange]{html.unescape(ch["name"])}[/COLOR]'))
+                link = json.dumps({'url': base + '/', 'name': ch['name'], 'manifestUrl': ch['manifestUrl'], 'type': ch.get('type') or '', 'drm': bool(ch.get('drm'))})
+                results.append((link, f'[COLOR red]24/7[/COLOR] [COLOR gold]DRM[/COLOR] [COLOR orange]{html.unescape(ch["name"])}[/COLOR]' if ch.get('drm') else f'[COLOR red]24/7[/COLOR] [COLOR orange]{html.unescape(ch["name"])}[/COLOR]'))
             if not results:
-                log(f'mygoodstream: no unprotected events or channels | events={len(events)}', xbmc.LOGWARNING)
+                log(f'mygoodstream: no events or channels | events={len(events)}', xbmc.LOGWARNING)
             return results or None
         except Exception as e:
             _log_error('mygoodstream', url, e)
