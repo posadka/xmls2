@@ -707,43 +707,42 @@ _MG_DRM = None
 
 
 def _mg_key_pair(channel):
-    try:
-        raw = xbmcaddon.Addon(ALLOWED_ADDON).getSetting('mygoodstream_clearkey').strip()
-    except Exception:
-        return None
-    if not raw:
-        return None
-    try:
-        supplied = json.loads(raw)
-    except (ValueError, TypeError):
-        supplied = {}
-        if ':' in raw:
-            kid, key = raw.split(':', 1)
-            supplied[kid.strip()] = key.strip()
-    if isinstance(supplied, dict) and isinstance(supplied.get('keys'), dict):
-        supplied = supplied['keys']
-    if not isinstance(supplied, dict):
-        return None
     declared = channel.get('clearkeyPairs') or {}
     expected = set()
     if isinstance(declared, dict):
         for candidate in declared:
-            normalized = re.sub(r'[^0-9a-fA-F]', '', str(candidate)).lower()
-            if re.fullmatch(r'[0-9a-f]{32}', normalized):
-                expected.add(normalized)
+            kid = re.sub(r'[^0-9a-fA-F]', '', str(candidate)).lower()
+            if re.fullmatch(r'[0-9a-f]{32}', kid):
+                expected.add(kid)
     for field in ('kid', 'keyId', 'key_id'):
         candidate = channel.get(field)
         if isinstance(candidate, str):
-            normalized = re.sub(r'[^0-9a-fA-F]', '', candidate).lower()
-            if re.fullmatch(r'[0-9a-f]{32}', normalized):
-                expected.add(normalized)
-    for kid, key in supplied.items():
-        kid = re.sub(r'[^0-9a-fA-F]', '', str(kid)).lower()
-        key = re.sub(r'[^0-9a-fA-F]', '', str(key)).lower()
-        if re.fullmatch(r'[0-9a-f]{32}', kid) and re.fullmatch(r'[0-9a-f]{32}', key):
-            if not expected or kid in expected:
-                return kid, key
+            kid = re.sub(r'[^0-9a-fA-F]', '', candidate).lower()
+            if re.fullmatch(r'[0-9a-f]{32}', kid):
+                expected.add(kid)
+    try:
+        raw = xbmcaddon.Addon(ALLOWED_ADDON).getSetting('mygoodstream_clearkey').strip()
+    except Exception:
+        raw = ''
+    supplied = {}
+    if raw:
+        try:
+            supplied = json.loads(raw)
+        except (ValueError, TypeError):
+            if ':' in raw:
+                kid, key = raw.split(':', 1)
+                supplied = {kid.strip(): key.strip()}
+    if isinstance(supplied, dict) and isinstance(supplied.get('keys'), dict):
+        supplied = supplied['keys']
+    if isinstance(supplied, dict):
+        for kid, key in supplied.items():
+            kid = re.sub(r'[^0-9a-fA-F]', '', str(kid)).lower()
+            key = re.sub(r'[^0-9a-fA-F]', '', str(key)).lower()
+            if re.fullmatch(r'[0-9a-f]{32}', kid) and re.fullmatch(r'[0-9a-f]{32}', key):
+                if not expected or kid in expected:
+                    return kid, key
     return None
+
 
 
 class streamer:
@@ -4573,9 +4572,20 @@ class streamer:
                     _MG_DRM = pair
                     drm_config = ('org.w3.clearkey', pair[0] + ':' + pair[1])
                 else:
+                    drm_info = channel.get('drm')
+                    if not isinstance(drm_info, dict):
+                        drm_info = {}
+                    license_info = drm_info.get('license')
+                    if not isinstance(license_info, dict):
+                        license_info = {}
                     license_url = (channel.get('licenseUrl') or channel.get('license_url') or
-                                   channel.get('drmLicenseUrl') or '')
-                    drm_type = str(channel.get('licenseType') or channel.get('drmType') or '').lower()
+                                   channel.get('drmLicenseUrl') or drm_info.get('licenseUrl') or
+                                   drm_info.get('license_url') or drm_info.get('server_url') or
+                                   license_info.get('server_url') or license_info.get('url') or '')
+                    drm_type = str(channel.get('licenseType') or channel.get('drmType') or
+                                   drm_info.get('type') or drm_info.get('scheme') or '').lower()
+                    if not drm_type and (channel.get('clearkeyPairs') or drm_info.get('clearkeyPairs')):
+                        drm_type = 'clearkey'
                     if isinstance(license_url, str) and _up(license_url).scheme == 'https':
                         if drm_type in ('widevine', 'com.widevine.alpha'):
                             drm_config = ('com.widevine.alpha', license_url)
@@ -4585,6 +4595,7 @@ class streamer:
                             drm_config = ('org.w3.clearkey', license_url)
                 if not drm_config:
                     log('mygoodstream: this channel has no authorized DRM license configuration', xbmc.LOGWARNING)
+                    xbmcgui.Dialog().notification('The Crew', 'This channel has no usable DRM license', xbmcgui.NOTIFICATION_WARNING, 3500)
                     return None
             kind = str(channel.get('type') or '').lower()
             if kind in ('hls', 'm3u8') or _up(manifest).path.lower().endswith('.m3u8'):
