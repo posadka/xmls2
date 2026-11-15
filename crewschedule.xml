@@ -26,8 +26,9 @@ except ImportError:
 
 try:
     from urllib import urlencode, quote_plus, urlparse, urljoin
+    from urlparse import parse_qs
 except ImportError:
-    from urllib.parse import urlencode, quote_plus, urlparse, urljoin
+    from urllib.parse import urlencode, quote_plus, urlparse, urljoin, parse_qs
 
 from resources.lib.modules import control, client, workers, jsunpack, hunter
 
@@ -2262,58 +2263,279 @@ class streamer:
     @_guard
     def mygoodstream(self, url):
         try:
-            page_url, _, frag = url.partition('#')
-            want = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
-            w_cat = [x.strip().lower() for x in want.get('cat', '').replace('+', ' ').split('|') if x.strip()]
-            w_title = [x.strip().lower() for x in want.get('title', '').replace('+', ' ').split('|') if x.strip()]
-            base = _base_url(page_url)
-            headers = {'User-Agent': UA, 'Accept': 'application/json', 'Referer': base + '/'}
-            data = requests.get(base + '/api/matches', headers=headers, timeout=TIMEOUT).json()
-            events = [e for e in (data.get('live') or []) + (data.get('upcoming') or []) if isinstance(e, dict) and not e.get('is_external') and e.get('stream_id')]
-            if w_cat:
-                events = [e for e in events if str(e.get('category') or '').strip().lower() in w_cat]
-            if w_title:
-                events = [e for e in events if any(t in str(e.get('event_name') or '').lower() for t in w_title)]
+            page_url, _, fragment = str(url).partition('#')
+            base_url = _base_url(page_url)
+            if not base_url.startswith(('https://', 'http://')):
+                log('mygoodstream: missing base URL in schedule source', xbmc.LOGWARNING)
+                return None
 
-            def check(event):
-                try:
-                    cfg = requests.get(base + '/api/' + event['stream_id'] + '/config', headers=headers, timeout=TIMEOUT).json()
-                except Exception:
-                    return None
-                clean = [c for c in (cfg.get('channels') or []) if isinstance(c, dict) and c.get('manifestUrl')]
-                return (event, any(c.get('drm') for c in clean)) if clean else None
+            query = parse_qs(urlparse(page_url).query, keep_blank_values=True)
+            query.update(parse_qs(fragment, keep_blank_values=True))
 
-            from concurrent.futures import ThreadPoolExecutor
-            with ThreadPoolExecutor(max_workers=8) as pool:
-                playable = [e for e in pool.map(check, events) if e]
+            def requested(*keys):
+                values = []
+                for key in keys:
+                    for value in query.get(key, []):
+                        values.extend(x.strip() for x in str(value).split('|') if x.strip())
+                return values
+
+            categories = requested('cat', 'category', 'sport', 'group', 'league')
+            if not categories:
+                pathname = urlparse(page_url).path.rstrip('/').split('/')[-1]
+                known_paths = {'american-football', 'football', 'soccer', 'basketball',
+                               'baseball', 'hockey', 'mma', 'ufc', 'boxing', 'golf',
+                               'tennis', 'cricket', 'motorsport', 'wrestling',
+                               'nfl', 'ncaaf', 'nba', 'ncaab', 'mlb', 'nhl', 'f1',
+                               'nascar', 'motogp', 'rugby', 'volleyball', 'darts'}
+                if pathname.lower() in known_paths:
+                    categories.append(pathname.lower())
+            titles = requested('title', 'team', 'search')
+            drm_only = any(v.lower() in ('1', 'true', 'yes', 'only') for v in requested('drm'))
+            channels_only = any(v.lower() in ('channels', 'livechannels', 'tv') for v in requested('type', 'view'))
+            events_only = any(v.lower() in ('events', 'matches') for v in requested('type', 'view'))
+            headers = {'User-Agent': UA, 'Accept': 'application/json, text/html;q=0.7',
+                       'Origin': base_url, 'Referer': base_url + '/'}
             results = []
-            for event, has_drm in playable:
-                title = html.unescape(f"{event.get('team_a') or ''} vs {event.get('team_b') or ''}".strip(' vs')) or html.unescape(event.get('event_name') or '')
-                league = html.unescape(event.get('event_name') or event.get('category') or '').strip()
-                if event.get('status') == 'live':
-                    label = f'[COLOR red]LIVE[/COLOR] [COLOR dodgerblue]{league}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                else:
-                    when = ''
+            seen = set()
+            errors = []
+
+            def normalized(value):
+                return re.sub(r'[^a-z0-9]+', ' ', str(value or '').casefold()).strip()
+
+            category_names = {
+                'american football': {'a football', 'american football', 'gridiron', 'nfl', 'ncaaf', 'college football'},
+                'football': {'soccer', 'football', 'association football', 'fifa', 'mls'},
+                'basketball': {'basketball', 'nba', 'ncaab', 'cbb', 'college basketball'},
+                'baseball': {'baseball', 'mlb'},
+                'hockey': {'hockey', 'ice hockey', 'nhl'},
+                'motorsport': {'motorsport', 'motor racing', 'f1', 'formula 1', 'formula one', 'nascar', 'motogp'},
+                'mma': {'mma', 'ufc', 'mixed martial arts'},
+                'boxing': {'boxing'},
+                'wrestling': {'wrestling', 'wwe', 'aew'},
+                'tennis': {'tennis', 'atp', 'wta'},
+                'golf': {'golf', 'pga'},
+                'cricket': {'cricket'},
+                'rugby': {'rugby'},
+                'volleyball': {'volleyball'},
+                'handball': {'handball'},
+                'darts': {'darts'},
+                'esports': {'esports', 'e sports'},
+            }
+
+            def canonical(value):
+                n = normalized(value)
+                if not n:
+                    return ''
+                if n in ('a football', 'am football', 'am football nfl', 'am football ncaa', 'am football ncaaf', 'american football nfl', 'american football ncaa'):
+                    return 'american football'
+                for group, aliases in category_names.items():
+                    if n == group or n in aliases:
+                        return group
+                return n
+
+            def matches_category(category, title):
+                if not categories:
+                    return True
+                actual = canonical(category)
+                category_text = normalized(category)
+                text = normalized(title)
+                context = (category_text + ' ' + text).strip()
+                context_tokens = set(context.split())
+                for requested_cat in categories:
+                    raw = normalized(requested_cat)
+                    wanted = canonical(requested_cat)
+                    if raw in ('all', 'events', 'matches'):
+                        return True
+                    league_aliases = {
+                        'nfl': ('nfl', 'national football league'),
+                        'ncaaf': ('ncaaf', 'ncaa football', 'college football', 'fbs', 'fcs'),
+                        'ncaab': ('ncaab', 'ncaa basketball', 'college basketball', 'cbb'),
+                        'nba': ('nba', 'national basketball association'),
+                        'nhl': ('nhl', 'national hockey league'),
+                        'mlb': ('mlb', 'major league baseball'),
+                        'ufc': ('ufc', 'ultimate fighting championship'),
+                        'wwe': ('wwe', 'world wrestling entertainment'),
+                    }
+                    if raw in league_aliases:
+                        if any(re.search(r'(?<!\w)' + re.escape(alias) + r'(?!\w)', context)
+                               for alias in league_aliases[raw]):
+                            return True
+                        continue
+                    if wanted == actual:
+                        return True
+                    if raw == category_text or (not category_text and raw and raw in context_tokens):
+                        return True
+                    if wanted == 'mma' and any(x in context_tokens for x in ('ufc', 'mma', 'combat')):
+                        return True
+                    if wanted == 'motorsport' and any(x in context_tokens for x in ('f1', 'nascar', 'motogp', 'racing')):
+                        return True
+                    if not category_text and wanted and (wanted in text or raw in text):
+                        return True
+                return False
+
+            def event_time(event):
+                raw = (event.get('startedAt') or event.get('startAt') or
+                       event.get('start_utc') or event.get('startUtc') or
+                       event.get('startTime') or event.get('date') or '')
+                try:
+                    if isinstance(raw, (int, float)) or (isinstance(raw, str) and raw.isdigit()):
+                        ts = float(raw)
+                        dt = datetime.fromtimestamp(ts / 1000 if ts >= 1e11 else ts, tz=timezone.utc)
+                    else:
+                        stamp = str(raw)
+                        if len(stamp) == 10 and re.match(r'^\d{4}-\d{2}-\d{2}$', stamp):
+                            stamp += 'T' + str(event.get('time') or '00:00:00')
+                        dt = datetime.fromisoformat(stamp.replace('Z', '+00:00'))
+                        if dt.tzinfo is None:
+                            dt = dt.replace(tzinfo=timezone.utc)
+                    return _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
+                except Exception:
+                    return ''
+
+            def has_drm(item):
+                for field in ('drm', 'hasDrm', 'has_drm', 'isDrm', 'is_drm'):
+                    if item.get(field) is True or str(item.get(field)).lower() in ('true', '1'):
+                        return True
+                for ch in (item.get('channels') or item.get('liveChannels') or []):
+                    if isinstance(ch, dict) and (ch.get('drm') is True or ch.get('isDrm') is True or ch.get('clearkeyPairs')):
+                        return True
+                return False
+
+            def add_event(event, inherited_category=''):
+                if not isinstance(event, dict):
+                    return
+                ident = (event.get('matchKey') or event.get('stream_id') or
+                         event.get('eventId') or event.get('event_id') or
+                         event.get('match_id') or event.get('id'))
+                if ident is None:
+                    return
+                ident = str(ident).strip()
+                if not re.fullmatch(r'[0-9a-fA-F]{24}|[0-9a-fA-F]{32}', ident):
+                    return
+                if event.get('is_external') or event.get('isExternal'):
+                    return
+                category = (event.get('category') or event.get('sport') or
+                            event.get('categoryName') or event.get('sportName') or
+                            event.get('group') or inherited_category or '')
+                category = category.get('name', '') if isinstance(category, dict) else str(category).strip()
+                a, b = event.get('teamA') or event.get('team_a'), event.get('teamB') or event.get('team_b')
+                a = a.get('name') or a.get('shortName') if isinstance(a, dict) else a
+                b = b.get('name') or b.get('shortName') if isinstance(b, dict) else b
+                name = (event.get('eventName') or event.get('event_name') or
+                        event.get('name') or event.get('title') or event.get('competition') or
+                        event.get('league') or event.get('description') or '')
+                title = '%s vs %s' % (a, b) if a and b else name
+                title = html.unescape(str(title or '')).strip()
+                if not title or not matches_category(category, str(title) + ' ' + str(name) + ' ' +
+                                                 str(event.get('league') or '') + ' ' +
+                                                 str(event.get('competition') or '')):
+                    return
+                if titles and not any(normalized(v) in normalized(str(title) + ' ' + str(name)) for v in titles):
+                    return
+                drm = has_drm(event)
+                if drm_only and not drm:
+                    return
+                token = ('event', ident)
+                if token in seen:
+                    return
+                seen.add(token)
+                status = str(event.get('status') or '').lower()
+                live = event.get('live') is True or event.get('isLive') is True or status in ('live', 'onair')
+                label = (('[COLOR red]LIVE[/COLOR] ' if live else '') +
+                         self._label(event_time(event), (category + ' - ' if category else '') + title))
+                results.append((base_url + '/' + quote_plus(ident), label))
+
+            def unpack(value, inherited='', depth=0):
+                if depth > 15:
+                    return
+                if isinstance(value, list):
+                    for entry in value:
+                        unpack(entry, inherited, depth + 1)
+                elif isinstance(value, dict):
+                    add_event(value, inherited)
+                    for key, val in value.items():
+                        if isinstance(val, (dict, list)) and key not in ('channels', 'liveChannels', 'teamA', 'teamB', 'team_a', 'team_b', 'sources', 'servers', 'clearkeyPairs'):
+                            hint = inherited
+                            if key.lower() not in ('data', 'results', 'events', 'matches', 'live', 'upcoming', 'schedule', 'categories', 'sports', 'items', 'today', 'tomorrow', 'payload', 'fixtures', 'groups', 'matches_by_date'):
+                                hint = key
+                            unpack(val, hint, depth + 1)
+
+            if not channels_only:
+                endpoint = base_url + '/api/matches'
+                try:
+                    response = requests.get(endpoint, headers=headers, timeout=TIMEOUT)
+                    response.raise_for_status()
+                    unpack(response.json())
+                except Exception as exc:
+                    errors.append('matches: ' + str(exc))
+
+                if not results:
                     try:
-                        when = _to_local(datetime.strptime(event.get('start_utc', '')[:19], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc)).strftime('%m/%d %I:%M %p').lstrip('0')
-                    except Exception:
-                        pass
-                    label = f'[COLOR dodgerblue]{league} {when}[/COLOR] [COLOR orange]{title}[/COLOR]'
-                results.append((base + '/watch/' + event['stream_id'], ('[COLOR gold]DRM[/COLOR] ' + label) if has_drm else label))
-            try:
-                chans = [] if frag else requests.get(base + '/api/livechannels', headers=headers, timeout=TIMEOUT).json().get('live_channels') or []
-            except Exception:
-                chans = []
-            for ch in chans:
-                if not isinstance(ch, dict) or not ch.get('manifestUrl') or not ch.get('name'):
-                    continue
-                link = json.dumps({'url': base + '/', 'name': ch['name'], 'manifestUrl': ch['manifestUrl'], 'type': ch.get('type') or '', 'drm': bool(ch.get('drm'))})
-                results.append((link, f'[COLOR red]24/7[/COLOR] [COLOR gold]DRM[/COLOR] [COLOR orange]{html.unescape(ch["name"])}[/COLOR]' if ch.get('drm') else f'[COLOR red]24/7[/COLOR] [COLOR orange]{html.unescape(ch["name"])}[/COLOR]'))
-            if not results:
-                log(f'mygoodstream: no events or channels | events={len(events)}', xbmc.LOGWARNING)
+                        page = requests.get(base_url + '/', headers=headers, timeout=TIMEOUT)
+                        page.raise_for_status()
+                        blobs = re.findall(r'<script\b[^>]*type=["\']application/json["\'][^>]*>(.*?)</script>', page.text, re.I | re.S)
+                        blobs += re.findall(r'<script\b[^>]*id=["\']__NEXT_DATA__["\'][^>]*>(.*?)</script>', page.text, re.I | re.S)
+                        for blob in blobs:
+                            try:
+                                unpack(json.loads(html.unescape(blob)))
+                            except (ValueError, TypeError):
+                                pass
+                        inline = re.findall(r'(?:window\.__INITIAL_STATE__|window\.__DATA__|(?:const|var)\s+(?:matches|events|schedule))\s*=\s*(\{.*?\}|\[.*?\])\s*;', page.text, re.I | re.S)
+                        for blob in inline:
+                            try:
+                                unpack(json.loads(blob))
+                            except (ValueError, TypeError):
+                                pass
+                        for href, label in re.findall(r'<a\b[^>]*\bhref=[\"\']([^\"\']+)[\"\'][^>]*>(.*?)</a>', page.text, re.I | re.S):
+                            match = re.search(r'(?<![a-f0-9])([a-f0-9]{24}|[a-f0-9]{32})(?![a-f0-9])', href, re.I)
+                            if not match:
+                                continue
+                            clean = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', html.unescape(label))).strip()
+                            if not clean or clean.lower() in ('watch', 'play', 'live'):
+                                continue
+                            add_event({'matchKey':match.group(1), 'title':clean})
+                    except Exception as exc:
+                        errors.append('homepage: ' + str(exc))
+
+            if not events_only and (channels_only or not categories or all(normalized(c) == 'all' for c in categories)):
+                try:
+                    response = requests.get(base_url + '/api/livechannels', headers=headers, timeout=TIMEOUT)
+                    response.raise_for_status()
+                    payload = response.json()
+                    channels = payload if isinstance(payload, list) else (payload.get('live_channels') or payload.get('liveChannels') or payload.get('channels') or payload.get('data') or [])
+                    if isinstance(channels, dict):
+                        channels = (channels.get('live_channels') or channels.get('liveChannels') or
+                                    channels.get('channels') or channels.get('items') or list(channels.values()))
+                    if isinstance(channels, dict):
+                        channels = list(channels.values())
+                    for ch in channels:
+                        if not isinstance(ch, dict):
+                            continue
+                        if not (ch.get('manifestUrl') or ch.get('streamUrl') or
+                                ch.get('playlistUrl') or ch.get('id') or ch.get('channelId')):
+                            continue
+                        channel_name = html.unescape(str(ch.get('name') or ch.get('title') or 'Live channel'))
+                        if titles and not any(normalized(t) in normalized(channel_name) for t in titles):
+                            continue
+                        if drm_only and not has_drm(ch):
+                            continue
+                        key = ('channel', str(ch.get('id') or ch.get('name') or ch.get('manifestUrl')))
+                        if key in seen:
+                            continue
+                        seen.add(key)
+                        channel_id = ch.get('id') or ch.get('channelId') or channel_name
+                        channel_link = base_url + '/?mgchannel=' + quote_plus(str(channel_id))
+                        label = '[COLOR red]24/7[/COLOR] [COLOR orange]' + channel_name + '[/COLOR]'
+                        results.append((channel_link, label))
+                except Exception as exc:
+                    errors.append('livechannels: ' + str(exc))
+
+            log('mygoodstream: listed %d items for %s | errors=%s' % (
+                len(results), fragment or 'all', '; '.join(errors)[:240] or 'none'),
+                xbmc.LOGINFO if results else xbmc.LOGWARNING)
             return results or None
-        except Exception as e:
-            _log_error('mygoodstream', url, e)
+        except Exception as exc:
+            _log_error('mygoodstream', str(url)[:160], exc)
             return None
 
     @_guard

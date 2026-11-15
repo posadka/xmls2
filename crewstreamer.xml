@@ -17,6 +17,7 @@ import requests
 import xbmc
 import xbmcgui
 import xbmcaddon
+import xbmcvfs
 
 try:
     from Cryptodome.Cipher import AES,ChaCha20_Poly1305
@@ -654,6 +655,37 @@ def _publish_ws_manifest(manifest_text, headers, ws_config, name_prefix):
         log(f'{name_prefix}: segment proxy service not running', xbmc.LOGERROR)
         return None
     return f'{local_url}|User-Agent={UA}'
+
+
+def _mg_strm_path(manifest, headers, drm=None):
+    try:
+        directory = xbmcvfs.translatePath('special://temp')
+        if not directory:
+            return None
+        name = 'thecrew-mygoodstream-' + format(zlib.crc32((manifest + str(drm or '')).encode('utf-8')) & 0xffffffff, '08x') + '.strm'
+        path = os.path.join(directory, name)
+        props = ['inputstream=inputstream.adaptive',
+                 'mimetype=application/dash+xml',
+                 'inputstream.adaptive.manifest_type=mpd']
+        if headers:
+            encoded = urlencode(headers)
+            props.extend(['inputstream.adaptive.manifest_headers=' + encoded,
+                          'inputstream.adaptive.stream_headers=' + encoded])
+        if drm:
+            drm_type, license_value = drm
+            props.extend(['inputstream.adaptive.drm_legacy=' + drm_type + '|' + license_value,
+                          'inputstream.adaptive.license_type=' + drm_type,
+                          'inputstream.adaptive.license_key=' + license_value])
+        contents = ''.join('#KODIPROP:' + prop + '\n' for prop in props) + manifest + '\n'
+        outfile = xbmcvfs.File(path, 'w')
+        try:
+            outfile.write(contents)
+        finally:
+            outfile.close()
+        return path
+    except Exception as exc:
+        log('mygoodstream: unable to prepare playback: ' + str(exc), xbmc.LOGERROR)
+        return None
 
 
 _MG_DRM = None
@@ -4403,13 +4435,33 @@ class streamer:
             else:
                 target = str(url)
             parsed = _up(target)
-            base_url = _base_url(target) if parsed.scheme in ('http', 'https') and parsed.netloc else 'https://v2.mygoodstream.pw'
-            if parsed.hostname not in ('mygoodstream.pw', 'www.mygoodstream.pw', 'v2.mygoodstream.pw') and data is None:
+            base_url = _base_url(target) if parsed.scheme in ('http', 'https') and parsed.netloc else ''
+            if not base_url:
+                log('mygoodstream: missing source base URL', xbmc.LOGWARNING)
+                return None
+            if not (parsed.hostname or '').lower().endswith('.mygoodstream.pw') and parsed.hostname != 'mygoodstream.pw' and data is None:
                 return None
             event = re.search(r'(?<![0-9a-f])([0-9a-f]{24}|[0-9a-f]{32})(?![0-9a-f])', parsed.path, re.I)
             if not event and data:
                 event = re.search(r'^(?:[0-9a-f]{24}|[0-9a-f]{32})$', str(data.get('matchKey') or data.get('eventId') or ''), re.I)
             headers = {'User-Agent': UA, 'Accept': 'application/json', 'Referer': target or base_url + '/', 'Origin': base_url}
+            channel_filter = (parse_qs(parsed.query).get('mgchannel') or [None])[0]
+            if channel_filter is not None:
+                resp = requests.get(base_url + '/api/livechannels', headers=headers, timeout=TIMEOUT)
+                resp.raise_for_status()
+                payload = resp.json()
+                channels = payload if isinstance(payload, list) else (
+                    payload.get('live_channels') or payload.get('liveChannels') or
+                    payload.get('channels') or payload.get('data') or [])
+                if isinstance(channels, dict):
+                    channels = channels.get('channels') or channels.get('items') or list(channels.values())
+                matches = [channel for channel in channels if isinstance(channel, dict) and
+                           str(channel.get('id') or channel.get('channelId') or
+                               channel.get('name') or '') == channel_filter]
+                if not matches:
+                    log('mygoodstream: live channel no longer available: ' + channel_filter, xbmc.LOGWARNING)
+                    return None
+                data = {'channels': matches[:1]}
             if event:
                 event_id = event.group(1) if event.lastindex else event.group(0)
                 response = requests.get(base_url + '/api/' + event_id + '/config', headers=headers, timeout=TIMEOUT)
@@ -4425,6 +4477,12 @@ class streamer:
                     found = re.search(r'<script[^>]+type=["\']application/json["\'][^>]*>(.*?)</script>', response.text, re.I | re.S)
                     if found:
                         data = json.loads(html.unescape(found.group(1)))
+            if isinstance(data, dict) and not (data.get('channels') or data.get('liveChannels') or data.get('manifestUrl')):
+                for field in ('data', 'result', 'config', 'event'):
+                    nested = data.get(field)
+                    if isinstance(nested, dict) and (nested.get('channels') or nested.get('liveChannels') or nested.get('manifestUrl')):
+                        data = nested
+                        break
             if not isinstance(data, dict):
                 log('mygoodstream: no supported event or channel metadata at URL', xbmc.LOGWARNING)
                 return None
@@ -4441,7 +4499,7 @@ class streamer:
                 log('mygoodstream: no channels available', xbmc.LOGWARNING)
                 return None
             if len(choices) > 1:
-                index = _select('MyGoodStream - Choose Channel', [str(c.get('name') or 'Channel ' + str(i + 1)) + (' [DRM]' if c.get('drm') else '') for i, c in enumerate(choices)])
+                index = _select('MyGoodStream - Choose Channel', [str(c.get('name') or 'Channel ' + str(i + 1)) for i, c in enumerate(choices)])
                 if index < 0:
                     return None
                 channel = choices[index]
@@ -4472,19 +4530,36 @@ class streamer:
                     if expiry > 1000000000 and expiry <= int(time.time()):
                         log('mygoodstream: stream URL has expired', xbmc.LOGWARNING)
                         return None
-            if channel.get('drm'):
+            drm_enabled = bool(channel.get('drm') or channel.get('isDrm') or
+                               channel.get('hasDrm') or channel.get('clearkeyPairs'))
+            drm_config = None
+            if drm_enabled:
                 pair = _mg_key_pair(channel)
-                if not pair:
-                    log('mygoodstream: authorized ClearKey must be configured in addon setting mygoodstream_clearkey', xbmc.LOGWARNING)
+                if pair:
+                    _MG_DRM = pair
+                    drm_config = ('org.w3.clearkey', pair[0] + ':' + pair[1])
+                else:
+                    license_url = (channel.get('licenseUrl') or channel.get('license_url') or
+                                   channel.get('drmLicenseUrl') or '')
+                    drm_type = str(channel.get('licenseType') or channel.get('drmType') or '').lower()
+                    if isinstance(license_url, str) and _up(license_url).scheme == 'https':
+                        if drm_type in ('widevine', 'com.widevine.alpha'):
+                            drm_config = ('com.widevine.alpha', license_url)
+                        elif drm_type in ('playready', 'com.microsoft.playready'):
+                            drm_config = ('com.microsoft.playready', license_url)
+                        elif drm_type in ('clearkey', 'org.w3.clearkey'):
+                            drm_config = ('org.w3.clearkey', license_url)
+                if not drm_config:
+                    log('mygoodstream: this channel has no authorized DRM license configuration', xbmc.LOGWARNING)
                     return None
-                _MG_DRM = pair
             kind = str(channel.get('type') or '').lower()
             if kind in ('hls', 'm3u8') or _up(manifest).path.lower().endswith('.m3u8'):
-                if channel.get('drm'):
+                if channel.get('drm') or channel.get('isDrm') or channel.get('hasDrm') or channel.get('clearkeyPairs'):
                     return None
                 return _publish_direct_hls(manifest, {'User-Agent': UA, 'Referer': base_url + '/', 'Origin': base_url})
             if kind in ('dash', 'mpd') or _up(manifest).path.lower().endswith('.mpd'):
-                return manifest + '|User-Agent=' + quote_plus(UA) + '&Referer=' + quote_plus(target or base_url + '/') + '&Origin=' + quote_plus(base_url)
+                headers = {'User-Agent': UA, 'Referer': target or base_url + '/', 'Origin': base_url}
+                return _mg_strm_path(manifest, headers, drm_config)
             log('mygoodstream: unsupported channel format ' + kind, xbmc.LOGWARNING)
             return None
         except Exception as exc:
