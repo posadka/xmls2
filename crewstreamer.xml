@@ -903,7 +903,7 @@ class streamer:
                 u = self.streameast_vg(url)
             elif any(x in url for x in ['buffstreams', 'ibuffstreams']):
                 u = self.buffstreams(url)
-            elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top']):
+            elif any(x in url for x in ['ccrackstreams.sbs', 'cracksstreams.site', 'ihdstreams.top', 'ccrackstreams.top']):
                 u = self.crackstreams(url)
             elif 'crackstreams.st' in url:
                 u = self.crackstreamsst(url)
