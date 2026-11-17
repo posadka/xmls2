@@ -1582,7 +1582,7 @@ class streamer:
                 r'<td>\s*<img[^>]+alt="([^"]*)"[^>]*>\s*</td>\s*'
                 r'<td>\s*([^<]*?)\s*</td>\s*'
                 r'<td>\s*([^<]*?)\s*</td>\s*'
-                r'<td>\s*[^<]*?\s*</td>\s*'
+                r'(?:<td>\s*[^<]*?\s*</td>\s*)?'
                 r'<td[^>]*>\s*([^<]*?)\s*</td>\s*'
                 r'<td>\s*<a href="([^"]+)"[^>]*>\s*WATCH\s*</a>',
                 page_data
