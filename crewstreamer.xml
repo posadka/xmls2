@@ -4237,7 +4237,45 @@ class streamer:
         choice = 0 if len(results) == 1 else xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
         if choice == -1:
             return None
-        return [results[choice]]
+        href, name = results[choice]
+        href = html.unescape(href)
+        stream = self._wp_vptips(href) if 'vptips.' in href else None
+        return [(stream or href, name)]
+
+    def _wp_vptips(self, href):
+        try:
+            q = parse_qs(_up(href).query)
+            kind = (q.get('type') or [''])[0]
+            vid = (q.get('id') or [''])[0]
+            if not vid:
+                return None
+            if kind == 'ok':
+                embed = 'https://ok.ru/videoembed/' + vid
+                page = requests.get(embed, headers={'User-Agent': UA}, timeout=TIMEOUT).text
+                m = re.search(r'data-options="([^"]+)"', page)
+                if not m:
+                    log(f'WP vptips: ok.ru options missing | {embed}', xbmc.LOGWARNING)
+                    return None
+                meta = json.loads(html.unescape(m.group(1))).get('flashvars', {}).get('metadata')
+                if isinstance(meta, str):
+                    meta = json.loads(meta)
+                stream = (meta or {}).get('hlsManifestUrl') or (meta or {}).get('ondemandHls')
+                if not stream:
+                    log(f'WP vptips: ok.ru no hls | {embed}', xbmc.LOGWARNING)
+                    return None
+                return _publish_direct_hls(stream, {'User-Agent': UA, 'Referer': 'https://ok.ru/', 'Origin': 'https://ok.ru'})
+            if kind == 'dm':
+                info = requests.get('https://geo.dailymotion.com/videos/' + vid, headers={'User-Agent': UA, 'Referer': 'https://geo.dailymotion.com/'}, timeout=TIMEOUT).json()
+                stream = (info.get('stream') or {}).get('url')
+                if not stream:
+                    log(f'WP vptips: dailymotion no stream | {vid}', xbmc.LOGWARNING)
+                    return None
+                return _publish_direct_hls(stream, {'User-Agent': UA, 'Referer': 'https://geo.dailymotion.com/', 'Origin': 'https://geo.dailymotion.com'})
+            log(f'WP vptips: unknown type {kind} | {href}', xbmc.LOGWARNING)
+            return None
+        except Exception as e:
+            _log_error('WP vptips', href, e)
+            return None
 
     def daddylive(self, url):
         try:
