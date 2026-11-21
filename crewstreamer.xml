@@ -891,7 +891,7 @@ class streamer:
                 u = self.ripplestreamsfouru(url)
             elif any(x in url for x in ['kora', 'vertex.st', 'virazo.sx']):
                 u = self.korast(url)
-            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd']):
+            elif any(x in url for x in ['timstreams', 'icelanders.st', 'vixnuvew.uk', 'hux-giants', 'cdx-08192', 'epiembeds.online', 'exmxbxe.cfd', 'ehgembxe.cfd', 'shoewiki.click']):
                 u = self.timstreams(url, 'https://tim-streams.com/')
             elif any(x in url for x in ['streamify', 'streamsify']):
                 u = self.streamsify(url)
@@ -913,7 +913,7 @@ class streamer:
                 u = self.rockyembed(url)
             elif 'embed.st' in url:
                 u = self.embed_st(url)
-            elif 'embedsports.me' in url:
+            elif any(x in url for x in ['embedsports.me', 'sportsframe.me']):
                 u = self.embedsportsme(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline', 'sportsoonline']):
                 u = self.sportsonline(url)
@@ -3995,7 +3995,7 @@ class streamer:
             page = requests.get(embed_url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
             quality = (re.search(r"const\s+QUALITY\s*=\s*'([^']*)'", page) or [None, ''])[1]
             suffix  = (re.search(r"const\s+SOURCE_SUFFIX\s*=\s*'([^']*)'", page) or [None, ''])[1]
-            v_m     = re.search(r"const\s+VARIANT\s*=\s*'([^']+)'", page)
+            v_m     = re.search(r"const\s+VARIANT\s*=\s*'([^']+)'", page) or re.search(r"const\s+STREAM_KEY\s*=\s*'([^']+)'", page)
             k_m     = re.search(r"/get-stream-key/([^'\"`]+)", page)
             if not v_m or not k_m:
                 log(f'strmfree: player constants not found | {embed_url}', xbmc.LOGERROR)
@@ -4018,9 +4018,11 @@ class streamer:
                 path = f'/live-cdn/{variant}/index.m3u8'
             else:
                 path = f'/live/{variant}/index.m3u8'
-            tok = tokens.get(quality) or {}
-            if tok:
+            tok = tokens.get(variant) or tokens.get(quality) or {}
+            if tok and '_n' in tok:
                 path += f'?_t={tok.get("_t", "")}&_e={tok.get("_e", "")}&_n={tok.get("_n", "")}'
+            elif tok:
+                path += f'?_t={tok.get("_t", "")}&_ta={tok.get("_ta", "")}&_e={tok.get("_e", "")}&_s={tok.get("_s", "")}&_sa={tok.get("_sa", "")}'
             return _publish_live_manifest(base + path, {'User-Agent': UA, 'Referer': embed_url, 'Origin': base}, 'strmfree')
         except Exception as e:
             _log_error('strmfree', url, e)
