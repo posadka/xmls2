@@ -4226,23 +4226,39 @@ class streamer:
             data,
             re.I | re.S
         )
+        tags = {'ok': 'OK.ru', 'dm': 'Dailymotion', 'no': 'Live'}
         results = []
         for href, name in matches:
             name = html.unescape(re.sub(r'<[^>]+>', '', name)).strip()
-            if href and name:
-                results.append((href, name))
+            href = html.unescape(href).strip()
+            if not (href and name):
+                continue
+            if 'vptips.' in href:
+                q = parse_qs(_up(href).query)
+                kind = (q.get('type') or [''])[0]
+                vid = (q.get('id') or [''])[0]
+                if kind not in tags or not vid:
+                    continue
+                if kind == 'no' and (not vid.startswith('http') or 'dailywrestling.' in vid):
+                    continue
+                results.append((href, f'{name} [{tags[kind]}]'))
         if not results:
-            log('WP playurl: no buttons found', xbmc.LOGWARNING)
+            log('WP playurl: no playable buttons found', xbmc.LOGWARNING)
+            xbmcgui.Dialog().notification('The Crew', 'No playable streams on this page', xbmcgui.NOTIFICATION_INFO, 3000)
             return None
         choice = 0 if len(results) == 1 else xbmcgui.Dialog().select('Choose Stream', [name for href, name in results])
         if choice == -1:
             return None
-        href, name = results[choice]
-        href = html.unescape(href)
-        stream = self._wp_vptips(href) if 'vptips.' in href else None
-        return [(stream or href, name)]
+        for href, name in [results[choice]] + results[:choice] + results[choice + 1:]:
+            stream = self._wp_vptips(href, url)
+            if stream:
+                if name != results[choice][1]:
+                    xbmcgui.Dialog().notification('The Crew', f'{results[choice][1]} failed, using {name}', xbmcgui.NOTIFICATION_INFO, 3000)
+                return [(stream, name)]
+            log(f'WP playurl: {name} did not resolve, trying next', xbmc.LOGWARNING)
+        return None
 
-    def _wp_vptips(self, href):
+    def _wp_vptips(self, href, page_url):
         try:
             q = parse_qs(_up(href).query)
             kind = (q.get('type') or [''])[0]
@@ -4271,6 +4287,8 @@ class streamer:
                     log(f'WP vptips: dailymotion no stream | {vid}', xbmc.LOGWARNING)
                     return None
                 return _publish_direct_hls(stream, {'User-Agent': UA, 'Referer': 'https://geo.dailymotion.com/', 'Origin': 'https://geo.dailymotion.com'})
+            if kind == 'no' and vid.startswith('http'):
+                return self._chase(vid, page_url)
             log(f'WP vptips: unknown type {kind} | {href}', xbmc.LOGWARNING)
             return None
         except Exception as e:
