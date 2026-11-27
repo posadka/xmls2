@@ -963,6 +963,8 @@ class streamer:
                 u = self.gblog(url)
             elif 'xstream.st' in url:
                 u = self.xstream(url)
+            elif any(x in url for x in ['sportsguru.st/frame/', 'footybite.info.pl/frame/']) and '://clapper.' not in url:
+                u = self.footybite(url)
             elif getattr(self, '_chasing', False):
                 self._unrouted = True
                 u = None
@@ -4193,6 +4195,19 @@ class streamer:
             if nxt.startswith('http'):
                 return self._chase(nxt, resp.url, depth + 1)
         return self.generic(url)
+
+    @_guard
+    def footybite(self, url):
+        try:
+            page = requests.get(url, headers={'User-Agent': UA, 'Referer': _base_url(url) + '/'}, timeout=TIMEOUT).text
+            frame_url = self._get_iframe_src(page)
+            if not frame_url:
+                log(f'footybite: no player iframe | {url}', xbmc.LOGERROR)
+                return None
+            return self._chase(urljoin(url, frame_url), url)
+        except Exception as e:
+            _log_error('footybite', url, e)
+            return None
 
     @_guard
     def sports247(self, url):

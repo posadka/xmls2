@@ -402,6 +402,8 @@ class streamer:
                 u = self.streamed(url)
             elif '720pstream.cx' in url:
                 u = self.cx720p(url)
+            elif any(x in url for x in ['sportsguru.st', 'footybite.info.pl']):
+                u = self.footybite(url)
             else:
                 log(f'resolve: no handler matched for {url}', xbmc.LOGWARNING)
                 return None
@@ -2281,6 +2283,44 @@ class streamer:
             return results or None
         except Exception as e:
             _log_error('sportsupa', url, e)
+            return None
+
+    @_guard
+    def footybite(self, url):
+        try:
+            page_url, _, frag = url.partition('#')
+            want    = dict(p.split('=', 1) for p in frag.split('&') if '=' in p)
+            w_cat   = [x.strip().lower() for x in want.get('category', '').split('|') if x.strip()]
+            base    = _base_url(page_url)
+            data    = requests.get(base + '/api/schedule', headers={'User-Agent': UA, 'Referer': base + '/'}, timeout=TIMEOUT).json()
+            results = []
+            for ev in data.get('events') or []:
+                if not isinstance(ev, dict):
+                    continue
+                if w_cat and (ev.get('category') or '').strip().lower() not in w_cat:
+                    continue
+                title   = html.unescape(ev.get('title') or '').strip()
+                sources = [s for s in (ev.get('sources') or []) if isinstance(s, dict) and s.get('url')]
+                if not title or not sources:
+                    continue
+                if (ev.get('status') or '').strip().lower() == 'live':
+                    label = f'[COLOR red]LIVE[/COLOR] [COLOR orange]{title}[/COLOR]'
+                else:
+                    try:
+                        dt   = datetime.strptime(ev.get('startsAt') or '', '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc)
+                        when = _to_local(dt).strftime('%m/%d %I:%M %p').lstrip('0')
+                    except Exception:
+                        when = ''
+                    label = self._label(when, title)
+                for src in sources:
+                    link = src['url'].strip()
+                    if link.startswith('http://'):
+                        link = 'https://' + link[len('http://'):]
+                    name = html.unescape(src.get('name') or '').strip()
+                    results.append((link, f'{label} [COLOR orange]({name})[/COLOR]' if len(sources) > 1 and name else label))
+            return results or None
+        except Exception as e:
+            _log_error('footybite', url, e)
             return None
 
     @_guard
