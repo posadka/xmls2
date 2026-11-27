@@ -915,7 +915,7 @@ class streamer:
                 u = self.embed_st(url)
             elif any(x in url for x in ['embedsports.me', 'sportsframe.me']):
                 u = self.embedsportsme(url)
-            elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline', 'sportsoonline']):
+            elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline', 'sportsoonline', 'sporrtsonline']):
                 u = self.sportsonline(url)
             elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
                 u = self.embedhd_st(url)
@@ -3044,7 +3044,7 @@ class streamer:
     def crackstreamsst(self, url):
         try:
             page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
-            feeds = re.findall(r'<a[^>]+href="(https://foxiy\.st/[^"]+/main/(\d+))"', page_data)
+            feeds = re.findall(r'<a[^>]+href="(https://(?:foxiy|foxje)\.st/[^"]+/main/(\d+))"', page_data)
             if not feeds:
                 log(f'crackstreamsst: no foxiy feeds | {url}', xbmc.LOGERROR)
                 return None
@@ -3725,8 +3725,13 @@ class streamer:
                 return None
             servers = re.findall(r"'(\d+)'\s*:\s*`([^`]*\$\{streamId\}[^`]*)`", embed_html)
             path_m  = re.search(r"const\s+streamPath\s*=\s*`([^`]*)`", embed_html)
+            cat_m   = None
             if not servers and path_m:
                 servers = [(n, t.replace('${streamPath}', path_m.group(1))) for n, t in re.findall(r"'(\d+)'\s*:\s*`([^`]*\$\{streamPath\}[^`]*)`", embed_html)]
+            if not servers:
+                cat_m = re.search(r"var\s+streamPath\s*=\s*'([^']*)'\s*\+\s*streamId\s*\+\s*'([^']*)'", embed_html)
+                if cat_m:
+                    servers = [(n, h + cat_m.group(1) + '${streamId}' + cat_m.group(2)) for n, h in re.findall(r"'(\d+)'\s*:\s*'([^']+)'\s*\+\s*streamPath\b", embed_html)]
             if not servers:
                 log(f'xyzstreams_nfl: no server templates in embed | {embed_url}', xbmc.LOGERROR)
                 return None
@@ -3739,7 +3744,7 @@ class streamer:
                     return None
                 stream_url = urls[choice]
             origin, referer = _origin_referer(embed_url)
-            key_m = re.search(r'const\s+SECRET_KEY\s*=\s*"([^"]+)"', embed_html)
+            key_m = re.search(r'(?:const|var|let)\s+SECRET_KEY\s*=\s*"([^"]+)"', embed_html)
             if key_m and AES is not None:
                 try:
                     import hashlib
@@ -3751,6 +3756,8 @@ class streamer:
                         stream_url += ('&' if '?' in stream_url else '?') + 'token=' + quote_plus(token) + '&server=1'
                 except Exception as e:
                     log(f'xyzstreams_nfl: token fetch failed | {e}', xbmc.LOGWARNING)
+            if cat_m:
+                return _publish_live_manifest(stream_url, {'User-Agent': UA, 'Referer': referer, 'Origin': origin}, 'xyzstreams_nfl')
             return _publish_direct_hls(stream_url, {'User-Agent': UA, 'Referer': referer, 'Origin': origin})
         except Exception as e:
             _log_error('xyzstreams_nfl', url, e)
