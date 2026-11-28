@@ -328,7 +328,7 @@ class streamer:
                 u = self.sportsupa(url)
             elif any(x in url for x in ['mutstreams', '://mut.st']):
                 u = self.mutstreams(url)
-            elif any(x in url for x in ['kora', 'topsurge.st']):
+            elif any(x in url for x in ['kora', 'topsurge.st', 'soccerstreamlinks']):
                 u = self.korast(url)
             elif 'volokit' in url:
                 u = self.volokit(url)

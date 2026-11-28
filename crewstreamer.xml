@@ -2676,13 +2676,14 @@ class streamer:
 
             headers = {
                 'indians':      indians_secret,
-                'island':       indians_secret,
                 'content-type': 'application/octet-stream',
                 'origin':       origin,
                 'referer':      url,
                 'user-agent':   UA,
             }
             fetch = requests.post(urljoin(origin, '/fetch'), data=payload, headers=headers, timeout=TIMEOUT, verify='taifood-blog' not in host)
+            log(f'embedsports DEBUG status={fetch.status_code} headers={dict(fetch.headers)}', xbmc.LOGERROR)
+            log(f'embedsports DEBUG content[:200]={fetch.content[:200]}', xbmc.LOGERROR)
             if not fetch.content:
                 log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                 return None
@@ -3576,6 +3577,22 @@ class streamer:
                 r'\s*window\["ev"\+"al"\]\(\s*\w+\s*\)\s*;',
                 page_data, re.S
             )
+            tk_m = None if m else re.search(r'<meta\s+name="tk"\s+content="([0-9a-f]+)"', page_data)
+            if tk_m:
+                tk = tk_m.group(1)
+                token_url = 'https://tims-001.servehttp.com/p/' + tk
+                tresp = requests.get(token_url, headers={'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, timeout=TIMEOUT)
+                raw = tresp.content
+                if tresp.status_code != 200 or len(raw) < 2:
+                    log(f'timstreams: tk token fetch failed status={tresp.status_code} bytes={len(raw)} | {token_url}', xbmc.LOGERROR)
+                    return None
+                seed = raw[0]
+                stream_url = ''.join(chr(raw[i] ^ ord(tk[(i - 1) % len(tk)]) ^ ((seed + i - 1) & 255)) for i in range(1, len(raw))).strip()
+                if not stream_url.startswith('http'):
+                    log(f'timstreams: tk token decode gave no url | {token_url} | {stream_url[:80]!r}', xbmc.LOGERROR)
+                    return None
+                headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                return _publish_live_manifest(stream_url, headers, 'timstreams')
             if not m:
                 log(f'timstreams: no obfuscated payload found, falling back to flyembed | {url}', xbmc.LOGWARNING)
                 return self.flyembed(url)
