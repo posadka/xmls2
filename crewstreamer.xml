@@ -923,7 +923,7 @@ class streamer:
                 u = self.rockystream(url)
             elif 'embedhd.pk' in url:
                 u = self.embedhd_pk(url)
-            elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'methstreams.gs']):
+            elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'crackstreams.sc', 'methstreams.gs']):
                 u = self.methstreams(url)
             elif any(x in url for x in ['iframe.gs', 'yield.gs', 'yieldz.gs']):
                 u = self.iframe_gs(url)

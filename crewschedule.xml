@@ -376,7 +376,7 @@ class streamer:
                 u = self.sportssonline(url)
             elif any(x in url for x in ['streameast.gl', 'givemereddit', 'givemeredditstreams', 'streamseast.is', 'streamseast.ws', 'mystreamseast.cx', 'streamseast.dad']):
                 u = self.givemereddit(url)
-            elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'methstreams.gs']):
+            elif any(x in url for x in ['methstreams.ms', 'crackstreams.mx', 'crackstreams.sc', 'methstreams.gs']):
                 u = self.methstreams(url)
             elif any(x in url for x in ['ovostreams.com', 'ovostream.net', 'ovogoaal', 'ovogoal', 'ovo-gola', 'orbixa.top', 'tiplink', 'ovogoalz', 'ovo-goal']):
                 u = self.ovostreams(url)
