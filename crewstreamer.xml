@@ -566,11 +566,13 @@ def _dl_plus(player_url, referer):
     try:
         resp = requests.get(embed_url, headers={'User-Agent': UA, 'Referer': player_url}, timeout=TIMEOUT)
         page = resp.text
+        final_url = resp.url
     except Exception:
         page = ''
+        final_url = embed_url
     tok = _tims_from_page(page) if page else None
     if tok:
-        return (tok, embed_url)
+        return (tok, final_url)
     stream_url = _dl_payload(page or _dl_fetch(embed_url, player_url), embed_url)
     return (stream_url, embed_url) if stream_url else None
 
