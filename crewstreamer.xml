@@ -2853,6 +2853,9 @@ class streamer:
             si = vr.text.find('STUDY_CONFIG')
             bi = vr.text.find('{', si) if si != -1 else -1
             if bi == -1:
+                sk = self._embedsports_seckey(vr.text, edm, chrome_ua)
+                if sk:
+                    return sk
                 log(f'embedsports: no STUDY_CONFIG | https://{edm}/vimpl/{gc} | {vr.text[:200]!r}', xbmc.LOGERROR)
                 return None
             depth = 0
@@ -2891,6 +2894,75 @@ class streamer:
             return _publish_live_manifest(stream_url, headers2, 'embedsports')
         except Exception as e:
             _log_error('embedsports', url, e)
+            return None
+
+    def _embedsports_seckey(self, text, edm, ua):
+        try:
+            cfg_m = re.search(r'window\.SecKeyPlayerConfig\s*\[\s*["\'][^"\']+["\']\s*\]\s*=\s*(\{.*?\})\s*;', text, re.S)
+            if not cfg_m:
+                return None
+            cfg = json.loads(cfg_m.group(1))
+            playerId     = cfg.get('device_id')
+            s_code       = cfg.get('sCode')
+            strUnqId     = cfg.get('strUnqId')
+            session_id   = cfg.get('session_id')
+            expireTs     = cfg.get('expireTs')
+            edgeHostId   = cfg.get('edgeHostId')
+            video_source = cfg.get('urlSource')
+            csrf = cfg.get('csrf_token') or ''
+            try:
+                csrf = base64.b64decode(csrf + '=' * (-len(csrf) % 4)).decode('ascii')
+            except Exception:
+                pass
+            sec_b64 = cfg.get('secTokenUrl')
+            if not all([playerId, s_code, strUnqId, session_id, expireTs, edgeHostId, video_source, csrf, sec_b64]):
+                log(f'embedsports: incomplete SecKeyPlayerConfig | edm={edm}', xbmc.LOGWARNING)
+                return None
+            try:
+                sec_token_url = base64.b64decode(sec_b64 + '=' * (-len(sec_b64) % 4)).decode()
+            except Exception:
+                log(f'embedsports: bad secTokenUrl | edm={edm}', xbmc.LOGERROR)
+                return None
+
+            def _wq(u, **params):
+                parts = _up(u)
+                q = {k: (v[0] if isinstance(v, list) else v) for k, v in parse_qs(parts.query).items()}
+                q.update(params)
+                return f'{parts.scheme}://{parts.netloc}{parts.path}?{urlencode(q)}'
+
+            auth_url = _wq(
+                sec_token_url, scode=s_code, stream=strUnqId,
+                expires=expireTs, u_id=playerId, session_id=session_id, host_id=edgeHostId
+            )
+            edm_origin = f'https://{edm}'
+            auth = requests.get(
+                auth_url,
+                headers={'User-Agent': ua, 'X-CSRF-Auth': csrf, 'Accept': 'application/json',
+                         'Referer': edm_origin + '/', 'Origin': edm_origin},
+                timeout=TIMEOUT
+            )
+            device_id = playerId
+            try:
+                device_id = auth.json().get('device_id') or device_id
+            except Exception:
+                log(f'embedsports: seckey auth reply not json | status={auth.status_code} | {auth.text[:200]!r}', xbmc.LOGERROR)
+
+            stream_url    = _wq(video_source, u_id=device_id)
+            final_headers = {'User-Agent': ua, 'Referer': edm_origin + '/', 'Origin': edm_origin}
+            check = requests.get(stream_url, headers=final_headers, timeout=TIMEOUT)
+            if not check.text.lstrip().startswith('#EXTM3U'):
+                log(f'embedsports: seckey playlist invalid | {stream_url} | body: {check.text[:200]!r}', xbmc.LOGERROR)
+                return None
+            if '#EXT-X-STREAM-INF' in check.text:
+                variant_line = next(
+                    (ln.strip() for ln in check.text.splitlines() if ln.strip() and not ln.strip().startswith('#')),
+                    None
+                )
+                if variant_line:
+                    stream_url = urljoin(check.url, variant_line)
+            return _publish_live_manifest(stream_url, final_headers, 'embedsports')
+        except Exception as e:
+            _log_error('embedsports', f'seckey/{edm}', e)
             return None
 
     @_guard
