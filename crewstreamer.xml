@@ -907,14 +907,12 @@ class streamer:
                 u = self.crackstreams(url)
             elif 'crackstreams.st' in url:
                 u = self.crackstreamsst(url)
-            elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia', 'taifood-blog']):
+            elif any(x in url for x in ['embedsports.top', 'pooembed', 'embedindia', 'taifood-blog', 'embedsports.me', 'sportsframe.me']):
                 u = self.embedsports(url)
             elif 'rockyembed.st' in url:
                 u = self.rockyembed(url)
             elif 'embed.st' in url:
                 u = self.embed_st(url)
-            elif any(x in url for x in ['embedsports.me', 'sportsframe.me']):
-                u = self.embedsportsme(url)
             elif any(x in url for x in ['sportssonline', 'sportsonline','sportsonlline', 'sportsoonline', 'sporrtsonline']):
                 u = self.sportsonline(url)
             elif any(x in url for x in ['fsportshd', 'embedhd.st', 'fsportsshd']):
@@ -2633,6 +2631,8 @@ class streamer:
     @_guard
     def embedsports(self, url):
         try:
+            if any(h in url for h in ('embedsports.me', 'sportsframe.me')):
+                return self._embedsports_vimpl(url)
             if not any(h in url for h in ('embedsports.top', 'pooembed', 'embedindia', 'taifood-blog')):
                 page_data = requests.get(url, headers={'User-Agent': UA, 'Referer': url}, timeout=TIMEOUT).text
                 m = re.search(r'<iframe[^>]+src=["\']([^"\']*(?:embedsports\.top|pooembed)[^"\']+)', page_data, re.I)
@@ -2676,14 +2676,13 @@ class streamer:
 
             headers = {
                 'indians':      indians_secret,
+                'island':       indians_secret,
                 'content-type': 'application/octet-stream',
                 'origin':       origin,
                 'referer':      url,
                 'user-agent':   UA,
             }
             fetch = requests.post(urljoin(origin, '/fetch'), data=payload, headers=headers, timeout=TIMEOUT, verify='taifood-blog' not in host)
-            log(f'embedsports DEBUG status={fetch.status_code} headers={dict(fetch.headers)}', xbmc.LOGERROR)
-            log(f'embedsports DEBUG content[:200]={fetch.content[:200]}', xbmc.LOGERROR)
             if not fetch.content:
                 log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                 return None
@@ -2738,6 +2737,123 @@ class streamer:
                     log(f'embedsports: no variant found in master playlist | {stream_url}', xbmc.LOGERROR)
                     return None
                 stream_url = urljoin(manifest_resp.url, variant_line)
+            return _publish_live_manifest(stream_url, headers2, 'embedsports')
+        except Exception as e:
+            _log_error('embedsports', url, e)
+            return None
+
+    def _embedsports_vimpl(self, url):
+        try:
+            url = url.split('#')[0]
+            if 'embedsports.me' in url:
+                url = url.replace('embedsports.me', 'sportsframe.me')
+            chrome_ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36'
+            sec_ua = '"Chromium";v="156", "Not;A=Brand";v="24", "Google Chrome";v="156"'
+            headers = {
+                'User-Agent':                chrome_ua,
+                'Accept':                    'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Accept-Language':           'en-US,en;q=0.9',
+                'Referer':                   'https://embedsports.me/',
+                'Sec-Fetch-Dest':            'iframe',
+                'Sec-Fetch-Mode':            'navigate',
+                'Sec-Fetch-Site':            'same-site',
+                'Upgrade-Insecure-Requests': '1',
+                'sec-ch-ua':                 sec_ua,
+                'sec-ch-ua-mobile':          '?0',
+                'sec-ch-ua-platform':        '"macOS"',
+            }
+            page = None
+            for attempt in range(6):
+                try:
+                    r = requests.get(url, headers=headers, timeout=TIMEOUT)
+                    if r.status_code == 200 and 'data-pldm' in r.text:
+                        page = r.text
+                        break
+                except Exception:
+                    pass
+                time.sleep(2 + attempt)
+            if not page:
+                log(f'embedsports: sportsframe gate not passed | {url}', xbmc.LOGERROR)
+                return None
+
+            tag = re.search(r'<script[^>]*\bdata-pldm\b[^>]*>', page, re.I)
+            if not tag:
+                log(f'embedsports: no data-pldm tag | {url}', xbmc.LOGERROR)
+                return None
+            attrs  = dict(re.findall(r'\bdata-([a-z]+)=["\']([^"\']*)["\']', tag.group(0)))
+            edm    = attrs.get('pldm')
+            pid    = attrs.get('pid')
+            vimg   = attrs.get('play')
+            player = attrs.get('player', 'jw')
+            gc     = attrs.get('gc', 'sports')
+            cfg_m  = re.search(r'siteConfig\s*=\s*(\{.*?\})\s*[,;]', page, re.S)
+            if not edm or not pid or not cfg_m:
+                log(f'embedsports: missing pldm/pid/siteConfig | {url}', xbmc.LOGERROR)
+                return None
+            cfg = json.loads(cfg_m.group(1))
+
+            pl = {
+                'pid':      pid,
+                'vimg':     vimg,
+                'player':   player,
+                'csrf':     cfg.get('csrf'),
+                'csrf_ip':  cfg.get('csrf_ip'),
+                'expires':  cfg.get('sec_expires'),
+                'sec_hash': cfg.get('sec_hash'),
+            }
+            b64 = base64.b64encode(json.dumps(pl, separators=(',', ':')).encode()).decode()
+
+            post_headers = {
+                'User-Agent':        chrome_ua,
+                'Accept':            '*/*',
+                'Accept-Language':   'en-US,en;q=0.9',
+                'Content-Type':      'application/x-www-form-urlencoded; charset=UTF-8',
+                'Origin':            'https://sportsframe.me',
+                'Referer':           'https://sportsframe.me/',
+                'sec-ch-ua':         sec_ua,
+                'sec-ch-ua-mobile':  '?0',
+                'sec-ch-ua-platform':'"macOS"',
+            }
+            vr = requests.post(f'https://{edm}/vimpl/{gc}', data={'payload': b64}, headers=post_headers, timeout=TIMEOUT)
+
+            si = vr.text.find('STUDY_CONFIG')
+            bi = vr.text.find('{', si) if si != -1 else -1
+            if bi == -1:
+                log(f'embedsports: no STUDY_CONFIG | https://{edm}/vimpl/{gc} | {vr.text[:200]!r}', xbmc.LOGERROR)
+                return None
+            depth = 0
+            ei    = -1
+            for j in range(bi, len(vr.text)):
+                c = vr.text[j]
+                if c == '{':
+                    depth += 1
+                elif c == '}':
+                    depth -= 1
+                    if depth == 0:
+                        ei = j + 1
+                        break
+            if ei == -1:
+                log(f'embedsports: STUDY_CONFIG not balanced | https://{edm}/vimpl/{gc}', xbmc.LOGERROR)
+                return None
+            study = json.loads(vr.text[bi:ei])
+
+            stream_url = ((study.get('source') or {}).get('hls') or '').strip()
+            if not stream_url:
+                log(f'embedsports: no hls in STUDY_CONFIG | https://{edm}/vimpl/{gc}', xbmc.LOGERROR)
+                return None
+
+            headers2 = {'User-Agent': chrome_ua, 'Referer': 'https://sportsframe.me/', 'Origin': 'https://sportsframe.me'}
+            manifest_resp = requests.get(stream_url, headers=headers2, timeout=TIMEOUT)
+            if not manifest_resp.text.lstrip().startswith('#EXTM3U'):
+                log(f'embedsports: master playlist invalid | {stream_url} | body: {manifest_resp.text[:200]!r}', xbmc.LOGERROR)
+                return None
+            if '#EXT-X-STREAM-INF' in manifest_resp.text:
+                variant_line = next(
+                    (ln.strip() for ln in manifest_resp.text.splitlines() if ln.strip() and not ln.strip().startswith('#')),
+                    None
+                )
+                if variant_line:
+                    stream_url = urljoin(manifest_resp.url, variant_line)
             return _publish_live_manifest(stream_url, headers2, 'embedsports')
         except Exception as e:
             _log_error('embedsports', url, e)
@@ -3577,22 +3693,6 @@ class streamer:
                 r'\s*window\["ev"\+"al"\]\(\s*\w+\s*\)\s*;',
                 page_data, re.S
             )
-            tk_m = None if m else re.search(r'<meta\s+name="tk"\s+content="([0-9a-f]+)"', page_data)
-            if tk_m:
-                tk = tk_m.group(1)
-                token_url = 'https://tims-001.servehttp.com/p/' + tk
-                tresp = requests.get(token_url, headers={'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}, timeout=TIMEOUT)
-                raw = tresp.content
-                if tresp.status_code != 200 or len(raw) < 2:
-                    log(f'timstreams: tk token fetch failed status={tresp.status_code} bytes={len(raw)} | {token_url}', xbmc.LOGERROR)
-                    return None
-                seed = raw[0]
-                stream_url = ''.join(chr(raw[i] ^ ord(tk[(i - 1) % len(tk)]) ^ ((seed + i - 1) & 255)) for i in range(1, len(raw))).strip()
-                if not stream_url.startswith('http'):
-                    log(f'timstreams: tk token decode gave no url | {token_url} | {stream_url[:80]!r}', xbmc.LOGERROR)
-                    return None
-                headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
-                return _publish_live_manifest(stream_url, headers, 'timstreams')
             if not m:
                 log(f'timstreams: no obfuscated payload found, falling back to flyembed | {url}', xbmc.LOGWARNING)
                 return self.flyembed(url)
