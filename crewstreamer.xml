@@ -458,10 +458,15 @@ def _dl_origin(url):
     return f'{u.scheme}://{u.netloc}'
 
 
-def _dl_fetch(url, referer=None):
+def _dl_fetch(url, referer=None, embed=False):
     headers = {'User-Agent': UA}
     if referer:
         headers['Referer'] = referer
+    if embed:
+        headers['Sec-Fetch-Dest']            = 'iframe'
+        headers['Sec-Fetch-Mode']            = 'navigate'
+        headers['Sec-Fetch-Site']            = 'cross-site'
+        headers['Upgrade-Insecure-Requests'] = '1'
     try:
         return requests.get(url, headers=headers, timeout=TIMEOUT).text
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
@@ -579,7 +584,7 @@ def _dl_watch(player_url, referer):
     embed_url = _dl_iframe(_dl_fetch(player_url, referer), player_url)
     if not embed_url:
         return None
-    page = _dl_fetch(embed_url, player_url)
+    page = _dl_fetch(embed_url, player_url, embed=True)
     m = re.search(r'const\s+SRC\s*=\s*"([^"]+)"', page)
     if not m:
         return None
