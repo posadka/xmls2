@@ -2676,14 +2676,13 @@ class streamer:
 
             headers = {
                 'indians':      indians_secret,
+                'island':       indians_secret,
                 'content-type': 'application/octet-stream',
                 'origin':       origin,
                 'referer':      url,
                 'user-agent':   UA,
             }
             fetch = requests.post(urljoin(origin, '/fetch'), data=payload, headers=headers, timeout=TIMEOUT, verify='taifood-blog' not in host)
-            log(f'embedsports DEBUG status={fetch.status_code} headers={dict(fetch.headers)}', xbmc.LOGERROR)
-            log(f'embedsports DEBUG content[:200]={fetch.content[:200]}', xbmc.LOGERROR)
             if not fetch.content:
                 log(f'embedsports empty response for {url}', xbmc.LOGERROR)
                 return None
