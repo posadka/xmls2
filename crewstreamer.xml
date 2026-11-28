@@ -509,6 +509,25 @@ def _dl_token_stream(token_url, page_url):
     return url if url.startswith('http') else None
 
 
+def _tims_from_page(page, origin=None):
+    tkm = re.search(r'<meta\s+name=["\']tk["\']\s+content=["\']([0-9a-fA-F]+)["\']', page)
+    if not tkm:
+        return None
+    tk = tkm.group(1)
+    try:
+        tresp = requests.get('https://tims-001.servehttp.com/p/' + tk, headers={'User-Agent': UA}, timeout=TIMEOUT)
+    except Exception as e:
+        log(f'timstreams: tk ticket fetch failed {e}', xbmc.LOGWARNING)
+        return None
+    raw = tresp.content
+    if tresp.status_code != 200 or len(raw) < 2:
+        log(f'timstreams: tk ticket bad reply {tresp.status_code} bytes={len(raw)}', xbmc.LOGWARNING)
+        return None
+    seed = raw[0]
+    out = ''.join(chr(raw[i] ^ ord(tk[(i - 1) % len(tk)]) ^ ((seed + i - 1) & 255)) for i in range(1, len(raw))).strip()
+    return out if out.startswith('http') else None
+
+
 def _dl_payload(page, page_url=None):
     m = re.search(r'(?:var|let|const)\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)', page)
     if not m:
@@ -544,7 +563,15 @@ def _dl_plus(player_url, referer):
     embed_url = _dl_iframe(_dl_fetch(player_url, referer), player_url)
     if not embed_url:
         return None
-    stream_url = _dl_payload(_dl_fetch(embed_url, player_url), embed_url)
+    try:
+        resp = requests.get(embed_url, headers={'User-Agent': UA, 'Referer': player_url}, timeout=TIMEOUT)
+        page = resp.text
+    except Exception:
+        page = ''
+    tok = _tims_from_page(page) if page else None
+    if tok:
+        return (tok, embed_url)
+    stream_url = _dl_payload(page or _dl_fetch(embed_url, player_url), embed_url)
     return (stream_url, embed_url) if stream_url else None
 
 
@@ -3666,6 +3693,10 @@ class streamer:
             resp = requests.get(url, headers=req_headers, timeout=TIMEOUT)
             page_data = resp.text
             origin = _base_url(resp.url)
+            tok = _tims_from_page(page_data, origin)
+            if tok:
+                headers = {'User-Agent': UA, 'Referer': origin + '/', 'Origin': origin}
+                return _publish_live_manifest(tok, headers, 'timstreams')
             m = re.search(
                 r'var\s+\w+\s*=\s*\[([\d,\s]+)\]\s*,\s*\w+\s*=\s*(\d+)\s*,\s*\w+\s*=\s*(\d+)\s*,'
                 r'\s*\w+\s*=\s*""\s*,\s*\w+\s*;'
